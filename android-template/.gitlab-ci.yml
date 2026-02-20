@@ -72,10 +72,14 @@ prepare:
         convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
       done
 
-    # Download splash screen if provided
+    # Download splash screen if provided (convert to PNG for AAPT compatibility)
     - |
       if [ -n "$SPLASH_URL" ]; then
-        wget -q "$SPLASH_URL" -O app/src/main/res/drawable/splash_image.png || true
+        wget -q "$SPLASH_URL" -O /tmp/splash_raw || true
+        if [ -s /tmp/splash_raw ]; then
+          convert /tmp/splash_raw PNG:app/src/main/res/drawable/splash_image.png 2>/dev/null || true
+          rm -f /tmp/splash_raw
+        fi
       fi
 
     # Place google-services.json if Firebase is enabled
