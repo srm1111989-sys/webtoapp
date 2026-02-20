@@ -1,0 +1,61 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Build the app and produce an IPA"
+  lane :build do |options|
+    team_id = options[:team_id] || ENV["TEAM_ID"] || ""
+    bundle_id = options[:bundle_id] || ENV["BUNDLE_ID"] || "com.webtoapp.template"
+
+    update_code_signing_settings(
+      use_automatic_signing: true,
+      team_id: team_id,
+      path: "WebToApp.xcodeproj"
+    )
+
+    update_app_identifier(
+      xcodeproj: "WebToApp.xcodeproj",
+      plist_path: "WebToApp/Info.plist",
+      app_identifier: bundle_id
+    )
+
+    build_app(
+      workspace: "WebToApp.xcworkspace",
+      scheme: "WebToApp",
+      export_method: "development",
+      output_directory: "build",
+      output_name: "WebToApp.ipa",
+      include_bitcode: false,
+      clean: true,
+      xcargs: "DEVELOPMENT_TEAM='#{team_id}'"
+    )
+  end
+
+  desc "Build for App Store distribution"
+  lane :release do |options|
+    team_id = options[:team_id] || ENV["TEAM_ID"] || ""
+    bundle_id = options[:bundle_id] || ENV["BUNDLE_ID"] || "com.webtoapp.template"
+
+    update_code_signing_settings(
+      use_automatic_signing: true,
+      team_id: team_id,
+      path: "WebToApp.xcodeproj"
+    )
+
+    update_app_identifier(
+      xcodeproj: "WebToApp.xcodeproj",
+      plist_path: "WebToApp/Info.plist",
+      app_identifier: bundle_id
+    )
+
+    build_app(
+      workspace: "WebToApp.xcworkspace",
+      scheme: "WebToApp",
+      export_method: "app-store",
+      output_directory: "build",
+      output_name: "WebToApp.ipa",
+      include_bitcode: false,
+      clean: true,
+      xcargs: "DEVELOPMENT_TEAM='#{team_id}'"
+    )
+  end
+end

@@ -1,0 +1,30 @@
+{
+  "app_name": "WebToApp",
+  "app_url": "https://example.com",
+  "app_host": "example.com",
+  "primary_color": "#2563EB",
+  "secondary_color": "#1E40AF",
+  "status_bar_color": "#1E3A5F",
+  "features": {
+    "biometric_auth": false,
+    "navigation_type": "none",
+    "push_notifications": false,
+    "admob": false,
+    "deep_linking": false,
+    "offline_mode": false,
+    "screenshot_prevention": false,
+    "custom_user_agent": "",
+    "file_upload": true,
+    "location_services": false,
+    "camera_access": false,
+    "qr_scanner": false,
+    "js_bridge": false
+  },
+  "admob_config": {
+    "app_id": "",
+    "banner_id": "",
+    "interstitial_id": "",
+    "rewarded_id": ""
+  },
+  "navigation_items": []
+}

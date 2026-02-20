@@ -1,0 +1,20 @@
+import time
+import logging
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+
+logger = logging.getLogger("webtoapp")
+
+
+class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        start = time.time()
+        response = await call_next(request)
+        duration = time.time() - start
+
+        logger.info(
+            f"{request.method} {request.url.path} "
+            f"status={response.status_code} "
+            f"duration={duration:.3f}s"
+        )
+        return response

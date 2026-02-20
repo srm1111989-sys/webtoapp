@@ -1,0 +1,61 @@
+{
+  "name": "{{APP_NAME}}",
+  "short_name": "{{APP_SHORT_NAME}}",
+  "description": "{{APP_DESCRIPTION}}",
+  "start_url": "{{APP_URL}}",
+  "scope": "{{APP_URL}}",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "{{PRIMARY_COLOR}}",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "{{ICON_72}}",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{{ICON_96}}",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{{ICON_128}}",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{{ICON_144}}",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{{ICON_152}}",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{{ICON_192}}",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{{ICON_384}}",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "{{ICON_512}}",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.WebToApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryColorDark</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:navigationBarColor">@color/primaryColorDark</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="Theme.WebToApp.Splash" parent="Theme.WebToApp">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+</resources>

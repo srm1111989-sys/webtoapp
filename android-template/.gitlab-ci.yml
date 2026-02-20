@@ -1,0 +1,146 @@
+image: jangrewe/gitlab-ci-android
+
+stages:
+  - prepare
+  - build
+  - deploy
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2048m"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+before_script:
+  - chmod +x ./gradlew
+
+prepare:
+  stage: prepare
+  script:
+    # Replace config.json with build variables
+    - |
+      if [ -n "$FEATURES_JSON" ]; then
+        cat > app/src/main/assets/config.json << HEREDOC
+      {
+        "app_name": "${APP_NAME}",
+        "app_url": "${APP_URL}",
+        "app_host": "${APP_HOST}",
+        "primary_color": "${PRIMARY_COLOR}",
+        "secondary_color": "${SECONDARY_COLOR}",
+        "status_bar_color": "${STATUS_BAR_COLOR}",
+        "features": ${FEATURES_JSON},
+        "navigation_items": ${NAVIGATION_ITEMS:-[]}
+      }
+      HEREDOC
+      fi
+
+    # Download and resize icon if provided
+    - |
+      if [ -n "$ICON_URL" ]; then
+        apt-get update -qq && apt-get install -y -qq imagemagick wget > /dev/null 2>&1
+        wget -q "$ICON_URL" -O /tmp/icon.png
+
+        # Generate all mipmap sizes
+        for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
+          dir=$(echo $size_dir | cut -d: -f1)
+          size=$(echo $size_dir | cut -d: -f2)
+          mkdir -p "app/src/main/res/mipmap-${dir}"
+          convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher.png"
+          convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
+        done
+      fi
+
+    # Download splash screen if provided
+    - |
+      if [ -n "$SPLASH_URL" ]; then
+        wget -q "$SPLASH_URL" -O app/src/main/res/drawable/splash_image.png || true
+      fi
+
+    # Place google-services.json if Firebase is enabled
+    - |
+      if [ "$FIREBASE_ENABLED" = "true" ] && [ -n "$FIREBASE_CONFIG" ]; then
+        echo "$FIREBASE_CONFIG" > app/google-services.json
+      fi
+
+    # Configure AdMob
+    - |
+      if [ "$ADMOB_ENABLED" = "true" ] && [ -n "$ADMOB_CONFIG" ]; then
+        ADMOB_APP_ID=$(echo "$ADMOB_CONFIG" | python3 -c "import sys,json; print(json.load(sys.stdin).get('app_id',''))" 2>/dev/null || echo "")
+        if [ -n "$ADMOB_APP_ID" ]; then
+          sed -i "s/\${admobAppId}/$ADMOB_APP_ID/g" app/src/main/AndroidManifest.xml
+        fi
+      fi
+
+  artifacts:
+    paths:
+      - app/src/main/assets/config.json
+      - app/src/main/res/
+      - app/google-services.json
+    expire_in: 1 hour
+
+build_apk:
+  stage: build
+  script:
+    - |
+      ./gradlew assembleRelease \
+        -PAPP_NAME="${APP_NAME}" \
+        -PAPP_URL="${APP_URL}" \
+        -PAPP_HOST="${APP_HOST}" \
+        -PAPP_PACKAGE_NAME="${PACKAGE_NAME}" \
+        -PPRIMARY_COLOR="${PRIMARY_COLOR}" \
+        -PSECONDARY_COLOR="${SECONDARY_COLOR}" \
+        -PSTATUS_BAR_COLOR="${STATUS_BAR_COLOR}" \
+        -PFIREBASE_ENABLED="${FIREBASE_ENABLED:-false}" \
+        -PADMOB_ENABLED="${ADMOB_ENABLED:-false}"
+  artifacts:
+    paths:
+      - app/build/outputs/apk/release/app-release.apk
+    expire_in: 30 days
+
+build_aab:
+  stage: build
+  script:
+    - |
+      ./gradlew bundleRelease \
+        -PAPP_NAME="${APP_NAME}" \
+        -PAPP_URL="${APP_URL}" \
+        -PAPP_HOST="${APP_HOST}" \
+        -PAPP_PACKAGE_NAME="${PACKAGE_NAME}" \
+        -PPRIMARY_COLOR="${PRIMARY_COLOR}" \
+        -PSECONDARY_COLOR="${SECONDARY_COLOR}" \
+        -PSTATUS_BAR_COLOR="${STATUS_BAR_COLOR}" \
+        -PFIREBASE_ENABLED="${FIREBASE_ENABLED:-false}" \
+        -PADMOB_ENABLED="${ADMOB_ENABLED:-false}"
+  artifacts:
+    paths:
+      - app/build/outputs/bundle/release/app-release.aab
+    expire_in: 30 days
+  rules:
+    - if: $BUILD_AAB == "true"
+
+source_code:
+  stage: deploy
+  script:
+    - apt-get update -qq && apt-get install -y -qq zip > /dev/null 2>&1
+    - zip -r source-code.zip . -x ".gradle/*" "app/build/*" ".git/*"
+  artifacts:
+    paths:
+      - source-code.zip
+    expire_in: 30 days
+  rules:
+    - if: $INCLUDE_SOURCE == "true"
+
+webhook_notify:
+  stage: deploy
+  script:
+    - |
+      if [ -n "$WEBHOOK_URL" ]; then
+        curl -X POST "$WEBHOOK_URL" \
+          -H "Content-Type: application/json" \
+          -H "X-Gitlab-Token: $WEBHOOK_TOKEN" \
+          -d "{\"object_kind\":\"pipeline\",\"object_attributes\":{\"id\":$CI_PIPELINE_ID,\"status\":\"$CI_PIPELINE_STATUS\"},\"project\":{\"id\":$CI_PROJECT_ID}}"
+      fi
+  when: always

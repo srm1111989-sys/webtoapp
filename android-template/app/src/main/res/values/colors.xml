@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- These are overridden by build.gradle resValue -->
+    <color name="primaryColor">#2563EB</color>
+    <color name="primaryColorDark">#1E40AF</color>
+    <color name="statusBarColor">#1E3A5F</color>
+</resources>

@@ -1,0 +1,59 @@
+# Environment
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Node
+node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Uploads
+uploads/
+
+# Android
+android-template/.gradle/
+android-template/build/
+android-template/app/build/
+android-template/local.properties
+*.apk
+*.aab
+
+# iOS
+ios-template/Pods/
+ios-template/WebToApp.xcworkspace/
+ios-template/WebToApp.xcodeproj/xcuserdata/
+*.ipa
+*.dSYM.zip
+xcuserdata/
+
+# Coverage
+.coverage
+htmlcov/
+coverage/

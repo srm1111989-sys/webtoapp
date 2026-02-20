@@ -1,0 +1,123 @@
+stages:
+  - prepare
+  - build
+  - deploy
+
+variables:
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
+
+before_script:
+  - export LANG=en_US.UTF-8
+
+prepare:
+  stage: prepare
+  tags:
+    - macos
+  script:
+    # Inject config.json from pipeline variables
+    - |
+      if [ -n "$FEATURES_JSON" ]; then
+        cat > config.json << HEREDOC
+      {
+        "app_name": "${APP_NAME}",
+        "app_url": "${APP_URL}",
+        "app_host": "${APP_HOST}",
+        "primary_color": "${PRIMARY_COLOR}",
+        "secondary_color": "${SECONDARY_COLOR}",
+        "status_bar_color": "${STATUS_BAR_COLOR}",
+        "features": ${FEATURES_JSON},
+        "navigation_items": ${NAVIGATION_ITEMS:-[]}
+      }
+      HEREDOC
+      fi
+
+    # Copy config into app bundle
+    - cp config.json WebToApp/Config/config.json
+
+    # Update Info.plist with bundle ID and app name
+    - |
+      if [ -n "$BUNDLE_ID" ]; then
+        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" WebToApp/Info.plist
+      fi
+    - |
+      if [ -n "$APP_NAME" ]; then
+        /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName $APP_NAME" WebToApp/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleName $APP_NAME" WebToApp/Info.plist
+      fi
+
+    # Download and resize icon if provided
+    - |
+      if [ -n "$ICON_URL" ]; then
+        curl -sL "$ICON_URL" -o /tmp/icon.png
+        for size in 20 29 40 58 60 76 80 87 120 152 167 180 1024; do
+          sips -z $size $size /tmp/icon.png --out "WebToApp/Assets.xcassets/AppIcon.appiconset/icon_${size}.png" > /dev/null 2>&1
+        done
+      fi
+
+    # Place GoogleService-Info.plist if Firebase is enabled
+    - |
+      if [ "$FIREBASE_ENABLED" = "true" ] && [ -n "$FIREBASE_CONFIG" ]; then
+        echo "$FIREBASE_CONFIG" > WebToApp/GoogleService-Info.plist
+      fi
+
+    # Configure AdMob
+    - |
+      if [ "$ADMOB_ENABLED" = "true" ] && [ -n "$ADMOB_CONFIG" ]; then
+        ADMOB_APP_ID=$(echo "$ADMOB_CONFIG" | python3 -c "import sys,json; print(json.load(sys.stdin).get('app_id',''))" 2>/dev/null || echo "")
+        if [ -n "$ADMOB_APP_ID" ]; then
+          /usr/libexec/PlistBuddy -c "Set :GADApplicationIdentifier $ADMOB_APP_ID" WebToApp/Info.plist
+        fi
+      fi
+
+  artifacts:
+    paths:
+      - config.json
+      - WebToApp/Config/config.json
+      - WebToApp/Info.plist
+      - WebToApp/Assets.xcassets/
+      - WebToApp/GoogleService-Info.plist
+    expire_in: 1 hour
+
+build_ipa:
+  stage: build
+  tags:
+    - macos
+  script:
+    - pod install --repo-update || true
+    - |
+      bundle exec fastlane build \
+        team_id:"${TEAM_ID}" \
+        bundle_id:"${BUNDLE_ID}"
+  artifacts:
+    paths:
+      - build/WebToApp.ipa
+      - build/WebToApp.app.dSYM.zip
+    expire_in: 30 days
+
+source_code:
+  stage: deploy
+  tags:
+    - macos
+  script:
+    - zip -r source-code.zip . -x "Pods/*" "build/*" ".git/*" "*.xcworkspace/*"
+  artifacts:
+    paths:
+      - source-code.zip
+    expire_in: 30 days
+  rules:
+    - if: $INCLUDE_SOURCE == "true"
+
+webhook_notify:
+  stage: deploy
+  tags:
+    - macos
+  script:
+    - |
+      if [ -n "$WEBHOOK_URL" ]; then
+        curl -X POST "$WEBHOOK_URL" \
+          -H "Content-Type: application/json" \
+          -H "X-Gitlab-Token: $WEBHOOK_TOKEN" \
+          -d "{\"object_kind\":\"pipeline\",\"object_attributes\":{\"id\":$CI_PIPELINE_ID,\"status\":\"$CI_PIPELINE_STATUS\"},\"project\":{\"id\":$CI_PROJECT_ID}}"
+      fi
+  when: always
