@@ -127,19 +127,19 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         gitlab = GitLabService(platform=build.platform)
         try:
             if build.platform == "ios":
-                ipa_url = gitlab.download_artifact(pipeline_id, "WebToApp.ipa", f"builds/{build.order_id}")
+                ipa_url = await gitlab.download_artifact(pipeline_id, "WebToApp.ipa", f"builds/{build.order_id}")
                 if ipa_url:
                     build.ipa_url = ipa_url
 
-                dsym_url = gitlab.download_artifact(pipeline_id, "WebToApp.app.dSYM.zip", f"builds/{build.order_id}")
+                dsym_url = await gitlab.download_artifact(pipeline_id, "WebToApp.app.dSYM.zip", f"builds/{build.order_id}")
                 if dsym_url:
                     build.dsym_url = dsym_url
             else:
-                apk_url = gitlab.download_artifact(pipeline_id, "app-release.apk", f"builds/{build.order_id}")
+                apk_url = await gitlab.download_artifact(pipeline_id, "app-release.apk", f"builds/{build.order_id}")
                 if apk_url:
                     build.apk_url = apk_url
 
-                aab_url = gitlab.download_artifact(pipeline_id, "app-release.aab", f"builds/{build.order_id}")
+                aab_url = await gitlab.download_artifact(pipeline_id, "app-release.aab", f"builds/{build.order_id}")
                 if aab_url:
                     build.aab_url = aab_url
         except Exception as e:

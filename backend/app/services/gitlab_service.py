@@ -68,8 +68,8 @@ class GitLabService:
             response.raise_for_status()
             return response.text
 
-    def download_artifact(self, pipeline_id: int, artifact_name: str, folder: str) -> str | None:
-        """Download artifact from a pipeline job and upload to S3."""
+    async def download_artifact(self, pipeline_id: int, artifact_name: str, folder: str) -> str | None:
+        """Download artifact from a pipeline job and upload to storage."""
         jobs = self.get_pipeline_jobs(pipeline_id)
 
         for job in jobs:
@@ -81,10 +81,8 @@ class GitLabService:
                             headers=self.headers,
                         )
                         if response.status_code == 200:
-                            import asyncio
-                            loop = asyncio.get_event_loop()
-                            url = loop.run_until_complete(
-                                upload_file(response.content, folder, artifact_name, "application/octet-stream")
+                            url = await upload_file(
+                                response.content, folder, artifact_name, "application/octet-stream"
                             )
                             return url
                 except Exception as e:
