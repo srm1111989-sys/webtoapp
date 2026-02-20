@@ -135,11 +135,19 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 if dsym_url:
                     build.dsym_url = dsym_url
             else:
-                apk_url = await gitlab.download_artifact(pipeline_id, "app-release.apk", f"builds/{build.order_id}")
+                apk_url = await gitlab.download_artifact(
+                    pipeline_id,
+                    "app/build/outputs/apk/release/app-release.apk",
+                    f"builds/{build.order_id}",
+                )
                 if apk_url:
                     build.apk_url = apk_url
 
-                aab_url = await gitlab.download_artifact(pipeline_id, "app-release.aab", f"builds/{build.order_id}")
+                aab_url = await gitlab.download_artifact(
+                    pipeline_id,
+                    "app/build/outputs/bundle/release/app-release.aab",
+                    f"builds/{build.order_id}",
+                )
                 if aab_url:
                     build.aab_url = aab_url
         except Exception as e:

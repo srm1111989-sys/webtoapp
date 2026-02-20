@@ -30,7 +30,13 @@ public class LauncherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         loadConfig();
 
-        if (isChromeInstalledAndSupported()) {
+        // Use WebView by default for a native app experience (no URL bar).
+        // TWA requires Digital Asset Links (assetlinks.json) on the website;
+        // without it, Chrome shows a URL bar making it look like a browser.
+        boolean useTwa = config.optJSONObject("features") != null
+                && config.optJSONObject("features").optBoolean("twa_mode", false);
+
+        if (useTwa && isChromeInstalledAndSupported()) {
             launchTWA();
         } else {
             launchWebView();

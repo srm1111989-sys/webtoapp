@@ -68,26 +68,31 @@ class GitLabService:
             response.raise_for_status()
             return response.text
 
-    async def download_artifact(self, pipeline_id: int, artifact_name: str, folder: str) -> str | None:
+    async def download_artifact(self, pipeline_id: int, artifact_path: str, folder: str) -> str | None:
         """Download artifact from a pipeline job and upload to storage."""
         jobs = self.get_pipeline_jobs(pipeline_id)
+        # Use just the filename for storage
+        filename = artifact_path.rsplit("/", 1)[-1]
 
         for job in jobs:
             if job.get("artifacts_file"):
                 try:
+                    url = self._api_url(f"/jobs/{job['id']}/artifacts/{artifact_path}")
+                    logger.info(f"Trying artifact download: job={job['id']} ({job.get('name')}), path={artifact_path}")
                     with httpx.Client(timeout=120) as client:
-                        response = client.get(
-                            self._api_url(f"/jobs/{job['id']}/artifacts/{artifact_name}"),
-                            headers=self.headers,
-                        )
+                        response = client.get(url, headers=self.headers)
                         if response.status_code == 200:
-                            url = await upload_file(
-                                response.content, folder, artifact_name, "application/octet-stream"
+                            logger.info(f"Downloaded {artifact_path} ({len(response.content)} bytes) from job {job['id']}")
+                            stored_url = await upload_file(
+                                response.content, folder, filename, "application/octet-stream"
                             )
-                            return url
+                            return stored_url
+                        else:
+                            logger.info(f"Artifact {artifact_path} not found in job {job['id']}: HTTP {response.status_code}")
                 except Exception as e:
-                    logger.warning(f"Failed to download {artifact_name} from job {job['id']}: {e}")
+                    logger.warning(f"Failed to download {artifact_path} from job {job['id']}: {e}")
 
+        logger.warning(f"Artifact {artifact_path} not found in any job for pipeline {pipeline_id}")
         return None
 
     def cancel_pipeline(self, pipeline_id: int) -> dict:
