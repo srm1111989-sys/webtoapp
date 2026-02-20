@@ -14,17 +14,20 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
 
-before_script:
-  # Generate Gradle wrapper if missing
-  - |
-    if [ ! -f ./gradlew ]; then
-      gradle wrapper --gradle-version 8.4
-    fi
-  - chmod +x ./gradlew
-
 prepare:
   stage: prepare
   script:
+    # Bootstrap Gradle wrapper if not present
+    - |
+      if [ ! -f ./gradlew ]; then
+        echo "Downloading Gradle to generate wrapper..."
+        curl -sL "https://services.gradle.org/distributions/gradle-8.4-bin.zip" -o /tmp/gradle.zip
+        unzip -q /tmp/gradle.zip -d /tmp/
+        /tmp/gradle-8.4/bin/gradle wrapper --gradle-version 8.4
+        rm -rf /tmp/gradle.zip /tmp/gradle-8.4
+      fi
+    - chmod +x ./gradlew
+
     # Replace config.json with build variables
     - |
       if [ -n "$FEATURES_JSON" ]; then
@@ -85,11 +88,14 @@ prepare:
       - app/src/main/res/
       - app/google-services.json
       - gradlew
+      - gradlew.bat
       - gradle/
     expire_in: 1 hour
 
 build_apk:
   stage: build
+  before_script:
+    - chmod +x ./gradlew
   script:
     - |
       ./gradlew assembleRelease \
@@ -109,6 +115,8 @@ build_apk:
 
 build_aab:
   stage: build
+  before_script:
+    - chmod +x ./gradlew
   script:
     - |
       ./gradlew bundleRelease \
