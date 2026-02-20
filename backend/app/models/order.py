@@ -24,10 +24,10 @@ class Order(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    user: Mapped["User"] = relationship(back_populates="orders")
-    app_config: Mapped["AppConfig"] = relationship(back_populates="orders")
-    plan: Mapped["Plan"] = relationship()
-    payment: Mapped["Payment | None"] = relationship(back_populates="order", uselist=False)
+    user: Mapped["User"] = relationship(back_populates="orders", lazy="selectin")
+    app_config: Mapped["AppConfig"] = relationship(back_populates="orders", lazy="selectin")
+    plan: Mapped["Plan"] = relationship(lazy="selectin")
+    payment: Mapped["Payment | None"] = relationship(back_populates="order", uselist=False, lazy="selectin")
     builds: Mapped[list["Build"]] = relationship(back_populates="order", lazy="selectin")
 
 
