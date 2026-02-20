@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Integer, DateTime, ForeignKey, func, Text
+from sqlalchemy import String, Integer, BigInteger, DateTime, ForeignKey, func, Text
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
@@ -11,7 +11,7 @@ class Build(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     order_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("orders.id"), nullable=False, index=True)
-    pipeline_id: Mapped[int | None] = mapped_column(Integer)
+    pipeline_id: Mapped[int | None] = mapped_column(BigInteger)
     status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, building, success, failed
     platform: Mapped[str] = mapped_column(String(10), default="android")  # android, ios
     build_type: Mapped[str] = mapped_column(String(10), default="apk")  # apk, aab, ipa
