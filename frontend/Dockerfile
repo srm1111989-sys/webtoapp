@@ -10,7 +10,7 @@ CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
 FROM base AS build
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build
 

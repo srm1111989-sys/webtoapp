@@ -106,16 +106,19 @@ export default function Pricing() {
                 {plan.price_inr === 0 ? 'Start Free' : 'Get Started'}
               </Link>
               <ul className="space-y-2 flex-1">
-                {Object.entries(featureLabels).map(([key, label]) => (
+                {Object.entries(featureLabels).map(([key, label]) => {
+                  const enabled = (plan.features as Record<string, boolean>)[key]
+                  return (
                   <li key={key} className="flex items-center gap-2 text-sm">
-                    {plan.features[key] ? (
+                    {enabled ? (
                       <Check className="w-4 h-4 text-green-500 shrink-0" />
                     ) : (
                       <X className="w-4 h-4 text-gray-300 shrink-0" />
                     )}
-                    <span className={plan.features[key] ? '' : 'text-gray-400'}>{label}</span>
+                    <span className={enabled ? '' : 'text-gray-400'}>{label}</span>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             </div>
           ))}
