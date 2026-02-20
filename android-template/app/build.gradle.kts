@@ -76,19 +76,13 @@ dependencies {
     // Biometric
     implementation("androidx.biometric:biometric:1.1.0")
 
-    // Firebase (conditionally included via CI)
-    val firebaseEnabled = project.findProperty("FIREBASE_ENABLED")?.toString() == "true"
-    if (firebaseEnabled) {
-        implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-        implementation("com.google.firebase:firebase-messaging")
-        implementation("com.google.firebase:firebase-analytics")
-    }
+    // Firebase (always included; only active with google-services.json)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
 
-    // AdMob
-    val admobEnabled = project.findProperty("ADMOB_ENABLED")?.toString() == "true"
-    if (admobEnabled) {
-        implementation("com.google.android.gms:play-services-ads:23.0.0")
-    }
+    // AdMob (always included; only active with config)
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
 
     // ML Kit for QR scanning
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
