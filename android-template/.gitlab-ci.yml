@@ -7,6 +7,7 @@ stages:
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2048m"
+  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -17,6 +18,12 @@ cache:
 prepare:
   stage: prepare
   script:
+    # Install Java 17 (AGP 8.x requires it)
+    - apt-get update -qq && apt-get install -y -qq openjdk-17-jdk > /dev/null 2>&1
+    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    - export PATH=$JAVA_HOME/bin:$PATH
+    - java -version
+
     # Bootstrap Gradle wrapper if not present
     - |
       if [ ! -f ./gradlew ]; then
@@ -45,21 +52,25 @@ prepare:
       HEREDOC
       fi
 
-    # Download and resize icon if provided
+    # Download and resize icon, or generate default placeholder
+    - apt-get install -y -qq imagemagick wget > /dev/null 2>&1
     - |
       if [ -n "$ICON_URL" ]; then
-        apt-get update -qq && apt-get install -y -qq imagemagick wget > /dev/null 2>&1
         wget -q "$ICON_URL" -O /tmp/icon.png
-
-        # Generate all mipmap sizes
-        for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
-          dir=$(echo $size_dir | cut -d: -f1)
-          size=$(echo $size_dir | cut -d: -f2)
-          mkdir -p "app/src/main/res/mipmap-${dir}"
-          convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher.png"
-          convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
-        done
+      else
+        # Generate a default icon with the app's primary color
+        COLOR="${PRIMARY_COLOR:-#2563EB}"
+        convert -size 512x512 xc:"$COLOR" -fill white -gravity center \
+          -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
       fi
+    - |
+      for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
+        dir=$(echo $size_dir | cut -d: -f1)
+        size=$(echo $size_dir | cut -d: -f2)
+        mkdir -p "app/src/main/res/mipmap-${dir}"
+        convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher.png"
+        convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
+      done
 
     # Download splash screen if provided
     - |
@@ -73,12 +84,14 @@ prepare:
         echo "$FIREBASE_CONFIG" > app/google-services.json
       fi
 
-    # Configure AdMob
+    # Configure AdMob — inject meta-data and re-enable provider only when configured
     - |
       if [ "$ADMOB_ENABLED" = "true" ] && [ -n "$ADMOB_CONFIG" ]; then
         ADMOB_APP_ID=$(echo "$ADMOB_CONFIG" | python3 -c "import sys,json; print(json.load(sys.stdin).get('app_id',''))" 2>/dev/null || echo "")
         if [ -n "$ADMOB_APP_ID" ]; then
-          sed -i "s/\${admobAppId}/$ADMOB_APP_ID/g" app/src/main/AndroidManifest.xml
+          # Remove the provider removal line and add AdMob meta-data
+          sed -i '/<provider.*MobileAdsInitProvider/,/tools:node="remove" \/>/d' app/src/main/AndroidManifest.xml
+          sed -i "s|</application>|        <meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$ADMOB_APP_ID\" />\n    </application>|" app/src/main/AndroidManifest.xml
         fi
       fi
 
@@ -95,6 +108,9 @@ prepare:
 build_apk:
   stage: build
   before_script:
+    - apt-get update -qq && apt-get install -y -qq openjdk-17-jdk > /dev/null 2>&1
+    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    - export PATH=$JAVA_HOME/bin:$PATH
     - chmod +x ./gradlew
   script:
     - |
@@ -116,6 +132,9 @@ build_apk:
 build_aab:
   stage: build
   before_script:
+    - apt-get update -qq && apt-get install -y -qq openjdk-17-jdk > /dev/null 2>&1
+    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    - export PATH=$JAVA_HOME/bin:$PATH
     - chmod +x ./gradlew
   script:
     - |

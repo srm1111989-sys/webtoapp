@@ -20,7 +20,6 @@ android {
 
         manifestPlaceholders["hostName"] = project.findProperty("APP_HOST") ?: "example.com"
         manifestPlaceholders["defaultUrl"] = project.findProperty("APP_URL") ?: "https://example.com"
-        manifestPlaceholders["admobAppId"] = ""
 
         resValue("string", "app_name", project.findProperty("APP_NAME")?.toString() ?: "WebToApp")
         resValue("color", "primaryColor", project.findProperty("PRIMARY_COLOR")?.toString() ?: "#2563EB")

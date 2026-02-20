@@ -72,10 +72,11 @@
             </intent-filter>
         </service>
 
-        <!-- AdMob App ID (replaced by CI) -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="${admobAppId}" />
+        <!-- AdMob: disabled by default; CI injects the real meta-data when enabled -->
+        <provider
+            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
+            android:authorities="${applicationId}.mobileadsinitprovider"
+            tools:node="remove" />
 
     </application>
 </manifest>
