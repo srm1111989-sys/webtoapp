@@ -20,6 +20,7 @@ android {
 
         manifestPlaceholders["hostName"] = project.findProperty("APP_HOST") ?: "example.com"
         manifestPlaceholders["defaultUrl"] = project.findProperty("APP_URL") ?: "https://example.com"
+        manifestPlaceholders["admobAppId"] = ""
 
         resValue("string", "app_name", project.findProperty("APP_NAME")?.toString() ?: "WebToApp")
         resValue("color", "primaryColor", project.findProperty("PRIMARY_COLOR")?.toString() ?: "#2563EB")
@@ -41,13 +42,18 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             val keystorePath = System.getenv("KEYSTORE_PATH")
             if (keystorePath != null) {
                 signingConfig = signingConfigs.getByName("release")
+                isMinifyEnabled = true
+                isShrinkResources = true
+            } else {
+                // Unsigned debug-like release for testing
+                signingConfig = signingConfigs.getByName("debug")
+                isMinifyEnabled = false
+                isShrinkResources = false
             }
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
