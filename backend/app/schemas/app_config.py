@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import Any
 from pydantic import BaseModel, Field, HttpUrl
 
 
@@ -14,7 +15,7 @@ class AppConfigCreate(BaseModel):
     secondary_color: str = "#1E40AF"
     status_bar_color: str = "#1E3A5F"
     navigation_type: str = "none"
-    navigation_items: dict | None = None
+    navigation_items: Any = None
     features: dict = {}
     firebase_config: dict | None = None
     admob_config: dict | None = None
@@ -32,7 +33,7 @@ class AppConfigUpdate(BaseModel):
     secondary_color: str | None = None
     status_bar_color: str | None = None
     navigation_type: str | None = None
-    navigation_items: dict | None = None
+    navigation_items: Any = None
     features: dict | None = None
     firebase_config: dict | None = None
     admob_config: dict | None = None
@@ -54,7 +55,7 @@ class AppConfigResponse(BaseModel):
     secondary_color: str
     status_bar_color: str
     navigation_type: str
-    navigation_items: dict | None = None
+    navigation_items: Any = None
     features: dict
     firebase_config: dict | None = None
     admob_config: dict | None = None
