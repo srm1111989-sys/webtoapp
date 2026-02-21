@@ -80,7 +80,17 @@ async def list_orders(
         .limit(per_page)
     )
     orders = result.scalars().all()
-    return OrderListResponse(orders=orders, total=total, page=page, per_page=per_page)
+
+    order_responses = []
+    for order in orders:
+        resp = OrderResponse.model_validate(order)
+        if order.plan:
+            resp.plan_name = order.plan.name
+        if order.app_config:
+            resp.app_name = order.app_config.name
+        order_responses.append(resp)
+
+    return OrderListResponse(orders=order_responses, total=total, page=page, per_page=per_page)
 
 
 @router.get("/{order_id}", response_model=OrderDetailResponse)

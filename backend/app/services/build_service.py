@@ -29,13 +29,8 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
         "NAVIGATION_TYPE": app_config.navigation_type,
         "ORDER_ID": str(order.id),
         "PLATFORM": platform,
+        "PACKAGE_NAME": app_config.package_name or f"com.webtoapp.{domain.replace('.', '_').replace('-', '_')}",
     }
-
-    if platform == "ios":
-        variables["BUNDLE_ID"] = app_config.bundle_id or f"com.webtoapp.{domain.replace('.', '-').replace('_', '-')}"
-        variables["TEAM_ID"] = app_config.team_id or ""
-    else:
-        variables["PACKAGE_NAME"] = app_config.package_name or f"com.webtoapp.{domain.replace('.', '_').replace('-', '_')}"
 
     if app_config.icon_url:
         variables["ICON_URL"] = app_config.icon_url
@@ -63,6 +58,19 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
     if app_config.custom_user_agent:
         variables["CUSTOM_USER_AGENT"] = app_config.custom_user_agent
 
+    # Desktop-specific variables
+    if platform == "desktop":
+        dc = app_config.desktop_config or {}
+        variables["WINDOW_WIDTH"] = str(dc.get("window_width", 1280))
+        variables["WINDOW_HEIGHT"] = str(dc.get("window_height", 800))
+        variables["MIN_WIDTH"] = str(dc.get("min_width", 800))
+        variables["MIN_HEIGHT"] = str(dc.get("min_height", 600))
+        variables["SHOW_TITLE_BAR"] = str(dc.get("show_title_bar", True)).lower()
+        variables["SHOW_MENU_BAR"] = str(dc.get("show_menu_bar", False)).lower()
+        variables["ENABLE_SYSTEM_TRAY"] = str(dc.get("enable_system_tray", False)).lower()
+        variables["START_MAXIMIZED"] = str(dc.get("start_maximized", False)).lower()
+        variables["START_FULLSCREEN"] = str(dc.get("start_fullscreen", False)).lower()
+
     return variables
 
 
@@ -80,11 +88,10 @@ async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "
 
     variables = build_pipeline_variables(app_config, order, platform)
 
-    build_type = "ipa" if platform == "ios" else "apk"
     build = Build(
         order_id=order.id,
         platform=platform,
-        build_type=build_type,
+        build_type="exe" if platform == "desktop" else "apk",
         status="pending",
         variables=variables,
     )
@@ -123,18 +130,20 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.status = "success"
         build.completed_at = now
 
-        # Download artifacts based on platform
+        # Download artifacts
         gitlab = GitLabService(platform=build.platform)
         try:
-            if build.platform == "ios":
-                ipa_url = await gitlab.download_artifact(pipeline_id, "WebToApp.ipa", f"builds/{build.order_id}")
-                if ipa_url:
-                    build.ipa_url = ipa_url
-
-                dsym_url = await gitlab.download_artifact(pipeline_id, "WebToApp.app.dSYM.zip", f"builds/{build.order_id}")
-                if dsym_url:
-                    build.dsym_url = dsym_url
+            if build.platform == "desktop":
+                # Desktop build: download .exe
+                exe_url = await gitlab.download_artifact(
+                    pipeline_id,
+                    "dist/*.exe",
+                    f"builds/{build.order_id}",
+                )
+                if exe_url:
+                    build.exe_url = exe_url
             else:
+                # Android build: download .apk and .aab
                 apk_url = await gitlab.download_artifact(
                     pipeline_id,
                     "app/build/outputs/apk/release/app-release.apk",

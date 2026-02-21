@@ -56,7 +56,7 @@ async def get_build(
 @router.post("/trigger/{order_id}", response_model=BuildResponse)
 async def trigger_build_endpoint(
     order_id: uuid.UUID,
-    platform: str = Query(default="android", regex="^(android|ios)$"),
+    platform: str = Query("android"),
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):

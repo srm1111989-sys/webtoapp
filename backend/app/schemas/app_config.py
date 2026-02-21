@@ -8,8 +8,6 @@ class AppConfigCreate(BaseModel):
     name: str = Field(min_length=1, max_length=255)
     url: str = Field(max_length=500)
     package_name: str | None = None
-    bundle_id: str | None = None
-    team_id: str | None = None
     description: str | None = None
     primary_color: str = "#2563EB"
     secondary_color: str = "#1E40AF"
@@ -19,6 +17,7 @@ class AppConfigCreate(BaseModel):
     features: dict = {}
     firebase_config: dict | None = None
     admob_config: dict | None = None
+    desktop_config: dict | None = None
     custom_user_agent: str | None = None
 
 
@@ -26,8 +25,6 @@ class AppConfigUpdate(BaseModel):
     name: str | None = None
     url: str | None = None
     package_name: str | None = None
-    bundle_id: str | None = None
-    team_id: str | None = None
     description: str | None = None
     primary_color: str | None = None
     secondary_color: str | None = None
@@ -37,6 +34,7 @@ class AppConfigUpdate(BaseModel):
     features: dict | None = None
     firebase_config: dict | None = None
     admob_config: dict | None = None
+    desktop_config: dict | None = None
     custom_user_agent: str | None = None
 
 
@@ -46,8 +44,6 @@ class AppConfigResponse(BaseModel):
     name: str
     url: str
     package_name: str | None = None
-    bundle_id: str | None = None
-    team_id: str | None = None
     description: str | None = None
     icon_url: str | None = None
     splash_url: str | None = None
@@ -59,6 +55,7 @@ class AppConfigResponse(BaseModel):
     features: dict
     firebase_config: dict | None = None
     admob_config: dict | None = None
+    desktop_config: dict | None = None
     custom_user_agent: str | None = None
     status: str
     created_at: datetime

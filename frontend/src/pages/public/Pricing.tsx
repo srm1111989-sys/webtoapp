@@ -90,8 +90,12 @@ export default function Pricing() {
               <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
               <div className="mb-4">
                 <span className="text-3xl font-bold">{formatCurrency(plan.price_inr, 'INR')}</span>
-                {plan.billing_type === 'monthly' && <span className="text-gray-500 text-sm">/month</span>}
-                {plan.billing_type === 'one_time' && plan.price_inr > 0 && <span className="text-gray-500 text-sm"> one-time</span>}
+                {plan.billing_type === 'monthly' && <span className="text-gray-700 text-sm font-semibold">/month</span>}
+                {plan.billing_type === 'one_time' && plan.price_inr > 0 && <span className="text-green-700 text-sm font-semibold"> one-time</span>}
+                <div className="text-xs text-gray-500 mt-0.5">
+                  {formatCurrency(plan.price_usd, 'USD')}
+                  {plan.billing_type === 'monthly' ? '/mo' : plan.price_usd > 0 ? ' one-time' : ''}
+                </div>
               </div>
               <p className="text-sm text-gray-500 mb-4">Up to {plan.max_apps} app{plan.max_apps > 1 ? 's' : ''}</p>
               <Link

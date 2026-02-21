@@ -11,8 +11,8 @@ class GitLabService:
     def __init__(self, platform: str = "android"):
         self.base_url = settings.gitlab_url
         self.token = settings.gitlab_token
-        if platform == "ios":
-            self.project_id = settings.gitlab_ios_project_id or settings.gitlab_project_id
+        if platform == "desktop":
+            self.project_id = settings.gitlab_desktop_project_id or settings.gitlab_project_id
         else:
             self.project_id = settings.gitlab_android_project_id or settings.gitlab_project_id
         self.headers = {"PRIVATE-TOKEN": self.token}

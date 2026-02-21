@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     gitlab_token: str = ""
     gitlab_project_id: str = ""
     gitlab_android_project_id: str = ""
-    gitlab_ios_project_id: str = ""
+    gitlab_desktop_project_id: str = ""
 
     # S3/R2
     s3_endpoint: str = ""

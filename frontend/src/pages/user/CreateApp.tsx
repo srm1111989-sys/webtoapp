@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import {
   Globe,
   Smartphone,
+  Monitor,
   Bell,
   DollarSign,
   Fingerprint,
@@ -30,6 +31,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Loader2,
+  AlertTriangle,
+  X,
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
@@ -37,22 +40,12 @@ import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
 import type { Plan, NavigationItem } from '@/types'
 import { formatCurrency } from '@/utils/format'
 
-// ---------- Platform options ----------
-
-const PLATFORM_OPTIONS: { value: Platform | 'both'; label: string; description: string }[] = [
-  { value: 'android', label: 'Android', description: 'APK & AAB for Google Play' },
-  { value: 'ios', label: 'iOS', description: 'IPA for App Store' },
-  { value: 'both', label: 'Both', description: 'Android + iOS builds' },
-]
-
 // ---------- Step 0: Basic Info ----------
 
 const basicInfoSchema = z.object({
   name: z.string().min(1, 'App name is required').max(100),
   url: z.string().url('Please enter a valid URL'),
   package_name: z.string().optional(),
-  bundle_id: z.string().optional(),
-  team_id: z.string().optional(),
   description: z.string().max(500).optional(),
 })
 
@@ -308,15 +301,6 @@ export default function CreateApp() {
 
 function Step0BasicInfo() {
   const wizard = useWizardStore()
-  const [platformSelection, setPlatformSelection] = useState<'android' | 'ios' | 'both'>(
-    wizard.selectedPlatforms.length === 2
-      ? 'both'
-      : wizard.selectedPlatforms[0] || 'android'
-  )
-
-  const showAndroid = platformSelection === 'android' || platformSelection === 'both'
-  const showIos = platformSelection === 'ios' || platformSelection === 'both'
-
   const {
     register,
     handleSubmit,
@@ -327,29 +311,16 @@ function Step0BasicInfo() {
       name: wizard.name,
       url: wizard.url,
       package_name: wizard.packageName,
-      bundle_id: wizard.bundleId,
-      team_id: wizard.teamId,
       description: wizard.description,
     },
   })
-
-  const handlePlatformChange = (value: 'android' | 'ios' | 'both') => {
-    setPlatformSelection(value)
-    if (value === 'both') {
-      wizard.setSelectedPlatforms(['android', 'ios'])
-    } else {
-      wizard.setSelectedPlatforms([value])
-    }
-  }
 
   const createApp = useMutation({
     mutationFn: (data: BasicInfoData) =>
       appsApi.create({
         name: data.name,
         url: data.url,
-        package_name: showAndroid ? data.package_name || undefined : undefined,
-        bundle_id: showIos ? data.bundle_id || undefined : undefined,
-        team_id: showIos ? data.team_id || undefined : undefined,
+        package_name: data.package_name || undefined,
         description: data.description || undefined,
       }),
     onSuccess: (res) => {
@@ -358,8 +329,6 @@ function Step0BasicInfo() {
         name: res.data.name,
         url: res.data.url,
         packageName: res.data.package_name || '',
-        bundleId: res.data.bundle_id || '',
-        teamId: res.data.team_id || '',
         description: res.data.description || '',
       })
       wizard.setStep(1)
@@ -375,9 +344,7 @@ function Step0BasicInfo() {
       appsApi.update(wizard.appId!, {
         name: data.name,
         url: data.url,
-        package_name: showAndroid ? data.package_name || undefined : undefined,
-        bundle_id: showIos ? data.bundle_id || undefined : undefined,
-        team_id: showIos ? data.team_id || undefined : undefined,
+        package_name: data.package_name || undefined,
         description: data.description || undefined,
       }),
     onSuccess: (res) => {
@@ -385,8 +352,6 @@ function Step0BasicInfo() {
         name: res.data.name,
         url: res.data.url,
         packageName: res.data.package_name || '',
-        bundleId: res.data.bundle_id || '',
-        teamId: res.data.team_id || '',
         description: res.data.description || '',
       })
       wizard.setStep(1)
@@ -407,30 +372,64 @@ function Step0BasicInfo() {
   const isLoading = createApp.isPending || updateApp.isPending
   const inputClass = 'w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
 
+  const togglePlatform = (platform: Platform) => {
+    const current = wizard.selectedPlatforms
+    if (current.includes(platform)) {
+      if (current.length > 1) {
+        wizard.setSelectedPlatforms(current.filter((p) => p !== platform))
+      }
+    } else {
+      wizard.setSelectedPlatforms([...current, platform])
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Platform Selector */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Target Platform *</label>
-        <div className="grid grid-cols-3 gap-3">
-          {PLATFORM_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => handlePlatformChange(opt.value)}
-              className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all ${
-                platformSelection === opt.value
-                  ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <Smartphone className={`w-6 h-6 mb-1.5 ${platformSelection === opt.value ? 'text-blue-600' : 'text-gray-400'}`} />
-              <span className={`text-sm font-semibold ${platformSelection === opt.value ? 'text-blue-700' : 'text-gray-700'}`}>
-                {opt.label}
-              </span>
-              <span className="text-xs text-gray-500 mt-0.5">{opt.description}</span>
-            </button>
-          ))}
+        <label className="block text-sm font-medium text-gray-700 mb-2">Target Platforms *</label>
+        <p className="text-xs text-gray-500 mb-3">Select one or both platforms. At least one is required.</p>
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            type="button"
+            onClick={() => togglePlatform('android')}
+            className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${
+              wizard.selectedPlatforms.includes('android')
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300 bg-white'
+            }`}
+          >
+            <div className={`p-2 rounded-lg ${wizard.selectedPlatforms.includes('android') ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
+              <Smartphone className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-gray-900">Android</span>
+              <p className="text-xs text-gray-500">APK & AAB for mobile</p>
+            </div>
+            {wizard.selectedPlatforms.includes('android') && (
+              <Check className="w-5 h-5 text-blue-600 ml-auto" />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => togglePlatform('desktop')}
+            className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${
+              wizard.selectedPlatforms.includes('desktop')
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300 bg-white'
+            }`}
+          >
+            <div className={`p-2 rounded-lg ${wizard.selectedPlatforms.includes('desktop') ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
+              <Monitor className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-gray-900">Windows Desktop</span>
+              <p className="text-xs text-gray-500">EXE installer via Electron</p>
+            </div>
+            {wizard.selectedPlatforms.includes('desktop') && (
+              <Check className="w-5 h-5 text-blue-600 ml-auto" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -457,40 +456,14 @@ function Step0BasicInfo() {
         {errors.url && <p className="text-red-500 text-xs mt-1">{errors.url.message}</p>}
       </div>
 
-      {/* Android-specific: Package Name */}
-      {showAndroid && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Package Name (Android)</label>
-          <input
-            {...register('package_name')}
-            className={inputClass}
-            placeholder="com.example.myapp (auto-generated if empty)"
-          />
-        </div>
-      )}
-
-      {/* iOS-specific: Bundle ID + Team ID */}
-      {showIos && (
-        <>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bundle ID (iOS)</label>
-            <input
-              {...register('bundle_id')}
-              className={inputClass}
-              placeholder="com.example.myapp (auto-generated if empty)"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team ID (iOS)</label>
-            <input
-              {...register('team_id')}
-              className={inputClass}
-              placeholder="Apple Developer Team ID"
-            />
-            <p className="text-xs text-gray-400 mt-1">Found in your Apple Developer account under Membership.</p>
-          </div>
-        </>
-      )}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Package Name</label>
+        <input
+          {...register('package_name')}
+          className={inputClass}
+          placeholder="com.example.myapp (auto-generated if empty)"
+        />
+      </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
@@ -816,6 +789,7 @@ function Step3Advanced() {
       return appsApi.update(wizard.appId, {
         firebase_config: firebaseConfig,
         admob_config: admobConfig,
+        desktop_config: wizard.selectedPlatforms.includes('desktop') ? wizard.desktopConfig : undefined,
         custom_user_agent: customUA || undefined,
         navigation_type: navType,
         navigation_items: navItems.filter((item) => item.label && item.url),
@@ -952,6 +926,79 @@ function Step3Advanced() {
         </div>
       )}
 
+      {/* Desktop Settings */}
+      {wizard.selectedPlatforms.includes('desktop') && (
+        <CollapsibleSection title="Desktop Settings" defaultOpen={true}>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Window Width</label>
+              <input
+                type="number"
+                className={inputClass}
+                value={wizard.desktopConfig.window_width}
+                onChange={(e) => wizard.setDesktopConfig({ window_width: parseInt(e.target.value) || 1280 })}
+                min={400}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Window Height</label>
+              <input
+                type="number"
+                className={inputClass}
+                value={wizard.desktopConfig.window_height}
+                onChange={(e) => wizard.setDesktopConfig({ window_height: parseInt(e.target.value) || 800 })}
+                min={300}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Min Width</label>
+              <input
+                type="number"
+                className={inputClass}
+                value={wizard.desktopConfig.min_width}
+                onChange={(e) => wizard.setDesktopConfig({ min_width: parseInt(e.target.value) || 800 })}
+                min={200}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Min Height</label>
+              <input
+                type="number"
+                className={inputClass}
+                value={wizard.desktopConfig.min_height}
+                onChange={(e) => wizard.setDesktopConfig({ min_height: parseInt(e.target.value) || 600 })}
+                min={200}
+              />
+            </div>
+          </div>
+          <div className="space-y-3 mt-4">
+            {([
+              { key: 'show_title_bar', label: 'Show Title Bar', desc: 'Display the native window title bar' },
+              { key: 'show_menu_bar', label: 'Show Menu Bar', desc: 'Display the application menu bar' },
+              { key: 'enable_system_tray', label: 'System Tray', desc: 'Minimize to system tray on close' },
+              { key: 'start_maximized', label: 'Start Maximized', desc: 'Open the window maximized' },
+              { key: 'start_fullscreen', label: 'Start Fullscreen', desc: 'Open the window in fullscreen' },
+            ] as const).map(({ key, label, desc }) => (
+              <div key={key} className="flex items-center justify-between py-2">
+                <div>
+                  <span className="text-sm font-medium text-gray-900">{label}</span>
+                  <p className="text-xs text-gray-500">{desc}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => wizard.setDesktopConfig({ [key]: !wizard.desktopConfig[key] })}
+                  className={`w-11 h-6 rounded-full transition-colors flex items-center ${
+                    wizard.desktopConfig[key] ? 'bg-blue-600 justify-end' : 'bg-gray-300 justify-start'
+                  }`}
+                >
+                  <div className="w-5 h-5 bg-white rounded-full shadow mx-0.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </CollapsibleSection>
+      )}
+
       {/* Navigation */}
       <div className="flex justify-between pt-4">
         <button
@@ -1071,22 +1118,64 @@ function Step4PlanReview() {
 
   const enabledFeatures = FEATURES.filter((f) => wizard.features[f.key])
 
+  // Map wizard feature keys to plan feature keys (only features that are plan-gated)
+  const PLAN_GATED_FEATURES: Record<string, string> = {
+    push_notifications: 'push_notifications',
+    admob: 'admob',
+    biometric_auth: 'biometric_auth',
+    deep_linking: 'deep_linking',
+    offline_mode: 'offline_mode',
+    navigation_menu: 'navigation_menu',
+    qr_scanner: 'qr_scanner',
+    js_bridge: 'js_bridge',
+    screenshot_prevention: 'screenshot_prevention',
+  }
+
+  // Get plan-gated features that the user enabled
+  const selectedGatedFeatures = enabledFeatures
+    .filter((f) => f.key in PLAN_GATED_FEATURES)
+    .map((f) => ({ wizardKey: f.key, planKey: PLAN_GATED_FEATURES[f.key], label: f.label }))
+
+  // Check which features a plan is missing
+  const getMissingFeatures = (plan: Plan) =>
+    selectedGatedFeatures.filter((f) => !plan.features[f.planKey])
+
+  // Find the minimum plan that covers all selected features
+  const getMinimumPlan = (planList: Plan[]) => {
+    const sorted = [...planList].sort((a, b) => a.sort_order - b.sort_order)
+    return sorted.find((p) => getMissingFeatures(p).length === 0) || sorted[sorted.length - 1]
+  }
+
+  const minimumPlan = plans ? getMinimumPlan(plans as Plan[]) : null
+
   return (
     <div className="space-y-8">
       {/* Plan Selection */}
       <div>
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Choose a Plan</h2>
-        <p className="text-sm text-gray-500 mb-6">Select a plan that fits your needs.</p>
+        <p className="text-sm text-gray-500 mb-4">Select a plan that fits your needs.</p>
+
+        {/* Feature-based recommendation */}
+        {selectedGatedFeatures.length > 0 && minimumPlan && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
+            <p className="text-sm text-blue-800">
+              Based on your selected features ({selectedGatedFeatures.map((f) => f.label).join(', ')}),
+              you need at least the <strong>{minimumPlan.name}</strong> plan.
+            </p>
+          </div>
+        )}
 
         {plansLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {(plans as Plan[])?.map((plan) => {
               const isSelected = selectedPlan === plan.id
-              const isRecommended = plan.sort_order === 2
+              const missing = getMissingFeatures(plan)
+              const hasMissing = missing.length > 0
+              const isMinimum = minimumPlan?.id === plan.id && selectedGatedFeatures.length > 0
               return (
                 <button
                   key={plan.id}
@@ -1098,12 +1187,14 @@ function Step4PlanReview() {
                   className={`relative flex flex-col rounded-xl border-2 p-5 text-left transition-all ${
                     isSelected
                       ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : hasMissing
+                        ? 'border-gray-200 hover:border-gray-300 opacity-75'
+                        : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  {isRecommended && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-semibold px-3 py-0.5 rounded-full">
-                      Recommended
+                  {isMinimum && (
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-semibold px-3 py-0.5 rounded-full whitespace-nowrap">
+                      Best Match
                     </span>
                   )}
                   <h3 className="font-semibold text-gray-900">{plan.name}</h3>
@@ -1111,14 +1202,37 @@ function Step4PlanReview() {
                     <span className="text-2xl font-bold text-gray-900">
                       {formatCurrency(plan.price_inr, 'INR')}
                     </span>
-                    <span className="text-sm text-gray-500 ml-1">
-                      / {formatCurrency(plan.price_usd, 'USD')}
-                    </span>
+                    {plan.billing_type === 'monthly' ? (
+                      <span className="text-sm font-semibold text-gray-700 ml-1">/month</span>
+                    ) : plan.price_inr > 0 ? (
+                      <span className="text-sm font-semibold text-green-700 ml-1">one-time</span>
+                    ) : null}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1 capitalize">{plan.billing_type.replace('_', ' ')}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {formatCurrency(plan.price_usd, 'USD')}
+                    {plan.billing_type === 'monthly' ? '/mo' : plan.price_usd > 0 ? ' one-time' : ''}
+                  </p>
                   {plan.description && (
                     <p className="text-sm text-gray-600 mt-3">{plan.description}</p>
                   )}
+
+                  {/* Missing features warning */}
+                  {hasMissing && (
+                    <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md p-2">
+                      <div className="flex items-center gap-1 text-amber-700 text-xs font-medium mb-1">
+                        <AlertTriangle className="w-3.5 h-3.5" />
+                        Missing features you selected:
+                      </div>
+                      <ul className="space-y-0.5">
+                        {missing.map((f) => (
+                          <li key={f.wizardKey} className="flex items-center gap-1 text-xs text-amber-600">
+                            <X className="w-3 h-3" /> {f.label}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
                   <ul className="mt-4 space-y-1.5 text-sm text-gray-600">
                     <li className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500" />
@@ -1139,6 +1253,26 @@ function Step4PlanReview() {
           </div>
         )}
       </div>
+
+      {/* Warning: selected plan missing features */}
+      {currentPlan && getMissingFeatures(currentPlan).length > 0 && (
+        <div className="bg-amber-50 border border-amber-300 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-amber-800">
+              The {currentPlan.name} plan does not include these features you enabled:
+            </p>
+            <ul className="mt-1 space-y-0.5">
+              {getMissingFeatures(currentPlan).map((f) => (
+                <li key={f.wizardKey} className="text-sm text-amber-700">- {f.label}</li>
+              ))}
+            </ul>
+            <p className="text-xs text-amber-600 mt-2">
+              These features will not work in your app. Upgrade to the {minimumPlan?.name} plan or go back to Step 3 to disable them.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Review Summary */}
       <div>
@@ -1167,26 +1301,10 @@ function Step4PlanReview() {
               <span className="text-gray-500">Plan</span>
               <p className="font-medium text-gray-900">{currentPlan?.name || 'Not selected'}</p>
             </div>
-            {wizard.selectedPlatforms.includes('android') && (
-              <div>
-                <span className="text-gray-500">Package Name</span>
-                <p className="font-medium text-gray-900">{wizard.packageName || 'Auto-generated'}</p>
-              </div>
-            )}
-            {wizard.selectedPlatforms.includes('ios') && (
-              <>
-                <div>
-                  <span className="text-gray-500">Bundle ID</span>
-                  <p className="font-medium text-gray-900">{wizard.bundleId || 'Auto-generated'}</p>
-                </div>
-                {wizard.teamId && (
-                  <div>
-                    <span className="text-gray-500">Team ID</span>
-                    <p className="font-medium text-gray-900">{wizard.teamId}</p>
-                  </div>
-                )}
-              </>
-            )}
+            <div>
+              <span className="text-gray-500">Package Name</span>
+              <p className="font-medium text-gray-900">{wizard.packageName || 'Auto-generated'}</p>
+            </div>
           </div>
 
           <div>
@@ -1224,6 +1342,21 @@ function Step4PlanReview() {
             <div>
               <span className="text-sm text-gray-500">Navigation Items</span>
               <p className="text-sm text-gray-900">{wizard.navigationItems.map((i) => i.label).join(', ')}</p>
+            </div>
+          )}
+
+          {wizard.selectedPlatforms.includes('desktop') && (
+            <div>
+              <span className="text-sm text-gray-500">Desktop Settings</span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1 text-sm">
+                <span className="text-gray-600">Window: {wizard.desktopConfig.window_width}x{wizard.desktopConfig.window_height}</span>
+                <span className="text-gray-600">Min: {wizard.desktopConfig.min_width}x{wizard.desktopConfig.min_height}</span>
+                {wizard.desktopConfig.show_title_bar && <span className="text-gray-600">Title Bar</span>}
+                {wizard.desktopConfig.show_menu_bar && <span className="text-gray-600">Menu Bar</span>}
+                {wizard.desktopConfig.enable_system_tray && <span className="text-gray-600">System Tray</span>}
+                {wizard.desktopConfig.start_maximized && <span className="text-gray-600">Start Maximized</span>}
+                {wizard.desktopConfig.start_fullscreen && <span className="text-gray-600">Start Fullscreen</span>}
+              </div>
             </div>
           )}
         </div>

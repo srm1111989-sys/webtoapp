@@ -29,8 +29,6 @@ export interface AppConfig {
   name: string
   url: string
   package_name?: string
-  bundle_id?: string
-  team_id?: string
   description?: string
   icon_url?: string
   splash_url?: string
@@ -42,6 +40,7 @@ export interface AppConfig {
   features: Record<string, boolean>
   firebase_config?: FirebaseConfig
   admob_config?: AdmobConfig
+  desktop_config?: DesktopConfig
   custom_user_agent?: string
   status: string
   created_at: string
@@ -84,17 +83,28 @@ export interface Order {
   app_name?: string
 }
 
+export interface DesktopConfig {
+  window_width: number
+  window_height: number
+  min_width: number
+  min_height: number
+  show_title_bar: boolean
+  show_menu_bar: boolean
+  enable_system_tray: boolean
+  start_maximized: boolean
+  start_fullscreen: boolean
+}
+
 export interface Build {
   id: string
   order_id: string
   pipeline_id?: number
   status: 'pending' | 'building' | 'success' | 'failed'
-  platform: 'android' | 'ios'
+  platform: 'android' | 'desktop'
   build_type: string
   apk_url?: string
   aab_url?: string
-  ipa_url?: string
-  dsym_url?: string
+  exe_url?: string
   source_url?: string
   error_message?: string
   started_at?: string

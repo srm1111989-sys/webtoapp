@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useAuthStore } from '@/store/authStore'
 import { Smartphone, Zap, Shield, Globe, ArrowRight, CheckCircle, Star } from 'lucide-react'
 
 const features = [
@@ -30,6 +31,9 @@ const faqs = [
 ]
 
 export default function Landing() {
+  const { accessToken } = useAuthStore()
+  const isLoggedIn = !!accessToken
+
   return (
     <div>
       {/* Hero */}
@@ -43,14 +47,16 @@ export default function Landing() {
             No coding required. Get your APK in minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 flex items-center justify-center gap-2">
-              Get Started Free <ArrowRight className="w-5 h-5" />
+            <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 flex items-center justify-center gap-2">
+              {isLoggedIn ? 'Create New App' : 'Get Started Free'} <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/pricing" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-white/10">
               View Pricing
             </Link>
           </div>
-          <p className="mt-4 text-primary-200 text-sm">No credit card required. Free plan available.</p>
+          {!isLoggedIn && (
+            <p className="mt-4 text-primary-200 text-sm">No credit card required. Free plan available.</p>
+          )}
         </div>
       </section>
 
@@ -141,8 +147,8 @@ export default function Landing() {
           <p className="text-primary-100 mb-8 text-lg">
             Join thousands of businesses who have converted their websites into Android apps.
           </p>
-          <Link to="/register" className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">
-            Start Building <ArrowRight className="w-5 h-5" />
+          <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">
+            {isLoggedIn ? 'Create New App' : 'Start Building'} <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>

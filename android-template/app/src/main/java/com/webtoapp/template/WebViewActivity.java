@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
@@ -21,6 +24,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -31,6 +35,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class WebViewActivity extends AppCompatActivity {
@@ -92,7 +99,12 @@ public class WebViewActivity extends AppCompatActivity {
 
     @SuppressLint("SetJavaScriptEnabled")
     private void setupLayout() {
-        FrameLayout root = new FrameLayout(this);
+        // Use LinearLayout (vertical) so bottom nav sits below the webview area
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+
+        // WebView container (takes remaining space)
+        FrameLayout webContainer = new FrameLayout(this);
 
         // SwipeRefresh
         swipeRefresh = new SwipeRefreshLayout(this);
@@ -111,8 +123,14 @@ public class WebViewActivity extends AppCompatActivity {
         progressBar.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, 8));
 
-        root.addView(swipeRefresh);
-        root.addView(progressBar);
+        webContainer.addView(swipeRefresh);
+        webContainer.addView(progressBar);
+
+        root.addView(webContainer, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+
+        // Bottom Navigation (if enabled with items)
+        setupBottomNavigation(root, primaryColor);
 
         setContentView(root);
 
@@ -134,6 +152,99 @@ public class WebViewActivity extends AppCompatActivity {
                         fileUploadCallback = null;
                     }
                 });
+    }
+
+    private void setupBottomNavigation(LinearLayout root, String primaryColor) {
+        if (!features.optBoolean("navigation_menu", false)) return;
+
+        JSONArray navItems = config.optJSONArray("navigation_items");
+        if (navItems == null || navItems.length() == 0) return;
+
+        BottomNavigationView bottomNav = new BottomNavigationView(this);
+        bottomNav.setId(View.generateViewId());
+        bottomNav.setBackgroundColor(Color.WHITE);
+        bottomNav.setLabelVisibilityMode(BottomNavigationView.LABEL_VISIBILITY_LABELED);
+
+        // Top border line
+        GradientDrawable divider = new GradientDrawable();
+        divider.setColor(Color.WHITE);
+        divider.setStroke(1, Color.parseColor("#E5E7EB"));
+        bottomNav.setBackground(divider);
+
+        Menu menu = bottomNav.getMenu();
+        int activeColor = Color.parseColor(primaryColor);
+        int inactiveColor = Color.parseColor("#9CA3AF");
+
+        int[][] states = new int[][] {
+                new int[] { android.R.attr.state_checked },
+                new int[] { -android.R.attr.state_checked }
+        };
+        int[] colors = new int[] { activeColor, inactiveColor };
+        bottomNav.setItemIconTintList(new android.content.res.ColorStateList(states, colors));
+        bottomNav.setItemTextColor(new android.content.res.ColorStateList(states, colors));
+
+        // Store URLs for navigation items
+        final String[] navUrls = new String[navItems.length()];
+
+        for (int i = 0; i < navItems.length() && i < 5; i++) {
+            JSONObject item = navItems.optJSONObject(i);
+            if (item == null) continue;
+            String title = item.optString("title", item.optString("label", "Tab " + (i + 1)));
+            String url = item.optString("url", appUrl);
+            String icon = item.optString("icon", "home");
+            navUrls[i] = url;
+            menu.add(Menu.NONE, i, i, title).setIcon(getNavIcon(icon));
+        }
+
+        bottomNav.setOnItemSelectedListener(menuItem -> {
+            int idx = menuItem.getItemId();
+            if (idx >= 0 && idx < navUrls.length && navUrls[idx] != null) {
+                webView.loadUrl(navUrls[idx]);
+            }
+            return true;
+        });
+
+        root.addView(bottomNav, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+    }
+
+    private int getNavIcon(String iconName) {
+        switch (iconName.toLowerCase()) {
+            case "home": return android.R.drawable.ic_menu_today;
+            case "search": return android.R.drawable.ic_menu_search;
+            case "settings": case "gear": return android.R.drawable.ic_menu_preferences;
+            case "info": case "about": return android.R.drawable.ic_menu_info_details;
+            case "map": case "location": return android.R.drawable.ic_menu_mapmode;
+            case "camera": case "photo": return android.R.drawable.ic_menu_camera;
+            case "share": return android.R.drawable.ic_menu_share;
+            case "star": case "favorite": return android.R.drawable.ic_menu_recent_history;
+            case "mail": case "email": return android.R.drawable.ic_dialog_email;
+            case "call": case "phone": return android.R.drawable.ic_menu_call;
+            case "gallery": case "image": case "images": return android.R.drawable.ic_menu_gallery;
+            case "edit": case "compose": return android.R.drawable.ic_menu_edit;
+            case "delete": return android.R.drawable.ic_menu_delete;
+            case "add": case "plus": return android.R.drawable.ic_menu_add;
+            case "upload": return android.R.drawable.ic_menu_upload;
+            case "save": return android.R.drawable.ic_menu_save;
+            case "help": return android.R.drawable.ic_menu_help;
+            case "close": return android.R.drawable.ic_menu_close_clear_cancel;
+            case "more": return android.R.drawable.ic_menu_more;
+            case "view": case "news": return android.R.drawable.ic_menu_view;
+            case "manage": return android.R.drawable.ic_menu_manage;
+            case "send": return android.R.drawable.ic_menu_send;
+            case "crop": return android.R.drawable.ic_menu_crop;
+            case "sort": return android.R.drawable.ic_menu_sort_by_size;
+            case "day": case "agenda": return android.R.drawable.ic_menu_day;
+            case "week": return android.R.drawable.ic_menu_week;
+            case "month": return android.R.drawable.ic_menu_month;
+            case "report": return android.R.drawable.ic_menu_report_image;
+            case "rotate": return android.R.drawable.ic_menu_rotate;
+            case "zoom": return android.R.drawable.ic_menu_zoom;
+            case "directions": return android.R.drawable.ic_menu_directions;
+            case "myplaces": case "bookmark": return android.R.drawable.ic_menu_myplaces;
+            default: return android.R.drawable.ic_menu_compass;
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")

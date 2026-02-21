@@ -12,8 +12,7 @@ class BuildResponse(BaseModel):
     build_type: str
     apk_url: str | None = None
     aab_url: str | None = None
-    ipa_url: str | None = None
-    dsym_url: str | None = None
+    exe_url: str | None = None
     source_url: str | None = None
     error_message: str | None = None
     started_at: datetime | None = None
@@ -26,4 +25,3 @@ class BuildResponse(BaseModel):
 class BuildTriggerRequest(BaseModel):
     order_id: uuid.UUID
     build_type: str = "apk"
-    platform: str = "android"

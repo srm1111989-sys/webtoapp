@@ -1,4 +1,4 @@
-"""Tests for Android (and iOS) app generation pipeline.
+"""Tests for Android app generation pipeline.
 
 Uses pure mocks to avoid importing SQLAlchemy models directly,
 since the Order model uses a reserved attribute name that conflicts
@@ -35,7 +35,7 @@ sys.modules.setdefault("app.database", mock_database_module)
 
 
 class TestBuildPipelineVariablesLogic:
-    """Test pipeline variable generation logic for Android and iOS.
+    """Test pipeline variable generation logic for Android.
 
     These tests replicate the function logic to verify correctness
     without requiring the full SQLAlchemy model import chain.
@@ -57,13 +57,8 @@ class TestBuildPipelineVariablesLogic:
             "NAVIGATION_TYPE": app_config.navigation_type,
             "ORDER_ID": str(order.id),
             "PLATFORM": platform,
+            "PACKAGE_NAME": app_config.package_name or f"com.webtoapp.{domain.replace('.', '_').replace('-', '_')}",
         }
-
-        if platform == "ios":
-            variables["BUNDLE_ID"] = app_config.bundle_id or f"com.webtoapp.{domain.replace('.', '-').replace('_', '-')}"
-            variables["TEAM_ID"] = app_config.team_id or ""
-        else:
-            variables["PACKAGE_NAME"] = app_config.package_name or f"com.webtoapp.{domain.replace('.', '_').replace('-', '_')}"
 
         if app_config.icon_url:
             variables["ICON_URL"] = app_config.icon_url
@@ -90,12 +85,10 @@ class TestBuildPipelineVariablesLogic:
         return variables
 
     def test_android_variables_include_package_name(self, sample_app_config, sample_order):
-        """Android builds must include PACKAGE_NAME, not BUNDLE_ID."""
+        """Android builds must include PACKAGE_NAME."""
         variables = self._build_pipeline_variables(sample_app_config, sample_order, platform="android")
 
         assert variables["PACKAGE_NAME"] == "com.example.testapp"
-        assert "BUNDLE_ID" not in variables
-        assert "TEAM_ID" not in variables
 
     def test_android_variables_default_platform(self, sample_app_config, sample_order):
         """Platform defaults to android when not specified."""
@@ -112,24 +105,8 @@ class TestBuildPipelineVariablesLogic:
 
         assert variables["PACKAGE_NAME"] == "com.webtoapp.example_com"
 
-    def test_ios_variables_include_bundle_id_and_team_id(self, sample_app_config, sample_order):
-        """iOS builds must include BUNDLE_ID and TEAM_ID, not PACKAGE_NAME."""
-        variables = self._build_pipeline_variables(sample_app_config, sample_order, platform="ios")
-
-        assert variables["BUNDLE_ID"] == "com.example.testapp-ios"
-        assert variables["TEAM_ID"] == "ABCDE12345"
-        assert "PACKAGE_NAME" not in variables
-
-    def test_ios_auto_generates_bundle_id(self, sample_app_config, sample_order):
-        """When bundle_id is empty, it should be auto-generated from URL."""
-        sample_app_config.bundle_id = None
-
-        variables = self._build_pipeline_variables(sample_app_config, sample_order, platform="ios")
-
-        assert variables["BUNDLE_ID"] == "com.webtoapp.example-com"
-
-    def test_common_variables_present_android(self, sample_app_config, sample_order):
-        """Common variables should be present for Android platform."""
+    def test_common_variables_present(self, sample_app_config, sample_order):
+        """Common variables should be present."""
         variables = self._build_pipeline_variables(sample_app_config, sample_order, platform="android")
 
         assert variables["APP_NAME"] == "Test App"
@@ -141,15 +118,6 @@ class TestBuildPipelineVariablesLogic:
         assert variables["NAVIGATION_TYPE"] == "bottom_nav"
         assert variables["ORDER_ID"] == str(sample_order.id)
         assert variables["PLATFORM"] == "android"
-
-    def test_common_variables_present_ios(self, sample_app_config, sample_order):
-        """Common variables should be present for iOS platform."""
-        variables = self._build_pipeline_variables(sample_app_config, sample_order, platform="ios")
-
-        assert variables["APP_NAME"] == "Test App"
-        assert variables["APP_URL"] == "https://example.com"
-        assert variables["APP_HOST"] == "example.com"
-        assert variables["PLATFORM"] == "ios"
 
     def test_icon_and_splash_urls_included(self, sample_app_config, sample_order):
         """Icon and splash URLs should be passed through."""
@@ -247,7 +215,7 @@ class TestBuildPipelineVariablesLogic:
 
 
 class TestGitLabServicePlatform:
-    """Test that GitLabService routes to the correct project based on platform."""
+    """Test that GitLabService routes to the correct project."""
 
     @patch("app.services.gitlab_service.settings")
     def test_android_uses_android_project_id(self, mock_settings):
@@ -255,7 +223,6 @@ class TestGitLabServicePlatform:
         mock_settings.gitlab_token = "test-token"
         mock_settings.gitlab_project_id = "default-project"
         mock_settings.gitlab_android_project_id = "android-project"
-        mock_settings.gitlab_ios_project_id = "ios-project"
 
         from app.services.gitlab_service import GitLabService
         service = GitLabService(platform="android")
@@ -263,39 +230,11 @@ class TestGitLabServicePlatform:
         assert service.project_id == "android-project"
 
     @patch("app.services.gitlab_service.settings")
-    def test_ios_uses_ios_project_id(self, mock_settings):
-        mock_settings.gitlab_url = "https://gitlab.com"
-        mock_settings.gitlab_token = "test-token"
-        mock_settings.gitlab_project_id = "default-project"
-        mock_settings.gitlab_android_project_id = "android-project"
-        mock_settings.gitlab_ios_project_id = "ios-project"
-
-        from app.services.gitlab_service import GitLabService
-        service = GitLabService(platform="ios")
-
-        assert service.project_id == "ios-project"
-
-    @patch("app.services.gitlab_service.settings")
-    def test_ios_falls_back_to_default_project(self, mock_settings):
-        """When ios_project_id is empty, should fall back to gitlab_project_id."""
-        mock_settings.gitlab_url = "https://gitlab.com"
-        mock_settings.gitlab_token = "test-token"
-        mock_settings.gitlab_project_id = "default-project"
-        mock_settings.gitlab_android_project_id = "android-project"
-        mock_settings.gitlab_ios_project_id = ""
-
-        from app.services.gitlab_service import GitLabService
-        service = GitLabService(platform="ios")
-
-        assert service.project_id == "default-project"
-
-    @patch("app.services.gitlab_service.settings")
     def test_default_platform_is_android(self, mock_settings):
         mock_settings.gitlab_url = "https://gitlab.com"
         mock_settings.gitlab_token = "test-token"
         mock_settings.gitlab_project_id = "default-project"
         mock_settings.gitlab_android_project_id = "android-project"
-        mock_settings.gitlab_ios_project_id = "ios-project"
 
         from app.services.gitlab_service import GitLabService
         service = GitLabService()
@@ -309,7 +248,6 @@ class TestGitLabServicePlatform:
         mock_settings.gitlab_token = "test-token"
         mock_settings.gitlab_project_id = "default-project"
         mock_settings.gitlab_android_project_id = ""
-        mock_settings.gitlab_ios_project_id = "ios-project"
 
         from app.services.gitlab_service import GitLabService
         service = GitLabService(platform="android")
@@ -323,27 +261,17 @@ class TestGitLabServicePlatform:
 
 
 class TestWebhookArtifactRouting:
-    """Test that webhook handler downloads correct artifacts per platform."""
+    """Test that webhook handler downloads correct artifacts."""
 
     def test_android_artifact_names(self):
         """Verify Android artifact file names match the GitLab CI output."""
         assert "app-release.apk" == "app-release.apk"
         assert "app-release.aab" == "app-release.aab"
 
-    def test_ios_artifact_names(self):
-        """Verify iOS artifact file names match the GitLab CI output."""
-        assert "WebToApp.ipa" == "WebToApp.ipa"
-        assert "WebToApp.app.dSYM.zip" == "WebToApp.app.dSYM.zip"
-
     def test_build_type_android(self):
         """Android build_type should default to 'apk'."""
-        build_type = "ipa" if "android" == "ios" else "apk"
+        build_type = "apk"
         assert build_type == "apk"
-
-    def test_build_type_ios(self):
-        """iOS build_type should be 'ipa'."""
-        build_type = "ipa" if "ios" == "ios" else "apk"
-        assert build_type == "ipa"
 
 
 # =========================================================================
@@ -352,66 +280,17 @@ class TestWebhookArtifactRouting:
 
 
 class TestSchemaValidation:
-    """Test Pydantic schema changes for platform support."""
+    """Test Pydantic schema changes for build support."""
 
     def test_build_response_has_platform_field(self):
         from app.schemas.build import BuildResponse
         fields = BuildResponse.model_fields
         assert "platform" in fields
-        assert "ipa_url" in fields
-        assert "dsym_url" in fields
 
     def test_build_response_platform_default(self):
         from app.schemas.build import BuildResponse
         field = BuildResponse.model_fields["platform"]
         assert field.default == "android"
-
-    def test_build_trigger_request_has_platform(self):
-        from app.schemas.build import BuildTriggerRequest
-        fields = BuildTriggerRequest.model_fields
-        assert "platform" in fields
-
-    def test_build_trigger_request_platform_default(self):
-        from app.schemas.build import BuildTriggerRequest
-        req = BuildTriggerRequest(order_id="00000000-0000-0000-0000-000000000001")
-        assert req.platform == "android"
-
-    def test_app_config_create_has_ios_fields(self):
-        from app.schemas.app_config import AppConfigCreate
-        fields = AppConfigCreate.model_fields
-        assert "bundle_id" in fields
-        assert "team_id" in fields
-
-    def test_app_config_update_has_ios_fields(self):
-        from app.schemas.app_config import AppConfigUpdate
-        fields = AppConfigUpdate.model_fields
-        assert "bundle_id" in fields
-        assert "team_id" in fields
-
-    def test_app_config_response_has_ios_fields(self):
-        from app.schemas.app_config import AppConfigResponse
-        fields = AppConfigResponse.model_fields
-        assert "bundle_id" in fields
-        assert "team_id" in fields
-
-
-# =========================================================================
-# Config tests
-# =========================================================================
-
-
-class TestConfigSettings:
-    """Test that config has iOS-specific settings."""
-
-    def test_gitlab_ios_project_id_exists(self):
-        from app.config import Settings
-        fields = Settings.model_fields
-        assert "gitlab_ios_project_id" in fields
-
-    def test_gitlab_ios_project_id_default_empty(self):
-        from app.config import Settings
-        field = Settings.model_fields["gitlab_ios_project_id"]
-        assert field.default == ""
 
 
 # =========================================================================
@@ -436,35 +315,16 @@ class TestPipelineVariablesRoundTrip:
         for var in required_vars:
             assert var in variables, f"Missing required Android CI variable: {var}"
 
-    def test_ios_variables_match_ci_expectations(self, sample_app_config, sample_order):
-        """Variables match what ios-template/.gitlab-ci.yml expects."""
-        func = TestBuildPipelineVariablesLogic._build_pipeline_variables
-        variables = func(sample_app_config, sample_order, platform="ios")
-
-        # All variables the iOS CI uses
-        required_vars = [
-            "APP_NAME", "APP_URL", "APP_HOST", "BUNDLE_ID", "TEAM_ID",
-            "PRIMARY_COLOR", "SECONDARY_COLOR", "STATUS_BAR_COLOR",
-            "FEATURES_JSON", "ORDER_ID",
-        ]
-        for var in required_vars:
-            assert var in variables, f"Missing required iOS CI variable: {var}"
-
-        # Android-only variables must NOT be present
-        assert "PACKAGE_NAME" not in variables
-
     def test_features_json_is_valid_json(self, sample_app_config, sample_order):
         """FEATURES_JSON must be parseable JSON."""
         func = TestBuildPipelineVariablesLogic._build_pipeline_variables
-        for platform in ("android", "ios"):
-            variables = func(sample_app_config, sample_order, platform=platform)
-            parsed = json.loads(variables["FEATURES_JSON"])
-            assert isinstance(parsed, dict)
+        variables = func(sample_app_config, sample_order, platform="android")
+        parsed = json.loads(variables["FEATURES_JSON"])
+        assert isinstance(parsed, dict)
 
     def test_all_variable_values_are_strings(self, sample_app_config, sample_order):
         """All pipeline variable values must be strings (GitLab requirement)."""
         func = TestBuildPipelineVariablesLogic._build_pipeline_variables
-        for platform in ("android", "ios"):
-            variables = func(sample_app_config, sample_order, platform=platform)
-            for key, value in variables.items():
-                assert isinstance(value, str), f"Variable {key} has type {type(value)}, expected str"
+        variables = func(sample_app_config, sample_order, platform="android")
+        for key, value in variables.items():
+            assert isinstance(value, str), f"Variable {key} has type {type(value)}, expected str"

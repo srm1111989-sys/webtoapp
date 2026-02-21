@@ -13,12 +13,11 @@ class Build(Base):
     order_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("orders.id"), nullable=False, index=True)
     pipeline_id: Mapped[int | None] = mapped_column(BigInteger)
     status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, building, success, failed
-    platform: Mapped[str] = mapped_column(String(10), default="android")  # android, ios
-    build_type: Mapped[str] = mapped_column(String(10), default="apk")  # apk, aab, ipa
+    platform: Mapped[str] = mapped_column(String(10), default="android")
+    build_type: Mapped[str] = mapped_column(String(10), default="apk")  # apk, aab
     apk_url: Mapped[str | None] = mapped_column(String(500))
     aab_url: Mapped[str | None] = mapped_column(String(500))
-    ipa_url: Mapped[str | None] = mapped_column(String(500))
-    dsym_url: Mapped[str | None] = mapped_column(String(500))
+    exe_url: Mapped[str | None] = mapped_column(String(500))
     source_url: Mapped[str | None] = mapped_column(String(500))
     log: Mapped[str | None] = mapped_column(Text)
     error_message: Mapped[str | None] = mapped_column(Text)

@@ -1,0 +1,94 @@
+stages:
+  - prepare
+  - build
+  - deploy
+
+variables:
+  APP_NAME: "WebToApp Desktop"
+  APP_URL: "https://example.com"
+  ORDER_ID: ""
+  WINDOW_WIDTH: "1280"
+  WINDOW_HEIGHT: "800"
+  MIN_WIDTH: "800"
+  MIN_HEIGHT: "600"
+  SHOW_TITLE_BAR: "true"
+  SHOW_MENU_BAR: "false"
+  ENABLE_SYSTEM_TRAY: "false"
+  START_MAXIMIZED: "false"
+  START_FULLSCREEN: "false"
+  ICON_URL: ""
+  PRIMARY_COLOR: "#2563EB"
+
+prepare:
+  stage: prepare
+  image: node:20
+  script:
+    - |
+      cat > src/config.json << EOFCONFIG
+      {
+        "app_name": "${APP_NAME}",
+        "app_url": "${APP_URL}",
+        "order_id": "${ORDER_ID}",
+        "primary_color": "${PRIMARY_COLOR}",
+        "desktop": {
+          "window_width": ${WINDOW_WIDTH},
+          "window_height": ${WINDOW_HEIGHT},
+          "min_width": ${MIN_WIDTH},
+          "min_height": ${MIN_HEIGHT},
+          "show_title_bar": ${SHOW_TITLE_BAR},
+          "show_menu_bar": ${SHOW_MENU_BAR},
+          "enable_system_tray": ${ENABLE_SYSTEM_TRAY},
+          "start_maximized": ${START_MAXIMIZED},
+          "start_fullscreen": ${START_FULLSCREEN}
+        }
+      }
+      EOFCONFIG
+    - cat src/config.json
+    # Download and convert icon if provided
+    - |
+      if [ -n "$ICON_URL" ]; then
+        apt-get update && apt-get install -y imagemagick
+        curl -L -o assets/icon.png "$ICON_URL"
+        convert assets/icon.png -resize 256x256 assets/icon.ico
+      else
+        # Generate a simple default .ico from the existing icon.png
+        apt-get update && apt-get install -y imagemagick
+        convert assets/icon.png -resize 256x256 assets/icon.ico
+      fi
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+      - src/config.json
+      - assets/icon.ico
+      - assets/icon.png
+    expire_in: 1 hour
+
+build:
+  stage: build
+  image: electronuserland/builder:wine
+  script:
+    - npm run build:win
+  artifacts:
+    paths:
+      - dist/*.exe
+    expire_in: 7 days
+  dependencies:
+    - prepare
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - |
+      if [ -n "$WEBHOOK_URL" ]; then
+        apk add --no-cache curl
+        EXE_FILE=$(ls dist/*.exe 2>/dev/null | head -1)
+        curl -X POST "$WEBHOOK_URL" \
+          -H "Content-Type: application/json" \
+          -d "{\"pipeline_id\": \"$CI_PIPELINE_ID\", \"status\": \"success\", \"order_id\": \"$ORDER_ID\", \"artifact\": \"$EXE_FILE\"}"
+      fi
+    - echo "Build complete. Artifacts available for download."
+  dependencies:
+    - build
+  when: on_success

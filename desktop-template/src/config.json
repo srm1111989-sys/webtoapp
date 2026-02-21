@@ -1,0 +1,17 @@
+{
+  "app_name": "WebToApp Desktop",
+  "app_url": "https://example.com",
+  "order_id": "",
+  "primary_color": "#2563EB",
+  "desktop": {
+    "window_width": 1280,
+    "window_height": 800,
+    "min_width": 800,
+    "min_height": 600,
+    "show_title_bar": true,
+    "show_menu_bar": false,
+    "enable_system_tray": false,
+    "start_maximized": false,
+    "start_fullscreen": false
+  }
+}

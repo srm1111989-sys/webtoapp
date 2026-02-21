@@ -102,12 +102,12 @@ export default function AdminBuilds() {
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            build.platform === 'ios'
-                              ? 'bg-gray-100 text-gray-700'
-                              : 'bg-green-50 text-green-700'
+                            build.platform === 'desktop'
+                              ? 'bg-indigo-100 text-indigo-700'
+                              : 'bg-emerald-100 text-emerald-700'
                           }`}
                         >
-                          {build.platform === 'ios' ? 'iOS' : 'Android'}
+                          {build.platform === 'desktop' ? 'Windows' : 'Android'}
                         </span>
                       </td>
                       <td className="px-6 py-4">

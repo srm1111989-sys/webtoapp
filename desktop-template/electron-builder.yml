@@ -1,0 +1,28 @@
+appId: com.webtoapp.desktop
+productName: WebToApp Desktop
+
+directories:
+  output: dist
+
+files:
+  - src/**/*
+  - assets/**/*
+  - "!**/*.map"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: assets/icon.ico
+
+nsis:
+  oneClick: true
+  perMachine: false
+  allowToChangeInstallationDirectory: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ${productName}
+
+extraMetadata:
+  main: src/main.js

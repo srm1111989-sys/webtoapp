@@ -188,24 +188,24 @@ export default function OrderDetail() {
                 ) : (
                   <RefreshCw className="w-4 h-4" />
                 )}
-                {latestBuild ? 'Rebuild Android' : 'Build Android'}
+                Build Android
               </button>
               <button
-                onClick={() => triggerBuild.mutate('ios')}
+                onClick={() => triggerBuild.mutate('desktop')}
                 disabled={
                   triggerBuild.isPending ||
                   (latestBuild !== null &&
                     (latestBuild.status === 'building' ||
                       latestBuild.status === 'pending'))
                 }
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {triggerBuild.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <RefreshCw className="w-4 h-4" />
                 )}
-                {latestBuild ? 'Rebuild iOS' : 'Build iOS'}
+                Build Windows
               </button>
             </div>
           )}
@@ -254,12 +254,12 @@ export default function OrderDetail() {
                         </span>
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            build.platform === 'ios'
-                              ? 'bg-gray-100 text-gray-800'
-                              : 'bg-green-50 text-green-700'
+                            build.platform === 'desktop'
+                              ? 'bg-indigo-100 text-indigo-700'
+                              : 'bg-emerald-100 text-emerald-700'
                           }`}
                         >
-                          {build.platform === 'ios' ? 'iOS' : 'Android'}
+                          {build.platform === 'desktop' ? 'Windows' : 'Android'}
                         </span>
                       </div>
                       <p className="text-xs text-gray-400 mt-1">
@@ -302,26 +302,15 @@ export default function OrderDetail() {
                         Download AAB
                       </a>
                     )}
-                    {build.ipa_url && (
+                    {build.exe_url && (
                       <a
-                        href={build.ipa_url}
+                        href={build.exe_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition text-sm font-medium"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium"
                       >
                         <Download className="w-4 h-4" />
-                        Download IPA
-                      </a>
-                    )}
-                    {build.dsym_url && (
-                      <a
-                        href={build.dsym_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium"
-                      >
-                        <Download className="w-4 h-4" />
-                        Download dSYM
+                        Download .exe
                       </a>
                     )}
                   </div>

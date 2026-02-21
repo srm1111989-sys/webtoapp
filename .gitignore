@@ -45,13 +45,10 @@ android-template/local.properties
 *.apk
 *.aab
 
-# iOS
-ios-template/Pods/
-ios-template/WebToApp.xcworkspace/
-ios-template/WebToApp.xcodeproj/xcuserdata/
-*.ipa
-*.dSYM.zip
-xcuserdata/
+# Desktop
+desktop-template/node_modules/
+desktop-template/dist/
+*.exe
 
 # Coverage
 .coverage

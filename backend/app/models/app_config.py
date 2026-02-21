@@ -14,8 +14,6 @@ class AppConfig(Base):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     url: Mapped[str] = mapped_column(String(500), nullable=False)
     package_name: Mapped[str | None] = mapped_column(String(255))
-    bundle_id: Mapped[str | None] = mapped_column(String(255))
-    team_id: Mapped[str | None] = mapped_column(String(20))
     description: Mapped[str | None] = mapped_column(Text)
     icon_url: Mapped[str | None] = mapped_column(String(500))
     splash_url: Mapped[str | None] = mapped_column(String(500))
@@ -27,6 +25,7 @@ class AppConfig(Base):
     features: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
     firebase_config: Mapped[dict | None] = mapped_column(JSONB)
     admob_config: Mapped[dict | None] = mapped_column(JSONB)
+    desktop_config: Mapped[dict | None] = mapped_column(JSONB)
     custom_user_agent: Mapped[str | None] = mapped_column(String(500))
     status: Mapped[str] = mapped_column(String(20), default="draft")  # draft, active, suspended
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

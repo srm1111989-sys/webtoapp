@@ -21,6 +21,8 @@ class OrderResponse(BaseModel):
     status: str
     payment_gateway: str | None = None
     gateway_order_id: str | None = None
+    plan_name: str | None = None
+    app_name: str | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -29,8 +31,6 @@ class OrderResponse(BaseModel):
 
 class OrderDetailResponse(OrderResponse):
     builds: list["BuildResponse"] = []
-    plan_name: str | None = None
-    app_name: str | None = None
 
 
 class OrderListResponse(BaseModel):

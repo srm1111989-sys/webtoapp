@@ -12,8 +12,6 @@ def sample_app_config():
     config.name = "Test App"
     config.url = "https://example.com"
     config.package_name = "com.example.testapp"
-    config.bundle_id = "com.example.testapp-ios"
-    config.team_id = "ABCDE12345"
     config.description = "A test application"
     config.icon_url = "https://cdn.example.com/icon.png"
     config.splash_url = "https://cdn.example.com/splash.png"
