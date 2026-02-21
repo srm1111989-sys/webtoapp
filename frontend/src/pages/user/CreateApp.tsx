@@ -748,10 +748,11 @@ function Step3Advanced() {
   const [admobRewardedId, setAdmobRewardedId] = useState(wizard.admobConfig?.rewarded_id || '')
 
   const [customUA, setCustomUA] = useState(wizard.customUserAgent)
-  const [navType, setNavType] = useState(wizard.navigationType)
-  const [navItems, setNavItems] = useState<NavigationItem[]>(wizard.navigationItems)
-
   const showNavBuilder = wizard.features.navigation_menu
+  const [navType, setNavType] = useState(
+    wizard.navigationType === 'none' && showNavBuilder ? 'bottom_nav' : wizard.navigationType
+  )
+  const [navItems, setNavItems] = useState<NavigationItem[]>(wizard.navigationItems)
 
   const addNavItem = () => {
     setNavItems([...navItems, { label: '', url: '' }])
