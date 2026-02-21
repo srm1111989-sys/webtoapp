@@ -8,12 +8,16 @@ stages:
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2048m"
   JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
+  GRADLE_USER_HOME: "${CI_PROJECT_DIR}/.gradle"
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: android-deps-v1
   paths:
-    - .gradle/wrapper
-    - .gradle/caches
+    - .gradle/wrapper/
+    - .gradle/caches/
+    - .gradle/notifications/
+    - app/build/intermediates/
+    - /root/.android/
 
 prepare:
   stage: prepare
