@@ -12,6 +12,12 @@ const allFeatures = [
     plans: ['Free', 'Basic', 'Pro', 'Business'],
   },
   {
+    icon: Monitor,
+    title: 'Windows Desktop App',
+    desc: 'Generate a Windows .exe installer using Electron. Configure window size, title bar, menu bar, system tray, and fullscreen mode.',
+    plans: ['Basic', 'Pro', 'Business'],
+  },
+  {
     icon: Bell,
     title: 'Push Notifications',
     desc: 'Send push notifications via Firebase Cloud Messaging. Create campaigns, schedule sends, and target all users or specific topics.',
@@ -98,7 +104,7 @@ export default function Features() {
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">All Features</h1>
           <p className="text-primary-100 text-lg max-w-2xl mx-auto">
-            Everything you need to create a professional Android app from your website.
+            Everything you need to create professional Android and Windows desktop apps from your website.
           </p>
         </div>
       </section>

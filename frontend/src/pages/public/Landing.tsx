@@ -1,19 +1,19 @@
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
-import { Smartphone, Zap, Shield, Globe, ArrowRight, CheckCircle, Star } from 'lucide-react'
+import { Smartphone, Monitor, Zap, Shield, Globe, ArrowRight, CheckCircle, Star } from 'lucide-react'
 
 const features = [
-  { icon: Smartphone, title: 'TWA-First Approach', desc: 'Full-screen Chrome experience with WebView fallback for maximum compatibility.' },
-  { icon: Zap, title: 'Built in Minutes', desc: 'Configure your app with our wizard, pay, and get your APK automatically built.' },
+  { icon: Smartphone, title: 'Android Apps', desc: 'Full-screen Chrome TWA experience with WebView fallback for maximum compatibility.' },
+  { icon: Monitor, title: 'Windows Desktop Apps', desc: 'Generate a Windows .exe installer via Electron with configurable window, system tray, and more.' },
+  { icon: Zap, title: 'Built in Minutes', desc: 'Configure your app with our wizard, pay, and get your builds automatically via CI/CD.' },
   { icon: Shield, title: 'Feature-Rich', desc: 'Push notifications, biometric auth, QR scanner, AdMob, and 10+ features.' },
-  { icon: Globe, title: 'PWA Support', desc: 'Generate PWA assets for iOS Safari with installable manifest and service worker.' },
 ]
 
 const steps = [
   { num: '1', title: 'Enter Your URL', desc: 'Paste your website URL and configure basic settings.' },
   { num: '2', title: 'Customize', desc: 'Upload icon, set colors, enable features like push notifications.' },
   { num: '3', title: 'Choose Plan', desc: 'Select from Free, Basic, Pro, or Business plans.' },
-  { num: '4', title: 'Get Your App', desc: 'Download APK/AAB built automatically via CI/CD pipeline.' },
+  { num: '4', title: 'Get Your App', desc: 'Download APK, AAB, or Windows .exe built automatically via CI/CD.' },
 ]
 
 const testimonials = [
@@ -25,6 +25,7 @@ const testimonials = [
 const faqs = [
   { q: 'What is a TWA (Trusted Web Activity)?', a: 'TWA renders your website in Chrome without the address bar, providing a native-like full-screen experience. It requires HTTPS and Digital Asset Links verification.' },
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
+  { q: 'Do you support Windows desktop apps?', a: 'Yes! You can generate a Windows .exe installer using Electron. Configure window size, title bar, system tray, and more from the wizard.' },
   { q: 'What about iOS support?', a: 'We generate PWA (Progressive Web App) assets that make your site installable on iOS Safari. Native iOS app support is not included.' },
   { q: 'Can I publish to Google Play Store?', a: 'Yes. Basic plan and above generate AAB (App Bundle) files that can be uploaded directly to Google Play Console.' },
   { q: 'Is the free plan really free?', a: 'Yes. The free plan generates a basic APK with core features. No credit card required.' },
@@ -40,11 +41,11 @@ export default function Landing() {
       <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-            Convert Any Website Into a<br />Native Android App
+            Convert Any Website Into<br />Android & Desktop Apps
           </h1>
           <p className="text-xl lg:text-2xl text-primary-100 mb-8 max-w-3xl mx-auto">
-            Turn your website into a feature-rich Android app with TWA technology.
-            No coding required. Get your APK in minutes.
+            Turn your website into Android mobile apps and Windows desktop apps.
+            No coding required. Get your APK or .exe in minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 flex items-center justify-center gap-2">
@@ -65,7 +66,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-4">Why WebToApp?</h2>
           <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-            Everything you need to convert your website into a professional Android app.
+            Everything you need to convert your website into professional Android and desktop apps.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((f) => (
@@ -145,7 +146,7 @@ export default function Landing() {
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl font-bold mb-4">Ready to Convert Your Website?</h2>
           <p className="text-primary-100 mb-8 text-lg">
-            Join thousands of businesses who have converted their websites into Android apps.
+            Join thousands of businesses who have converted their websites into Android and desktop apps.
           </p>
           <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">
             {isLoggedIn ? 'Create New App' : 'Start Building'} <ArrowRight className="w-5 h-5" />
