@@ -60,6 +60,7 @@ export default function Orders() {
           </Link>
         </div>
       ) : (
+        <>
         {/* Mobile card layout */}
         <div className="space-y-3 md:hidden">
           {orders.map((order) => (
@@ -160,6 +161,7 @@ export default function Orders() {
             </table>
           </div>
         </div>
+        </>
       )}
     </div>
   )
