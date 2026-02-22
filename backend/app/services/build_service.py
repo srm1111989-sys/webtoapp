@@ -19,6 +19,10 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
     """Convert app config to GitLab CI pipeline variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
 
+    # Determine watermark: free plans (amount=0) get watermark
+    is_free = order.amount == 0
+    show_watermark = is_free
+
     variables = {
         "APP_NAME": app_config.name,
         "APP_URL": app_config.url,
@@ -38,7 +42,8 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
         variables["SPLASH_URL"] = app_config.splash_url
 
     # Feature flags
-    features = app_config.features or {}
+    features = dict(app_config.features or {})
+    features["show_watermark"] = show_watermark
     variables["FEATURES_JSON"] = json.dumps(features)
 
     # Firebase
@@ -57,6 +62,9 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
 
     if app_config.custom_user_agent:
         variables["CUSTOM_USER_AGENT"] = app_config.custom_user_agent
+
+    # Watermark for desktop builds
+    variables["SHOW_WATERMARK"] = "true" if show_watermark else "false"
 
     # Desktop-specific variables
     if platform == "desktop":

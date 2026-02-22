@@ -26,6 +26,8 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.util.TypedValue;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -129,6 +131,11 @@ public class WebViewActivity extends AppCompatActivity {
         root.addView(webContainer, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
 
+        // Watermark banner (if enabled)
+        if (features.optBoolean("show_watermark", false)) {
+            setupWatermarkBanner(root);
+        }
+
         // Bottom Navigation (if enabled with items)
         setupBottomNavigation(root, primaryColor);
 
@@ -205,6 +212,25 @@ public class WebViewActivity extends AppCompatActivity {
         });
 
         root.addView(bottomNav, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+    }
+
+    private void setupWatermarkBanner(LinearLayout root) {
+        TextView watermark = new TextView(this);
+        watermark.setText("Powered by WebToApp");
+        watermark.setTextColor(Color.parseColor("#6B7280"));
+        watermark.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+        watermark.setBackgroundColor(Color.parseColor("#F3F4F6"));
+        watermark.setGravity(android.view.Gravity.CENTER);
+        int pad = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
+                getResources().getDisplayMetrics());
+        watermark.setPadding(0, pad, 0, pad);
+        watermark.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://websitetoapp.app"));
+            startActivity(intent);
+        });
+        root.addView(watermark, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
     }

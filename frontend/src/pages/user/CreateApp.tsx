@@ -33,6 +33,7 @@ import {
   Loader2,
   AlertTriangle,
   X,
+  ExternalLink,
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
@@ -242,10 +243,14 @@ function CollapsibleSection({
   title,
   children,
   defaultOpen = false,
+  helpUrl,
+  helpLabel,
 }: {
   title: string
   children: React.ReactNode
   defaultOpen?: boolean
+  helpUrl?: string
+  helpLabel?: string
 }) {
   const [open, setOpen] = useState(defaultOpen)
 
@@ -259,7 +264,22 @@ function CollapsibleSection({
         <span className="font-medium text-gray-800">{title}</span>
         {open ? <ChevronUp className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
       </button>
-      {open && <div className="p-5 space-y-4">{children}</div>}
+      {open && (
+        <div className="p-5 space-y-4">
+          {helpUrl && (
+            <a
+              href={helpUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              {helpLabel || 'How to set this up?'}
+            </a>
+          )}
+          {children}
+        </div>
+      )}
     </div>
   )
 }
@@ -820,7 +840,11 @@ function Step3Advanced() {
       </div>
 
       {/* Firebase */}
-      <CollapsibleSection title="Firebase Configuration">
+      <CollapsibleSection
+        title="Firebase Configuration"
+        helpUrl="https://firebase.google.com/docs/android/setup"
+        helpLabel="How to create a Firebase project & get google-services.json"
+      >
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Server Key</label>
           <input
@@ -843,7 +867,11 @@ function Step3Advanced() {
       </CollapsibleSection>
 
       {/* AdMob */}
-      <CollapsibleSection title="AdMob Configuration">
+      <CollapsibleSection
+        title="AdMob Configuration"
+        helpUrl="https://support.google.com/admob/answer/7356431"
+        helpLabel="How to create an AdMob account & get Ad Unit IDs"
+      >
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">App ID</label>
           <input className={inputClass} value={admobAppId} onChange={(e) => setAdmobAppId(e.target.value)} placeholder="ca-app-pub-xxxxx~xxxxx" />
@@ -1238,6 +1266,19 @@ function Step4PlanReview() {
                     <li className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500" />
                       Up to {plan.max_apps} app{plan.max_apps !== 1 ? 's' : ''}
+                    </li>
+                    <li className="flex items-center gap-2">
+                      {plan.price_inr === 0 ? (
+                        <>
+                          <AlertTriangle className="w-4 h-4 text-amber-500" />
+                          <span className="text-amber-600">WebToApp branding</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-4 h-4 text-green-500" />
+                          No branding / watermark
+                        </>
+                      )}
                     </li>
                     {Object.entries(plan.features)
                       .filter(([, v]) => v)

@@ -3,6 +3,7 @@
   "app_url": "https://example.com",
   "order_id": "",
   "primary_color": "#2563EB",
+  "show_watermark": false,
   "desktop": {
     "window_width": 1280,
     "window_height": 800,

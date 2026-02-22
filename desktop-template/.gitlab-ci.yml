@@ -18,6 +18,7 @@ variables:
   START_FULLSCREEN: "false"
   ICON_URL: ""
   PRIMARY_COLOR: "#2563EB"
+  SHOW_WATERMARK: "false"
 
 prepare:
   stage: prepare
@@ -30,6 +31,7 @@ prepare:
         "app_url": "${APP_URL}",
         "order_id": "${ORDER_ID}",
         "primary_color": "${PRIMARY_COLOR}",
+        "show_watermark": ${SHOW_WATERMARK},
         "desktop": {
           "window_width": ${WINDOW_WIDTH},
           "window_height": ${WINDOW_HEIGHT},

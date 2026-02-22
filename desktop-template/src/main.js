@@ -70,6 +70,22 @@ function createWindow() {
     mainWindow.maximize()
   }
 
+  // Watermark for free plan
+  if (config.show_watermark) {
+    mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow.webContents.executeJavaScript(`
+        if (!document.getElementById('webtoapp-watermark')) {
+          const bar = document.createElement('div');
+          bar.id = 'webtoapp-watermark';
+          bar.innerHTML = '<a href="https://websitetoapp.app" target="_blank" style="color:#6B7280;text-decoration:none;font-size:11px;">Powered by WebToApp</a>';
+          bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#F3F4F6;text-align:center;padding:4px 0;z-index:999999;';
+          document.body.appendChild(bar);
+          document.body.style.paddingBottom = '24px';
+        }
+      `)
+    })
+  }
+
   // Load the app URL
   mainWindow.loadURL(config.app_url)
 

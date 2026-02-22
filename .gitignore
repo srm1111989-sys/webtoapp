@@ -54,3 +54,4 @@ desktop-template/dist/
 .coverage
 htmlcov/
 coverage/
+backend/webtoapp.db
