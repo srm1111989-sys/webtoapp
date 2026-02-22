@@ -6,6 +6,29 @@ export function formatCurrency(amount: number, currency: string): string {
   return `$${value.toFixed(2)}`
 }
 
+let _detectedCurrency: 'INR' | 'USD' | null = null
+
+export function getUserCurrency(): 'INR' | 'USD' {
+  if (_detectedCurrency) return _detectedCurrency
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''
+    const lang = navigator.language || ''
+    if (tz.startsWith('Asia/Kolkata') || tz.startsWith('Asia/Calcutta') || lang === 'hi' || lang.startsWith('hi-') || lang === 'en-IN') {
+      _detectedCurrency = 'INR'
+    } else {
+      _detectedCurrency = 'USD'
+    }
+  } catch {
+    _detectedCurrency = 'USD'
+  }
+  return _detectedCurrency
+}
+
+export function formatPlanPrice(priceInr: number, priceUsd: number): string {
+  const currency = getUserCurrency()
+  return currency === 'INR' ? formatCurrency(priceInr, 'INR') : formatCurrency(priceUsd, 'USD')
+}
+
 export function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', {
     year: 'numeric',

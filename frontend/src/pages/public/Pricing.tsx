@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Check, X } from 'lucide-react'
 import { plansApi } from '@/api/orders'
-import { formatCurrency } from '@/utils/format'
+import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 import { clsx } from 'clsx'
 
 const featureLabels: Record<string, string> = {
-  twa: 'TWA Full-screen Mode',
+  twa: 'Full-screen App Mode',
   webview_fallback: 'WebView Fallback',
   custom_icon: 'Custom App Icon',
   custom_splash: 'Splash Screen',
@@ -22,8 +22,8 @@ const featureLabels: Record<string, string> = {
   js_bridge: 'JavaScript Bridge',
   screenshot_prevention: 'Screenshot Prevention',
   source_code: 'Source Code Access',
-  aab_output: 'AAB for Play Store',
-  pwa: 'PWA Generation',
+  aab_output: 'Play Store Bundle',
+  pwa: 'Web App Support',
   priority_support: 'Priority Support',
 }
 
@@ -89,13 +89,9 @@ export default function Pricing() {
               <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
               <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
               <div className="mb-4">
-                <span className="text-3xl font-bold">{formatCurrency(plan.price_inr, 'INR')}</span>
-                {plan.billing_type === 'monthly' && <span className="text-gray-700 text-sm font-semibold">/month</span>}
-                {plan.billing_type === 'one_time' && plan.price_inr > 0 && <span className="text-green-700 text-sm font-semibold"> one-time</span>}
-                <div className="text-xs text-gray-500 mt-0.5">
-                  {formatCurrency(plan.price_usd, 'USD')}
-                  {plan.billing_type === 'monthly' ? '/mo' : plan.price_usd > 0 ? ' one-time' : ''}
-                </div>
+                <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
+                {plan.billing_type === 'monthly' && <span className="text-gray-700 text-sm font-semibold"> /month</span>}
+                {plan.billing_type === 'one_time' && (getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 && <span className="text-green-700 text-sm font-semibold"> one-time</span>}
               </div>
               <p className="text-sm text-gray-500 mb-4">Up to {plan.max_apps} app{plan.max_apps > 1 ? 's' : ''}</p>
               <Link

@@ -39,7 +39,7 @@ import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
 import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
 import type { Plan, NavigationItem } from '@/types'
-import { formatCurrency } from '@/utils/format'
+import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 
 // ---------- Step 0: Basic Info ----------
 
@@ -1229,18 +1229,14 @@ function Step4PlanReview() {
                   <h3 className="font-semibold text-gray-900">{plan.name}</h3>
                   <div className="mt-2">
                     <span className="text-2xl font-bold text-gray-900">
-                      {formatCurrency(plan.price_inr, 'INR')}
+                      {formatPlanPrice(plan.price_inr, plan.price_usd)}
                     </span>
                     {plan.billing_type === 'monthly' ? (
-                      <span className="text-sm font-semibold text-gray-700 ml-1">/month</span>
-                    ) : plan.price_inr > 0 ? (
+                      <span className="text-sm font-semibold text-gray-700 ml-1">per month</span>
+                    ) : (getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 ? (
                       <span className="text-sm font-semibold text-green-700 ml-1">one-time</span>
                     ) : null}
                   </div>
-                  <p className="text-xs text-gray-500 mt-0.5">
-                    {formatCurrency(plan.price_usd, 'USD')}
-                    {plan.billing_type === 'monthly' ? '/mo' : plan.price_usd > 0 ? ' one-time' : ''}
-                  </p>
                   {plan.description && (
                     <p className="text-sm text-gray-600 mt-3">{plan.description}</p>
                   )}
