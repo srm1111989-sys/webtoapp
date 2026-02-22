@@ -17,6 +17,7 @@ export default function PublicLayout() {
             <nav className="hidden md:flex items-center gap-6">
               <Link to="/features" className="text-gray-600 hover:text-gray-900">Features</Link>
               <Link to="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link>
+              <Link to="/blog" className="text-gray-600 hover:text-gray-900">Blog</Link>
             </nav>
             <div className="flex items-center gap-3">
               {accessToken ? (
@@ -46,6 +47,7 @@ export default function PublicLayout() {
               <ul className="space-y-2 text-sm">
                 <li><Link to="/features" className="hover:text-white">Features</Link></li>
                 <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
+                <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
               </ul>
             </div>
             <div>
