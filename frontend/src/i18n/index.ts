@@ -9,7 +9,7 @@ const translations: Record<string, Record<string, string>> = {
     'nav.register': 'Get Started',
     'nav.dashboard': 'Dashboard',
     'hero.title': 'Convert Any Website Into a Native Android App',
-    'hero.subtitle': 'Turn your website into a feature-rich Android app with TWA technology.',
+    'hero.subtitle': 'Turn your website into a feature-rich Android app in minutes.',
     'hero.cta': 'Get Started Free',
   },
   hi: {
@@ -21,7 +21,7 @@ const translations: Record<string, Record<string, string>> = {
     'nav.register': 'शुरू करें',
     'nav.dashboard': 'डैशबोर्ड',
     'hero.title': 'किसी भी वेबसाइट को Android ऐप में बदलें',
-    'hero.subtitle': 'TWA तकनीक से अपनी वेबसाइट को एक फीचर-युक्त Android ऐप में बदलें।',
+    'hero.subtitle': 'अपनी वेबसाइट को मिनटों में एक फीचर-युक्त Android ऐप में बदलें।',
     'hero.cta': 'मुफ्त में शुरू करें',
   },
 }

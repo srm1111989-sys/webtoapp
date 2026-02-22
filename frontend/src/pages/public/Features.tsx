@@ -1,62 +1,56 @@
 import { Link } from 'react-router-dom'
 import {
-  Smartphone, Bell, Fingerprint, QrCode, Globe, Wifi, WifiOff,
+  Smartphone, Bell, Fingerprint, QrCode, WifiOff,
   Shield, Navigation, Camera, MapPin, Upload, Code, Palette, Monitor, ArrowRight
 } from 'lucide-react'
 
 const allFeatures = [
   {
     icon: Smartphone,
-    title: 'TWA (Trusted Web Activity)',
-    desc: 'Your website runs in full-screen Chrome with no address bar. Users get a truly native experience. Falls back to WebView if Chrome TWA is not available.',
+    title: 'Android App',
+    desc: 'Your website runs as a full-screen native Android app. Users get a smooth, app-like experience with no address bar.',
     plans: ['Free', 'Basic', 'Pro', 'Business'],
   },
   {
     icon: Monitor,
     title: 'Windows Desktop App',
-    desc: 'Generate a Windows .exe installer using Electron. Configure window size, title bar, menu bar, system tray, and fullscreen mode.',
+    desc: 'Generate a Windows .exe installer for your website. Configure window size, title bar, menu bar, system tray, and fullscreen mode.',
     plans: ['Basic', 'Pro', 'Business'],
   },
   {
     icon: Bell,
     title: 'Push Notifications',
-    desc: 'Send push notifications via Firebase Cloud Messaging. Create campaigns, schedule sends, and target all users or specific topics.',
+    desc: 'Send push notifications to your app users. Create campaigns, schedule sends, and target all users or specific topics.',
     plans: ['Basic', 'Pro', 'Business'],
   },
   {
     icon: Fingerprint,
     title: 'Biometric Authentication',
-    desc: 'Require fingerprint or face unlock before the app opens. Uses AndroidX Biometric library with device credential fallback.',
+    desc: 'Require fingerprint or face unlock before the app opens. Adds an extra layer of security for your users.',
     plans: ['Pro', 'Business'],
   },
   {
     icon: QrCode,
     title: 'QR Code Scanner',
-    desc: 'Built-in QR scanner using Google ML Kit. Callable from JavaScript bridge or as a standalone activity.',
+    desc: 'Built-in QR code scanner that can be triggered from your website or as a standalone feature.',
     plans: ['Pro', 'Business'],
-  },
-  {
-    icon: Globe,
-    title: 'PWA Generation',
-    desc: 'Auto-generate manifest.json, service worker, and resized icons for Progressive Web App support on iOS Safari.',
-    plans: ['Basic', 'Pro', 'Business'],
   },
   {
     icon: WifiOff,
     title: 'Offline Mode',
-    desc: 'Cache pages for offline access. Show a branded offline page when no connection is available.',
+    desc: 'Cache pages for offline access. Show a branded offline page when no internet connection is available.',
     plans: ['Basic', 'Pro', 'Business'],
   },
   {
     icon: Shield,
     title: 'Screenshot Prevention',
-    desc: 'Block screenshots and screen recording in the app using Android FLAG_SECURE.',
+    desc: 'Block screenshots and screen recording inside the app for content protection.',
     plans: ['Pro', 'Business'],
   },
   {
     icon: Navigation,
     title: 'Custom Navigation',
-    desc: 'Add bottom navigation bar or drawer menu with custom links and icons.',
+    desc: 'Add a bottom navigation bar with custom links and icons to help users navigate your app.',
     plans: ['Basic', 'Pro', 'Business'],
   },
   {
@@ -80,19 +74,19 @@ const allFeatures = [
   {
     icon: Code,
     title: 'JavaScript Bridge',
-    desc: 'Communicate between your website and native Android features. Access device info, share, vibrate, and more.',
+    desc: 'Communicate between your website and native app features. Access device info, share content, trigger vibration, and more.',
     plans: ['Pro', 'Business'],
   },
   {
     icon: Monitor,
     title: 'AdMob Integration',
-    desc: 'Monetize with Google AdMob banner, interstitial, and rewarded ads.',
+    desc: 'Monetize your app with Google AdMob banner, interstitial, and rewarded ads.',
     plans: ['Basic', 'Pro', 'Business'],
   },
   {
     icon: Palette,
     title: 'Full Customization',
-    desc: 'Custom colors, icon, splash screen, status bar color, and user agent string.',
+    desc: 'Custom colors, app icon, splash screen, status bar color, and user agent string.',
     plans: ['Free', 'Basic', 'Pro', 'Business'],
   },
 ]
