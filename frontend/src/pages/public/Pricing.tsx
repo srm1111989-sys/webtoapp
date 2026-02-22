@@ -69,20 +69,20 @@ export default function Pricing() {
 
   return (
     <div>
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-16">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
-          <p className="text-primary-100 text-lg">Choose the plan that fits your needs. Start free, upgrade anytime.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">Simple, Transparent Pricing</h1>
+          <p className="text-primary-100 text-base sm:text-lg">Choose the plan that fits your needs. Start free, upgrade anytime.</p>
         </div>
       </section>
 
-      <section className="py-16 max-w-7xl mx-auto px-4">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {displayPlans.map((plan) => (
             <div
               key={plan.slug}
               className={clsx(
-                'border rounded-xl p-6 flex flex-col',
+                'border rounded-xl p-4 sm:p-6 flex flex-col',
                 plan.slug === 'pro' ? 'border-primary-500 ring-2 ring-primary-500 relative' : ''
               )}
             >

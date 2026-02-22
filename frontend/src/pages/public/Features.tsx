@@ -99,19 +99,19 @@ export default function Features() {
   })
   return (
     <div>
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-16">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">All Features</h1>
-          <p className="text-primary-100 text-lg max-w-2xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">All Features</h1>
+          <p className="text-primary-100 text-base sm:text-lg max-w-2xl mx-auto">
             Everything you need to create professional Android and Windows desktop apps from your website.
           </p>
         </div>
       </section>
 
-      <section className="py-16 max-w-7xl mx-auto px-4">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {allFeatures.map((f) => (
-            <div key={f.title} className="border rounded-xl p-6 hover:shadow-lg transition-shadow">
+            <div key={f.title} className="border rounded-xl p-4 sm:p-6 hover:shadow-lg transition-shadow">
               <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
                 <f.icon className="w-5 h-5 text-primary-600" />
               </div>
@@ -127,9 +127,9 @@ export default function Features() {
         </div>
       </section>
 
-      <section className="py-16 bg-primary-600 text-white text-center">
+      <section className="py-10 sm:py-16 bg-primary-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-4">Ready to Build Your App?</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Build Your App?</h2>
           <Link to="/register" className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 hover:bg-gray-100">
             Get Started <ArrowRight className="w-5 h-5" />
           </Link>

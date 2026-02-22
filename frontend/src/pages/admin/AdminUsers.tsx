@@ -113,7 +113,45 @@ export default function AdminUsers() {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Mobile card layout */}
+            <div className="md:hidden divide-y">
+              {data?.users.map((user) => (
+                <div key={user.id} className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-900">{user.full_name}</span>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                        user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {user.is_active ? 'Active' : 'Banned'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 truncate">{user.email}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400">{formatDate(user.created_at)}</span>
+                    <div className="flex items-center gap-2">
+                      <UserTestModeToggle userId={user.id} />
+                      <button
+                        onClick={() => statusMutation.mutate({ userId: user.id, isActive: !user.is_active })}
+                        disabled={statusMutation.isPending}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium ${
+                          user.is_active ? 'text-red-600 hover:bg-red-50' : 'text-green-600 hover:bg-green-50'
+                        }`}
+                      >
+                        {user.is_active ? <><Ban className="w-3.5 h-3.5" /> Ban</> : <><CheckCircle2 className="w-3.5 h-3.5" /> Activate</>}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {data?.users.length === 0 && (
+                <div className="text-center py-12 text-gray-400">No users found.</div>
+              )}
+            </div>
+
+            {/* Desktop table layout */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-gray-50">
@@ -192,7 +230,7 @@ export default function AdminUsers() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
+              <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-t bg-gray-50">
                 <span className="text-sm text-gray-500">
                   Page {page} of {totalPages} ({data?.total} total)
                 </span>

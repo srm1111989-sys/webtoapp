@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Outlet, Link } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
-import { Smartphone } from 'lucide-react'
+import { Smartphone, Menu, X } from 'lucide-react'
 
 export default function PublicLayout() {
   const { accessToken } = useAuthStore()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -21,20 +23,40 @@ export default function PublicLayout() {
             </nav>
             <div className="flex items-center gap-3">
               {accessToken ? (
-                <Link to="/dashboard" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700">
+                <Link to="/dashboard" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 text-sm">
                   Dashboard
                 </Link>
               ) : (
                 <>
-                  <Link to="/login" className="text-gray-600 hover:text-gray-900">Login</Link>
-                  <Link to="/register" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700">
+                  <Link to="/login" className="hidden sm:inline text-gray-600 hover:text-gray-900 text-sm">Login</Link>
+                  <Link to="/register" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 text-sm">
                     Get Started
                   </Link>
                 </>
               )}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t bg-white">
+            <nav className="flex flex-col px-4 py-3 space-y-1">
+              <Link to="/features" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Features</Link>
+              <Link to="/pricing" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Pricing</Link>
+              <Link to="/blog" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Blog</Link>
+              {!accessToken && (
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm sm:hidden">Login</Link>
+              )}
+            </nav>
+          </div>
+        )}
       </header>
       <main className="flex-1">
         <Outlet />

@@ -151,10 +151,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* Charts row */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Builds by Status */}
-        <div className="bg-white rounded-xl border p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">Builds by Status</h2>
+        <div className="bg-white rounded-xl border p-4 sm:p-6 shadow-sm">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Builds by Status</h2>
           {buildsChartData.length > 0 ? (
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -180,8 +180,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* Daily Builds */}
-        <div className="bg-white rounded-xl border p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">Daily Builds (30 days)</h2>
+        <div className="bg-white rounded-xl border p-4 sm:p-6 shadow-sm">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Daily Builds (30 days)</h2>
           {dailyBuildsChart.length > 0 ? (
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -221,7 +221,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Recent Failed Builds */}
-      <div className="bg-white rounded-xl border p-6 shadow-sm">
+      <div className="bg-white rounded-xl border p-4 sm:p-6 shadow-sm">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-red-500" />

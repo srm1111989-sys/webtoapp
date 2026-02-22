@@ -60,7 +60,38 @@ export default function Orders() {
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border overflow-hidden">
+        {/* Mobile card layout */}
+        <div className="space-y-3 md:hidden">
+          {orders.map((order) => (
+            <Link
+              key={order.id}
+              to={`/orders/${order.id}`}
+              className="block bg-white rounded-xl border p-4 hover:shadow-sm transition"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-900">{order.order_number}</span>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[order.status] ?? 'bg-gray-100 text-gray-800'}`}
+                >
+                  {order.status}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">{order.app_name ?? '-'} · {order.plan_name ?? '-'}</span>
+                <span className="font-medium text-gray-900">{formatCurrency(order.amount, order.currency)}</span>
+              </div>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-xs text-gray-400">{formatDate(order.created_at)}</span>
+                <span className="text-primary-600 text-xs font-medium inline-flex items-center gap-0.5">
+                  View <ChevronRight className="w-3.5 h-3.5" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Desktop table layout */}
+        <div className="hidden md:block bg-white rounded-xl border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>

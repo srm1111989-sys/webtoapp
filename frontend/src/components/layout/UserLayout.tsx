@@ -16,16 +16,16 @@ export default function UserLayout() {
   const { user, logout } = useAuthStore()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-16 md:pb-0">
       {/* Top nav */}
       <header className="bg-white border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-          <Link to="/dashboard" className="flex items-center gap-2 text-xl font-bold text-primary-600">
-            <Smartphone className="w-6 h-6" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-14 sm:h-16">
+          <Link to="/dashboard" className="flex items-center gap-2 text-lg sm:text-xl font-bold text-primary-600">
+            <Smartphone className="w-5 h-5 sm:w-6 sm:h-6" />
             WebToApp
           </Link>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
               <User className="w-4 h-4" />
               {user?.full_name}
             </div>
@@ -36,9 +36,9 @@ export default function UserLayout() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <div className="flex gap-8">
-          {/* Sidebar */}
+          {/* Sidebar — hidden on mobile */}
           <aside className="hidden md:block w-56 shrink-0">
             <nav className="space-y-1">
               {navItems.map((item) => (
@@ -65,6 +65,27 @@ export default function UserLayout() {
           </main>
         </div>
       </div>
+
+      {/* Mobile bottom nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-50 safe-area-pb">
+        <div className="flex justify-around items-center h-14">
+          {navItems.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={clsx(
+                'flex flex-col items-center gap-0.5 px-2 py-1 min-w-0',
+                location.pathname === item.to
+                  ? 'text-primary-600'
+                  : 'text-gray-400'
+              )}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium truncate">{item.label}</span>
+            </Link>
+          ))}
+        </div>
+      </nav>
     </div>
   )
 }

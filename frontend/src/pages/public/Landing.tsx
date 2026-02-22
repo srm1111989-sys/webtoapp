@@ -136,12 +136,13 @@ export default function Landing() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-20 lg:py-28">
+      <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-12 sm:py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-            Convert Any Website Into<br />Android & Desktop Apps
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            Convert Any Website Into<br className="hidden sm:block" />
+            <span className="sm:hidden"> </span>Android & Desktop Apps
           </h1>
-          <p className="text-xl lg:text-2xl text-primary-100 mb-8 max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl lg:text-2xl text-primary-100 mb-6 sm:mb-8 max-w-3xl mx-auto">
             Turn your website into professional Android mobile apps and Windows desktop apps.
             No coding required. Get your APK or .exe in minutes.
           </p>
@@ -181,13 +182,13 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-4">Why WebToApp?</h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Why WebToApp?</h2>
+          <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
             Everything you need to convert your website into professional Android and desktop apps.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {features.map((f) => (
               <div key={f.title} className="text-center p-6 rounded-xl border hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -202,17 +203,17 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-12 sm:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="grid md:grid-cols-4 gap-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">How It Works</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
             {steps.map((s, i) => (
               <div key={s.num} className="text-center relative">
-                <div className="w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary-600 text-white rounded-full flex items-center justify-center text-lg sm:text-xl font-bold mx-auto mb-3 sm:mb-4">
                   {s.num}
                 </div>
-                <h3 className="font-semibold mb-2">{s.title}</h3>
-                <p className="text-gray-600 text-sm">{s.desc}</p>
+                <h3 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base">{s.title}</h3>
+                <p className="text-gray-600 text-xs sm:text-sm">{s.desc}</p>
                 {i < steps.length - 1 && (
                   <div className="hidden md:block absolute top-6 left-[60%] w-[80%] border-t-2 border-dashed border-gray-300" />
                 )}
@@ -223,13 +224,13 @@ export default function Landing() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-4">What Our Users Say</h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">What Our Users Say</h2>
+          <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
             Trusted by thousands of businesses, developers, and entrepreneurs worldwide.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {testimonials.map((t) => (
               <div key={t.name} className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
                 <div className="flex gap-1 mb-3">
@@ -260,17 +261,17 @@ export default function Landing() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-20 bg-gray-50 scroll-mt-16">
+      <section id="pricing" className="py-12 sm:py-20 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-4">Simple, Affordable Pricing</h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Simple, Affordable Pricing</h2>
+          <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
             Start free. Upgrade when you need more features. No hidden charges.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {FALLBACK_PLANS.map((plan) => (
               <div
                 key={plan.slug}
-                className={`bg-white border rounded-xl p-6 flex flex-col relative ${
+                className={`bg-white border rounded-xl p-4 sm:p-6 flex flex-col relative ${
                   plan.slug === 'pro' ? 'border-primary-500 ring-2 ring-primary-500' : ''
                 }`}
               >
@@ -321,9 +322,9 @@ export default function Landing() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Frequently Asked Questions</h2>
           <div className="space-y-6">
             {faqs.map((f) => (
               <div key={f.q} className="bg-white rounded-lg p-6 shadow-sm">
@@ -336,10 +337,10 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-primary-600 text-white text-center">
+      <section className="py-12 sm:py-20 bg-primary-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-4">Ready to Convert Your Website?</h2>
-          <p className="text-primary-100 mb-8 text-lg">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Convert Your Website?</h2>
+          <p className="text-primary-100 mb-6 sm:mb-8 text-base sm:text-lg">
             Join thousands of businesses who have converted their websites into Android and desktop apps.
           </p>
           <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">

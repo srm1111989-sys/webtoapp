@@ -27,16 +27,16 @@ export default function MyApps() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Apps</h1>
-          <p className="mt-1 text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Apps</h1>
+          <p className="mt-1 text-gray-500 text-sm">
             Manage your web-to-app conversions.
           </p>
         </div>
         <Link
           to="/apps/create"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           Create App

@@ -76,12 +76,12 @@ const STEP_LABELS = ['Basic Info', 'Visuals', 'Features', 'Advanced', 'Plan & Re
 
 function StepIndicator({ currentStep }: { currentStep: number }) {
   return (
-    <div className="flex items-center justify-center mb-10">
+    <div className="flex items-center justify-center mb-6 sm:mb-10 overflow-x-auto">
       {STEP_LABELS.map((label, idx) => (
         <div key={label} className="flex items-center">
           <div className="flex flex-col items-center">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-colors ${
+              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold border-2 transition-colors ${
                 idx < currentStep
                   ? 'bg-blue-600 border-blue-600 text-white'
                   : idx === currentStep
@@ -89,10 +89,10 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
                     : 'border-gray-300 text-gray-400 bg-white'
               }`}
             >
-              {idx < currentStep ? <Check className="w-5 h-5" /> : idx + 1}
+              {idx < currentStep ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : idx + 1}
             </div>
             <span
-              className={`mt-1.5 text-xs font-medium ${
+              className={`mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-medium hidden sm:block ${
                 idx <= currentStep ? 'text-blue-600' : 'text-gray-400'
               }`}
             >
@@ -101,7 +101,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
           </div>
           {idx < STEP_LABELS.length - 1 && (
             <div
-              className={`w-16 h-0.5 mx-2 mb-5 ${
+              className={`w-6 sm:w-16 h-0.5 mx-1 sm:mx-2 mb-2 sm:mb-5 ${
                 idx < currentStep ? 'bg-blue-600' : 'bg-gray-300'
               }`}
             />
@@ -307,7 +307,7 @@ export default function CreateApp() {
 
       <StepIndicator currentStep={step} />
 
-      <div className="bg-white rounded-2xl shadow-sm border p-8">
+      <div className="bg-white rounded-2xl shadow-sm border p-4 sm:p-8">
         {step === 0 && <Step0BasicInfo />}
         {step === 1 && <Step1Visuals />}
         {step === 2 && <Step2Features />}
@@ -979,7 +979,7 @@ function Step3Advanced() {
       {/* Desktop Settings */}
       {wizard.selectedPlatforms.includes('desktop') && (
         <CollapsibleSection title="Desktop Settings" defaultOpen={true}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Window Width</label>
               <input
@@ -1288,7 +1288,7 @@ function Step4PlanReview() {
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {(plans as Plan[])?.map((plan) => {
               const isSelected = selectedPlan === plan.id
               const missing = getMissingFeatures(plan)
@@ -1404,8 +1404,8 @@ function Step4PlanReview() {
       {/* Review Summary */}
       <div>
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Review Summary</h2>
-        <div className="bg-gray-50 rounded-xl p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="bg-gray-50 rounded-xl p-4 sm:p-6 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
             <div>
               <span className="text-gray-500">App Name</span>
               <p className="font-medium text-gray-900">{wizard.name}</p>
