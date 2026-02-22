@@ -14,6 +14,7 @@ from app.models.payment import Payment
 from app.models.plan import Plan
 from app.models.app_config import AppConfig
 from app.models.setting import Setting
+from app.models.subscription import Subscription
 from app.schemas.auth import LoginRequest, TokenResponse, MessageResponse
 from app.schemas.user import UserResponse, UserListResponse
 from app.schemas.order import OrderResponse, OrderListResponse, OrderDetailResponse
@@ -118,6 +119,48 @@ async def update_user_status(
     user.is_active = is_active
     action = "activated" if is_active else "banned"
     return {"message": f"User {action} successfully"}
+
+
+@router.put("/users/{user_id}/test-mode", response_model=MessageResponse)
+async def toggle_user_test_mode(
+    user_id: uuid.UUID,
+    enable: bool,
+    admin: Admin = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    setting_key = f"user_test_mode:{user_id}"
+    result = await db.execute(select(Setting).where(Setting.key == setting_key))
+    setting = result.scalar_one_or_none()
+
+    if enable:
+        if setting:
+            setting.value = "true"
+        else:
+            db.add(Setting(key=setting_key, value="true", description=f"Test mode for user {user.email}"))
+    else:
+        if setting:
+            setting.value = "false"
+
+    action = "enabled" if enable else "disabled"
+    return {"message": f"Test mode {action} for {user.email}"}
+
+
+@router.get("/users/{user_id}/test-mode")
+async def get_user_test_mode(
+    user_id: uuid.UUID,
+    admin: Admin = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    setting_key = f"user_test_mode:{user_id}"
+    result = await db.execute(select(Setting).where(Setting.key == setting_key))
+    setting = result.scalar_one_or_none()
+    enabled = setting is not None and setting.value.lower() in ("true", "1", "yes")
+    return {"user_id": str(user_id), "test_mode": enabled}
 
 
 # --- Orders Management ---

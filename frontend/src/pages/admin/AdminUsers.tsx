@@ -1,9 +1,47 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { Search, ChevronLeft, ChevronRight, Loader2, Ban, CheckCircle2 } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, Loader2, Ban, CheckCircle2, FlaskConical } from 'lucide-react'
 import { adminApi } from '@/api/admin'
 import { formatDate } from '@/utils/format'
+
+function UserTestModeToggle({ userId }: { userId: string }) {
+  const queryClient = useQueryClient()
+
+  const { data } = useQuery({
+    queryKey: ['admin', 'user-test-mode', userId],
+    queryFn: () => adminApi.getUserTestMode(userId).then((r) => r.data),
+  })
+
+  const mutation = useMutation({
+    mutationFn: (enable: boolean) => adminApi.toggleUserTestMode(userId, enable),
+    onSuccess: (_, enable) => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'user-test-mode', userId] })
+      toast.success(`Test mode ${enable ? 'enabled' : 'disabled'}`)
+    },
+    onError: () => {
+      toast.error('Failed to update test mode')
+    },
+  })
+
+  const isEnabled = data?.test_mode ?? false
+
+  return (
+    <button
+      onClick={() => mutation.mutate(!isEnabled)}
+      disabled={mutation.isPending}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+        isEnabled
+          ? 'text-amber-700 bg-amber-50 hover:bg-amber-100'
+          : 'text-gray-500 hover:bg-gray-100'
+      }`}
+      title={isEnabled ? 'Test mode enabled — click to disable' : 'Enable test mode for this user'}
+    >
+      <FlaskConical className="w-3.5 h-3.5" />
+      {isEnabled ? 'Test' : 'Live'}
+    </button>
+  )
+}
 
 export default function AdminUsers() {
   const queryClient = useQueryClient()
@@ -82,6 +120,7 @@ export default function AdminUsers() {
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Name</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Email</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Status</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Payment</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Joined</th>
                     <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Actions</th>
                   </tr>
@@ -105,6 +144,9 @@ export default function AdminUsers() {
                         >
                           {user.is_active ? 'Active' : 'Banned'}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <UserTestModeToggle userId={user.id} />
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-sm text-gray-500">{formatDate(user.created_at)}</span>
@@ -139,7 +181,7 @@ export default function AdminUsers() {
                   ))}
                   {data?.users.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="text-center py-12 text-gray-400">
+                      <td colSpan={6} className="text-center py-12 text-gray-400">
                         No users found.
                       </td>
                     </tr>

@@ -22,8 +22,18 @@ settings = get_settings()
 router = APIRouter(prefix="/api/payments", tags=["payments"])
 
 
-async def _is_test_mode(db: AsyncSession) -> bool:
-    """Check if payment test mode is enabled via DB setting or environment."""
+async def _is_test_mode(db: AsyncSession, user: User | None = None) -> bool:
+    """Check if payment test mode is enabled globally or for this user."""
+    # Check per-user test mode
+    if user:
+        result = await db.execute(
+            select(Setting).where(Setting.key == f"user_test_mode:{user.id}")
+        )
+        user_setting = result.scalar_one_or_none()
+        if user_setting is not None and user_setting.value.lower() in ("true", "1", "yes"):
+            return True
+
+    # Check global test mode
     if settings.environment in ("development", "staging"):
         return True
     result = await db.execute(
@@ -33,16 +43,33 @@ async def _is_test_mode(db: AsyncSession) -> bool:
     return setting is not None and setting.value.lower() in ("true", "1", "yes")
 
 
+def _get_razorpay_credentials(test_mode: bool) -> tuple[str, str]:
+    """Return (key_id, key_secret) for Razorpay based on mode."""
+    if test_mode and settings.razorpay_test_key_id and settings.razorpay_test_key_secret:
+        return settings.razorpay_test_key_id, settings.razorpay_test_key_secret
+    return settings.razorpay_key_id, settings.razorpay_key_secret
+
+
+def _get_stripe_credentials(test_mode: bool) -> tuple[str, str]:
+    """Return (publishable_key, secret_key) for Stripe based on mode."""
+    if test_mode and settings.stripe_test_secret_key:
+        return settings.stripe_test_publishable_key, settings.stripe_test_secret_key
+    return settings.stripe_publishable_key, settings.stripe_secret_key
+
+
 @router.get("/mode")
 async def get_payment_mode(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    test_mode = await _is_test_mode(db)
+    test_mode = await _is_test_mode(db, user)
 
-    # Check which gateways are configured
-    razorpay_configured = bool(settings.razorpay_key_id and settings.razorpay_key_secret)
-    stripe_configured = bool(settings.stripe_secret_key)
+    # Check which gateways are configured (for the active mode)
+    rp_key, rp_secret = _get_razorpay_credentials(test_mode)
+    _, stripe_secret = _get_stripe_credentials(test_mode)
+
+    razorpay_configured = bool(rp_key and rp_secret)
+    stripe_configured = bool(stripe_secret)
 
     return {
         "test_mode": test_mode,
@@ -67,11 +94,14 @@ async def create_razorpay_order(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found or already paid")
 
-    if not settings.razorpay_key_id:
+    test_mode = await _is_test_mode(db, user)
+    rp_key_id, rp_key_secret = _get_razorpay_credentials(test_mode)
+
+    if not rp_key_id or not rp_key_secret:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Razorpay not configured")
 
     import razorpay
-    client = razorpay.Client(auth=(settings.razorpay_key_id, settings.razorpay_key_secret))
+    client = razorpay.Client(auth=(rp_key_id, rp_key_secret))
     razorpay_order = client.order.create({
         "amount": order.amount,
         "currency": order.currency,
@@ -82,7 +112,7 @@ async def create_razorpay_order(
 
     return RazorpayOrderResponse(
         razorpay_order_id=razorpay_order["id"],
-        razorpay_key_id=settings.razorpay_key_id,
+        razorpay_key_id=rp_key_id,
         amount=order.amount,
         currency=order.currency,
         order_id=order.id,
@@ -102,10 +132,13 @@ async def verify_razorpay_payment(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
 
+    test_mode = await _is_test_mode(db, user)
+    _, rp_key_secret = _get_razorpay_credentials(test_mode)
+
     # Verify signature
     message = f"{data.razorpay_order_id}|{data.razorpay_payment_id}"
     expected_signature = hmac.new(
-        settings.razorpay_key_secret.encode(),
+        rp_key_secret.encode(),
         message.encode(),
         hashlib.sha256,
     ).hexdigest()
@@ -114,9 +147,10 @@ async def verify_razorpay_payment(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid payment signature")
 
     # Record payment
+    gateway_label = "razorpay_test" if test_mode else "razorpay"
     payment = Payment(
         order_id=order.id,
-        gateway="razorpay",
+        gateway=gateway_label,
         gateway_payment_id=data.razorpay_payment_id,
         gateway_signature=data.razorpay_signature,
         amount=order.amount,
@@ -127,6 +161,7 @@ async def verify_razorpay_payment(
 
     order.status = "paid"
     order.gateway_payment_id = data.razorpay_payment_id
+    order.payment_gateway = gateway_label
 
     await db.flush()
 
@@ -149,11 +184,14 @@ async def create_stripe_checkout(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found or already paid")
 
-    if not settings.stripe_secret_key:
+    test_mode = await _is_test_mode(db, user)
+    _, stripe_secret = _get_stripe_credentials(test_mode)
+
+    if not stripe_secret:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Stripe not configured")
 
     import stripe
-    stripe.api_key = settings.stripe_secret_key
+    stripe.api_key = stripe_secret
 
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
@@ -172,6 +210,8 @@ async def create_stripe_checkout(
     )
 
     order.gateway_order_id = session.id
+    gateway_label = "stripe_test" if test_mode else "stripe"
+    order.payment_gateway = gateway_label
     return StripeCheckoutResponse(checkout_url=session.url, session_id=session.id)
 
 
@@ -181,7 +221,7 @@ async def test_payment(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    test_mode = await _is_test_mode(db)
+    test_mode = await _is_test_mode(db, user)
     if not test_mode:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Test payments are not enabled")
 

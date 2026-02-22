@@ -1144,19 +1144,8 @@ function Step4PlanReview() {
         return
       }
 
-      // Test mode — use test payment directly
-      if (paymentMode?.test_mode) {
-        try {
-          const testRes = await paymentsApi.testPayment(order.id)
-          toast.success(testRes.data.message || 'Test payment successful!')
-          navigate(`/orders/${order.id}`)
-        } catch {
-          toast.error('Test payment failed.')
-        }
-        return
-      }
-
-      // Live mode — use real gateways
+      // Both test & live mode use real gateway flow.
+      // Backend picks test or live credentials based on mode.
       if (currency === 'INR' && paymentMode?.gateways?.razorpay) {
         try {
           const rpRes = await paymentsApi.createRazorpay(order.id)
@@ -1272,7 +1261,7 @@ function Step4PlanReview() {
           <FlaskConical className="w-5 h-5 text-amber-600 shrink-0" />
           <div>
             <p className="text-sm font-medium text-amber-800">Test Mode Active</p>
-            <p className="text-xs text-amber-600">Payments will be simulated. No real charges will be made.</p>
+            <p className="text-xs text-amber-600">Using test gateway credentials. No real charges. Use test card numbers to complete payment.</p>
           </div>
         </div>
       )}

@@ -20,6 +20,12 @@ export const adminApi = {
   updateUserStatus: (userId: string, is_active: boolean) =>
     adminClient.put<{ message: string }>(`/api/admin/users/${userId}/status?is_active=${is_active}`),
 
+  getUserTestMode: (userId: string) =>
+    adminClient.get<{ user_id: string; test_mode: boolean }>(`/api/admin/users/${userId}/test-mode`),
+
+  toggleUserTestMode: (userId: string, enable: boolean) =>
+    adminClient.put<{ message: string }>(`/api/admin/users/${userId}/test-mode?enable=${enable}`),
+
   // Orders
   listOrders: (page = 1, per_page = 20, status?: string) => {
     let url = `/api/admin/orders?page=${page}&per_page=${per_page}`

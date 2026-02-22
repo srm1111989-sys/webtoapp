@@ -31,15 +31,23 @@ class Settings(BaseSettings):
     smtp_from_email: str = "support@webtoapp.com"
     smtp_from_name: str = "WebToApp"
 
-    # Razorpay
+    # Razorpay (live)
     razorpay_key_id: str = ""
     razorpay_key_secret: str = ""
     razorpay_webhook_secret: str = ""
 
-    # Stripe
+    # Razorpay (test)
+    razorpay_test_key_id: str = ""
+    razorpay_test_key_secret: str = ""
+
+    # Stripe (live)
     stripe_publishable_key: str = ""
     stripe_secret_key: str = ""
     stripe_webhook_secret: str = ""
+
+    # Stripe (test)
+    stripe_test_publishable_key: str = ""
+    stripe_test_secret_key: str = ""
 
     # GitLab
     gitlab_url: str = "https://gitlab.com"

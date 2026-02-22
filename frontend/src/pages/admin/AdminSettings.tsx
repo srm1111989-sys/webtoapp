@@ -12,19 +12,35 @@ interface SettingsSection {
 
 const SECTIONS: SettingsSection[] = [
   {
-    title: 'Razorpay',
+    title: 'Razorpay — Live Keys',
     icon: CreditCard,
     fields: [
-      { key: 'razorpay_key_id', label: 'Key ID', type: 'text', placeholder: 'rzp_live_xxxxxxxxxxxx' },
-      { key: 'razorpay_key_secret', label: 'Key Secret', type: 'password', placeholder: 'Enter Razorpay secret' },
+      { key: 'razorpay_key_id', label: 'Live Key ID', type: 'text', placeholder: 'rzp_live_xxxxxxxxxxxx' },
+      { key: 'razorpay_key_secret', label: 'Live Key Secret', type: 'password', placeholder: 'Enter Razorpay live secret' },
     ],
   },
   {
-    title: 'Stripe',
+    title: 'Razorpay — Test Keys',
+    icon: FlaskConical,
+    fields: [
+      { key: 'razorpay_test_key_id', label: 'Test Key ID', type: 'text', placeholder: 'rzp_test_xxxxxxxxxxxx' },
+      { key: 'razorpay_test_key_secret', label: 'Test Key Secret', type: 'password', placeholder: 'Enter Razorpay test secret' },
+    ],
+  },
+  {
+    title: 'Stripe — Live Keys',
     icon: CreditCard,
     fields: [
-      { key: 'stripe_publishable_key', label: 'Publishable Key', type: 'text', placeholder: 'pk_live_xxxxxxxxxxxx' },
-      { key: 'stripe_secret_key', label: 'Secret Key', type: 'password', placeholder: 'sk_live_xxxxxxxxxxxx' },
+      { key: 'stripe_publishable_key', label: 'Live Publishable Key', type: 'text', placeholder: 'pk_live_xxxxxxxxxxxx' },
+      { key: 'stripe_secret_key', label: 'Live Secret Key', type: 'password', placeholder: 'sk_live_xxxxxxxxxxxx' },
+    ],
+  },
+  {
+    title: 'Stripe — Test Keys',
+    icon: FlaskConical,
+    fields: [
+      { key: 'stripe_test_publishable_key', label: 'Test Publishable Key', type: 'text', placeholder: 'pk_test_xxxxxxxxxxxx' },
+      { key: 'stripe_test_secret_key', label: 'Test Secret Key', type: 'password', placeholder: 'sk_test_xxxxxxxxxxxx' },
     ],
   },
   {
@@ -148,8 +164,8 @@ export default function AdminSettings() {
                 </p>
                 <p className="text-sm text-gray-500 mt-0.5">
                   {testModeEnabled
-                    ? 'Payments are simulated. No real charges will be made. Orders will be auto-marked as paid.'
-                    : 'Payments are processed through configured gateways (Razorpay / Stripe).'}
+                    ? 'Payments use test gateway credentials. No real charges. Use Razorpay/Stripe test cards to complete checkout.'
+                    : 'Payments are processed through live gateway credentials (Razorpay / Stripe).'}
                 </p>
                 {testModeEnabled && (
                   <div className="flex items-center gap-1.5 mt-2 text-amber-700 text-xs font-medium">
@@ -177,10 +193,18 @@ export default function AdminSettings() {
               <div>
                 <p className="text-sm font-medium text-gray-900">Razorpay</p>
                 <p className="text-xs text-gray-500">
-                  {formData['razorpay_key_id'] ? (
-                    <span className="text-green-600">Configured</span>
+                  {testModeEnabled ? (
+                    formData['razorpay_test_key_id'] ? (
+                      <span className="text-amber-600">Using test keys</span>
+                    ) : (
+                      <span className="text-red-500">Test keys not configured</span>
+                    )
                   ) : (
-                    <span className="text-gray-400">Not configured</span>
+                    formData['razorpay_key_id'] ? (
+                      <span className="text-green-600">Using live keys</span>
+                    ) : (
+                      <span className="text-gray-400">Not configured</span>
+                    )
                   )}
                 </p>
               </div>
@@ -190,10 +214,18 @@ export default function AdminSettings() {
               <div>
                 <p className="text-sm font-medium text-gray-900">Stripe</p>
                 <p className="text-xs text-gray-500">
-                  {formData['stripe_secret_key'] ? (
-                    <span className="text-green-600">Configured</span>
+                  {testModeEnabled ? (
+                    formData['stripe_test_secret_key'] ? (
+                      <span className="text-amber-600">Using test keys</span>
+                    ) : (
+                      <span className="text-red-500">Test keys not configured</span>
+                    )
                   ) : (
-                    <span className="text-gray-400">Not configured</span>
+                    formData['stripe_secret_key'] ? (
+                      <span className="text-green-600">Using live keys</span>
+                    ) : (
+                      <span className="text-gray-400">Not configured</span>
+                    )
                   )}
                 </p>
               </div>

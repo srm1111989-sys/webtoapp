@@ -138,7 +138,7 @@ export default function Dashboard() {
               <FlaskConical className="w-5 h-5 text-amber-600 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-amber-800">Payment Test Mode Active</p>
-                <p className="text-xs text-amber-600">Payments are simulated. No real charges will be made when creating apps.</p>
+                <p className="text-xs text-amber-600">Using test gateway credentials. No real charges will be made. Use test card numbers at checkout.</p>
               </div>
             </div>
           )}
