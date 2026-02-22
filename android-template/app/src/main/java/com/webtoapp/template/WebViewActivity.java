@@ -51,6 +51,7 @@ public class WebViewActivity extends AppCompatActivity {
     private JSONObject features;
     private String appUrl;
     private String appHost;
+    private String appBaseDomain;
 
     private ValueCallback<Uri[]> fileUploadCallback;
     private ActivityResultLauncher<Intent> fileChooserLauncher;
@@ -79,12 +80,22 @@ public class WebViewActivity extends AppCompatActivity {
             if (features == null) features = new JSONObject();
             appUrl = config.optString("app_url", "https://example.com");
             appHost = config.optString("app_host", "example.com");
+            appBaseDomain = extractBaseDomain(appHost);
         } catch (Exception e) {
             config = new JSONObject();
             features = new JSONObject();
             appUrl = "https://example.com";
             appHost = "example.com";
+            appBaseDomain = "example.com";
         }
+    }
+
+    private String extractBaseDomain(String host) {
+        // Strip www. prefix and return base domain (e.g., "www.example.com" → "example.com")
+        if (host != null && host.startsWith("www.")) {
+            return host.substring(4);
+        }
+        return host;
     }
 
     private void setupWindow() {
@@ -304,7 +315,7 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String host = request.getUrl().getHost();
-                if (host != null && host.contains(appHost)) {
+                if (host != null && (host.contains(appBaseDomain) || host.contains(appHost))) {
                     return false; // Load in WebView
                 }
                 // External links open in browser
