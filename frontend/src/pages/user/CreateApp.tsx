@@ -1098,27 +1098,29 @@ function Step4PlanReview() {
   const currency = getUserCurrency()
 
   const createOrder = useMutation({
-    mutationFn: () => {
+    mutationFn: async (): Promise<{ data: any; isSubscription: boolean; plan: Plan | undefined }> => {
       if (!wizard.appId || !selectedPlan) throw new Error('Missing data')
       const plan = (plans as Plan[])?.find((p) => p.id === selectedPlan)
 
       // Monthly plan → subscription flow
       if (plan?.billing_type === 'monthly') {
-        return subscriptionsApi.create({
+        const res = await subscriptionsApi.create({
           plan_id: selectedPlan,
           currency,
           app_config_id: wizard.appId,
-        }).then((res) => ({ data: res.data, isSubscription: true, plan }))
+        })
+        return { data: res.data, isSubscription: true, plan }
       }
 
       // One-time plan → order flow
-      return ordersApi.create({
+      const res = await ordersApi.create({
         app_config_id: wizard.appId,
         plan_id: selectedPlan,
-      }).then((res) => ({ data: res.data, isSubscription: false, plan }))
+      })
+      return { data: res.data, isSubscription: false, plan }
     },
     onSuccess: async (result) => {
-      const { data, isSubscription, plan } = result as any
+      const { data, isSubscription, plan } = result
 
       // Subscription flow
       if (isSubscription) {
