@@ -68,7 +68,7 @@ export default function PublicLayout() {
             <div>
               <h3 className="text-white font-semibold mb-3">Support</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="mailto:support@websitetoapp.app" className="hover:text-white">support@websitetoapp.app</a></li>
+                <li><a href="mailto:support@webtoapp.com" className="hover:text-white">support@webtoapp.com</a></li>
                 <li><Link to="/contact" className="hover:text-white">Help Center</Link></li>
               </ul>
             </div>

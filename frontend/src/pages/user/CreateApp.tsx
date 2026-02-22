@@ -34,6 +34,7 @@ import {
   AlertTriangle,
   X,
   ExternalLink,
+  FlaskConical,
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
@@ -1087,6 +1088,11 @@ function Step4PlanReview() {
     queryFn: () => plansApi.list().then((r) => r.data),
   })
 
+  const { data: paymentMode } = useQuery({
+    queryKey: ['payment-mode'],
+    queryFn: () => paymentsApi.getPaymentMode().then((r) => r.data),
+  })
+
   const [selectedPlan, setSelectedPlan] = useState<string | null>(wizard.selectedPlanId)
 
   const currency = getUserCurrency()
@@ -1138,25 +1144,35 @@ function Step4PlanReview() {
         return
       }
 
-      // Test mode
-      try {
-        const testRes = await paymentsApi.testPayment(order.id)
-        toast.success(testRes.data.message || 'Test payment successful!')
-        navigate(`/orders/${order.id}`)
-      } catch {
-        // If test mode fails, try Razorpay
+      // Test mode — use test payment directly
+      if (paymentMode?.test_mode) {
+        try {
+          const testRes = await paymentsApi.testPayment(order.id)
+          toast.success(testRes.data.message || 'Test payment successful!')
+          navigate(`/orders/${order.id}`)
+        } catch {
+          toast.error('Test payment failed.')
+        }
+        return
+      }
+
+      // Live mode — use real gateways
+      if (currency === 'INR' && paymentMode?.gateways?.razorpay) {
         try {
           const rpRes = await paymentsApi.createRazorpay(order.id)
           handleRazorpay(rpRes.data, order.id)
         } catch {
-          // Fallback to Stripe
-          try {
-            const stripeRes = await paymentsApi.createStripeCheckout(order.id)
-            window.location.href = stripeRes.data.checkout_url
-          } catch {
-            toast.error('Payment initialization failed.')
-          }
+          toast.error('Razorpay payment initialization failed.')
         }
+      } else if (paymentMode?.gateways?.stripe) {
+        try {
+          const stripeRes = await paymentsApi.createStripeCheckout(order.id)
+          window.location.href = stripeRes.data.checkout_url
+        } catch {
+          toast.error('Stripe payment initialization failed.')
+        }
+      } else {
+        toast.error('No payment gateway configured. Contact support.')
       }
     },
     onError: () => {
@@ -1250,6 +1266,17 @@ function Step4PlanReview() {
 
   return (
     <div className="space-y-8">
+      {/* Test Mode Banner */}
+      {paymentMode?.test_mode && (
+        <div className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-xl p-4">
+          <FlaskConical className="w-5 h-5 text-amber-600 shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-amber-800">Test Mode Active</p>
+            <p className="text-xs text-amber-600">Payments will be simulated. No real charges will be made.</p>
+          </div>
+        </div>
+      )}
+
       {/* Plan Selection */}
       <div>
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Choose a Plan</h2>
@@ -1484,11 +1511,19 @@ function Step4PlanReview() {
           type="button"
           onClick={() => createOrder.mutate()}
           disabled={!selectedPlan || createOrder.isPending}
-          className="flex items-center gap-2 bg-green-600 text-white px-8 py-2.5 rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
+          className={`flex items-center gap-2 text-white px-8 py-2.5 rounded-lg font-medium disabled:opacity-50 transition-colors ${
+            paymentMode?.test_mode
+              ? 'bg-amber-600 hover:bg-amber-700'
+              : 'bg-green-600 hover:bg-green-700'
+          }`}
         >
           {createOrder.isPending ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" /> Processing...
+            </>
+          ) : paymentMode?.test_mode ? (
+            <>
+              <FlaskConical className="w-4 h-4" /> Submit (Test Mode)
             </>
           ) : (
             <>

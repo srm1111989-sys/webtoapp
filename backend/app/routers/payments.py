@@ -8,6 +8,7 @@ from app.database import get_db
 from app.models.user import User
 from app.models.order import Order
 from app.models.payment import Payment
+from app.models.setting import Setting
 from app.schemas.payment import (
     RazorpayVerifyRequest, RazorpayOrderResponse, StripeCheckoutRequest,
     StripeCheckoutResponse, TestPaymentRequest, PaymentResponse,
@@ -19,6 +20,38 @@ from app.services.build_service import trigger_build
 
 settings = get_settings()
 router = APIRouter(prefix="/api/payments", tags=["payments"])
+
+
+async def _is_test_mode(db: AsyncSession) -> bool:
+    """Check if payment test mode is enabled via DB setting or environment."""
+    if settings.environment in ("development", "staging"):
+        return True
+    result = await db.execute(
+        select(Setting).where(Setting.key == "payment_test_mode")
+    )
+    setting = result.scalar_one_or_none()
+    return setting is not None and setting.value.lower() in ("true", "1", "yes")
+
+
+@router.get("/mode")
+async def get_payment_mode(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    test_mode = await _is_test_mode(db)
+
+    # Check which gateways are configured
+    razorpay_configured = bool(settings.razorpay_key_id and settings.razorpay_key_secret)
+    stripe_configured = bool(settings.stripe_secret_key)
+
+    return {
+        "test_mode": test_mode,
+        "environment": settings.environment,
+        "gateways": {
+            "razorpay": razorpay_configured,
+            "stripe": stripe_configured,
+        },
+    }
 
 
 @router.post("/razorpay/create", response_model=RazorpayOrderResponse)
@@ -148,8 +181,9 @@ async def test_payment(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    if settings.environment not in ("development", "staging"):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Test payments only available in dev/staging")
+    test_mode = await _is_test_mode(db)
+    if not test_mode:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Test payments are not enabled")
 
     result = await db.execute(
         select(Order).where(Order.id == data.order_id, Order.user_id == user.id, Order.status == "pending")

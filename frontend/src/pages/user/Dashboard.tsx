@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
-import { ordersApi, subscriptionsApi } from '@/api/orders'
+import { ordersApi, paymentsApi, subscriptionsApi } from '@/api/orders'
 import { appsApi } from '@/api/apps'
 import { formatCurrency, formatDate } from '@/utils/format'
 import {
@@ -14,6 +14,7 @@ import {
   Loader2,
   AlertCircle,
   CreditCard,
+  FlaskConical,
 } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
@@ -51,6 +52,11 @@ export default function Dashboard() {
   const { data: activeSubscription } = useQuery({
     queryKey: ['subscription', 'active'],
     queryFn: () => subscriptionsApi.getActive().then((r) => r.data),
+  })
+
+  const { data: paymentMode } = useQuery({
+    queryKey: ['payment-mode'],
+    queryFn: () => paymentsApi.getPaymentMode().then((r) => r.data),
   })
 
   const totalApps = appsData?.total ?? 0
@@ -125,6 +131,17 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+
+          {/* Test Mode Banner */}
+          {paymentMode?.test_mode && (
+            <div className="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-xl p-4 mb-8">
+              <FlaskConical className="w-5 h-5 text-amber-600 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-amber-800">Payment Test Mode Active</p>
+                <p className="text-xs text-amber-600">Payments are simulated. No real charges will be made when creating apps.</p>
+              </div>
+            </div>
+          )}
 
           {/* Quick Actions */}
           <div className="flex flex-wrap gap-3 mb-8">

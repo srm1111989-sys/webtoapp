@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
-import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard } from 'lucide-react'
+import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard, FlaskConical } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { adminApi } from '@/api/admin'
 import { formatCurrency, formatDateTime } from '@/utils/format'
@@ -10,6 +10,13 @@ export default function AdminDashboard() {
     queryKey: ['admin', 'enhanced-stats'],
     queryFn: () => adminApi.getEnhancedStats().then((r) => r.data),
   })
+
+  const { data: adminSettings } = useQuery({
+    queryKey: ['admin', 'settings'],
+    queryFn: () => adminApi.getSettings().then((r) => r.data),
+  })
+
+  const testModeEnabled = adminSettings?.payment_test_mode?.toLowerCase() === 'true'
 
   if (isLoading) {
     return (
@@ -103,6 +110,25 @@ export default function AdminDashboard() {
         <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
         <p className="text-gray-500 mt-1">Overview of your platform</p>
       </div>
+
+      {/* Test Mode Banner */}
+      {testModeEnabled && (
+        <div className="flex items-center justify-between bg-amber-50 border-2 border-amber-300 rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <FlaskConical className="w-5 h-5 text-amber-600 shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-amber-800">Payment Test Mode Active</p>
+              <p className="text-xs text-amber-600">All payments are simulated. Disable in Settings before going live.</p>
+            </div>
+          </div>
+          <Link
+            to="/admin/settings"
+            className="text-sm text-amber-700 hover:text-amber-900 font-medium underline shrink-0"
+          >
+            Go to Settings
+          </Link>
+        </div>
+      )}
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

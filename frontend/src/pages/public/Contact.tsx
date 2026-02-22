@@ -19,10 +19,10 @@ export default function Contact() {
               For general inquiries, refund requests, and technical support.
             </p>
             <a
-              href="mailto:support@websitetoapp.app"
+              href="mailto:support@webtoapp.com"
               className="text-blue-600 hover:underline font-medium"
             >
-              support@websitetoapp.app
+              support@webtoapp.com
             </a>
           </div>
         </div>
@@ -37,10 +37,10 @@ export default function Contact() {
               For partnerships, bulk plans, and enterprise solutions.
             </p>
             <a
-              href="mailto:business@websitetoapp.app"
+              href="mailto:support@webtoapp.com"
               className="text-blue-600 hover:underline font-medium"
             >
-              business@websitetoapp.app
+              support@webtoapp.com
             </a>
           </div>
         </div>

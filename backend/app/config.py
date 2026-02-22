@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
-    smtp_from_email: str = "noreply@webtoapp.com"
+    smtp_from_email: str = "support@webtoapp.com"
     smtp_from_name: str = "WebToApp"
 
     # Razorpay

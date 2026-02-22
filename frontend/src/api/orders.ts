@@ -44,6 +44,9 @@ export const paymentsApi = {
 
   testPayment: (orderId: string) =>
     client.post<{ message: string }>('/api/payments/test', { order_id: orderId }),
+
+  getPaymentMode: () =>
+    client.get<{ test_mode: boolean; environment: string; gateways: { razorpay: boolean; stripe: boolean } }>('/api/payments/mode'),
 }
 
 export const plansApi = {

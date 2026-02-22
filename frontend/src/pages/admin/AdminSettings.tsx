@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { Save, Loader2, CreditCard, GitBranch, Mail, Eye, EyeOff } from 'lucide-react'
+import { Save, Loader2, CreditCard, GitBranch, Mail, Eye, EyeOff, FlaskConical, AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { adminApi } from '@/api/admin'
 
 interface SettingsSection {
@@ -49,6 +49,7 @@ const SECTIONS: SettingsSection[] = [
 ]
 
 export default function AdminSettings() {
+  const queryClient = useQueryClient()
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({})
 
@@ -66,6 +67,8 @@ export default function AdminSettings() {
   const saveMutation = useMutation({
     mutationFn: (data: Record<string, string>) => adminApi.updateSettings(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'settings'] })
+      queryClient.invalidateQueries({ queryKey: ['payment-mode'] })
       toast.success('Settings saved successfully')
     },
     onError: () => {
@@ -83,6 +86,13 @@ export default function AdminSettings() {
 
   const handleSave = () => {
     saveMutation.mutate(formData)
+  }
+
+  const testModeEnabled = formData['payment_test_mode']?.toLowerCase() === 'true'
+
+  const toggleTestMode = () => {
+    const newValue = testModeEnabled ? 'false' : 'true'
+    setFormData((prev) => ({ ...prev, payment_test_mode: newValue }))
   }
 
   const inputClass = 'w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -114,6 +124,82 @@ export default function AdminSettings() {
           )}
           Save Settings
         </button>
+      </div>
+
+      {/* Payment Test Mode Card */}
+      <div className={`rounded-xl border-2 shadow-sm overflow-hidden ${testModeEnabled ? 'border-amber-400 bg-amber-50' : 'border-gray-200 bg-white'}`}>
+        <div className="flex items-center gap-3 px-6 py-4 border-b bg-gray-50">
+          <FlaskConical className="w-5 h-5 text-gray-600" />
+          <h2 className="font-semibold text-gray-900">Payment Gateway Mode</h2>
+        </div>
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-start gap-4">
+              <div className={`p-3 rounded-lg ${testModeEnabled ? 'bg-amber-100 text-amber-600' : 'bg-green-50 text-green-600'}`}>
+                {testModeEnabled ? (
+                  <FlaskConical className="w-6 h-6" />
+                ) : (
+                  <CheckCircle2 className="w-6 h-6" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium text-gray-900">
+                  {testModeEnabled ? 'Test Mode Active' : 'Live Mode Active'}
+                </p>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {testModeEnabled
+                    ? 'Payments are simulated. No real charges will be made. Orders will be auto-marked as paid.'
+                    : 'Payments are processed through configured gateways (Razorpay / Stripe).'}
+                </p>
+                {testModeEnabled && (
+                  <div className="flex items-center gap-1.5 mt-2 text-amber-700 text-xs font-medium">
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                    Do not use test mode in production with real users
+                  </div>
+                )}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={toggleTestMode}
+              className={`relative w-14 h-7 rounded-full transition-colors flex items-center shrink-0 ml-4 ${
+                testModeEnabled ? 'bg-amber-500' : 'bg-gray-300'
+              }`}
+            >
+              <div className={`w-6 h-6 bg-white rounded-full shadow transition-transform ${testModeEnabled ? 'translate-x-7' : 'translate-x-0.5'}`} />
+            </button>
+          </div>
+
+          {/* Gateway status indicators */}
+          <div className="mt-5 pt-5 border-t grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-white border">
+              <CreditCard className="w-5 h-5 text-gray-400" />
+              <div>
+                <p className="text-sm font-medium text-gray-900">Razorpay</p>
+                <p className="text-xs text-gray-500">
+                  {formData['razorpay_key_id'] ? (
+                    <span className="text-green-600">Configured</span>
+                  ) : (
+                    <span className="text-gray-400">Not configured</span>
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-white border">
+              <CreditCard className="w-5 h-5 text-gray-400" />
+              <div>
+                <p className="text-sm font-medium text-gray-900">Stripe</p>
+                <p className="text-xs text-gray-500">
+                  {formData['stripe_secret_key'] ? (
+                    <span className="text-green-600">Configured</span>
+                  ) : (
+                    <span className="text-gray-400">Not configured</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {SECTIONS.map((section) => {
