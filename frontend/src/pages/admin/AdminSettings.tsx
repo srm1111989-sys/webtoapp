@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { Save, Loader2, CreditCard, GitBranch, Mail, Eye, EyeOff, FlaskConical, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { Save, Loader2, CreditCard, GitBranch, Mail, Eye, EyeOff, FlaskConical, AlertTriangle, CheckCircle2, LogIn } from 'lucide-react'
 import { adminApi } from '@/api/admin'
 
 interface SettingsSection {
@@ -60,6 +60,13 @@ const SECTIONS: SettingsSection[] = [
       { key: 'smtp_port', label: 'Port', type: 'text', placeholder: '587' },
       { key: 'smtp_user', label: 'Username', type: 'text', placeholder: 'user@example.com' },
       { key: 'smtp_password', label: 'Password', type: 'password', placeholder: 'Enter SMTP password' },
+    ],
+  },
+  {
+    title: 'Google OAuth',
+    icon: LogIn,
+    fields: [
+      { key: 'google_client_id', label: 'Client ID', type: 'text', placeholder: 'xxxxxxxxxxxx.apps.googleusercontent.com' },
     ],
   },
 ]

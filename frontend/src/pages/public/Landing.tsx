@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
-import { plansApi } from '@/api/orders'
-import { formatPlanPrice, getUserCurrency } from '@/utils/format'
-import { Smartphone, Monitor, Zap, Shield, ArrowRight, Star, Globe, Check } from 'lucide-react'
+import { formatPlanPrice } from '@/utils/format'
+import { Smartphone, Monitor, Zap, Shield, ArrowRight, Star, Globe, Check, X } from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
 
 const features = [
@@ -172,9 +170,9 @@ export default function Landing() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/pricing" className="border-2 border-white/50 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
+            <a href="#pricing" className="border-2 border-white/50 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
               View Pricing
-            </Link>
+            </a>
           </div>
           {!isLoggedIn && (
             <p className="mt-4 text-primary-200 text-sm">No credit card required. Free plan available.</p>
@@ -262,7 +260,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing */}
-      <section className="py-20 bg-gray-50">
+      <section id="pricing" className="py-20 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-4">Simple, Affordable Pricing</h2>
           <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
@@ -322,8 +320,83 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* Competitor Comparison */}
       <section className="py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-4">Save Up to 90% vs Competitors</h2>
+          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+            WebToApp offers the same features at a fraction of the cost. Compare our pricing with other website-to-app platforms.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b-2 border-gray-200">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Platform</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Starting Price</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Free Plan</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Push Notifications</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Source Code</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="bg-primary-50 border-b border-primary-100 font-medium">
+                  <td className="py-3 px-4 text-primary-700 font-bold">WebToApp (Us)</td>
+                  <td className="py-3 px-4 text-primary-700">₹499/mo ($9.99)</td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-3 px-4 text-gray-700">webtoapp.design</td>
+                  <td className="py-3 px-4 text-gray-600">₹5,400/mo (~€59)</td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="py-3 px-4 text-gray-500 text-xs">Medium plan+</td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-3 px-4 text-gray-700">Median.co</td>
+                  <td className="py-3 px-4 text-gray-600">₹6,05,000+ ($7,200)</td>
+                  <td className="py-3 px-4 text-gray-500 text-xs">Build only</td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-3 px-4 text-gray-700">WebViewGold</td>
+                  <td className="py-3 px-4 text-gray-600">₹5,800 ($69/app)</td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-3 px-4 text-gray-700">Twinr</td>
+                  <td className="py-3 px-4 text-gray-600">₹4,100/mo ($49)</td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-3 px-4 text-gray-700">BuildFire</td>
+                  <td className="py-3 px-4 text-gray-600">₹2,100/mo ($25)</td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 text-gray-700">AppPresser</td>
+                  <td className="py-3 px-4 text-gray-600">₹13,900/mo ($165)</td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                  <td className="py-3 px-4"><Check className="w-4 h-4 text-green-600" /></td>
+                  <td className="py-3 px-4"><X className="w-4 h-4 text-red-400" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-gray-400 mt-4 text-center">Prices converted at approximate exchange rates. Last updated Feb 2026.</p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-6">

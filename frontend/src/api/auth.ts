@@ -17,6 +17,9 @@ export const authApi = {
   resetPassword: (token: string, password: string) =>
     client.post<{ message: string }>('/api/auth/reset-password', { token, password }),
 
+  googleLogin: (credential: string) =>
+    client.post<TokenResponse>('/api/auth/google', { credential }),
+
   getMe: () =>
     client.get<User>('/api/auth/me'),
 }

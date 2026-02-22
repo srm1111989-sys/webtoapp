@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from fastapi.responses import PlainTextResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, case, cast, Date
@@ -23,6 +23,7 @@ from app.schemas.plan import PlanResponse, PlanCreate, PlanUpdate
 from app.dependencies import get_current_admin
 from app.utils.security import verify_password, create_access_token, create_refresh_token, hash_password
 from app.services.build_service import trigger_build
+from app.rate_limit import limiter
 
 LOG_DIR = Path("/app/logs/builds")
 
@@ -30,7 +31,8 @@ router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 
 @router.post("/login", response_model=TokenResponse)
-async def admin_login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
+@limiter.limit("5/minute")
+async def admin_login(request: Request, data: LoginRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Admin).where(Admin.email == data.email))
     admin = result.scalar_one_or_none()
 

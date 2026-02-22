@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
+import { GoogleLogin } from '@react-oauth/google'
 import { authApi } from '@/api/auth'
+import { useAuthStore } from '@/store/authStore'
 
 const registerSchema = z
   .object({
@@ -25,6 +27,8 @@ const registerSchema = z
 type RegisterForm = z.infer<typeof registerSchema>
 
 export default function Register() {
+  const navigate = useNavigate()
+  const { setTokens, setUser } = useAuthStore()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
@@ -48,6 +52,26 @@ export default function Register() {
       toast.success('Account created successfully!')
     } catch (err: any) {
       const message = err?.response?.data?.detail || 'Registration failed. Please try again.'
+      toast.error(message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    if (!credentialResponse.credential) return
+    setLoading(true)
+    try {
+      const tokenRes = await authApi.googleLogin(credentialResponse.credential)
+      setTokens(tokenRes.data.access_token, tokenRes.data.refresh_token)
+
+      const userRes = await authApi.getMe()
+      setUser(userRes.data)
+
+      toast.success('Account created successfully!')
+      navigate('/dashboard')
+    } catch (err: any) {
+      const message = err?.response?.data?.detail || 'Google sign-up failed'
       toast.error(message)
     } finally {
       setLoading(false)
@@ -82,6 +106,27 @@ export default function Register() {
       <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
         Create your account
       </h2>
+
+      {/* Google Sign-Up */}
+      <div className="flex justify-center mb-4">
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => toast.error('Google sign-up failed')}
+          size="large"
+          width="100%"
+          text="signup_with"
+          shape="rectangular"
+        />
+      </div>
+
+      <div className="relative mb-4">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-white px-4 text-gray-500">or register with email</span>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>

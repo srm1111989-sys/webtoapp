@@ -17,6 +17,7 @@ from app.schemas.auth import MessageResponse
 from app.dependencies import get_current_user
 from app.config import get_settings
 from app.services.build_service import trigger_build
+from app.rate_limit import limiter
 
 settings = get_settings()
 router = APIRouter(prefix="/api/payments", tags=["payments"])
@@ -82,7 +83,9 @@ async def get_payment_mode(
 
 
 @router.post("/razorpay/create", response_model=RazorpayOrderResponse)
+@limiter.limit("10/minute")
 async def create_razorpay_order(
+    request: Request,
     order_id: uuid.UUID,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
@@ -120,7 +123,9 @@ async def create_razorpay_order(
 
 
 @router.post("/razorpay/verify", response_model=MessageResponse)
+@limiter.limit("10/minute")
 async def verify_razorpay_payment(
+    request: Request,
     data: RazorpayVerifyRequest,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
@@ -172,7 +177,9 @@ async def verify_razorpay_payment(
 
 
 @router.post("/stripe/checkout", response_model=StripeCheckoutResponse)
+@limiter.limit("10/minute")
 async def create_stripe_checkout(
+    request: Request,
     data: StripeCheckoutRequest,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),

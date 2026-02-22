@@ -70,6 +70,12 @@ class Settings(BaseSettings):
     # Sentry
     sentry_dsn: str = ""
 
+    # Google OAuth
+    google_client_id: str = ""
+
+    # Google OAuth
+    google_client_id: str = ""
+
     # Admin
     admin_email: str = "admin@webtoapp.com"
     admin_password: str = "admin123"
