@@ -1,5 +1,5 @@
 import client from './client'
-import type { TokenResponse, User, Order, Build, Plan, AdminStats } from '@/types'
+import type { TokenResponse, User, Order, Build, Plan, AdminStats, AdminEnhancedStats, BuildLog } from '@/types'
 
 const adminClient = client
 
@@ -57,4 +57,12 @@ export const adminApi = {
   // Payments
   listPayments: (page = 1, per_page = 20) =>
     adminClient.get(`/api/admin/payments?page=${page}&per_page=${per_page}`),
+
+  // Enhanced stats
+  getEnhancedStats: () =>
+    adminClient.get<AdminEnhancedStats>('/api/admin/stats/enhanced'),
+
+  // Build logs
+  getBuildLog: (buildId: string) =>
+    adminClient.get<BuildLog>(`/api/admin/builds/${buildId}/log`),
 }

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
-import { ordersApi } from '@/api/orders'
+import { ordersApi, subscriptionsApi } from '@/api/orders'
 import { appsApi } from '@/api/apps'
 import { formatCurrency, formatDate } from '@/utils/format'
 import {
@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Loader2,
   AlertCircle,
+  CreditCard,
 } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
@@ -45,6 +46,11 @@ export default function Dashboard() {
     queryKey: ['apps'],
     queryFn: () => appsApi.list(),
     select: (res) => res.data,
+  })
+
+  const { data: activeSubscription } = useQuery({
+    queryKey: ['subscription', 'active'],
+    queryFn: () => subscriptionsApi.getActive().then((r) => r.data),
   })
 
   const totalApps = appsData?.total ?? 0
@@ -137,6 +143,54 @@ export default function Dashboard() {
               View Orders
             </Link>
           </div>
+
+          {/* Subscription Status */}
+          {activeSubscription ? (
+            <div className="bg-white rounded-xl border p-5 mb-8 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-lg bg-green-50 text-green-600">
+                  <CreditCard className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {activeSubscription.plan_name ?? 'Monthly'} Plan
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {activeSubscription.current_period_end
+                      ? `Next billing: ${formatDate(activeSubscription.current_period_end)}`
+                      : 'Active subscription'}
+                  </p>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Active
+                </span>
+              </div>
+              <Link
+                to="/subscription"
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1"
+              >
+                Manage <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          ) : (
+            <div className="bg-gradient-to-r from-primary-50 to-blue-50 rounded-xl border border-primary-100 p-5 mb-8 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-lg bg-primary-100 text-primary-600">
+                  <CreditCard className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Upgrade to Pro</p>
+                  <p className="text-xs text-gray-500">Get monthly builds and premium features.</p>
+                </div>
+              </div>
+              <Link
+                to="/pricing"
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium"
+              >
+                View Plans <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          )}
 
           {/* Recent Orders */}
           <div className="bg-white rounded-xl border">

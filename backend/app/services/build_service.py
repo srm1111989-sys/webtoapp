@@ -1,7 +1,9 @@
+import os
 import uuid
 import json
 import logging
 from datetime import datetime, timezone
+from pathlib import Path
 from urllib.parse import urlparse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -13,6 +15,41 @@ from app.config import get_settings
 
 settings = get_settings()
 logger = logging.getLogger("webtoapp.build")
+
+LOG_DIR = Path("/app/logs/builds")
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _save_build_log(build_id: str, content: str, suffix: str = ""):
+    """Save build log to persistent file."""
+    filename = f"{build_id}{suffix}.log"
+    filepath = LOG_DIR / filename
+    try:
+        filepath.write_text(content, encoding="utf-8")
+        logger.info(f"Build log saved: {filepath}")
+    except Exception as e:
+        logger.error(f"Failed to save build log {filepath}: {e}")
+
+
+async def _fetch_pipeline_logs(gitlab: GitLabService, pipeline_id: int) -> str:
+    """Fetch all job logs from a GitLab pipeline."""
+    try:
+        jobs = gitlab.get_pipeline_jobs(pipeline_id)
+        logs = []
+        for job in jobs:
+            job_name = job.get("name", "unknown")
+            job_status = job.get("status", "unknown")
+            logs.append(f"=== Job: {job_name} (status: {job_status}) ===")
+            try:
+                job_log = gitlab.get_job_log(job["id"])
+                logs.append(job_log)
+            except Exception as e:
+                logs.append(f"[Failed to fetch log: {e}]")
+            logs.append("")
+        return "\n".join(logs)
+    except Exception as e:
+        logger.error(f"Failed to fetch pipeline logs for {pipeline_id}: {e}")
+        return f"[Failed to fetch pipeline logs: {e}]"
 
 
 def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str = "android") -> dict:
@@ -138,8 +175,16 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.status = "success"
         build.completed_at = now
 
-        # Download artifacts
+        # Download artifacts and save build log
         gitlab = GitLabService(platform=build.platform)
+
+        # Save success log for reference
+        try:
+            full_log = await _fetch_pipeline_logs(gitlab, pipeline_id)
+            build.log = full_log
+            _save_build_log(str(build.id), full_log)
+        except Exception as e:
+            logger.warning(f"Could not save success log for build {build.id}: {e}")
         try:
             if build.platform == "desktop":
                 # Desktop build: download .exe
@@ -173,7 +218,26 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
     elif pipeline_status == "failed":
         build.status = "failed"
         build.completed_at = now
-        build.error_message = "Pipeline failed. Check GitLab for details."
+
+        # Fetch pipeline job logs for failure analysis
+        gitlab = GitLabService(platform=build.platform)
+        full_log = await _fetch_pipeline_logs(gitlab, pipeline_id)
+        build.log = full_log
+
+        # Extract error summary from log
+        error_lines = []
+        for line in full_log.split("\n"):
+            ll = line.lower()
+            if any(kw in ll for kw in ["error:", "fatal:", "failure", "exception", "failed"]):
+                error_lines.append(line.strip())
+        if error_lines:
+            build.error_message = "\n".join(error_lines[-10:])  # Last 10 error lines
+        else:
+            build.error_message = "Pipeline failed. Check build log for details."
+
+        # Save log to persistent file
+        _save_build_log(str(build.id), full_log)
+        logger.info(f"Build {build.id} failed — log saved ({len(full_log)} chars)")
 
     elif pipeline_status == "running":
         build.status = "building"

@@ -9,6 +9,10 @@ import ProtectedRoute from '@/components/layout/ProtectedRoute'
 import Landing from '@/pages/public/Landing'
 import Features from '@/pages/public/Features'
 import Pricing from '@/pages/public/Pricing'
+import PrivacyPolicy from '@/pages/public/PrivacyPolicy'
+import TermsOfService from '@/pages/public/TermsOfService'
+import RefundPolicy from '@/pages/public/RefundPolicy'
+import Contact from '@/pages/public/Contact'
 
 // Auth pages
 import Login from '@/pages/auth/Login'
@@ -22,6 +26,7 @@ import CreateApp from '@/pages/user/CreateApp'
 import MyApps from '@/pages/user/MyApps'
 import OrderDetail from '@/pages/user/OrderDetail'
 import Orders from '@/pages/user/Orders'
+import SubscriptionPage from '@/pages/user/Subscription'
 
 // Payment pages
 import PaymentSuccess from '@/pages/payment/PaymentSuccess'
@@ -44,6 +49,10 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/contact" element={<Contact />} />
       </Route>
 
       {/* Auth routes */}
@@ -62,6 +71,7 @@ export default function App() {
           <Route path="/apps" element={<MyApps />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
+          <Route path="/subscription" element={<SubscriptionPage />} />
         </Route>
       </Route>
 

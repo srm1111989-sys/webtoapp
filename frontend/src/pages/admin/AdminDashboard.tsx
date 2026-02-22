@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2 } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
+import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { adminApi } from '@/api/admin'
-import { formatCurrency } from '@/utils/format'
+import { formatCurrency, formatDateTime } from '@/utils/format'
 
 export default function AdminDashboard() {
   const { data: stats, isLoading, error } = useQuery({
-    queryKey: ['admin', 'stats'],
-    queryFn: () => adminApi.getStats().then((r) => r.data),
+    queryKey: ['admin', 'enhanced-stats'],
+    queryFn: () => adminApi.getEnhancedStats().then((r) => r.data),
   })
 
   if (isLoading) {
@@ -51,6 +52,18 @@ export default function AdminDashboard() {
       icon: DollarSign,
       color: 'bg-purple-50 text-purple-600',
     },
+    {
+      label: 'Active Subscriptions',
+      value: stats.active_subscriptions.toLocaleString(),
+      icon: CreditCard,
+      color: 'bg-teal-50 text-teal-600',
+    },
+    {
+      label: 'Build Failure Rate',
+      value: `${stats.failure_rate}%`,
+      icon: Activity,
+      color: stats.failure_rate > 30 ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-600',
+    },
   ]
 
   const buildsChartData = Object.entries(stats.builds).map(([status, count]) => ({
@@ -58,20 +71,31 @@ export default function AdminDashboard() {
     count,
   }))
 
-  const getBarColor = (status: string): string => {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return '#f59e0b'
-      case 'building':
-        return '#3b82f6'
-      case 'success':
-        return '#10b981'
-      case 'failed':
-        return '#ef4444'
-      default:
-        return '#6b7280'
+  // Aggregate daily builds for chart
+  const dailyBuildsMap = new Map<string, { date: string; success: number; failed: number; building: number; pending: number }>()
+  for (const item of stats.daily_builds) {
+    if (!dailyBuildsMap.has(item.date)) {
+      dailyBuildsMap.set(item.date, { date: item.date, success: 0, failed: 0, building: 0, pending: 0 })
     }
+    const entry = dailyBuildsMap.get(item.date)!
+    if (item.status === 'success') entry.success += item.count
+    else if (item.status === 'failed') entry.failed += item.count
+    else if (item.status === 'building') entry.building += item.count
+    else entry.pending += item.count
   }
+  const dailyBuildsChart = Array.from(dailyBuildsMap.values())
+
+  // Aggregate daily revenue
+  const dailyRevenueMap = new Map<string, { date: string; inr: number; usd: number }>()
+  for (const item of stats.daily_revenue) {
+    if (!dailyRevenueMap.has(item.date)) {
+      dailyRevenueMap.set(item.date, { date: item.date, inr: 0, usd: 0 })
+    }
+    const entry = dailyRevenueMap.get(item.date)!
+    if (item.currency === 'INR') entry.inr += item.total / 100
+    else entry.usd += item.total / 100
+  }
+  const dailyRevenueChart = Array.from(dailyRevenueMap.values())
 
   return (
     <div className="space-y-8">
@@ -81,7 +105,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {statCards.map((card) => {
           const Icon = card.icon
           return (
@@ -100,35 +124,126 @@ export default function AdminDashboard() {
         })}
       </div>
 
-      {/* Builds Chart */}
-      <div className="bg-white rounded-xl border p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">Builds by Status</h2>
-        {buildsChartData.length > 0 ? (
-          <div className="h-80">
+      {/* Charts row */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Builds by Status */}
+        <div className="bg-white rounded-xl border p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6">Builds by Status</h2>
+          {buildsChartData.length > 0 ? (
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={buildsChartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="status" tick={{ fontSize: 13, fill: '#6b7280' }} />
+                  <YAxis tick={{ fontSize: 13, fill: '#6b7280' }} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.875rem',
+                    }}
+                  />
+                  <Bar dataKey="count" radius={[6, 6, 0, 0]} fill="#3b82f6" barSize={60} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <p className="text-gray-400 text-center py-12">No build data available.</p>
+          )}
+        </div>
+
+        {/* Daily Builds */}
+        <div className="bg-white rounded-xl border p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6">Daily Builds (30 days)</h2>
+          {dailyBuildsChart.length > 0 ? (
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={dailyBuildsChart} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} tickFormatter={(v) => v.slice(5)} />
+                  <YAxis tick={{ fontSize: 13, fill: '#6b7280' }} allowDecimals={false} />
+                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
+                  <Bar dataKey="success" stackId="a" fill="#10b981" name="Success" />
+                  <Bar dataKey="failed" stackId="a" fill="#ef4444" name="Failed" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <p className="text-gray-400 text-center py-12">No build data yet.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Daily Revenue */}
+      {dailyRevenueChart.length > 0 && (
+        <div className="bg-white rounded-xl border p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6">Daily Revenue (30 days)</h2>
+          <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={buildsChartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+              <LineChart data={dailyRevenueChart} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                <XAxis dataKey="status" tick={{ fontSize: 13, fill: '#6b7280' }} />
-                <YAxis tick={{ fontSize: 13, fill: '#6b7280' }} allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '0.5rem',
-                    fontSize: '0.875rem',
-                  }}
-                />
-                <Bar
-                  dataKey="count"
-                  radius={[6, 6, 0, 0]}
-                  fill="#3b82f6"
-                  barSize={60}
-                />
-              </BarChart>
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} tickFormatter={(v) => v.slice(5)} />
+                <YAxis tick={{ fontSize: 13, fill: '#6b7280' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
+                <Line type="monotone" dataKey="inr" stroke="#f59e0b" name="INR" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="usd" stroke="#8b5cf6" name="USD" strokeWidth={2} dot={false} />
+              </LineChart>
             </ResponsiveContainer>
           </div>
+        </div>
+      )}
+
+      {/* Recent Failed Builds */}
+      <div className="bg-white rounded-xl border p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-red-500" />
+            <h2 className="text-lg font-semibold text-gray-900">Recent Failed Builds</h2>
+          </div>
+          <Link to="/admin/builds" className="text-sm text-blue-600 hover:underline">
+            View all builds
+          </Link>
+        </div>
+        {stats.recent_failures.length > 0 ? (
+          <div className="space-y-3">
+            {stats.recent_failures.map((failure) => (
+              <div key={failure.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-gray-900 text-sm">
+                        {failure.app_name || 'Unknown App'}
+                      </span>
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          failure.platform === 'desktop'
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'bg-emerald-100 text-emerald-700'
+                        }`}
+                      >
+                        {failure.platform === 'desktop' ? 'Windows' : 'Android'}
+                      </span>
+                    </div>
+                    <p className="text-sm text-red-600 truncate">
+                      {failure.error_message || 'No error message available'}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {failure.completed_at ? formatDateTime(failure.completed_at) : '-'}
+                    </p>
+                  </div>
+                  <Link
+                    to={`/admin/builds?view=${failure.id}`}
+                    className="text-xs text-blue-600 hover:underline whitespace-nowrap ml-4"
+                  >
+                    View Log
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          <p className="text-gray-400 text-center py-12">No build data available.</p>
+          <p className="text-gray-400 text-center py-8">No failed builds. All systems healthy.</p>
         )}
       </div>
     </div>

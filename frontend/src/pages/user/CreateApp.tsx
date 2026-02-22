@@ -37,8 +37,8 @@ import {
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
-import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
-import type { Plan, NavigationItem } from '@/types'
+import { ordersApi, paymentsApi, plansApi, subscriptionsApi } from '@/api/orders'
+import type { Plan, NavigationItem, SubscriptionCreateResponse } from '@/types'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 
 // ---------- Step 0: Basic Info ----------
@@ -680,6 +680,9 @@ function Step2Features() {
     saveMutation.mutate()
   }
 
+  const hasAndroid = wizard.selectedPlatforms.includes('android')
+  const desktopOnly = !hasAndroid && wizard.selectedPlatforms.includes('desktop')
+
   return (
     <div className="space-y-6">
       <div>
@@ -687,6 +690,17 @@ function Step2Features() {
         <p className="text-sm text-gray-500">Toggle features for your mobile app.</p>
       </div>
 
+      {desktopOnly ? (
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+          <p className="text-gray-600">
+            App features like push notifications, AdMob, biometric auth, etc. are
+            available for Android apps only. Desktop apps use your website as-is.
+          </p>
+          <p className="text-gray-400 text-sm mt-2">
+            Select Android platform to configure these features.
+          </p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {FEATURES.map(({ key, label, description, icon: Icon }) => {
           const enabled = features[key] ?? false
@@ -725,6 +739,7 @@ function Step2Features() {
           )
         })}
       </div>
+      )}
 
       {/* Navigation */}
       <div className="flex justify-between pt-4">
@@ -831,6 +846,7 @@ function Step3Advanced() {
   })
 
   const inputClass = 'w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+  const hasAndroid = wizard.selectedPlatforms.includes('android')
 
   return (
     <div className="space-y-6">
@@ -839,7 +855,8 @@ function Step3Advanced() {
         <p className="text-sm text-gray-500">Configure integrations and advanced options.</p>
       </div>
 
-      {/* Firebase */}
+      {/* Firebase — Android only */}
+      {hasAndroid && (
       <CollapsibleSection
         title="Firebase Configuration"
         helpUrl="https://firebase.google.com/docs/android/setup"
@@ -865,8 +882,10 @@ function Step3Advanced() {
           />
         </div>
       </CollapsibleSection>
+      )}
 
-      {/* AdMob */}
+      {/* AdMob — Android only */}
+      {hasAndroid && (
       <CollapsibleSection
         title="AdMob Configuration"
         helpUrl="https://support.google.com/admob/answer/7356431"
@@ -889,6 +908,7 @@ function Step3Advanced() {
           <input className={inputClass} value={admobRewardedId} onChange={(e) => setAdmobRewardedId(e.target.value)} placeholder="ca-app-pub-xxxxx/xxxxx" />
         </div>
       </CollapsibleSection>
+      )}
 
       {/* Custom User Agent */}
       <div>
@@ -1069,17 +1089,47 @@ function Step4PlanReview() {
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(wizard.selectedPlanId)
 
+  const currency = getUserCurrency()
+
   const createOrder = useMutation({
     mutationFn: () => {
       if (!wizard.appId || !selectedPlan) throw new Error('Missing data')
+      const plan = (plans as Plan[])?.find((p) => p.id === selectedPlan)
+
+      // Monthly plan → subscription flow
+      if (plan?.billing_type === 'monthly') {
+        return subscriptionsApi.create({
+          plan_id: selectedPlan,
+          currency,
+          app_config_id: wizard.appId,
+        }).then((res) => ({ data: res.data, isSubscription: true, plan }))
+      }
+
+      // One-time plan → order flow
       return ordersApi.create({
         app_config_id: wizard.appId,
         plan_id: selectedPlan,
-      })
+      }).then((res) => ({ data: res.data, isSubscription: false, plan }))
     },
-    onSuccess: async (res) => {
-      const order = res.data
-      const plan = (plans as Plan[])?.find((p) => p.id === selectedPlan)
+    onSuccess: async (result) => {
+      const { data, isSubscription, plan } = result as any
+
+      // Subscription flow
+      if (isSubscription) {
+        const subData = data as SubscriptionCreateResponse
+        if (currency === 'INR' && subData.gateway_subscription_id && subData.razorpay_key_id) {
+          handleRazorpaySubscription(subData)
+        } else if (subData.checkout_url) {
+          window.location.href = subData.checkout_url
+        } else {
+          toast.success('Subscription created!')
+          navigate('/subscription')
+        }
+        return
+      }
+
+      // One-time order flow
+      const order = data
 
       // Free plan
       if (plan && plan.price_inr === 0 && plan.price_usd === 0) {
@@ -1113,6 +1163,27 @@ function Step4PlanReview() {
       toast.error('Failed to create order.')
     },
   })
+
+  const handleRazorpaySubscription = (data: SubscriptionCreateResponse) => {
+    const options = {
+      key: data.razorpay_key_id,
+      subscription_id: data.gateway_subscription_id,
+      name: 'WebToApp',
+      description: 'Monthly Subscription',
+      handler: () => {
+        toast.success('Subscription activated!')
+        navigate('/subscription')
+      },
+      modal: {
+        ondismiss: () => {
+          toast.error('Payment cancelled.')
+        },
+      },
+    }
+
+    const rzp = new (window as any).Razorpay(options)
+    rzp.open()
+  }
 
   const handleRazorpay = (
     data: { razorpay_order_id: string; razorpay_key_id: string; amount: number; currency: string; order_id: string },

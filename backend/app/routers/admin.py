@@ -1,7 +1,10 @@
 import uuid
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi.responses import PlainTextResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, case
+from sqlalchemy import select, func, case, cast, Date
 from app.database import get_db
 from app.models.admin import Admin
 from app.models.user import User
@@ -9,6 +12,7 @@ from app.models.order import Order
 from app.models.build import Build
 from app.models.payment import Payment
 from app.models.plan import Plan
+from app.models.app_config import AppConfig
 from app.models.setting import Setting
 from app.schemas.auth import LoginRequest, TokenResponse, MessageResponse
 from app.schemas.user import UserResponse, UserListResponse
@@ -18,6 +22,8 @@ from app.schemas.plan import PlanResponse, PlanCreate, PlanUpdate
 from app.dependencies import get_current_admin
 from app.utils.security import verify_password, create_access_token, create_refresh_token, hash_password
 from app.services.build_service import trigger_build
+
+LOG_DIR = Path("/app/logs/builds")
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -253,3 +259,157 @@ async def list_payments(
         select(Payment).order_by(Payment.created_at.desc()).offset((page - 1) * per_page).limit(per_page)
     )
     return result.scalars().all()
+
+
+# --- Build Logs ---
+@router.get("/builds/{build_id}/log")
+async def get_build_log(
+    build_id: uuid.UUID,
+    admin: Admin = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(Build).where(Build.id == build_id))
+    build = result.scalar_one_or_none()
+    if not build:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Build not found")
+
+    # Try DB log first, then file
+    log_content = build.log
+    if not log_content:
+        log_file = LOG_DIR / f"{build_id}.log"
+        if log_file.exists():
+            log_content = log_file.read_text(encoding="utf-8")
+
+    return {
+        "build_id": str(build.id),
+        "status": build.status,
+        "error_message": build.error_message,
+        "log": log_content or "No log available.",
+    }
+
+
+# --- Enhanced Stats ---
+@router.get("/stats/enhanced")
+async def get_enhanced_stats(
+    admin: Admin = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    now = datetime.now(timezone.utc)
+    thirty_days_ago = now - timedelta(days=30)
+
+    # Basic counts
+    users_count = (await db.execute(select(func.count()).select_from(User))).scalar()
+    orders_count = (await db.execute(select(func.count()).select_from(Order))).scalar()
+
+    # Revenue
+    revenue_inr = (await db.execute(
+        select(func.coalesce(func.sum(Payment.amount), 0))
+        .where(Payment.status == "captured", Payment.currency == "INR")
+    )).scalar()
+    revenue_usd = (await db.execute(
+        select(func.coalesce(func.sum(Payment.amount), 0))
+        .where(Payment.status == "captured", Payment.currency == "USD")
+    )).scalar()
+
+    # Builds by status
+    builds_by_status = {}
+    result = await db.execute(
+        select(Build.status, func.count()).group_by(Build.status)
+    )
+    for row in result.all():
+        builds_by_status[row[0]] = row[1]
+
+    total_builds = sum(builds_by_status.values())
+    failed_builds = builds_by_status.get("failed", 0)
+    failure_rate = round((failed_builds / total_builds * 100), 1) if total_builds > 0 else 0
+
+    # Recent failed builds (last 10)
+    result = await db.execute(
+        select(Build)
+        .where(Build.status == "failed")
+        .order_by(Build.completed_at.desc())
+        .limit(10)
+    )
+    recent_failures = result.scalars().all()
+
+    # Get app names for failed builds
+    failed_builds_data = []
+    for b in recent_failures:
+        # Get order -> app_config name
+        order_result = await db.execute(select(Order).where(Order.id == b.order_id))
+        order = order_result.scalar_one_or_none()
+        app_name = None
+        if order:
+            config_result = await db.execute(select(AppConfig).where(AppConfig.id == order.app_config_id))
+            config = config_result.scalar_one_or_none()
+            app_name = config.name if config else None
+
+        failed_builds_data.append({
+            "id": str(b.id),
+            "order_id": str(b.order_id),
+            "platform": b.platform,
+            "error_message": b.error_message,
+            "completed_at": b.completed_at.isoformat() if b.completed_at else None,
+            "app_name": app_name,
+        })
+
+    # Daily revenue (last 30 days)
+    daily_revenue = []
+    result = await db.execute(
+        select(
+            cast(Payment.created_at, Date).label("date"),
+            Payment.currency,
+            func.sum(Payment.amount).label("total"),
+        )
+        .where(Payment.status == "captured", Payment.created_at >= thirty_days_ago)
+        .group_by(cast(Payment.created_at, Date), Payment.currency)
+        .order_by(cast(Payment.created_at, Date))
+    )
+    for row in result.all():
+        daily_revenue.append({
+            "date": row.date.isoformat(),
+            "currency": row.currency,
+            "total": row.total,
+        })
+
+    # Builds per day (last 30 days)
+    daily_builds = []
+    result = await db.execute(
+        select(
+            cast(Build.created_at, Date).label("date"),
+            Build.status,
+            func.count().label("count"),
+        )
+        .where(Build.created_at >= thirty_days_ago)
+        .group_by(cast(Build.created_at, Date), Build.status)
+        .order_by(cast(Build.created_at, Date))
+    )
+    for row in result.all():
+        daily_builds.append({
+            "date": row.date.isoformat(),
+            "status": row.status,
+            "count": row.count,
+        })
+
+    # Active subscriptions (monthly plans with paid orders)
+    active_subs = (await db.execute(
+        select(func.count())
+        .select_from(Order)
+        .join(Plan, Order.plan_id == Plan.id)
+        .where(Order.status == "paid", Plan.billing_type == "monthly")
+    )).scalar()
+
+    return {
+        "users": users_count,
+        "orders": orders_count,
+        "revenue_inr": revenue_inr,
+        "revenue_usd": revenue_usd,
+        "builds": builds_by_status,
+        "total_builds": total_builds,
+        "failed_builds": failed_builds,
+        "failure_rate": failure_rate,
+        "active_subscriptions": active_subs,
+        "recent_failures": failed_builds_data,
+        "daily_revenue": daily_revenue,
+        "daily_builds": daily_builds,
+    }

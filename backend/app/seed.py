@@ -42,14 +42,14 @@ PLANS = [
         },
     },
     {
-        "name": "Basic",
-        "slug": "basic",
-        "description": "Perfect for personal projects and small businesses",
+        "name": "One Time",
+        "slug": "one-time",
+        "description": "Pay once, use forever",
         "price_inr": 299900,  # 2999 INR in paise
         "price_usd": 3500,    # $35 in cents
         "billing_type": "one_time",
         "max_apps": 3,
-        "sort_order": 1,
+        "sort_order": 4,
         "features": {
             "twa": True,
             "webview_fallback": True,

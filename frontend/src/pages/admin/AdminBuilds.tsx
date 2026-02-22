@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
+import { ChevronLeft, ChevronRight, Loader2, X, FileText } from 'lucide-react'
 import { adminApi } from '@/api/admin'
 import { formatDateTime } from '@/utils/format'
 
@@ -22,17 +23,75 @@ const statusBadge = (status: string) => {
   return map[status] || 'bg-gray-100 text-gray-700'
 }
 
+function LogModal({ buildId, onClose }: { buildId: string; onClose: () => void }) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['admin', 'build-log', buildId],
+    queryFn: () => adminApi.getBuildLog(buildId).then((r) => r.data),
+  })
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div
+        className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[80vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b">
+          <div>
+            <h3 className="font-semibold text-gray-900">Build Log</h3>
+            <p className="text-sm text-gray-500 font-mono">{buildId.slice(0, 8)}...</p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-auto p-6">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+            </div>
+          ) : error ? (
+            <p className="text-red-500">Failed to load build log.</p>
+          ) : data ? (
+            <div className="space-y-4">
+              {data.error_message && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <h4 className="text-sm font-semibold text-red-800 mb-1">Error Summary</h4>
+                  <pre className="text-sm text-red-700 whitespace-pre-wrap font-mono">{data.error_message}</pre>
+                </div>
+              )}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Full Log</h4>
+                <pre className="bg-gray-900 text-gray-100 rounded-lg p-4 text-xs font-mono whitespace-pre-wrap overflow-auto max-h-[50vh] leading-relaxed">
+                  {data.log}
+                </pre>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function AdminBuilds() {
+  const [searchParams] = useSearchParams()
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('')
+  const [viewLogId, setViewLogId] = useState<string | null>(null)
   const perPage = 20
+
+  // Open log modal from URL param (from dashboard "View Log" link)
+  useEffect(() => {
+    const viewId = searchParams.get('view')
+    if (viewId) setViewLogId(viewId)
+  }, [searchParams])
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['admin', 'builds', page, statusFilter],
     queryFn: () => adminApi.listBuilds(page, perPage, statusFilter || undefined).then((r) => r.data),
   })
 
-  // The API returns Build[] directly, so we need to handle both array and paginated responses
   const builds = Array.isArray(data) ? data : []
   const totalPages = Math.max(1, Math.ceil(builds.length / perPage))
 
@@ -40,7 +99,7 @@ export default function AdminBuilds() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Builds</h1>
-        <p className="text-gray-500 mt-1">Monitor build pipelines</p>
+        <p className="text-gray-500 mt-1">Monitor build pipelines and view failure logs</p>
       </div>
 
       {/* Filter */}
@@ -79,12 +138,12 @@ export default function AdminBuilds() {
                   <tr className="border-b bg-gray-50">
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">ID</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Order ID</th>
-                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Pipeline ID</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Pipeline</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Platform</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Status</th>
-                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Type</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Error</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Started</th>
-                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Completed</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
@@ -117,8 +176,14 @@ export default function AdminBuilds() {
                           {build.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-gray-600">{build.build_type}</span>
+                      <td className="px-6 py-4 max-w-xs">
+                        {build.error_message ? (
+                          <p className="text-sm text-red-600 truncate" title={build.error_message}>
+                            {build.error_message.split('\n')[0]}
+                          </p>
+                        ) : (
+                          <span className="text-sm text-gray-400">-</span>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-sm text-gray-500">
@@ -126,9 +191,14 @@ export default function AdminBuilds() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-500">
-                          {build.completed_at ? formatDateTime(build.completed_at) : '-'}
-                        </span>
+                        <button
+                          onClick={() => setViewLogId(build.id)}
+                          className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                          title="View build log"
+                        >
+                          <FileText className="w-4 h-4" />
+                          Log
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -168,6 +238,9 @@ export default function AdminBuilds() {
           </>
         )}
       </div>
+
+      {/* Log Modal */}
+      {viewLogId && <LogModal buildId={viewLogId} onClose={() => setViewLogId(null)} />}
     </div>
   )
 }

@@ -7,11 +7,12 @@ from app.models.order import Order
 from app.models.payment import Payment
 from app.models.build import Build
 from app.models.pwa_config import PWAConfig
-from app.models.subscription import Subscription
+from app.models.subscription import Subscription, SubscriptionPayment
 from app.models.push_campaign import PushCampaign
 from app.models.audit_log import AuditLog
 
 __all__ = [
     "User", "Admin", "Setting", "Plan", "AppConfig", "Order",
-    "Payment", "Build", "PWAConfig", "Subscription", "PushCampaign", "AuditLog",
+    "Payment", "Build", "PWAConfig", "Subscription", "SubscriptionPayment",
+    "PushCampaign", "AuditLog",
 ]

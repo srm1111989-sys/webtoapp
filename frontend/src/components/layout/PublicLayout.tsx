@@ -51,22 +51,23 @@ export default function PublicLayout() {
             <div>
               <h3 className="text-white font-semibold mb-3">Company</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white">About</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
+                <li><Link to="/contact" className="hover:text-white">Contact Us</Link></li>
+                <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-white font-semibold mb-3">Legal</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white">Privacy</a></li>
-                <li><a href="#" className="hover:text-white">Terms</a></li>
+                <li><Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="hover:text-white">Terms of Service</Link></li>
+                <li><Link to="/refund-policy" className="hover:text-white">Refund Policy</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-white font-semibold mb-3">Support</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white">Documentation</a></li>
-                <li><a href="#" className="hover:text-white">Help Center</a></li>
+                <li><a href="mailto:support@websitetoapp.app" className="hover:text-white">support@websitetoapp.app</a></li>
+                <li><Link to="/contact" className="hover:text-white">Help Center</Link></li>
               </ul>
             </div>
           </div>

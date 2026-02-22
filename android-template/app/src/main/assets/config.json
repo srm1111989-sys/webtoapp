@@ -21,6 +21,11 @@
     "navigation_menu": false,
     "show_watermark": false
   },
-  "admob_config": {"app_id": "", "banner_id": "", "interstitial_id": "", "rewarded_id": ""},
+  "admob_config": {
+    "app_id": "",
+    "banner_id": "",
+    "interstitial_id": "",
+    "rewarded_id": ""
+  },
   "navigation_items": []
 }

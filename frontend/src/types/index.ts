@@ -136,3 +136,77 @@ export interface AdminStats {
   revenue_usd: number
   builds: Record<string, number>
 }
+
+export interface AdminEnhancedStats extends AdminStats {
+  total_builds: number
+  failed_builds: number
+  failure_rate: number
+  active_subscriptions: number
+  recent_failures: RecentFailure[]
+  daily_revenue: DailyRevenue[]
+  daily_builds: DailyBuild[]
+}
+
+export interface RecentFailure {
+  id: string
+  order_id: string
+  platform: string
+  error_message?: string
+  completed_at?: string
+  app_name?: string
+}
+
+export interface DailyRevenue {
+  date: string
+  currency: string
+  total: number
+}
+
+export interface DailyBuild {
+  date: string
+  status: string
+  count: number
+}
+
+export interface BuildLog {
+  build_id: string
+  status: string
+  error_message?: string
+  log: string
+}
+
+export interface Subscription {
+  id: string
+  user_id: string
+  plan_id: string
+  gateway: string
+  gateway_subscription_id?: string
+  status: 'pending' | 'active' | 'halted' | 'cancelled' | 'expired'
+  current_period_start?: string
+  current_period_end?: string
+  cancelled_at?: string
+  plan_name?: string
+  created_at: string
+}
+
+export interface SubscriptionPayment {
+  id: string
+  gateway_payment_id?: string
+  amount: number
+  currency: string
+  status: string
+  paid_at?: string
+  created_at: string
+}
+
+export interface SubscriptionDetail extends Subscription {
+  payments: SubscriptionPayment[]
+}
+
+export interface SubscriptionCreateResponse {
+  subscription_id: string
+  gateway_subscription_id?: string
+  razorpay_key_id?: string
+  checkout_url?: string
+  session_id?: string
+}

@@ -1,5 +1,5 @@
 import client from './client'
-import type { Order, Build } from '@/types'
+import type { Order, Build, Subscription, SubscriptionDetail, SubscriptionCreateResponse } from '@/types'
 
 export const ordersApi = {
   create: (data: { app_config_id: string; plan_id: string; currency?: string; payment_gateway?: string }) =>
@@ -49,6 +49,23 @@ export const paymentsApi = {
 export const plansApi = {
   list: () =>
     client.get<Plan[]>('/api/plans/'),
+}
+
+export const subscriptionsApi = {
+  create: (data: { plan_id: string; currency: string; app_config_id: string }) =>
+    client.post<SubscriptionCreateResponse>('/api/subscriptions/', data),
+
+  list: () =>
+    client.get<Subscription[]>('/api/subscriptions/'),
+
+  getActive: () =>
+    client.get<Subscription | null>('/api/subscriptions/active'),
+
+  get: (id: string) =>
+    client.get<SubscriptionDetail>(`/api/subscriptions/${id}`),
+
+  cancel: (id: string) =>
+    client.post<Subscription>(`/api/subscriptions/${id}/cancel`),
 }
 
 import type { Plan } from '@/types'

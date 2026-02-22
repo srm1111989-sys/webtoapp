@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Check, X } from 'lucide-react'
 import { plansApi } from '@/api/orders'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
+import { useSEO } from '@/hooks/useSEO'
 import { clsx } from 'clsx'
 
 const featureLabels: Record<string, string> = {
@@ -35,26 +36,30 @@ const FALLBACK_PLANS = [
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, source_code: false, aab_output: false, pwa: false, priority_support: false },
   },
   {
-    id: '2', name: 'Basic', slug: 'basic', price_inr: 299900, price_usd: 3500,
-    billing_type: 'one_time', max_apps: 3, sort_order: 1, is_active: true,
-    description: 'Perfect for personal projects',
-    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: false, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: false, js_bridge: false, screenshot_prevention: false, source_code: false, aab_output: true, pwa: true, priority_support: false },
-  },
-  {
     id: '3', name: 'Pro', slug: 'pro', price_inr: 49900, price_usd: 999,
-    billing_type: 'monthly', max_apps: 10, sort_order: 2, is_active: true,
+    billing_type: 'monthly', max_apps: 10, sort_order: 1, is_active: true,
     description: 'For professional developers',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, source_code: false, aab_output: true, pwa: true, priority_support: true },
   },
   {
     id: '4', name: 'Business', slug: 'business', price_inr: 99900, price_usd: 1999,
-    billing_type: 'monthly', max_apps: 50, sort_order: 3, is_active: true,
+    billing_type: 'monthly', max_apps: 50, sort_order: 2, is_active: true,
     description: 'For agencies and enterprises',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, source_code: true, aab_output: true, pwa: true, priority_support: true },
+  },
+  {
+    id: '2', name: 'One Time', slug: 'one-time', price_inr: 299900, price_usd: 3500,
+    billing_type: 'one_time', max_apps: 3, sort_order: 3, is_active: true,
+    description: 'Pay once, use forever',
+    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: false, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: false, js_bridge: false, screenshot_prevention: false, source_code: false, aab_output: true, pwa: true, priority_support: false },
   },
 ]
 
 export default function Pricing() {
+  useSEO({
+    title: 'Pricing - Affordable App Plans',
+    description: 'Convert your website to an Android or Windows app starting free. Plans from $0 to $19.99/month with push notifications, AdMob, offline mode, and more.',
+  })
   const { data: plans } = useQuery({
     queryKey: ['plans'],
     queryFn: () => plansApi.list().then(r => r.data),
@@ -90,7 +95,7 @@ export default function Pricing() {
               <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
               <div className="mb-4">
                 <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
-                {plan.billing_type === 'monthly' && <span className="text-gray-700 text-sm font-semibold"> /month</span>}
+                {plan.billing_type === 'monthly' && <span className="text-gray-700 text-sm font-semibold"> per month</span>}
                 {plan.billing_type === 'one_time' && (getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 && <span className="text-green-700 text-sm font-semibold"> one-time</span>}
               </div>
               <p className="text-sm text-gray-500 mb-4">Up to {plan.max_apps} app{plan.max_apps > 1 ? 's' : ''}</p>

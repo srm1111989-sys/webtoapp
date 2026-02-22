@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useSEO } from '@/hooks/useSEO'
 import {
   Smartphone, Bell, Fingerprint, QrCode, WifiOff,
   Shield, Navigation, Camera, MapPin, Upload, Code, Palette, Monitor, ArrowRight
@@ -92,6 +93,10 @@ const allFeatures = [
 ]
 
 export default function Features() {
+  useSEO({
+    title: 'Features - 15+ App Features',
+    description: 'Push notifications, biometric auth, offline mode, AdMob, QR scanner, deep linking, custom navigation, and more. All configurable with no coding.',
+  })
   return (
     <div>
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-16">

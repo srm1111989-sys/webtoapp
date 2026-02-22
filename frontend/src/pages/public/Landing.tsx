@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
-import { Smartphone, Monitor, Zap, Shield, ArrowRight, Star, Globe } from 'lucide-react'
+import { plansApi } from '@/api/orders'
+import { formatPlanPrice, getUserCurrency } from '@/utils/format'
+import { Smartphone, Monitor, Zap, Shield, ArrowRight, Star, Globe, Check } from 'lucide-react'
+import { useSEO } from '@/hooks/useSEO'
 
 const features = [
   { icon: Smartphone, title: 'Android Apps', desc: 'Convert your website into a native Android app with full-screen experience and smooth performance.' },
@@ -76,6 +80,33 @@ const testimonials = [
   },
 ]
 
+const FALLBACK_PLANS = [
+  {
+    id: '1', name: 'Free', slug: 'free', price_inr: 0, price_usd: 0,
+    billing_type: 'one_time', max_apps: 1, sort_order: 0,
+    description: 'Try with basic features',
+    highlights: ['Custom App Icon', 'Splash Screen', 'Custom Colors', 'Full-screen Mode'],
+  },
+  {
+    id: '3', name: 'Pro', slug: 'pro', price_inr: 49900, price_usd: 999,
+    billing_type: 'monthly', max_apps: 10, sort_order: 1,
+    description: 'For professional developers',
+    highlights: ['Everything in Free', 'Biometric Auth', 'QR Scanner', 'JS Bridge', 'Screenshot Prevention', 'Priority Support'],
+  },
+  {
+    id: '4', name: 'Business', slug: 'business', price_inr: 99900, price_usd: 1999,
+    billing_type: 'monthly', max_apps: 50, sort_order: 2,
+    description: 'For agencies & enterprises',
+    highlights: ['Everything in Pro', 'Source Code Access', 'Up to 50 Apps', 'Priority Support'],
+  },
+  {
+    id: '2', name: 'One Time', slug: 'one-time', price_inr: 299900, price_usd: 3500,
+    billing_type: 'one_time', max_apps: 3, sort_order: 3,
+    description: 'Pay once, use forever',
+    highlights: ['Push Notifications', 'AdMob Ads', 'Deep Linking', 'Offline Mode', 'Play Store Bundle', 'No monthly fees'],
+  },
+]
+
 const faqs = [
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
   { q: 'Can I publish to Google Play Store?', a: 'Yes. Basic plan and above generate AAB (App Bundle) files that can be uploaded directly to Google Play Console.' },
@@ -86,6 +117,10 @@ const faqs = [
 ]
 
 export default function Landing() {
+  useSEO({
+    title: 'Convert Any Website Into Android & Windows Apps',
+    description: 'Convert your website into professional Android APK, AAB, and Windows .exe apps in minutes. No coding required. Free plan available.',
+  })
   const { accessToken } = useAuthStore()
   const isLoggedIn = !!accessToken
   const navigate = useNavigate()
@@ -226,8 +261,69 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* Pricing */}
       <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-4">Simple, Affordable Pricing</h2>
+          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+            Start free. Upgrade when you need more features. No hidden charges.
+          </p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FALLBACK_PLANS.map((plan) => (
+              <div
+                key={plan.slug}
+                className={`bg-white border rounded-xl p-6 flex flex-col relative ${
+                  plan.slug === 'pro' ? 'border-primary-500 ring-2 ring-primary-500' : ''
+                }`}
+              >
+                {plan.slug === 'pro' && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                    Most Popular
+                  </span>
+                )}
+                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                <p className="text-gray-500 text-sm mb-3">{plan.description}</p>
+                <div className="mb-1">
+                  <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
+                </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  {plan.billing_type === 'monthly'
+                    ? 'per month'
+                    : plan.price_inr > 0
+                      ? 'one-time'
+                      : 'forever free'}
+                </p>
+                <ul className="space-y-2 flex-1 mb-6">
+                  {plan.highlights.map((h) => (
+                    <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
+                      <Check className="w-4 h-4 text-green-500 shrink-0" />
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to={isLoggedIn ? '/apps/create' : '/register'}
+                  className={`block text-center py-2.5 rounded-lg font-medium transition-colors ${
+                    plan.slug === 'pro'
+                      ? 'bg-primary-600 text-white hover:bg-primary-700'
+                      : 'border border-gray-300 hover:border-gray-400 text-gray-700'
+                  }`}
+                >
+                  {plan.price_inr === 0 ? 'Start Free' : 'Get Started'}
+                </Link>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/pricing" className="text-primary-600 hover:text-primary-700 font-medium text-sm">
+              View full feature comparison →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-6">
