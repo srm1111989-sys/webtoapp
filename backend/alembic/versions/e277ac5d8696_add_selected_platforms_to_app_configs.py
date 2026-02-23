@@ -9,6 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -18,11 +19,21 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
+def _uuid_col():
+    """Return UUID type appropriate for the current dialect."""
+    bind = op.get_bind()
+    if bind.dialect.name == "postgresql":
+        return postgresql.UUID(as_uuid=True)
+    return sa.String(36)
+
+
 def upgrade() -> None:
+    uuid_type = _uuid_col()
+
     # subscription_payments table
     op.create_table('subscription_payments',
-        sa.Column('id', sa.String(36), nullable=False),
-        sa.Column('subscription_id', sa.String(36), nullable=False),
+        sa.Column('id', uuid_type, nullable=False),
+        sa.Column('subscription_id', uuid_type, nullable=False),
         sa.Column('gateway_payment_id', sa.String(length=255), nullable=True),
         sa.Column('amount', sa.Integer(), nullable=False),
         sa.Column('currency', sa.String(length=3), nullable=False),
@@ -38,7 +49,7 @@ def upgrade() -> None:
     op.add_column('app_configs', sa.Column('selected_platforms', sa.JSON(), nullable=True))
 
     # app_config_id on subscriptions
-    op.add_column('subscriptions', sa.Column('app_config_id', sa.String(36), nullable=True))
+    op.add_column('subscriptions', sa.Column('app_config_id', uuid_type, nullable=True))
     op.create_index(op.f('ix_subscriptions_gateway_subscription_id'), 'subscriptions', ['gateway_subscription_id'], unique=False)
 
 
