@@ -12,9 +12,11 @@ class GitLabService:
         self.base_url = settings.gitlab_url
         self.token = settings.gitlab_token
         if platform == "desktop":
-            self.project_id = settings.gitlab_desktop_project_id or settings.gitlab_project_id
+            self.project_id = settings.gitlab_desktop_project_id.strip() or settings.gitlab_project_id.strip()
         else:
-            self.project_id = settings.gitlab_android_project_id or settings.gitlab_project_id
+            self.project_id = settings.gitlab_android_project_id.strip() or settings.gitlab_project_id.strip()
+        if not self.project_id:
+            raise ValueError(f"GitLab project ID not configured for platform '{platform}'. Set GITLAB_{'DESKTOP' if platform == 'desktop' else 'ANDROID'}_PROJECT_ID or GITLAB_PROJECT_ID in .env")
         self.headers = {"PRIVATE-TOKEN": self.token}
 
     def _api_url(self, path: str) -> str:

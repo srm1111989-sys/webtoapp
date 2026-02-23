@@ -115,8 +115,8 @@ export default function PrivacyPolicy() {
           <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Contact Us</h2>
           <p>
             If you have questions about this Privacy Policy, please contact us at{' '}
-            <a href="mailto:support@webtoapp.com" className="text-blue-600 hover:underline">
-              support@webtoapp.com
+            <a href="mailto:support@websitetoapp.app" className="text-blue-600 hover:underline">
+              support@websitetoapp.app
             </a>{' '}
             or visit our <Link to="/contact" className="text-blue-600 hover:underline">Contact page</Link>.
           </p>

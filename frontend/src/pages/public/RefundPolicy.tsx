@@ -53,8 +53,8 @@ export default function RefundPolicy() {
           <ol className="list-decimal pl-6 space-y-2">
             <li>
               Email us at{' '}
-              <a href="mailto:support@webtoapp.com" className="text-blue-600 hover:underline">
-                support@webtoapp.com
+              <a href="mailto:support@websitetoapp.app" className="text-blue-600 hover:underline">
+                support@websitetoapp.app
               </a>{' '}
               with the subject line "Refund Request"
             </li>
@@ -87,8 +87,8 @@ export default function RefundPolicy() {
           <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Contact</h2>
           <p>
             For refund-related queries, reach out to us at{' '}
-            <a href="mailto:support@webtoapp.com" className="text-blue-600 hover:underline">
-              support@webtoapp.com
+            <a href="mailto:support@websitetoapp.app" className="text-blue-600 hover:underline">
+              support@websitetoapp.app
             </a>.
           </p>
         </section>

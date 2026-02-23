@@ -23,6 +23,7 @@ class OrderResponse(BaseModel):
     gateway_order_id: str | None = None
     plan_name: str | None = None
     app_name: str | None = None
+    selected_platforms: list[str] | None = None
     created_at: datetime
     updated_at: datetime
 

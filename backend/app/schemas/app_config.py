@@ -17,6 +17,7 @@ class AppConfigCreate(BaseModel):
     features: dict = {}
     firebase_config: dict | None = None
     admob_config: dict | None = None
+    selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
 
@@ -34,6 +35,7 @@ class AppConfigUpdate(BaseModel):
     features: dict | None = None
     firebase_config: dict | None = None
     admob_config: dict | None = None
+    selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
 
@@ -55,6 +57,7 @@ class AppConfigResponse(BaseModel):
     features: dict
     firebase_config: dict | None = None
     admob_config: dict | None = None
+    selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
     status: str

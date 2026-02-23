@@ -12,7 +12,7 @@ export default function PublicLayout() {
       <header className="border-b bg-white sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-primary-600">
+            <Link to={accessToken ? '/dashboard' : '/'} className="flex items-center gap-2 text-xl font-bold text-primary-600">
               <Smartphone className="w-6 h-6" />
               WebToApp
             </Link>
@@ -90,7 +90,7 @@ export default function PublicLayout() {
             <div>
               <h3 className="text-white font-semibold mb-3">Support</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="mailto:support@webtoapp.com" className="hover:text-white">support@webtoapp.com</a></li>
+                <li><a href="mailto:support@websitetoapp.app" className="hover:text-white">support@websitetoapp.app</a></li>
                 <li><Link to="/contact" className="hover:text-white">Help Center</Link></li>
               </ul>
             </div>

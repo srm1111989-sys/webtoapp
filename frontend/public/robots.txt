@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /apps
+Disallow: /orders
+Disallow: /subscription
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /auth/
+Disallow: /payment/
+Disallow: /api/
+
+Sitemap: https://websitetoapp.app/sitemap.xml

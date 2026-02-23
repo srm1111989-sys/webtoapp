@@ -173,40 +173,44 @@ export default function OrderDetail() {
           </h2>
           {order.status === 'paid' && (
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => triggerBuild.mutate('android')}
-                disabled={
-                  triggerBuild.isPending ||
-                  (latestBuild !== null &&
-                    (latestBuild.status === 'building' ||
-                      latestBuild.status === 'pending'))
-                }
-                className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {triggerBuild.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <RefreshCw className="w-4 h-4" />
-                )}
-                Build Android
-              </button>
-              <button
-                onClick={() => triggerBuild.mutate('desktop')}
-                disabled={
-                  triggerBuild.isPending ||
-                  (latestBuild !== null &&
-                    (latestBuild.status === 'building' ||
-                      latestBuild.status === 'pending'))
-                }
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {triggerBuild.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <RefreshCw className="w-4 h-4" />
-                )}
-                Build Windows
-              </button>
+              {(!order.selected_platforms || order.selected_platforms.includes('android')) && (
+                <button
+                  onClick={() => triggerBuild.mutate('android')}
+                  disabled={
+                    triggerBuild.isPending ||
+                    (latestBuild !== null &&
+                      (latestBuild.status === 'building' ||
+                        latestBuild.status === 'pending'))
+                  }
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {triggerBuild.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-4 h-4" />
+                  )}
+                  Build Android
+                </button>
+              )}
+              {order.selected_platforms?.includes('desktop') && (
+                <button
+                  onClick={() => triggerBuild.mutate('desktop')}
+                  disabled={
+                    triggerBuild.isPending ||
+                    (latestBuild !== null &&
+                      (latestBuild.status === 'building' ||
+                        latestBuild.status === 'pending'))
+                  }
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {triggerBuild.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-4 h-4" />
+                  )}
+                  Build Windows
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -224,7 +228,13 @@ export default function OrderDetail() {
             <p className="text-gray-500">No builds yet.</p>
             {order.status === 'paid' && (
               <p className="text-sm text-gray-400 mt-1">
-                Trigger a build to generate your APK and AAB files.
+                Trigger a build to generate your {
+                  order.selected_platforms?.includes('desktop') && !order.selected_platforms?.includes('android')
+                    ? 'Windows EXE'
+                    : order.selected_platforms?.includes('desktop')
+                      ? 'APK, AAB, and EXE files'
+                      : 'APK and AAB files'
+                }.
               </p>
             )}
             {order.status === 'pending' && (

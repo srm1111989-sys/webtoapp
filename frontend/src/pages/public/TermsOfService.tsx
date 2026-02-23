@@ -126,8 +126,8 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Contact</h2>
           <p>
             For questions about these Terms, contact us at{' '}
-            <a href="mailto:support@webtoapp.com" className="text-blue-600 hover:underline">
-              support@webtoapp.com
+            <a href="mailto:support@websitetoapp.app" className="text-blue-600 hover:underline">
+              support@websitetoapp.app
             </a>.
           </p>
         </section>

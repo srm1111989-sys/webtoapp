@@ -40,6 +40,7 @@ export interface AppConfig {
   features: Record<string, boolean>
   firebase_config?: FirebaseConfig
   admob_config?: AdmobConfig
+  selected_platforms?: ('android' | 'desktop')[]
   desktop_config?: DesktopConfig
   custom_user_agent?: string
   status: string
@@ -81,6 +82,7 @@ export interface Order {
   builds?: Build[]
   plan_name?: string
   app_name?: string
+  selected_platforms?: ('android' | 'desktop')[]
 }
 
 export interface DesktopConfig {

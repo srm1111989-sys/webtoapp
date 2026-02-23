@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
-    smtp_from_email: str = "support@webtoapp.com"
+    smtp_from_email: str = "support@websitetoapp.app"
     smtp_from_name: str = "WebToApp"
 
     # Razorpay (live)
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     google_client_id: str = ""
 
     # Admin
-    admin_email: str = "admin@webtoapp.com"
+    admin_email: str = "admin@websitetoapp.app"
     admin_password: str = "admin123"
 
     model_config = {"env_file": ".env", "extra": "ignore"}

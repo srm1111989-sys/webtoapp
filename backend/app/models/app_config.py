@@ -25,6 +25,7 @@ class AppConfig(Base):
     features: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
     firebase_config: Mapped[dict | None] = mapped_column(JSONB)
     admob_config: Mapped[dict | None] = mapped_column(JSONB)
+    selected_platforms: Mapped[list | None] = mapped_column(JSONB, default=lambda: ["android"])
     desktop_config: Mapped[dict | None] = mapped_column(JSONB)
     custom_user_agent: Mapped[str | None] = mapped_column(String(500))
     status: Mapped[str] = mapped_column(String(20), default="draft")  # draft, active, suspended

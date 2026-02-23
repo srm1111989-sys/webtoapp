@@ -88,6 +88,7 @@ async def list_orders(
             resp.plan_name = order.plan.name
         if order.app_config:
             resp.app_name = order.app_config.name
+            resp.selected_platforms = order.app_config.selected_platforms
         order_responses.append(resp)
 
     return OrderListResponse(orders=order_responses, total=total, page=page, per_page=per_page)
@@ -111,4 +112,5 @@ async def get_order(
         response.plan_name = order.plan.name
     if order.app_config:
         response.app_name = order.app_config.name
+        response.selected_platforms = order.app_config.selected_platforms
     return response

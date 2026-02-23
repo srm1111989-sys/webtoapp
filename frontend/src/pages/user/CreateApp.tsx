@@ -343,6 +343,7 @@ function Step0BasicInfo() {
         url: data.url,
         package_name: data.package_name || undefined,
         description: data.description || undefined,
+        selected_platforms: wizard.selectedPlatforms,
       }),
     onSuccess: (res) => {
       wizard.setAppId(res.data.id)
@@ -367,6 +368,7 @@ function Step0BasicInfo() {
         url: data.url,
         package_name: data.package_name || undefined,
         description: data.description || undefined,
+        selected_platforms: wizard.selectedPlatforms,
       }),
     onSuccess: (res) => {
       wizard.setBasicInfo({
@@ -520,6 +522,9 @@ function Step0BasicInfo() {
 
 function Step1Visuals() {
   const wizard = useWizardStore()
+  const hasAndroid = wizard.selectedPlatforms.includes('android')
+  const hasDesktop = wizard.selectedPlatforms.includes('desktop')
+  const desktopOnly = hasDesktop && !hasAndroid
 
   const onIconDrop = useCallback(
     (files: File[]) => {
@@ -553,7 +558,7 @@ function Step1Visuals() {
       if (wizard.iconFile) {
         await appsApi.uploadIcon(wizard.appId, wizard.iconFile)
       }
-      if (wizard.splashFile) {
+      if (wizard.splashFile && hasAndroid) {
         await appsApi.uploadSplash(wizard.appId, wizard.splashFile)
       }
       await appsApi.update(wizard.appId, {
@@ -583,15 +588,17 @@ function Step1Visuals() {
             label="App Icon"
             preview={wizard.iconPreview}
             onDrop={onIconDrop}
-            hint="512x512px recommended, PNG or JPG"
+            hint={desktopOnly ? '256x256px recommended, PNG or ICO' : '512x512px recommended, PNG or JPG'}
           />
 
-          <ImageDropzone
-            label="Splash Screen"
-            preview={wizard.splashPreview}
-            onDrop={onSplashDrop}
-            hint="1080x1920px recommended"
-          />
+          {hasAndroid && (
+            <ImageDropzone
+              label="Splash Screen"
+              preview={wizard.splashPreview}
+              onDrop={onSplashDrop}
+              hint="1080x1920px recommended"
+            />
+          )}
 
           <ColorPickerField
             label="Primary Color"
@@ -605,23 +612,52 @@ function Step1Visuals() {
             onChange={(c) => wizard.setVisuals({ secondaryColor: c })}
           />
 
-          <ColorPickerField
-            label="Status Bar Color"
-            color={wizard.statusBarColor}
-            onChange={(c) => wizard.setVisuals({ statusBarColor: c })}
-          />
+          {hasAndroid && (
+            <ColorPickerField
+              label="Status Bar Color"
+              color={wizard.statusBarColor}
+              onChange={(c) => wizard.setVisuals({ statusBarColor: c })}
+            />
+          )}
         </div>
 
         {/* Right: Preview */}
         <div className="flex flex-col items-center">
           <h3 className="text-sm font-medium text-gray-700 mb-4">Live Preview</h3>
-          <PhoneMockup
-            primaryColor={wizard.primaryColor}
-            secondaryColor={wizard.secondaryColor}
-            statusBarColor={wizard.statusBarColor}
-            iconPreview={wizard.iconPreview}
-            appName={wizard.name}
-          />
+          {desktopOnly ? (
+            <div className="w-[320px] rounded-lg border-2 border-gray-300 bg-white overflow-hidden shadow-lg">
+              {/* Title bar */}
+              <div className="h-8 flex items-center px-3 gap-2" style={{ backgroundColor: wizard.primaryColor }}>
+                {wizard.iconPreview && (
+                  <img src={wizard.iconPreview} alt="icon" className="w-4 h-4 rounded-sm" />
+                )}
+                <span className="text-white text-xs font-medium truncate">
+                  {wizard.name || 'My App'}
+                </span>
+                <div className="ml-auto flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-sm bg-white/30" />
+                  <div className="w-3 h-3 rounded-sm bg-white/30" />
+                  <div className="w-3 h-3 rounded-sm bg-white/30" />
+                </div>
+              </div>
+              {/* Content area */}
+              <div className="p-4 space-y-3 h-[200px]">
+                <div className="h-3 rounded-full bg-gray-200 w-full" />
+                <div className="h-3 rounded-full bg-gray-200 w-4/5" />
+                <div className="h-16 rounded-lg bg-gray-100 mt-3" />
+                <div className="h-3 rounded-full bg-gray-200 w-full" />
+                <div className="h-3 rounded-full bg-gray-200 w-3/5" />
+              </div>
+            </div>
+          ) : (
+            <PhoneMockup
+              primaryColor={wizard.primaryColor}
+              secondaryColor={wizard.secondaryColor}
+              statusBarColor={wizard.statusBarColor}
+              iconPreview={wizard.iconPreview}
+              appName={wizard.name}
+            />
+          )}
         </div>
       </div>
 
