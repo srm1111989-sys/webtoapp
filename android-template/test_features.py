@@ -48,7 +48,33 @@ BASE_CONFIG = {
         "camera_access": False,
         "qr_scanner": False,
         "js_bridge": False,
-        "navigation_menu": False
+        "navigation_menu": False,
+        "onboarding_screen": False,
+        "app_shortcut": False,
+        "secondary_navigation": False,
+        "social_login": False,
+        "in_app_update": False,
+        "background_location": False,
+        "facebook_app_events": False,
+        "in_app_purchases": False,
+        "in_app_review": False,
+        "background_service": False,
+        "native_contacts": False,
+        "appsflyer": False,
+        "custom_media_player": False,
+        "offer_card": False,
+        "intercom": False,
+        "dynamic_app_icon": False,
+        "bluetooth_connectivity": False,
+        "download_file_manager": False,
+        "floating_action_menu": False,
+        "revenue_cat": False,
+        "native_datastore": False,
+        "passcode_lock": False,
+        "app_auto_launch": False,
+        "advanced_bottom_navigation": False,
+        "firebase_notification": False,
+        "tap_to_pay": False,
     },
     "admob_config": {"app_id": "", "banner_id": "", "interstitial_id": "", "rewarded_id": ""},
     "navigation_items": []
@@ -113,6 +139,112 @@ TESTS = [
         "name": "twa_mode",
         "features": {"twa_mode": True},
     },
+    # ---------- New add-on features (build + launch tests) ----------
+    {
+        "name": "onboarding_screen",
+        "features": {"onboarding_screen": True},
+    },
+    {
+        "name": "app_shortcut",
+        "features": {"app_shortcut": True},
+    },
+    {
+        "name": "secondary_navigation",
+        "features": {"secondary_navigation": True},
+    },
+    {
+        "name": "social_login",
+        "features": {"social_login": True},
+    },
+    {
+        "name": "in_app_update",
+        "features": {"in_app_update": True},
+    },
+    {
+        "name": "background_location",
+        "features": {"background_location": True},
+    },
+    {
+        "name": "facebook_app_events",
+        "features": {"facebook_app_events": True},
+    },
+    {
+        "name": "in_app_purchases",
+        "features": {"in_app_purchases": True},
+    },
+    {
+        "name": "in_app_review",
+        "features": {"in_app_review": True},
+    },
+    {
+        "name": "background_service",
+        "features": {"background_service": True},
+    },
+    {
+        "name": "native_contacts",
+        "features": {"native_contacts": True},
+    },
+    {
+        "name": "appsflyer",
+        "features": {"appsflyer": True},
+    },
+    {
+        "name": "custom_media_player",
+        "features": {"custom_media_player": True},
+    },
+    {
+        "name": "offer_card",
+        "features": {"offer_card": True},
+    },
+    {
+        "name": "intercom",
+        "features": {"intercom": True},
+    },
+    {
+        "name": "dynamic_app_icon",
+        "features": {"dynamic_app_icon": True},
+    },
+    {
+        "name": "bluetooth_connectivity",
+        "features": {"bluetooth_connectivity": True},
+    },
+    {
+        "name": "download_file_manager",
+        "features": {"download_file_manager": True},
+    },
+    {
+        "name": "floating_action_menu",
+        "features": {"floating_action_menu": True},
+    },
+    {
+        "name": "revenue_cat",
+        "features": {"revenue_cat": True},
+    },
+    {
+        "name": "native_datastore",
+        "features": {"native_datastore": True},
+    },
+    {
+        "name": "passcode_lock",
+        "features": {"passcode_lock": True},
+    },
+    {
+        "name": "app_auto_launch",
+        "features": {"app_auto_launch": True},
+    },
+    {
+        "name": "advanced_bottom_navigation",
+        "features": {"advanced_bottom_navigation": True},
+    },
+    {
+        "name": "firebase_notification",
+        "features": {"firebase_notification": True},
+    },
+    {
+        "name": "tap_to_pay",
+        "features": {"tap_to_pay": True},
+    },
+    # ---------- Combined tests ----------
     {
         "name": "all_features",
         "features": {
@@ -126,7 +258,33 @@ TESTS = [
             "qr_scanner": True,
             "js_bridge": True,
             "navigation_menu": True,
-            "custom_user_agent": "FullTest/1.0"
+            "custom_user_agent": "FullTest/1.0",
+            "onboarding_screen": True,
+            "app_shortcut": True,
+            "secondary_navigation": True,
+            "social_login": True,
+            "in_app_update": True,
+            "background_location": True,
+            "facebook_app_events": True,
+            "in_app_purchases": True,
+            "in_app_review": True,
+            "background_service": True,
+            "native_contacts": True,
+            "appsflyer": True,
+            "custom_media_player": True,
+            "offer_card": True,
+            "intercom": True,
+            "dynamic_app_icon": True,
+            "bluetooth_connectivity": True,
+            "download_file_manager": True,
+            "floating_action_menu": True,
+            "revenue_cat": True,
+            "native_datastore": True,
+            "passcode_lock": True,
+            "app_auto_launch": True,
+            "advanced_bottom_navigation": True,
+            "firebase_notification": True,
+            "tap_to_pay": True,
         },
         "navigation_items": [
             {"title": "Tab1", "url": "https://www.google.com", "icon": "home"},

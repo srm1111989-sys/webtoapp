@@ -144,6 +144,46 @@ class TestBuildPipelineVariablesLogic:
         assert features["push_notifications"] is True
         assert features["admob"] is True
 
+    def test_new_addon_features_in_features_json(self, sample_app_config, sample_order):
+        """All 29 new add-on feature keys must flow through FEATURES_JSON."""
+        variables = self._build_pipeline_variables(sample_app_config, sample_order)
+        features = json.loads(variables["FEATURES_JSON"])
+
+        new_feature_keys = [
+            "file_upload", "location_services", "camera_access",
+            "onboarding_screen", "app_shortcut", "secondary_navigation",
+            "social_login", "in_app_update", "background_location",
+            "facebook_app_events", "in_app_purchases", "in_app_review",
+            "background_service", "native_contacts", "appsflyer",
+            "custom_media_player", "offer_card", "intercom",
+            "dynamic_app_icon", "bluetooth_connectivity", "download_file_manager",
+            "floating_action_menu", "revenue_cat", "native_datastore",
+            "passcode_lock", "app_auto_launch", "advanced_bottom_navigation",
+            "firebase_notification", "tap_to_pay",
+        ]
+        for key in new_feature_keys:
+            assert key in features, f"Feature key '{key}' missing from FEATURES_JSON"
+            assert isinstance(features[key], bool), f"Feature '{key}' should be bool, got {type(features[key])}"
+
+    def test_new_addon_features_all_true_for_paid(self, sample_app_config, sample_order):
+        """Paid plan features should all be True for new add-on keys."""
+        variables = self._build_pipeline_variables(sample_app_config, sample_order)
+        features = json.loads(variables["FEATURES_JSON"])
+
+        paid_addon_keys = [
+            "onboarding_screen", "app_shortcut", "secondary_navigation",
+            "social_login", "in_app_update", "background_location",
+            "facebook_app_events", "in_app_purchases", "in_app_review",
+            "background_service", "native_contacts", "appsflyer",
+            "custom_media_player", "offer_card", "intercom",
+            "dynamic_app_icon", "bluetooth_connectivity", "download_file_manager",
+            "floating_action_menu", "revenue_cat", "native_datastore",
+            "passcode_lock", "app_auto_launch", "advanced_bottom_navigation",
+            "firebase_notification", "tap_to_pay",
+        ]
+        for key in paid_addon_keys:
+            assert features[key] is True, f"Paid plan feature '{key}' should be True"
+
     def test_firebase_config_when_enabled(self, sample_app_config, sample_order):
         """Firebase config should be included when present."""
         variables = self._build_pipeline_variables(sample_app_config, sample_order)
@@ -328,3 +368,12 @@ class TestPipelineVariablesRoundTrip:
         variables = func(sample_app_config, sample_order, platform="android")
         for key, value in variables.items():
             assert isinstance(value, str), f"Variable {key} has type {type(value)}, expected str"
+
+    def test_features_json_contains_all_expected_keys(self, sample_app_config, sample_order):
+        """FEATURES_JSON must include all feature keys from the config."""
+        func = TestBuildPipelineVariablesLogic._build_pipeline_variables
+        variables = func(sample_app_config, sample_order, platform="android")
+        features = json.loads(variables["FEATURES_JSON"])
+
+        # Should have at least 29+ feature keys (original + new add-ons)
+        assert len(features) >= 29, f"Expected at least 29 features, got {len(features)}"

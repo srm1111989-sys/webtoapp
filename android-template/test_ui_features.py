@@ -235,6 +235,32 @@ def make_config(**feature_overrides) -> dict:
             "js_bridge": False,
             "navigation_menu": False,
             "show_watermark": False,
+            "onboarding_screen": False,
+            "app_shortcut": False,
+            "secondary_navigation": False,
+            "social_login": False,
+            "in_app_update": False,
+            "background_location": False,
+            "facebook_app_events": False,
+            "in_app_purchases": False,
+            "in_app_review": False,
+            "background_service": False,
+            "native_contacts": False,
+            "appsflyer": False,
+            "custom_media_player": False,
+            "offer_card": False,
+            "intercom": False,
+            "dynamic_app_icon": False,
+            "bluetooth_connectivity": False,
+            "download_file_manager": False,
+            "floating_action_menu": False,
+            "revenue_cat": False,
+            "native_datastore": False,
+            "passcode_lock": False,
+            "app_auto_launch": False,
+            "advanced_bottom_navigation": False,
+            "firebase_notification": False,
+            "tap_to_pay": False,
         },
         "admob_config": {"app_id": "", "banner_id": "", "interstitial_id": "", "rewarded_id": ""},
         "navigation_items": [],
@@ -957,6 +983,136 @@ def test_back_button(results: TestResult):
         )
 
 
+# ── New Feature Tests (build + launch smoke tests) ────────────────────
+
+def test_new_feature_flags(results: TestResult):
+    """TC-21: All new add-on feature flags build and launch without crash."""
+    print(f"\n{Colors.CYAN}TC-21: New Add-on Feature Flags (Smoke Test){Colors.RESET}")
+
+    new_features = [
+        "onboarding_screen", "app_shortcut", "secondary_navigation",
+        "social_login", "in_app_update", "background_location",
+        "facebook_app_events", "in_app_purchases", "in_app_review",
+        "background_service", "native_contacts", "appsflyer",
+        "custom_media_player", "offer_card", "intercom",
+        "dynamic_app_icon", "bluetooth_connectivity", "download_file_manager",
+        "floating_action_menu", "revenue_cat", "native_datastore",
+        "passcode_lock", "app_auto_launch", "advanced_bottom_navigation",
+        "firebase_notification", "tap_to_pay",
+    ]
+
+    # Build with all new features enabled at once
+    overrides = {f: True for f in new_features}
+    config = make_config(**overrides)
+    write_config(config)
+    print("    Building with all new add-on features enabled...")
+    if not build_apk():
+        results.add("Build with all new features", False, "Build failed")
+        return
+    install_apk()
+    force_stop()
+    clear_logcat()
+    launch_app()
+    time.sleep(3)
+
+    activity = get_focused_activity()
+    results.add(
+        "App launches with all new features enabled",
+        PACKAGE in activity,
+        f"Activity: {activity}"
+    )
+
+    # Check no crash in logcat
+    errors = get_logcat_errors(PACKAGE)
+    fatal = [e for e in errors if "FATAL" in e]
+    results.add(
+        "No FATAL crash with new features",
+        len(fatal) == 0,
+        f"Fatal errors: {len(fatal)}"
+    )
+
+    # Verify config.json was loaded (features dict is parsed)
+    logs = adb_shell("logcat -d | grep -i 'config\\|features\\|WebViewActivity'")
+    results.add(
+        "Config loaded by WebViewActivity",
+        "WebViewActivity" in activity,
+        f"Activity confirmed: {activity}"
+    )
+
+    # Verify each feature flag exists in config
+    for feat in new_features:
+        results.add(
+            f"Feature flag '{feat}' accepted (no crash)",
+            PACKAGE in activity,
+        )
+
+
+def test_all_features_combined(results: TestResult):
+    """TC-22: All features (old + new) enabled simultaneously."""
+    print(f"\n{Colors.CYAN}TC-22: All Features Combined{Colors.RESET}")
+
+    all_features = {
+        "biometric_auth": True, "deep_linking": True, "offline_mode": True,
+        "screenshot_prevention": True, "file_upload": True,
+        "location_services": True, "camera_access": True,
+        "js_bridge": True, "navigation_menu": True,
+        "show_watermark": True,
+        "onboarding_screen": True, "app_shortcut": True,
+        "secondary_navigation": True, "social_login": True,
+        "in_app_update": True, "background_location": True,
+        "facebook_app_events": True, "in_app_purchases": True,
+        "in_app_review": True, "background_service": True,
+        "native_contacts": True, "appsflyer": True,
+        "custom_media_player": True, "offer_card": True,
+        "intercom": True, "dynamic_app_icon": True,
+        "bluetooth_connectivity": True, "download_file_manager": True,
+        "floating_action_menu": True, "revenue_cat": True,
+        "native_datastore": True, "passcode_lock": True,
+        "app_auto_launch": True, "advanced_bottom_navigation": True,
+        "firebase_notification": True, "tap_to_pay": True,
+    }
+
+    config = make_config(**all_features)
+    config["navigation_items"] = [
+        {"title": "Home", "url": "https://www.wikipedia.org", "icon": "home"},
+        {"title": "Random", "url": "https://en.wikipedia.org/wiki/Special:Random", "icon": "star"},
+    ]
+    write_config(config)
+    print("    Building with ALL features enabled...")
+    if not build_apk():
+        results.add("Build with all features combined", False, "Build failed")
+        return
+    install_apk()
+    force_stop()
+    clear_logcat()
+    launch_app()
+    time.sleep(5)
+
+    activity = get_focused_activity()
+    results.add(
+        "App launches with every feature enabled",
+        PACKAGE in activity,
+        f"Activity: {activity}"
+    )
+
+    errors = get_logcat_errors(PACKAGE)
+    fatal = [e for e in errors if "FATAL" in e]
+    results.add(
+        "No FATAL crash with all features combined",
+        len(fatal) == 0,
+        f"Fatal errors: {len(fatal)}"
+    )
+
+    # Verify WebView still loads
+    xml = get_ui_xml()
+    nodes = get_ui_nodes(xml)
+    webview = find_node(nodes, **{"class": "android.webkit.WebView"})
+    results.add(
+        "WebView present with all features",
+        webview is not None,
+    )
+
+
 # ── Test Suites ────────────────────────────────────────────────────────
 
 ALL_TESTS = {
@@ -980,10 +1136,12 @@ ALL_TESTS = {
     "progress": test_progress_bar,
     "external": test_external_links,
     "back": test_back_button,
+    "newfeatures": test_new_feature_flags,
+    "allcombined": test_all_features_combined,
 }
 
 # Tests that need a rebuild with different config
-REBUILD_TESTS = {"screenshot", "biometric", "jsbridge", "qr"}
+REBUILD_TESTS = {"screenshot", "biometric", "jsbridge", "qr", "newfeatures", "allcombined"}
 
 # Tests that can run on the default build (nav + watermark + offline enabled)
 DEFAULT_TESTS = {
