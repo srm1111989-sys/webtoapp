@@ -19,6 +19,7 @@ class Build(Base):
     aab_url: Mapped[str | None] = mapped_column(String(500))
     exe_url: Mapped[str | None] = mapped_column(String(500))
     source_url: Mapped[str | None] = mapped_column(String(500))
+    keystore_url: Mapped[str | None] = mapped_column(String(500))
     log: Mapped[str | None] = mapped_column(Text)
     error_message: Mapped[str | None] = mapped_column(Text)
     variables: Mapped[dict | None] = mapped_column(JSONB)

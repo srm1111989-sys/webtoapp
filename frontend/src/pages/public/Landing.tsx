@@ -30,7 +30,7 @@ const testimonials = [
   {
     name: 'Priya Mehta',
     role: 'Freelance Developer',
-    text: 'I use WebToApp for all my clients. The apps look truly native and perform great. Business plan gives me source code too.',
+    text: 'I use WebToApp for all my clients. The apps look truly native and perform great. Business plan is perfect for agencies.',
     rating: 5,
     avatar: 'https://ui-avatars.com/api/?name=Priya+Mehta&background=8b5cf6&color=fff&size=80',
   },
@@ -95,7 +95,7 @@ const FALLBACK_PLANS = [
     id: '4', name: 'Business', slug: 'business', price_inr: 99900, price_usd: 1999,
     billing_type: 'monthly', max_apps: 50, sort_order: 2,
     description: 'For agencies & enterprises',
-    highlights: ['Everything in Pro', 'Source Code Access', 'Up to 50 Apps', 'Priority Support'],
+    highlights: ['Everything in Pro', 'Up to 50 Apps', 'Signed AAB + Keystore', 'Priority Support'],
   },
   {
     id: '2', name: 'One Time', slug: 'one-time', price_inr: 299900, price_usd: 3500,

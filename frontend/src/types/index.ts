@@ -108,6 +108,7 @@ export interface Build {
   aab_url?: string
   exe_url?: string
   source_url?: string
+  keystore_url?: string
   error_message?: string
   started_at?: string
   completed_at?: string

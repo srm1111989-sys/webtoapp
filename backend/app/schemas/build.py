@@ -14,6 +14,7 @@ class BuildResponse(BaseModel):
     aab_url: str | None = None
     exe_url: str | None = None
     source_url: str | None = None
+    keystore_url: str | None = None
     error_message: str | None = None
     started_at: datetime | None = None
     completed_at: datetime | None = None

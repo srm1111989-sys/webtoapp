@@ -35,7 +35,7 @@ PLANS = [
             "qr_scanner": False,
             "js_bridge": False,
             "screenshot_prevention": False,
-            "source_code": False,
+
             "aab_output": False,
             "pwa": False,
             "priority_support": False,
@@ -66,7 +66,7 @@ PLANS = [
             "qr_scanner": False,
             "js_bridge": False,
             "screenshot_prevention": False,
-            "source_code": False,
+
             "aab_output": True,
             "pwa": True,
             "priority_support": False,
@@ -97,7 +97,7 @@ PLANS = [
             "qr_scanner": True,
             "js_bridge": True,
             "screenshot_prevention": True,
-            "source_code": False,
+
             "aab_output": True,
             "pwa": True,
             "priority_support": True,
@@ -128,7 +128,7 @@ PLANS = [
             "qr_scanner": True,
             "js_bridge": True,
             "screenshot_prevention": True,
-            "source_code": True,
+
             "aab_output": True,
             "pwa": True,
             "priority_support": True,

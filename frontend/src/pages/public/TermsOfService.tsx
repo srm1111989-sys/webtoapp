@@ -80,7 +80,6 @@ export default function TermsOfService() {
             <li>You retain ownership of your website content and branding</li>
             <li>Apps generated with the Free plan include "Powered by WebToApp" branding</li>
             <li>Paid plans (Basic and above) remove all WebToApp branding</li>
-            <li>Business plan includes source code access for generated apps</li>
             <li>The WebToApp platform, code, and brand remain our intellectual property</li>
           </ul>
         </section>

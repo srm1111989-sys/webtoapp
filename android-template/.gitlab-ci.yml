@@ -39,6 +39,26 @@ prepare:
       fi
     - chmod +x ./gradlew
 
+    # Generate release keystore for signing
+    - |
+      KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
+      KS_ALIAS="${KEY_ALIAS:-upload-key}"
+      APP_PKG="${PACKAGE_NAME:-com.webtoapp.app}"
+      echo "Generating release keystore..."
+      keytool -genkeypair \
+        -alias "$KS_ALIAS" \
+        -keyalg RSA \
+        -keysize 2048 \
+        -validity 10000 \
+        -keystore keystore.jks \
+        -storepass "$KS_PASS" \
+        -keypass "$KS_PASS" \
+        -dname "CN=${APP_NAME:-WebToApp}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
+      echo "KEYSTORE_PASSWORD=$KS_PASS" > keystore.env
+      echo "KEY_ALIAS=$KS_ALIAS" >> keystore.env
+      echo "KEY_PASSWORD=$KS_PASS" >> keystore.env
+      echo "Keystore generated: keystore.jks (alias: $KS_ALIAS)"
+
     # Replace config.json with build variables
     - |
       if [ -n "$FEATURES_JSON" ]; then
@@ -111,6 +131,8 @@ prepare:
       - gradlew
       - gradlew.bat
       - gradle/
+      - keystore.jks
+      - keystore.env
     expire_in: 1 hour
 
 build_apk:
@@ -120,6 +142,12 @@ build_apk:
     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     - export PATH=$JAVA_HOME/bin:$PATH
     - chmod +x ./gradlew
+    # Load keystore env vars for signing
+    - |
+      if [ -f keystore.env ]; then
+        export $(cat keystore.env | xargs)
+        export KEYSTORE_PATH="${CI_PROJECT_DIR}/keystore.jks"
+      fi
   script:
     - |
       ./gradlew assembleRelease \
@@ -135,6 +163,7 @@ build_apk:
   artifacts:
     paths:
       - app/build/outputs/apk/release/app-release.apk
+      - keystore.jks
     expire_in: 30 days
 
 build_aab:
@@ -144,6 +173,12 @@ build_aab:
     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     - export PATH=$JAVA_HOME/bin:$PATH
     - chmod +x ./gradlew
+    # Load keystore env vars for signing
+    - |
+      if [ -f keystore.env ]; then
+        export $(cat keystore.env | xargs)
+        export KEYSTORE_PATH="${CI_PROJECT_DIR}/keystore.jks"
+      fi
   script:
     - |
       ./gradlew bundleRelease \
@@ -159,21 +194,10 @@ build_aab:
   artifacts:
     paths:
       - app/build/outputs/bundle/release/app-release.aab
+      - keystore.jks
     expire_in: 30 days
   rules:
     - if: $BUILD_AAB == "true"
-
-source_code:
-  stage: deploy
-  script:
-    - apt-get update -qq && apt-get install -y -qq zip > /dev/null 2>&1
-    - zip -r source-code.zip . -x ".gradle/*" "app/build/*" ".git/*"
-  artifacts:
-    paths:
-      - source-code.zip
-    expire_in: 30 days
-  rules:
-    - if: $INCLUDE_SOURCE == "true"
 
 webhook_notify:
   stage: deploy

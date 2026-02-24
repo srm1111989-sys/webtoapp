@@ -22,7 +22,6 @@ const featureLabels: Record<string, string> = {
   qr_scanner: 'QR Scanner',
   js_bridge: 'JavaScript Bridge',
   screenshot_prevention: 'Screenshot Prevention',
-  source_code: 'Source Code Access',
   aab_output: 'Play Store Bundle',
   pwa: 'Web App Support',
   priority_support: 'Priority Support',
@@ -33,25 +32,25 @@ const FALLBACK_PLANS = [
     id: '1', name: 'Free', slug: 'free', price_inr: 0, price_usd: 0,
     billing_type: 'one_time', max_apps: 1, sort_order: 0, is_active: true,
     description: 'Try WebToApp with basic features',
-    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, source_code: false, aab_output: false, pwa: false, priority_support: false },
+    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, aab_output: false, pwa: false, priority_support: false },
   },
   {
     id: '3', name: 'Pro', slug: 'pro', price_inr: 49900, price_usd: 999,
     billing_type: 'monthly', max_apps: 10, sort_order: 1, is_active: true,
     description: 'For professional developers',
-    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, source_code: false, aab_output: true, pwa: true, priority_support: true },
+    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, aab_output: true, pwa: true, priority_support: true },
   },
   {
     id: '4', name: 'Business', slug: 'business', price_inr: 99900, price_usd: 1999,
     billing_type: 'monthly', max_apps: 50, sort_order: 2, is_active: true,
     description: 'For agencies and enterprises',
-    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, source_code: true, aab_output: true, pwa: true, priority_support: true },
+    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, aab_output: true, pwa: true, priority_support: true },
   },
   {
     id: '2', name: 'One Time', slug: 'one-time', price_inr: 299900, price_usd: 3500,
     billing_type: 'one_time', max_apps: 3, sort_order: 3, is_active: true,
     description: 'Pay once, use forever',
-    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: false, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: false, js_bridge: false, screenshot_prevention: false, source_code: false, aab_output: true, pwa: true, priority_support: false },
+    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, push_notifications: true, admob: true, biometric_auth: false, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: false, js_bridge: false, screenshot_prevention: false, aab_output: true, pwa: true, priority_support: false },
   },
 ]
 
