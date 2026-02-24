@@ -47,15 +47,16 @@ prepare:
       EOFCONFIG
     - cat src/config.json
     # Download and convert icon if provided
+    - apt-get update && apt-get install -y imagemagick
     - |
       if [ -n "$ICON_URL" ]; then
-        apt-get update && apt-get install -y imagemagick
         curl -L -o assets/icon.png "$ICON_URL"
+      fi
+    - |
+      if [ -f "assets/icon.png" ]; then
         convert assets/icon.png -resize 256x256 assets/icon.ico
       else
-        # Generate a simple default .ico from the existing icon.png
-        apt-get update && apt-get install -y imagemagick
-        convert assets/icon.png -resize 256x256 assets/icon.ico
+        echo "WARNING: No icon found, build will use electron default icon"
       fi
     - npm ci
   artifacts:

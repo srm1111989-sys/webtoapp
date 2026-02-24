@@ -200,6 +200,105 @@ export async function mockSubscriptionAPIs(
   })
 }
 
+// ─── Order / Build mock data ────────────────────────────
+
+const ORDER_ID = '00000000-0000-0000-0000-000000000050'
+const APP_CONFIG_ID = '00000000-0000-0000-0000-000000000060'
+const BUILD_ID = '00000000-0000-0000-0000-000000000070'
+
+export function mockOrder(overrides: Record<string, unknown> = {}) {
+  return {
+    id: ORDER_ID,
+    user_id: USER_ID,
+    app_config_id: APP_CONFIG_ID,
+    plan_id: PLAN_ID,
+    order_number: 'WTA-TEST1234',
+    amount: 49900,
+    currency: 'INR',
+    status: 'paid',
+    payment_gateway: 'razorpay',
+    gateway_order_id: 'order_test1',
+    plan_name: 'Pro',
+    app_name: 'My Desktop App',
+    selected_platforms: ['desktop'],
+    created_at: '2026-02-20T00:00:00Z',
+    updated_at: '2026-02-20T00:00:00Z',
+    builds: [],
+    ...overrides,
+  }
+}
+
+export function mockBuild(overrides: Record<string, unknown> = {}) {
+  return {
+    id: BUILD_ID,
+    order_id: ORDER_ID,
+    pipeline_id: 12345,
+    status: 'building',
+    platform: 'desktop',
+    build_type: 'release',
+    apk_url: null,
+    aab_url: null,
+    exe_url: null,
+    source_url: null,
+    error_message: null,
+    started_at: '2026-02-20T00:01:00Z',
+    completed_at: null,
+    created_at: '2026-02-20T00:00:30Z',
+    ...overrides,
+  }
+}
+
+/**
+ * Set up API route mocking for order detail + build endpoints.
+ */
+export async function mockOrderAPIs(
+  page: Page,
+  opts: {
+    order?: Record<string, unknown>
+    builds?: unknown[]
+    triggerResponse?: Record<string, unknown>
+  } = {},
+) {
+  const order = { ...mockOrder(), ...opts.order }
+  const builds = opts.builds ?? []
+
+  // GET /api/orders/:id
+  await page.route(`**/api/orders/${order.id}`, (route, request) => {
+    if (request.method() === 'GET') {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ...order, builds }),
+      })
+    } else {
+      route.continue()
+    }
+  })
+
+  // GET /api/builds/order/:id
+  await page.route(`**/api/builds/order/${order.id}`, (route) => {
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(builds),
+    })
+  })
+
+  // POST /api/builds/trigger/:id
+  await page.route(`**/api/builds/trigger/${order.id}**`, (route, request) => {
+    if (request.method() === 'POST') {
+      const newBuild = opts.triggerResponse ?? mockBuild()
+      route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify(newBuild),
+      })
+    } else {
+      route.continue()
+    }
+  })
+}
+
 /**
  * Mock the dashboard/shared APIs: orders, apps, payment mode.
  */

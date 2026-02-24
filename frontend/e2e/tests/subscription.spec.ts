@@ -20,7 +20,7 @@ test.describe('Subscription page', () => {
     await expect(page.getByText('Active')).toBeVisible()
 
     // Gateway label
-    await expect(page.getByText(/razorpay/i)).toBeVisible()
+    await expect(page.getByText('razorpay', { exact: true })).toBeVisible()
 
     // Next billing date shown
     await expect(page.getByText('Next Billing Date')).toBeVisible()
@@ -131,7 +131,7 @@ test.describe('Dashboard subscription card', () => {
 
     // Active subscription card
     await expect(page.getByText(/pro/i).first()).toBeVisible()
-    await expect(page.getByText('Active')).toBeVisible()
+    await expect(page.getByText('Active', { exact: true })).toBeVisible()
     await expect(page.getByText('Manage')).toBeVisible()
 
     // Manage link navigates to /subscription
