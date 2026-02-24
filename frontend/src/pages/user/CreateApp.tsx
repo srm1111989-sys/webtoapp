@@ -64,8 +64,8 @@ import {
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
-import { ordersApi, paymentsApi, plansApi, subscriptionsApi } from '@/api/orders'
-import type { Plan, NavigationItem, SubscriptionCreateResponse } from '@/types'
+import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
+import type { Plan, NavigationItem } from '@/types'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 
 // ---------- Step 0: Basic Info ----------
@@ -1186,46 +1186,18 @@ function Step4PlanReview() {
   const currency = getUserCurrency()
 
   const createOrder = useMutation({
-    mutationFn: async (): Promise<{ data: any; isSubscription: boolean; plan: Plan | undefined }> => {
+    mutationFn: async (): Promise<{ data: any; plan: Plan | undefined }> => {
       if (!wizard.appId || !selectedPlan) throw new Error('Missing data')
       const plan = (plans as Plan[])?.find((p) => p.id === selectedPlan)
 
-      // Monthly plan → subscription flow
-      if (plan?.billing_type === 'monthly') {
-        const res = await subscriptionsApi.create({
-          plan_id: selectedPlan,
-          currency,
-          app_config_id: wizard.appId,
-        })
-        return { data: res.data, isSubscription: true, plan }
-      }
-
-      // One-time plan → order flow
       const res = await ordersApi.create({
         app_config_id: wizard.appId,
         plan_id: selectedPlan,
       })
-      return { data: res.data, isSubscription: false, plan }
+      return { data: res.data, plan }
     },
     onSuccess: async (result) => {
-      const { data, isSubscription, plan } = result
-
-      // Subscription flow
-      if (isSubscription) {
-        const subData = data as SubscriptionCreateResponse
-        if (currency === 'INR' && subData.gateway_subscription_id && subData.razorpay_key_id) {
-          handleRazorpaySubscription(subData)
-        } else if (subData.checkout_url) {
-          window.location.href = subData.checkout_url
-        } else {
-          toast.success('Subscription created!')
-          navigate('/subscription')
-        }
-        return
-      }
-
-      // One-time order flow
-      const order = data
+      const { data: order, plan } = result
 
       // Free plan
       if (plan && plan.price_inr === 0 && plan.price_usd === 0) {
@@ -1258,27 +1230,6 @@ function Step4PlanReview() {
       toast.error('Failed to create order.')
     },
   })
-
-  const handleRazorpaySubscription = (data: SubscriptionCreateResponse) => {
-    const options = {
-      key: data.razorpay_key_id,
-      subscription_id: data.gateway_subscription_id,
-      name: 'WebToApp',
-      description: 'Monthly Subscription',
-      handler: () => {
-        toast.success('Subscription activated!')
-        navigate('/subscription')
-      },
-      modal: {
-        ondismiss: () => {
-          toast.error('Payment cancelled.')
-        },
-      },
-    }
-
-    const rzp = new (window as any).Razorpay(options)
-    rzp.open()
-  }
 
   const handleRazorpay = (
     data: { razorpay_order_id: string; razorpay_key_id: string; amount: number; currency: string; order_id: string },
@@ -1406,7 +1357,7 @@ function Step4PlanReview() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(plans as Plan[])?.map((plan) => {
+            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any)).map((plan) => {
               const isSelected = selectedPlan === plan.id
               const missing = getMissingFeatures(plan)
               const hasMissing = missing.length > 0
@@ -1437,9 +1388,7 @@ function Step4PlanReview() {
                     <span className="text-2xl font-bold text-gray-900">
                       {formatPlanPrice(plan.price_inr, plan.price_usd)}
                     </span>
-                    {plan.billing_type === 'monthly' ? (
-                      <span className="text-sm font-semibold text-gray-700 ml-1">per month</span>
-                    ) : (getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 ? (
+                    {(getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 ? (
                       <span className="text-sm font-semibold text-green-700 ml-1">one-time</span>
                     ) : null}
                   </div>

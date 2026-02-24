@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
-import { LayoutDashboard, Plus, AppWindow, ShoppingCart, CreditCard, LogOut, Smartphone, User } from 'lucide-react'
+import { LayoutDashboard, Plus, AppWindow, ShoppingCart, LogOut, Smartphone, User } from 'lucide-react'
 import { clsx } from 'clsx'
 
 const navItems = [
@@ -8,7 +8,6 @@ const navItems = [
   { to: '/apps/create', label: 'Create App', icon: Plus },
   { to: '/apps', label: 'My Apps', icon: AppWindow },
   { to: '/orders', label: 'Orders', icon: ShoppingCart },
-  { to: '/subscription', label: 'Subscription', icon: CreditCard },
 ]
 
 export default function UserLayout() {

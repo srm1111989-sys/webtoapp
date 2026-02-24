@@ -15,7 +15,7 @@ const features = [
 const steps = [
   { num: '1', title: 'Enter Your URL', desc: 'Paste your website URL and configure basic settings.' },
   { num: '2', title: 'Customize', desc: 'Upload icon, set colors, enable features like push notifications.' },
-  { num: '3', title: 'Choose Plan', desc: 'Select from Free, Basic, Pro, or Business plans.' },
+  { num: '3', title: 'Choose Plan', desc: 'Choose Free or Paid plan for your platform.' },
   { num: '4', title: 'Get Your App', desc: 'Download APK, AAB, or Windows .exe built automatically.' },
 ]
 
@@ -78,37 +78,41 @@ const testimonials = [
   },
 ]
 
-const FALLBACK_PLANS = [
+const ANDROID_PLANS = [
   {
-    id: '1', name: 'Free', slug: 'free', price_inr: 0, price_usd: 0,
-    billing_type: 'one_time', max_apps: 1, sort_order: 0,
+    name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0,
     description: 'Try with basic features',
-    highlights: ['Custom App Icon', 'Splash Screen', 'Custom Colors', 'Full-screen Mode'],
+    highlights: ['Custom App Icon', 'Splash Screen', 'Custom Colors', 'Full-screen Mode', 'Includes watermark'],
   },
   {
-    id: '3', name: 'Pro', slug: 'pro', price_inr: 49900, price_usd: 999,
-    billing_type: 'monthly', max_apps: 10, sort_order: 1,
-    description: 'For professional developers',
-    highlights: ['Everything in Free', 'Biometric Auth', 'QR Scanner', 'JS Bridge', 'Screenshot Prevention', 'Priority Support'],
+    name: 'Paid', slug: 'android-paid', price_inr: 150000, price_usd: 1800,
+    description: 'All features, one-time payment',
+    highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days'],
   },
   {
-    id: '4', name: 'Business', slug: 'business', price_inr: 99900, price_usd: 1999,
-    billing_type: 'monthly', max_apps: 50, sort_order: 2,
-    description: 'For agencies & enterprises',
-    highlights: ['Everything in Pro', 'Up to 50 Apps', 'Signed AAB + Keystore', 'Priority Support'],
+    name: 'Play Store Submission', slug: 'play-store-submission', price_inr: 100000, price_usd: 1200,
+    description: 'We submit your app to Play Store',
+    highlights: ['Manual Submission', 'Play Store Listing', 'App Review Support', 'One-time Service'],
+  },
+]
+
+const DESKTOP_PLANS = [
+  {
+    name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0,
+    description: '15-day free trial',
+    highlights: ['Windows .exe App', 'Custom Icon', 'Basic Features', 'Includes Watermark', '15-Day Trial'],
   },
   {
-    id: '2', name: 'One Time', slug: 'one-time', price_inr: 299900, price_usd: 3500,
-    billing_type: 'one_time', max_apps: 3, sort_order: 3,
-    description: 'Pay once, use forever',
-    highlights: ['Push Notifications', 'AdMob Ads', 'Deep Linking', 'Offline Mode', 'Play Store Bundle', 'No monthly fees'],
+    name: 'Paid', slug: 'desktop-paid', price_inr: 200000, price_usd: 2400,
+    description: 'Full desktop app, one-time',
+    highlights: ['All Desktop Features', 'No Watermark', 'No Trial Limit', 'System Tray Support', 'Custom Window Settings'],
   },
 ]
 
 const faqs = [
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
-  { q: 'Can I publish to Google Play Store?', a: 'Yes. Basic plan and above generate AAB (App Bundle) files that can be uploaded directly to Google Play Console.' },
-  { q: 'Is the free plan really free?', a: 'Yes. The free plan generates a basic APK with core features. No credit card required. It includes a small "Powered by WebToApp" branding.' },
+  { q: 'Can I publish to Google Play Store?', a: 'Yes! The Paid plan generates signed AAB files for Play Store. We also offer a Play Store Submission service where we handle the entire submission for you.' },
+  { q: 'Is the free plan really free?', a: 'Yes. The Android free plan lets you build apps with basic features (includes a small watermark). The Desktop free plan gives you a 15-day trial with basic features and watermark. No credit card required.' },
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically via our CI/CD pipeline. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
@@ -172,7 +176,7 @@ export default function Landing() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="#pricing" className="border-2 border-white/50 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
-              View Pricing
+              See Pricing
             </a>
           </div>
           {!isLoggedIn && (
@@ -263,21 +267,22 @@ export default function Landing() {
       {/* Pricing */}
       <section id="pricing" className="py-12 sm:py-20 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Simple, Affordable Pricing</h2>
+          {/* Android Pricing */}
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Android App Pricing</h2>
           <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
-            Start free. Upgrade when you need more features. No hidden charges.
+            One-time payment. No subscriptions. No hidden charges.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {FALLBACK_PLANS.map((plan) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+            {ANDROID_PLANS.map((plan) => (
               <div
                 key={plan.slug}
                 className={`bg-white border rounded-xl p-4 sm:p-6 flex flex-col relative ${
-                  plan.slug === 'pro' ? 'border-primary-500 ring-2 ring-primary-500' : ''
+                  plan.slug === 'android-paid' ? 'border-primary-500 ring-2 ring-primary-500' : ''
                 }`}
               >
-                {plan.slug === 'pro' && (
+                {plan.slug === 'android-paid' && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                    Most Popular
+                    Best Value
                   </span>
                 )}
                 <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
@@ -286,11 +291,7 @@ export default function Landing() {
                   <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
                 </div>
                 <p className="text-sm text-gray-500 mb-4">
-                  {plan.billing_type === 'monthly'
-                    ? 'per month'
-                    : plan.price_inr > 0
-                      ? 'one-time'
-                      : 'forever free'}
+                  {plan.price_inr > 0 ? 'one-time' : 'forever free'}
                 </p>
                 <ul className="space-y-2 flex-1 mb-6">
                   {plan.highlights.map((h) => (
@@ -303,7 +304,7 @@ export default function Landing() {
                 <Link
                   to={isLoggedIn ? '/apps/create' : '/register'}
                   className={`block text-center py-2.5 rounded-lg font-medium transition-colors ${
-                    plan.slug === 'pro'
+                    plan.slug === 'android-paid'
                       ? 'bg-primary-600 text-white hover:bg-primary-700'
                       : 'border border-gray-300 hover:border-gray-400 text-gray-700'
                   }`}
@@ -313,6 +314,55 @@ export default function Landing() {
               </div>
             ))}
           </div>
+
+          {/* Desktop Pricing */}
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4 mt-16 sm:mt-20">Desktop App Pricing</h2>
+          <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
+            Windows .exe app from your website. One-time payment.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
+            {DESKTOP_PLANS.map((plan) => (
+              <div
+                key={plan.slug}
+                className={`bg-white border rounded-xl p-4 sm:p-6 flex flex-col relative ${
+                  plan.slug === 'desktop-paid' ? 'border-primary-500 ring-2 ring-primary-500' : ''
+                }`}
+              >
+                {plan.slug === 'desktop-paid' && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                    Best Value
+                  </span>
+                )}
+                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                <p className="text-gray-500 text-sm mb-3">{plan.description}</p>
+                <div className="mb-1">
+                  <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
+                </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  {plan.price_inr > 0 ? 'one-time' : '15-day trial'}
+                </p>
+                <ul className="space-y-2 flex-1 mb-6">
+                  {plan.highlights.map((h) => (
+                    <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
+                      <Check className="w-4 h-4 text-green-500 shrink-0" />
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to={isLoggedIn ? '/apps/create' : '/register'}
+                  className={`block text-center py-2.5 rounded-lg font-medium transition-colors ${
+                    plan.slug === 'desktop-paid'
+                      ? 'bg-primary-600 text-white hover:bg-primary-700'
+                      : 'border border-gray-300 hover:border-gray-400 text-gray-700'
+                  }`}
+                >
+                  {plan.price_inr === 0 ? 'Start Free Trial' : 'Get Started'}
+                </Link>
+              </div>
+            ))}
+          </div>
+
           <div className="text-center mt-8">
             <Link to="/pricing" className="text-primary-600 hover:text-primary-700 font-medium text-sm">
               View full feature comparison →

@@ -28,8 +28,6 @@ import CreateApp from '@/pages/user/CreateApp'
 import MyApps from '@/pages/user/MyApps'
 import OrderDetail from '@/pages/user/OrderDetail'
 import Orders from '@/pages/user/Orders'
-import SubscriptionPage from '@/pages/user/Subscription'
-
 // Payment pages
 import PaymentSuccess from '@/pages/payment/PaymentSuccess'
 import PaymentCancel from '@/pages/payment/PaymentCancel'
@@ -75,7 +73,6 @@ export default function App() {
           <Route path="/apps" element={<MyApps />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
-          <Route path="/subscription" element={<SubscriptionPage />} />
         </Route>
       </Route>
 

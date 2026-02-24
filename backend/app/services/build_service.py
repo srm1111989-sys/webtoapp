@@ -213,14 +213,18 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 if aab_url:
                     build.aab_url = aab_url
 
-                # Download signing keystore (needed for Play Store updates)
-                keystore_url = await gitlab.download_artifact(
-                    pipeline_id,
-                    "keystore.jks",
-                    f"builds/{build.order_id}",
-                )
-                if keystore_url:
-                    build.keystore_url = keystore_url
+                # Download signing keystore (paid plans only)
+                result = await db.execute(select(Order).where(Order.id == build.order_id))
+                order = result.scalar_one_or_none()
+                is_free = order and order.amount == 0
+                if not is_free:
+                    keystore_url = await gitlab.download_artifact(
+                        pipeline_id,
+                        "keystore.jks",
+                        f"builds/{build.order_id}",
+                    )
+                    if keystore_url:
+                        build.keystore_url = keystore_url
         except Exception as e:
             logger.error(f"Failed to download artifacts for pipeline {pipeline_id}: {e}")
 

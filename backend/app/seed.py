@@ -1,6 +1,6 @@
 """Seed database with initial data."""
 import asyncio
-from sqlalchemy import select
+from sqlalchemy import select, update
 from app.database import async_session
 from app.models.admin import Admin
 from app.models.plan import Plan
@@ -9,22 +9,27 @@ from app.config import get_settings
 
 settings = get_settings()
 
+OLD_PLAN_SLUGS = ["free", "one-time", "pro", "business"]
+
 PLANS = [
     {
-        "name": "Free",
-        "slug": "free",
-        "description": "Try WebToApp with basic features",
+        "name": "Android Free",
+        "slug": "android-free",
+        "description": "Try with basic features",
         "price_inr": 0,
         "price_usd": 0,
         "billing_type": "one_time",
         "max_apps": 1,
-        "sort_order": 0,
+        "platform": "android",
+        "sort_order": 1,
         "features": {
             "twa": True,
             "webview_fallback": True,
             "custom_icon": True,
             "custom_splash": True,
             "custom_colors": True,
+            "fullscreen": True,
+            "orientation_lock": True,
             "push_notifications": False,
             "admob": False,
             "biometric_auth": False,
@@ -64,80 +69,20 @@ PLANS = [
             "advanced_bottom_navigation": False,
             "firebase_notification": False,
             "tap_to_pay": False,
-
             "aab_output": False,
             "pwa": False,
             "priority_support": False,
         },
     },
     {
-        "name": "One Time",
-        "slug": "one-time",
-        "description": "Pay once, use forever",
-        "price_inr": 299900,  # 2999 INR in paise
-        "price_usd": 3500,    # $35 in cents
+        "name": "Android Paid",
+        "slug": "android-paid",
+        "description": "All features, one-time payment",
+        "price_inr": 150000,   # INR 1,500 in paise
+        "price_usd": 1800,     # $18 in cents
         "billing_type": "one_time",
-        "max_apps": 3,
-        "sort_order": 4,
-        "features": {
-            "twa": True,
-            "webview_fallback": True,
-            "custom_icon": True,
-            "custom_splash": True,
-            "custom_colors": True,
-            "push_notifications": True,
-            "admob": True,
-            "biometric_auth": False,
-            "deep_linking": True,
-            "offline_mode": True,
-            "navigation_menu": True,
-            "firebase": True,
-            "qr_scanner": False,
-            "js_bridge": False,
-            "screenshot_prevention": False,
-            "file_upload": True,
-            "location_services": True,
-            "camera_access": True,
-            "onboarding_screen": True,
-            "app_shortcut": True,
-            "secondary_navigation": True,
-            "social_login": True,
-            "in_app_update": True,
-            "background_location": True,
-            "facebook_app_events": True,
-            "in_app_purchases": True,
-            "in_app_review": True,
-            "background_service": True,
-            "native_contacts": True,
-            "appsflyer": True,
-            "custom_media_player": True,
-            "offer_card": True,
-            "intercom": True,
-            "dynamic_app_icon": True,
-            "bluetooth_connectivity": True,
-            "download_file_manager": True,
-            "floating_action_menu": True,
-            "revenue_cat": True,
-            "native_datastore": True,
-            "passcode_lock": True,
-            "app_auto_launch": True,
-            "advanced_bottom_navigation": True,
-            "firebase_notification": True,
-            "tap_to_pay": True,
-
-            "aab_output": True,
-            "pwa": True,
-            "priority_support": False,
-        },
-    },
-    {
-        "name": "Pro",
-        "slug": "pro",
-        "description": "For professional developers and growing businesses",
-        "price_inr": 49900,  # 499 INR/mo in paise
-        "price_usd": 999,    # $9.99/mo in cents
-        "billing_type": "monthly",
-        "max_apps": 10,
+        "max_apps": 1,
+        "platform": "android",
         "sort_order": 2,
         "features": {
             "twa": True,
@@ -145,6 +90,8 @@ PLANS = [
             "custom_icon": True,
             "custom_splash": True,
             "custom_colors": True,
+            "fullscreen": True,
+            "orientation_lock": True,
             "push_notifications": True,
             "admob": True,
             "biometric_auth": True,
@@ -184,70 +131,77 @@ PLANS = [
             "advanced_bottom_navigation": True,
             "firebase_notification": True,
             "tap_to_pay": True,
-
             "aab_output": True,
             "pwa": True,
             "priority_support": True,
         },
     },
     {
-        "name": "Business",
-        "slug": "business",
-        "description": "Full-featured plan for agencies and enterprises",
-        "price_inr": 99900,  # 999 INR/mo in paise
-        "price_usd": 1999,   # $19.99/mo in cents
-        "billing_type": "monthly",
-        "max_apps": 50,
+        "name": "Play Store Submission",
+        "slug": "play-store-submission",
+        "description": "We submit your app to Play Store",
+        "price_inr": 100000,   # INR 1,000 in paise
+        "price_usd": 1200,     # $12 in cents
+        "billing_type": "one_time",
+        "max_apps": 0,
+        "platform": "android",
         "sort_order": 3,
+        "features": {},
+    },
+    {
+        "name": "Desktop Free",
+        "slug": "desktop-free",
+        "description": "15-day free trial",
+        "price_inr": 0,
+        "price_usd": 0,
+        "billing_type": "one_time",
+        "max_apps": 1,
+        "platform": "desktop",
+        "sort_order": 4,
         "features": {
-            "twa": True,
-            "webview_fallback": True,
             "custom_icon": True,
             "custom_splash": True,
             "custom_colors": True,
-            "push_notifications": True,
-            "admob": True,
-            "biometric_auth": True,
-            "deep_linking": True,
-            "offline_mode": True,
-            "navigation_menu": True,
-            "firebase": True,
-            "qr_scanner": True,
-            "js_bridge": True,
-            "screenshot_prevention": True,
-            "file_upload": True,
-            "location_services": True,
-            "camera_access": True,
-            "onboarding_screen": True,
-            "app_shortcut": True,
-            "secondary_navigation": True,
-            "social_login": True,
-            "in_app_update": True,
-            "background_location": True,
-            "facebook_app_events": True,
-            "in_app_purchases": True,
-            "in_app_review": True,
-            "background_service": True,
-            "native_contacts": True,
-            "appsflyer": True,
-            "custom_media_player": True,
-            "offer_card": True,
-            "intercom": True,
-            "dynamic_app_icon": True,
-            "bluetooth_connectivity": True,
-            "download_file_manager": True,
-            "floating_action_menu": True,
-            "revenue_cat": True,
-            "native_datastore": True,
-            "passcode_lock": True,
-            "app_auto_launch": True,
-            "advanced_bottom_navigation": True,
-            "firebase_notification": True,
-            "tap_to_pay": True,
-
-            "aab_output": True,
-            "pwa": True,
-            "priority_support": True,
+            "fullscreen": True,
+            "watermark": True,
+            "trial_days": 15,
+            "system_tray": False,
+            "custom_window_size": False,
+            "auto_updater": False,
+            "native_notifications": False,
+            "file_associations": False,
+            "protocol_handler": False,
+            "kiosk_mode": False,
+        },
+    },
+    {
+        "name": "Desktop Paid",
+        "slug": "desktop-paid",
+        "description": "Full desktop app, one-time",
+        "price_inr": 200000,   # INR 2,000 in paise
+        "price_usd": 2400,     # $24 in cents
+        "billing_type": "one_time",
+        "max_apps": 1,
+        "platform": "desktop",
+        "sort_order": 5,
+        "features": {
+            "custom_icon": True,
+            "custom_splash": True,
+            "custom_colors": True,
+            "fullscreen": True,
+            "watermark": False,
+            "trial_days": 0,
+            "system_tray": True,
+            "custom_window_size": True,
+            "auto_updater": True,
+            "native_notifications": True,
+            "file_associations": True,
+            "protocol_handler": True,
+            "kiosk_mode": True,
+            "custom_title_bar": True,
+            "multi_window": True,
+            "tray_menu": True,
+            "startup_launch": True,
         },
     },
 ]
@@ -267,16 +221,30 @@ async def seed():
             session.add(admin)
             print(f"Admin created: {settings.admin_email}")
 
-        # Seed plans
+        # Deactivate old plans (preserve FK integrity for existing orders)
+        await session.execute(
+            update(Plan)
+            .where(Plan.slug.in_(OLD_PLAN_SLUGS), Plan.is_active == True)
+            .values(is_active=False)
+        )
+        print("Old plans deactivated (free, one-time, pro, business)")
+
+        # Upsert new plans (by slug)
         for plan_data in PLANS:
             result = await session.execute(select(Plan).where(Plan.slug == plan_data["slug"]))
-            if not result.scalar_one_or_none():
+            existing = result.scalar_one_or_none()
+            if existing:
+                for key, value in plan_data.items():
+                    setattr(existing, key, value)
+                existing.is_active = True
+                print(f"Plan updated: {plan_data['name']}")
+            else:
                 plan = Plan(**plan_data)
                 session.add(plan)
                 print(f"Plan created: {plan_data['name']}")
 
         await session.commit()
-        print("Seed completed.")
+        print("Seed completed: 5 plans active, old plans deactivated.")
 
 
 if __name__ == "__main__":

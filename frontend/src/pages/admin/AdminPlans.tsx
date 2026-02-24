@@ -12,8 +12,9 @@ interface PlanFormData {
   description: string
   price_inr: number
   price_usd: number
-  billing_type: 'one_time' | 'monthly'
+  billing_type: 'one_time'
   max_apps: number
+  platform: 'android' | 'desktop'
   is_active: boolean
   sort_order: number
   features: Record<string, boolean>
@@ -27,24 +28,29 @@ const EMPTY_FORM: PlanFormData = {
   price_usd: 0,
   billing_type: 'one_time',
   max_apps: 1,
+  platform: 'android',
   is_active: true,
   sort_order: 0,
   features: {},
 }
 
 const FEATURE_KEYS = [
-  'push_notifications',
-  'admob',
-  'biometric_auth',
-  'deep_linking',
-  'offline_mode',
-  'navigation_menu',
-  'qr_scanner',
-  'js_bridge',
-  'screenshot_prevention',
-  'file_upload',
-  'location_services',
-  'camera_access',
+  'twa', 'webview_fallback', 'custom_icon', 'custom_splash', 'custom_colors',
+  'fullscreen', 'orientation_lock',
+  'push_notifications', 'admob', 'biometric_auth', 'deep_linking', 'offline_mode',
+  'navigation_menu', 'firebase', 'qr_scanner', 'js_bridge', 'screenshot_prevention',
+  'file_upload', 'location_services', 'camera_access', 'onboarding_screen',
+  'app_shortcut', 'secondary_navigation', 'social_login', 'in_app_update',
+  'background_location', 'facebook_app_events', 'in_app_purchases', 'in_app_review',
+  'background_service', 'native_contacts', 'appsflyer', 'custom_media_player',
+  'offer_card', 'intercom', 'dynamic_app_icon', 'bluetooth_connectivity',
+  'download_file_manager', 'floating_action_menu', 'revenue_cat', 'native_datastore',
+  'passcode_lock', 'app_auto_launch', 'advanced_bottom_navigation',
+  'firebase_notification', 'tap_to_pay',
+  'aab_output', 'pwa', 'priority_support',
+  'watermark', 'system_tray', 'custom_window_size', 'auto_updater',
+  'native_notifications', 'kiosk_mode', 'custom_title_bar', 'multi_window',
+  'tray_menu', 'startup_launch',
 ]
 
 export default function AdminPlans() {
@@ -96,8 +102,9 @@ export default function AdminPlans() {
       description: plan.description || '',
       price_inr: plan.price_inr,
       price_usd: plan.price_usd,
-      billing_type: plan.billing_type,
+      billing_type: 'one_time',
       max_apps: plan.max_apps,
+      platform: plan.platform || 'android',
       is_active: plan.is_active,
       sort_order: plan.sort_order,
       features: { ...plan.features },
@@ -121,6 +128,7 @@ export default function AdminPlans() {
       price_usd: form.price_usd,
       billing_type: form.billing_type,
       max_apps: form.max_apps,
+      platform: form.platform,
       is_active: form.is_active,
       sort_order: form.sort_order,
       features: form.features,
@@ -177,7 +185,7 @@ export default function AdminPlans() {
                   <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Slug</th>
                   <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Price INR</th>
                   <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Price USD</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Billing</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Platform</th>
                   <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Max Apps</th>
                   <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Active</th>
                   <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Actions</th>
@@ -199,7 +207,7 @@ export default function AdminPlans() {
                       <span className="text-sm text-gray-900">{formatCurrency(plan.price_usd, 'USD')}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600 capitalize">{plan.billing_type.replace('_', ' ')}</span>
+                      <span className="text-sm text-gray-600 capitalize">{plan.platform || 'android'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-sm text-gray-600">{plan.max_apps}</span>
@@ -305,14 +313,14 @@ export default function AdminPlans() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Billing Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
                   <select
                     className={inputClass}
-                    value={form.billing_type}
-                    onChange={(e) => setForm({ ...form, billing_type: e.target.value as 'one_time' | 'monthly' })}
+                    value={form.platform}
+                    onChange={(e) => setForm({ ...form, platform: e.target.value as 'android' | 'desktop' })}
                   >
-                    <option value="one_time">One Time</option>
-                    <option value="monthly">Monthly</option>
+                    <option value="android">Android</option>
+                    <option value="desktop">Desktop</option>
                   </select>
                 </div>
                 <div>

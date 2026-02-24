@@ -19,6 +19,7 @@ export interface Plan {
   billing_type: 'one_time' | 'monthly'
   features: Record<string, boolean>
   max_apps: number
+  platform: 'android' | 'desktop'
   is_active: boolean
   sort_order: number
 }

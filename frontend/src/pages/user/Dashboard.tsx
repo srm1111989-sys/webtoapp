@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
-import { ordersApi, paymentsApi, subscriptionsApi } from '@/api/orders'
+import { ordersApi, paymentsApi } from '@/api/orders'
 import { appsApi } from '@/api/apps'
-import { formatCurrency, formatDate } from '@/utils/format'
+import { formatCurrency } from '@/utils/format'
 import {
   LayoutDashboard,
   AppWindow,
@@ -13,7 +13,6 @@ import {
   ArrowRight,
   Loader2,
   AlertCircle,
-  CreditCard,
   FlaskConical,
 } from 'lucide-react'
 
@@ -47,11 +46,6 @@ export default function Dashboard() {
     queryKey: ['apps'],
     queryFn: () => appsApi.list(),
     select: (res) => res.data,
-  })
-
-  const { data: activeSubscription } = useQuery({
-    queryKey: ['subscription', 'active'],
-    queryFn: () => subscriptionsApi.getActive().then((r) => r.data),
   })
 
   const { data: paymentMode } = useQuery({
@@ -160,56 +154,6 @@ export default function Dashboard() {
               View Orders
             </Link>
           </div>
-
-          {/* Subscription Status */}
-          {activeSubscription ? (
-            <div className="bg-white rounded-xl border p-4 sm:p-5 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="p-2.5 sm:p-3 rounded-lg bg-green-50 text-green-600 shrink-0">
-                  <CreditCard className="w-5 h-5 sm:w-6 sm:h-6" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-gray-900">
-                      {activeSubscription.plan_name ?? 'Monthly'} Plan
-                    </p>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Active
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    {activeSubscription.current_period_end
-                      ? `Next billing: ${formatDate(activeSubscription.current_period_end)}`
-                      : 'Active subscription'}
-                  </p>
-                </div>
-              </div>
-              <Link
-                to="/subscription"
-                className="text-sm text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1 self-end sm:self-auto"
-              >
-                Manage <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          ) : (
-            <div className="bg-gradient-to-r from-primary-50 to-blue-50 rounded-xl border border-primary-100 p-4 sm:p-5 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="p-2.5 sm:p-3 rounded-lg bg-primary-100 text-primary-600 shrink-0">
-                  <CreditCard className="w-5 h-5 sm:w-6 sm:h-6" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Upgrade to Pro</p>
-                  <p className="text-xs text-gray-500">Get monthly builds and premium features.</p>
-                </div>
-              </div>
-              <Link
-                to="/pricing"
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium self-end sm:self-auto"
-              >
-                View Plans <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          )}
 
           {/* Recent Orders */}
           <div className="bg-white rounded-xl border">

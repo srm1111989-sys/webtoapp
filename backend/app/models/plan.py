@@ -18,6 +18,7 @@ class Plan(Base):
     billing_type: Mapped[str] = mapped_column(String(20), nullable=False, default="one_time")  # one_time, monthly
     features: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
     max_apps: Mapped[int] = mapped_column(Integer, default=1)
+    platform: Mapped[str] = mapped_column(String(20), default="android")  # "android" or "desktop"
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

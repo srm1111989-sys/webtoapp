@@ -13,6 +13,7 @@ class PlanResponse(BaseModel):
     billing_type: str
     features: dict
     max_apps: int
+    platform: str = "android"
     is_active: bool
     sort_order: int
     created_at: datetime
@@ -29,6 +30,7 @@ class PlanCreate(BaseModel):
     billing_type: str = "one_time"
     features: dict = {}
     max_apps: int = 1
+    platform: str = "android"
     sort_order: int = 0
 
 
