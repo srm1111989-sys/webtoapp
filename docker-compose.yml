@@ -24,6 +24,10 @@ services:
       - buildlogs:/app/logs
     env_file:
       - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://webtoapp:webtoapp@db:5432/webtoapp
+      DATABASE_URL_SYNC: postgresql://webtoapp:webtoapp@db:5432/webtoapp
+      REDIS_URL: redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
@@ -69,6 +73,10 @@ services:
       - buildlogs:/app/logs
     env_file:
       - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://webtoapp:webtoapp@db:5432/webtoapp
+      DATABASE_URL_SYNC: postgresql://webtoapp:webtoapp@db:5432/webtoapp
+      REDIS_URL: redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
@@ -85,6 +93,10 @@ services:
       - ./backend:/app
     env_file:
       - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://webtoapp:webtoapp@db:5432/webtoapp
+      DATABASE_URL_SYNC: postgresql://webtoapp:webtoapp@db:5432/webtoapp
+      REDIS_URL: redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
