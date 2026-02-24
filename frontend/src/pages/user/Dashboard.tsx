@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
 import { ordersApi, paymentsApi } from '@/api/orders'
 import { appsApi } from '@/api/apps'
-import { formatCurrency } from '@/utils/format'
+import { formatCurrency, formatDate } from '@/utils/format'
 import {
   LayoutDashboard,
   AppWindow,
