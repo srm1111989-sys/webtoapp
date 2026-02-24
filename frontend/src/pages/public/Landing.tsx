@@ -82,7 +82,7 @@ const ANDROID_PLANS = [
   {
     name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0,
     description: 'Try with basic features',
-    highlights: ['Custom App Icon', 'Splash Screen', 'Custom Colors', 'Full-screen Mode', 'Includes watermark'],
+    highlights: ['Custom App Icon', 'Splash Screen', 'Custom Colors', 'Full-screen Mode', 'Up to 10 Builds', 'Includes Watermark'],
   },
   {
     name: 'Paid', slug: 'android-paid', price_inr: 150000, price_usd: 1800,
@@ -100,7 +100,7 @@ const DESKTOP_PLANS = [
   {
     name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0,
     description: '15-day free trial',
-    highlights: ['Windows .exe App', 'Custom Icon', 'Basic Features', 'Includes Watermark', '15-Day Trial'],
+    highlights: ['Windows .exe App', 'Custom Icon', 'Basic Features', 'Up to 10 Builds', 'Includes Watermark', '15-Day Trial'],
   },
   {
     name: 'Paid', slug: 'desktop-paid', price_inr: 200000, price_usd: 2400,
@@ -142,18 +142,20 @@ export default function Landing() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-12 sm:py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6">
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
             Convert Any Website Into<br className="hidden sm:block" />
             <span className="sm:hidden"> </span>Android & Desktop Apps
           </h1>
-          <p className="text-base sm:text-xl lg:text-2xl text-primary-100 mb-6 sm:mb-8 max-w-3xl mx-auto">
-            Turn your website into professional Android mobile apps and Windows desktop apps.
-            No coding required. Get your APK or .exe in minutes.
+          <p className="text-lg sm:text-2xl lg:text-3xl text-white font-medium mb-2 sm:mb-3">
+            Make mobile apps in just 5 minutes.
+          </p>
+          <p className="text-sm sm:text-lg text-primary-200 mb-6 sm:mb-8 max-w-3xl mx-auto">
+            No coding required. Cheaper than any other platform. One-time payment, no subscriptions.
           </p>
 
           {/* URL Input Box */}
-          <div className="max-w-2xl mx-auto mb-6">
-            <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-2">
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3">
               <div className="flex-1 flex items-center bg-white rounded-lg px-4">
                 <Globe className="w-5 h-5 text-gray-400 shrink-0" />
                 <input
@@ -161,27 +163,47 @@ export default function Landing() {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="Enter your website URL (e.g. https://yoursite.com)"
-                  className="w-full py-3 px-3 text-gray-800 placeholder-gray-400 outline-none bg-transparent"
+                  className="w-full py-3.5 px-3 text-gray-800 placeholder-gray-400 outline-none bg-transparent text-base sm:text-lg"
                   onKeyDown={(e) => e.key === 'Enter' && handleGetStarted()}
                 />
               </div>
               <button
                 onClick={handleGetStarted}
-                className="bg-primary-500 hover:bg-primary-400 text-white px-8 py-3 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
+                className="bg-primary-500 hover:bg-primary-400 text-white px-10 py-3.5 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
               >
                 {isLoggedIn ? 'Create App' : 'Get Started Free'} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#pricing" className="border-2 border-white/50 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
-              See Pricing
-            </a>
+          {/* Inline Pricing */}
+          <div className="max-w-6xl mx-auto">
+            <p className="text-primary-200 text-xs sm:text-sm mb-4 uppercase tracking-wider font-medium">Simple, transparent pricing</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+              {[...ANDROID_PLANS, ...DESKTOP_PLANS].map((plan) => (
+                <div
+                  key={plan.slug}
+                  className={`bg-white/10 backdrop-blur-sm rounded-xl px-3 py-3 sm:px-4 sm:py-4 text-center border ${
+                    plan.slug === 'android-paid' ? 'border-white/40 bg-white/15' : 'border-white/10'
+                  }`}
+                >
+                  <p className="text-[10px] sm:text-xs text-primary-200 uppercase tracking-wide mb-1">
+                    {plan.slug.startsWith('desktop') ? 'Desktop' : plan.slug === 'play-store-submission' ? 'Service' : 'Android'}
+                  </p>
+                  <p className="text-sm sm:text-base font-semibold text-white mb-1">{plan.name}</p>
+                  <p className="text-lg sm:text-2xl font-bold text-white">
+                    {formatPlanPrice(plan.price_inr, plan.price_usd)}
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-primary-200 mt-0.5">
+                    {plan.price_inr > 0 ? 'one-time' : plan.slug === 'desktop-free' ? '15-day trial' : 'forever free'}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-primary-200 text-xs sm:text-sm">
+              No credit card required for free plans. No hidden charges. No subscriptions.
+            </p>
           </div>
-          {!isLoggedIn && (
-            <p className="mt-4 text-primary-200 text-sm">No credit card required. Free plan available.</p>
-          )}
         </div>
       </section>
 

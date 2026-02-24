@@ -81,20 +81,36 @@ async def trigger_build_endpoint(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paid order not found")
 
-    # Check 30-day rolling build limit (10 builds per 30 days)
-    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-    build_count_result = await db.execute(
-        select(func.count(Build.id)).where(
-            Build.order_id == order_id,
-            Build.created_at >= thirty_days_ago,
+    # Build limits
+    is_free = order.amount == 0
+    if is_free:
+        # Free plans: max 10 builds total per user (across all free orders)
+        free_build_count_result = await db.execute(
+            select(func.count(Build.id))
+            .join(Order, Build.order_id == Order.id)
+            .where(Order.user_id == user.id, Order.amount == 0)
         )
-    )
-    build_count = build_count_result.scalar() or 0
-    if build_count >= 10:
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Build limit reached (10 builds per 30 days). Try again later.",
+        free_build_count = free_build_count_result.scalar() or 0
+        if free_build_count >= 10:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Free build limit reached (10 builds per account). Upgrade to a paid plan for more builds.",
+            )
+    else:
+        # Paid plans: 10 builds per 30 rolling days per order
+        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+        build_count_result = await db.execute(
+            select(func.count(Build.id)).where(
+                Build.order_id == order_id,
+                Build.created_at >= thirty_days_ago,
+            )
         )
+        build_count = build_count_result.scalar() or 0
+        if build_count >= 10:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Build limit reached (10 builds per 30 days). Try again later.",
+            )
 
     build = await trigger_build(order_id, db, platform=platform)
     return build
