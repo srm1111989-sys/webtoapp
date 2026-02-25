@@ -14,6 +14,7 @@ from app.models.subscription import Subscription, SubscriptionPayment
 from app.config import get_settings
 from app.services.build_service import handle_build_webhook
 from app.services.subscription_service import handle_subscription_payment
+from app.utils.email import send_order_confirmation_email
 
 settings = get_settings()
 logger = logging.getLogger("webtoapp.webhooks")
@@ -102,6 +103,21 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
 
                     from app.services.build_service import trigger_build
                     await trigger_build(order.id, db)
+
+                    # Send order confirmation email
+                    app_name = order.app_config.name if order.app_config else "App"
+                    plan_name = order.plan.name if order.plan else "Plan"
+                    user_email = order.user.email if order.user else None
+                    if user_email:
+                        send_order_confirmation_email(
+                            to=user_email,
+                            order_number=order.order_number,
+                            app_name=app_name,
+                            plan_name=plan_name,
+                            amount=order.amount,
+                            currency=order.currency,
+                            order_id=str(order.id),
+                        )
 
     # ── Subscription: invoice.paid ──
     elif event_type == "invoice.paid":
@@ -281,6 +297,21 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
             order = result.scalar_one_or_none()
             if order and order.status == "pending":
                 order.status = "paid"
+
+                # Send order confirmation email
+                app_name = order.app_config.name if order.app_config else "App"
+                plan_name = order.plan.name if order.plan else "Plan"
+                user_email = order.user.email if order.user else None
+                if user_email:
+                    send_order_confirmation_email(
+                        to=user_email,
+                        order_number=order.order_number,
+                        app_name=app_name,
+                        plan_name=plan_name,
+                        amount=order.amount,
+                        currency=order.currency,
+                        order_id=str(order.id),
+                    )
 
     # ── Subscription events ──
     elif event == "subscription.activated":

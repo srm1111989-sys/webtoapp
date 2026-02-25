@@ -10,6 +10,7 @@ from app.models.plan import Plan
 from app.models.app_config import AppConfig
 from app.schemas.order import OrderCreate, OrderResponse, OrderDetailResponse, OrderListResponse
 from app.dependencies import get_current_user
+from app.utils.email import send_order_confirmation_email
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
@@ -57,6 +58,20 @@ async def create_order(
     db.add(order)
     await db.flush()
     await db.refresh(order)
+
+    # Send order confirmation email
+    app_name = order.app_config.name if order.app_config else "App"
+    plan_name = order.plan.name if order.plan else "Plan"
+    send_order_confirmation_email(
+        to=user.email,
+        order_number=order.order_number,
+        app_name=app_name,
+        plan_name=plan_name,
+        amount=order.amount,
+        currency=order.currency,
+        order_id=str(order.id),
+    )
+
     return order
 
 

@@ -447,27 +447,20 @@ function Step0BasicInfo() {
   const isLoading = createApp.isPending || updateApp.isPending
   const inputClass = 'w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
 
-  const togglePlatform = (platform: Platform) => {
-    const current = wizard.selectedPlatforms
-    if (current.includes(platform)) {
-      if (current.length > 1) {
-        wizard.setSelectedPlatforms(current.filter((p) => p !== platform))
-      }
-    } else {
-      wizard.setSelectedPlatforms([...current, platform])
-    }
+  const selectPlatform = (platform: Platform) => {
+    wizard.setSelectedPlatforms([platform])
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Platform Selector */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Target Platforms *</label>
-        <p className="text-xs text-gray-500 mb-3">Select one or both platforms. At least one is required.</p>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Target Platform *</label>
+        <p className="text-xs text-gray-500 mb-3">Select one platform at a time.</p>
         <div className="grid grid-cols-2 gap-4">
           <button
             type="button"
-            onClick={() => togglePlatform('android')}
+            onClick={() => selectPlatform('android')}
             className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${
               wizard.selectedPlatforms.includes('android')
                 ? 'border-blue-500 bg-blue-50'
@@ -487,7 +480,7 @@ function Step0BasicInfo() {
           </button>
           <button
             type="button"
-            onClick={() => togglePlatform('desktop')}
+            onClick={() => selectPlatform('desktop')}
             className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${
               wizard.selectedPlatforms.includes('desktop')
                 ? 'border-blue-500 bg-blue-50'
