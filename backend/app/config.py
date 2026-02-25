@@ -73,9 +73,6 @@ class Settings(BaseSettings):
     # Google OAuth
     google_client_id: str = ""
 
-    # Google OAuth
-    google_client_id: str = ""
-
     # Admin
     admin_email: str = "admin@websitetoapp.app"
     admin_password: str = "admin123"

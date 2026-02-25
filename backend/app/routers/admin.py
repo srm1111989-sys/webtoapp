@@ -271,9 +271,32 @@ async def get_settings_list(
     admin: Admin = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db),
 ):
+    from app.config import get_settings as get_app_settings
+    app_settings = get_app_settings()
+
+    # Keys that the admin UI manages
+    env_keys = [
+        "razorpay_key_id", "razorpay_key_secret",
+        "razorpay_test_key_id", "razorpay_test_key_secret",
+        "stripe_publishable_key", "stripe_secret_key",
+        "stripe_test_publishable_key", "stripe_test_secret_key",
+        "gitlab_url", "gitlab_token", "gitlab_project_id",
+        "smtp_host", "smtp_port", "smtp_user", "smtp_password",
+        "google_client_id", "payment_test_mode",
+    ]
+
+    # Start with .env defaults
+    defaults = {}
+    for key in env_keys:
+        val = getattr(app_settings, key, "")
+        defaults[key] = str(val) if val else ""
+
+    # DB values override .env defaults
     result = await db.execute(select(Setting).order_by(Setting.key))
-    settings_list = result.scalars().all()
-    return {s.key: s.value for s in settings_list}
+    for s in result.scalars().all():
+        defaults[s.key] = s.value
+
+    return defaults
 
 
 @router.put("/settings", response_model=MessageResponse)
