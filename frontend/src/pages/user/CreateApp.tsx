@@ -1199,8 +1199,19 @@ function Step4PlanReview() {
         return
       }
 
-      // Both test & live mode use real gateway flow.
-      // Backend picks test or live credentials based on mode.
+      // Test mode: use dummy payment (no real gateway needed)
+      if (paymentMode?.test_mode) {
+        try {
+          await paymentsApi.testPayment(order.id)
+          toast.success('Test payment successful!')
+          navigate(`/orders/${order.id}`)
+        } catch {
+          toast.error('Test payment failed.')
+        }
+        return
+      }
+
+      // Live mode: use real gateway flow
       if (currency === 'INR' && paymentMode?.gateways?.razorpay) {
         try {
           const rpRes = await paymentsApi.createRazorpay(order.id)
