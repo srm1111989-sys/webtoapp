@@ -9,7 +9,7 @@ from app.config import get_settings
 
 settings = get_settings()
 
-OLD_PLAN_SLUGS = ["free", "one-time", "pro", "business"]
+OLD_PLAN_SLUGS = ["free", "one-time", "pro", "business", "play-store-submission"]
 
 PLANS = [
     {
@@ -75,11 +75,11 @@ PLANS = [
         },
     },
     {
-        "name": "Android Paid",
+        "name": "Android Paid + Play Store Submission",
         "slug": "android-paid",
-        "description": "All features, one-time payment",
-        "price_inr": 150000,   # INR 1,500 in paise
-        "price_usd": 1800,     # $18 in cents
+        "description": "All features + Play Store submission included",
+        "price_inr": 250000,   # INR 2,500 in paise
+        "price_usd": 3000,     # $30 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "android",
@@ -137,18 +137,6 @@ PLANS = [
         },
     },
     {
-        "name": "Play Store Submission",
-        "slug": "play-store-submission",
-        "description": "We submit your app to Play Store",
-        "price_inr": 100000,   # INR 1,000 in paise
-        "price_usd": 1200,     # $12 in cents
-        "billing_type": "one_time",
-        "max_apps": 0,
-        "platform": "android",
-        "sort_order": 3,
-        "features": {},
-    },
-    {
         "name": "Desktop Free",
         "slug": "desktop-free",
         "description": "15-day free trial",
@@ -157,7 +145,7 @@ PLANS = [
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "desktop",
-        "sort_order": 4,
+        "sort_order": 3,
         "features": {
             "custom_icon": True,
             "custom_splash": True,
@@ -183,7 +171,7 @@ PLANS = [
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "desktop",
-        "sort_order": 5,
+        "sort_order": 4,
         "features": {
             "custom_icon": True,
             "custom_splash": True,
@@ -244,7 +232,7 @@ async def seed():
                 print(f"Plan created: {plan_data['name']}")
 
         await session.commit()
-        print("Seed completed: 5 plans active, old plans deactivated.")
+        print("Seed completed: 4 plans active, old plans deactivated.")
 
 
 if __name__ == "__main__":
