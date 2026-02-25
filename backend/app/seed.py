@@ -75,9 +75,9 @@ PLANS = [
         },
     },
     {
-        "name": "Android Paid + Play Store Submission",
+        "name": "Android Paid",
         "slug": "android-paid",
-        "description": "All features + Play Store submission included",
+        "description": "All features, one-time payment",
         "price_inr": 250000,   # INR 2,500 in paise
         "price_usd": 3000,     # $30 in cents
         "billing_type": "one_time",

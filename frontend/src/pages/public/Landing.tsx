@@ -85,9 +85,9 @@ const ANDROID_PLANS = [
     highlights: ['Custom App Icon', 'Splash Screen', 'Custom Colors', 'Full-screen Mode', 'Up to 10 Builds', 'Includes Watermark'],
   },
   {
-    name: 'Paid + Play Store', slug: 'android-paid', price_inr: 250000, price_usd: 3000,
-    description: 'All features + Play Store submission',
-    highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', 'Play Store Submission', '10 Builds / 30 Days'],
+    name: 'Paid', slug: 'android-paid', price_inr: 250000, price_usd: 3000,
+    description: 'All features, one-time payment',
+    highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days'],
   },
 ]
 
@@ -106,7 +106,7 @@ const DESKTOP_PLANS = [
 
 const faqs = [
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
-  { q: 'Can I publish to Google Play Store?', a: 'Yes! The Paid + Play Store plan includes signed AAB files and we handle the entire Play Store submission for you.' },
+  { q: 'Can I publish to Google Play Store?', a: 'Yes! The Paid plan includes signed AAB files ready for Play Store submission.' },
   { q: 'Is the free plan really free?', a: 'Yes. The Android free plan lets you build apps with basic features (includes a small watermark). The Desktop free plan gives you a 15-day trial with basic features and watermark. No credit card required.' },
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically via our CI/CD pipeline. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
