@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WebToApp - Feature Test Page</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.5;padding-bottom:80px}
+.header{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:20px 16px;text-align:center;position:sticky;top:0;z-index:100}
+.header h1{font-size:20px;font-weight:700}.header p{font-size:12px;opacity:.8;margin-top:4px}
+.container{max-width:600px;margin:0 auto;padding:12px}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card h2{font-size:15px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card h2 .icon{font-size:20px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:#fff;background:#4f46e5}
+.btn:hover{opacity:.9;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-green{background:#059669}.btn-red{background:#dc2626}.btn-orange{background:#ea580c}.btn-gray{background:#6b7280}.btn-teal{background:#0d9488}.btn-pink{background:#db2777}
+.btn-sm{padding:8px 12px;font-size:12px}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.result{margin-top:8px;padding:10px;background:#f8fafc;border-radius:8px;font-size:12px;color:#475569;word-break:break-all;max-height:120px;overflow-y:auto;border:1px solid #e2e8f0}
+.result.success{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+.result.error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.file-drop{border:2px dashed #c7d2fe;border-radius:12px;padding:24px;text-align:center;color:#6366f1;font-size:13px;cursor:pointer;transition:all .2s}
+.file-drop.active{border-color:#4f46e5;background:#eef2ff}
+.file-drop input{display:none}
+.preview-img{max-width:100%;max-height:150px;border-radius:8px;margin-top:8px}
+video,canvas{width:100%;max-height:200px;border-radius:8px;background:#000;margin-top:8px}
+audio{width:100%;margin-top:8px}
+input[type=text],input[type=url],input[type=number],textarea,select{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;margin-top:6px;font-family:inherit}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-green{background:#dcfce7;color:#166534}.badge-red{background:#fee2e2;color:#991b1b}.badge-yellow{background:#fef9c3;color:#854d0e}
+.nav-bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;z-index:100;padding:4px 0;box-shadow:0 -2px 10px rgba(0,0,0,.05)}
+.nav-bottom a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;font-size:10px;color:#6b7280;text-decoration:none;font-weight:500}
+.nav-bottom a.active{color:#4f46e5}
+.nav-bottom a .nav-icon{font-size:18px}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;font-weight:700;margin:16px 0 8px;padding:0 4px}
+.color-swatch{width:40px;height:40px;border-radius:8px;border:2px solid #e5e7eb;cursor:pointer}
+.toggle{position:relative;width:44px;height:24px;background:#d1d5db;border-radius:99px;cursor:pointer;transition:.2s}
+.toggle.on{background:#4f46e5}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}
+.toggle.on::after{left:22px}
+.link-list a{display:block;padding:10px 0;border-bottom:1px solid #f1f5f9;color:#4f46e5;text-decoration:none;font-size:13px;font-weight:500}
+.counter{font-size:32px;font-weight:800;color:#4f46e5;text-align:center;margin:12px 0}
+.progress-bar{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:8px}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:99px;transition:width .5s}
+.tab-bar{display:flex;border-bottom:2px solid #e5e7eb;margin-bottom:12px}
+.tab-bar button{flex:1;padding:10px 8px;border:none;background:none;font-size:12px;font-weight:600;color:#9ca3af;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab-bar button.active{color:#4f46e5;border-bottom-color:#4f46e5}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>WebToApp Feature Tester</h1>
+  <p>Test all app features from this page</p>
+</div>
+
+<div class="container">
+
+<!-- Device Info -->
+<div class="card" id="device-info">
+  <h2><span class="icon">📱</span> Device Info</h2>
+  <div id="deviceResult" class="result"></div>
+</div>
+
+<!-- Network Status -->
+<div class="card">
+  <h2><span class="icon">📡</span> Network Status</h2>
+  <div class="btn-row">
+    <span id="networkBadge" class="badge badge-green">Online</span>
+    <span id="networkType" class="badge badge-yellow">--</span>
+  </div>
+  <div id="networkResult" class="result" style="margin-top:8px"></div>
+</div>
+
+<div class="section-title">File & Media</div>
+
+<!-- File Upload -->
+<div class="card">
+  <h2><span class="icon">📁</span> File Upload</h2>
+  <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileInput').click()">
+    <input type="file" id="fileInput" multiple accept="*/*">
+    <p>Tap to select or drag & drop files here</p>
+    <p style="font-size:11px;color:#94a3b8;margin-top:4px">Supports any file type</p>
+  </div>
+  <div id="fileResult" class="result" style="display:none"></div>
+  <img id="filePreview" class="preview-img" style="display:none">
+</div>
+
+<!-- Image Capture -->
+<div class="card">
+  <h2><span class="icon">📷</span> Camera Capture</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="captureImage('environment')">Rear Camera</button>
+    <button class="btn btn-teal" onclick="captureImage('user')">Front Camera</button>
+  </div>
+  <input type="file" id="cameraCaptureInput" accept="image/*" capture="environment" style="display:none">
+  <img id="cameraPreview" class="preview-img" style="display:none">
+  <div id="cameraResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Camera Stream -->
+<div class="card">
+  <h2><span class="icon">🎥</span> Camera Stream (getUserMedia)</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="startCamera()">Start Camera</button>
+    <button class="btn btn-red" onclick="stopCamera()">Stop</button>
+    <button class="btn btn-green" onclick="takeSnapshot()">Snapshot</button>
+  </div>
+  <video id="cameraVideo" autoplay playsinline style="display:none"></video>
+  <canvas id="snapshotCanvas" style="display:none"></canvas>
+  <div id="cameraStreamResult" class="result" style="display:none"></div>
+</div>
+
+<!-- File Download -->
+<div class="card">
+  <h2><span class="icon">⬇️</span> File Download</h2>
+  <div class="btn-row">
+    <button class="btn btn-green" onclick="downloadTextFile()">Download .txt</button>
+    <button class="btn btn-orange" onclick="downloadJSON()">Download .json</button>
+    <button class="btn btn-teal" onclick="downloadImage()">Download Image</button>
+    <button class="btn btn-pink" onclick="downloadPDF()">Download PDF</button>
+  </div>
+  <div id="downloadResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Audio / Video -->
+<div class="card">
+  <h2><span class="icon">🎵</span> Media Playback</h2>
+  <audio id="testAudio" controls>
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" type="audio/wav">
+  </audio>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-sm" onclick="playTestTone()">Play Test Tone</button>
+    <button class="btn btn-sm btn-red" onclick="stopTestTone()">Stop</button>
+  </div>
+  <div id="audioResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Microphone -->
+<div class="card">
+  <h2><span class="icon">🎤</span> Microphone Recording</h2>
+  <div class="btn-row">
+    <button class="btn" id="micBtn" onclick="toggleMic()">Start Recording</button>
+    <button class="btn btn-green" id="playRecBtn" onclick="playRecording()" style="display:none">Play Recording</button>
+  </div>
+  <audio id="micPlayback" controls style="display:none;width:100%;margin-top:8px"></audio>
+  <div id="micResult" class="result" style="display:none"></div>
+</div>
+
+<div class="section-title">Scanning & Detection</div>
+
+<!-- QR / Barcode Scanner -->
+<div class="card">
+  <h2><span class="icon">📊</span> QR / Barcode Scanner</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="startBarcodeScanner()">Start Scanner</button>
+    <button class="btn btn-red" onclick="stopBarcodeScanner()">Stop</button>
+  </div>
+  <video id="barcodeVideo" autoplay playsinline style="display:none"></video>
+  <div id="barcodeResult" class="result" style="display:none"></div>
+</div>
+
+<!-- NFC -->
+<div class="card">
+  <h2><span class="icon">📲</span> NFC Reader</h2>
+  <div class="btn-row">
+    <button class="btn btn-teal" onclick="readNFC()">Read NFC Tag</button>
+  </div>
+  <div id="nfcResult" class="result" style="display:none"></div>
+</div>
+
+<div class="section-title">Location & Sensors</div>
+
+<!-- Geolocation -->
+<div class="card">
+  <h2><span class="icon">📍</span> Geolocation</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="getLocation()">Get Location</button>
+    <button class="btn btn-green" onclick="watchLocation()">Watch Location</button>
+    <button class="btn btn-red" onclick="stopWatch()">Stop</button>
+  </div>
+  <div id="locationResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Device Orientation -->
+<div class="card">
+  <h2><span class="icon">🧭</span> Device Orientation & Motion</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="startOrientation()">Start Sensors</button>
+    <button class="btn btn-red" onclick="stopOrientation()">Stop</button>
+  </div>
+  <div id="orientationResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Bluetooth -->
+<div class="card">
+  <h2><span class="icon">🔵</span> Bluetooth</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="scanBluetooth()">Scan Devices</button>
+  </div>
+  <div id="bluetoothResult" class="result" style="display:none"></div>
+</div>
+
+<div class="section-title">Notifications & Permissions</div>
+
+<!-- Push Notifications -->
+<div class="card">
+  <h2><span class="icon">🔔</span> Notifications</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="requestNotification()">Request Permission</button>
+    <button class="btn btn-green" onclick="sendNotification()">Send Test Notification</button>
+  </div>
+  <div id="notifResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Vibration -->
+<div class="card">
+  <h2><span class="icon">📳</span> Vibration</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="vibrate([200])">Short</button>
+    <button class="btn btn-orange" onclick="vibrate([200,100,200])">Pattern</button>
+    <button class="btn btn-pink" onclick="vibrate([500,200,500,200,500])">Long</button>
+  </div>
+  <div id="vibrateResult" class="result" style="display:none"></div>
+</div>
+
+<div class="section-title">Storage & Clipboard</div>
+
+<!-- Local Storage -->
+<div class="card">
+  <h2><span class="icon">💾</span> Local Storage</h2>
+  <input type="text" id="storageKey" placeholder="Key" style="margin-bottom:6px">
+  <input type="text" id="storageVal" placeholder="Value">
+  <div class="btn-row">
+    <button class="btn btn-sm btn-green" onclick="saveStorage()">Save</button>
+    <button class="btn btn-sm" onclick="loadStorage()">Load</button>
+    <button class="btn btn-sm btn-red" onclick="clearStorage()">Clear All</button>
+    <button class="btn btn-sm btn-gray" onclick="listStorage()">List All</button>
+  </div>
+  <div id="storageResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Clipboard -->
+<div class="card">
+  <h2><span class="icon">📋</span> Clipboard</h2>
+  <input type="text" id="clipboardInput" placeholder="Text to copy" value="Hello from WebToApp!">
+  <div class="btn-row">
+    <button class="btn btn-green" onclick="copyClipboard()">Copy</button>
+    <button class="btn" onclick="pasteClipboard()">Paste</button>
+  </div>
+  <div id="clipboardResult" class="result" style="display:none"></div>
+</div>
+
+<div class="section-title">Sharing & Contacts</div>
+
+<!-- Web Share -->
+<div class="card">
+  <h2><span class="icon">🔗</span> Share API</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="shareText()">Share Text</button>
+    <button class="btn btn-green" onclick="shareURL()">Share URL</button>
+    <button class="btn btn-pink" onclick="shareFile()">Share File</button>
+  </div>
+  <div id="shareResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Contacts -->
+<div class="card">
+  <h2><span class="icon">👤</span> Contact Picker</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="pickContact()">Pick Contact</button>
+  </div>
+  <div id="contactResult" class="result" style="display:none"></div>
+</div>
+
+<div class="section-title">Display & UI</div>
+
+<!-- Fullscreen -->
+<div class="card">
+  <h2><span class="icon">🖥️</span> Fullscreen</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="goFullscreen()">Enter Fullscreen</button>
+    <button class="btn btn-red" onclick="exitFullscreen()">Exit Fullscreen</button>
+  </div>
+  <div id="fullscreenResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Screen Wake Lock -->
+<div class="card">
+  <h2><span class="icon">☀️</span> Screen Wake Lock</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="requestWakeLock()">Keep Screen On</button>
+    <button class="btn btn-red" onclick="releaseWakeLock()">Release</button>
+  </div>
+  <div id="wakeLockResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Color Picker / Theme -->
+<div class="card">
+  <h2><span class="icon">🎨</span> Theme Color Test</h2>
+  <p style="font-size:12px;color:#6b7280;margin-bottom:8px">Tests status bar / theme-color meta tag</p>
+  <div class="btn-row">
+    <button class="btn" onclick="setThemeColor('#4f46e5')">Indigo</button>
+    <button class="btn btn-green" onclick="setThemeColor('#059669')">Green</button>
+    <button class="btn btn-red" onclick="setThemeColor('#dc2626')">Red</button>
+    <button class="btn btn-orange" onclick="setThemeColor('#ea580c')">Orange</button>
+    <button class="btn btn-gray" onclick="setThemeColor('#1f2937')">Dark</button>
+  </div>
+</div>
+
+<div class="section-title">Security & Auth</div>
+
+<!-- Biometric / WebAuthn -->
+<div class="card">
+  <h2><span class="icon">🔐</span> Biometric Auth (WebAuthn)</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="testWebAuthn()">Test Biometric</button>
+  </div>
+  <div id="authnResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Screenshot Prevention -->
+<div class="card">
+  <h2><span class="icon">🛡️</span> Screenshot Prevention</h2>
+  <p style="font-size:12px;color:#6b7280">If enabled in app, taking a screenshot should be blocked or show a black screen. Try taking a screenshot now.</p>
+  <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:16px;border-radius:8px;margin-top:8px;text-align:center;font-weight:600">
+    SECRET CONTENT - Should not appear in screenshots
+  </div>
+</div>
+
+<div class="section-title">Deep Linking & Navigation</div>
+
+<!-- Deep Links -->
+<div class="card">
+  <h2><span class="icon">🔗</span> Deep Link Test</h2>
+  <div class="link-list">
+    <a href="https://websitetoapp.app/test?action=test&id=123">Query Params Link</a>
+    <a href="https://websitetoapp.app/dashboard">Internal: /dashboard</a>
+    <a href="https://websitetoapp.app/apps/create">Internal: /apps/create</a>
+    <a href="tel:+1234567890">tel: Phone Call</a>
+    <a href="mailto:test@example.com?subject=Test">mailto: Email</a>
+    <a href="sms:+1234567890?body=Hello">sms: Text Message</a>
+    <a href="https://maps.google.com/?q=New+York">Maps Link</a>
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">External: YouTube</a>
+    <a href="whatsapp://send?text=Hello" target="_blank">WhatsApp Deep Link</a>
+  </div>
+</div>
+
+<!-- Bottom Navigation Test -->
+<div class="card">
+  <h2><span class="icon">🧭</span> Navigation Test</h2>
+  <p style="font-size:12px;color:#6b7280;margin-bottom:8px">Tests bottom navigation bar interaction</p>
+  <div class="tab-bar" id="testTabs">
+    <button class="active" onclick="switchTab(this,'tab1')">Home</button>
+    <button onclick="switchTab(this,'tab2')">Search</button>
+    <button onclick="switchTab(this,'tab3')">Profile</button>
+    <button onclick="switchTab(this,'tab4')">Settings</button>
+  </div>
+  <div id="tab1">Currently viewing: <strong>Home</strong> tab</div>
+  <div id="tab2" style="display:none">Currently viewing: <strong>Search</strong> tab</div>
+  <div id="tab3" style="display:none">Currently viewing: <strong>Profile</strong> tab</div>
+  <div id="tab4" style="display:none">Currently viewing: <strong>Settings</strong> tab</div>
+</div>
+
+<div class="section-title">Forms & Input</div>
+
+<!-- Form Test -->
+<div class="card">
+  <h2><span class="icon">📝</span> Form Inputs</h2>
+  <input type="text" placeholder="Text input">
+  <input type="number" placeholder="Number input" style="margin-top:6px">
+  <input type="url" placeholder="URL input" style="margin-top:6px">
+  <textarea placeholder="Multi-line textarea" rows="3" style="margin-top:6px;resize:vertical"></textarea>
+  <select style="margin-top:6px">
+    <option>Select dropdown</option>
+    <option>Option A</option>
+    <option>Option B</option>
+    <option>Option C</option>
+  </select>
+  <div style="margin-top:8px">
+    <label style="font-size:13px;display:flex;align-items:center;gap:8px">
+      <input type="checkbox"> Checkbox test
+    </label>
+  </div>
+  <input type="date" style="margin-top:6px">
+  <input type="color" style="margin-top:6px;width:60px;height:40px;border:none;padding:0">
+  <input type="range" min="0" max="100" value="50" style="margin-top:8px;width:100%">
+</div>
+
+<!-- Battery -->
+<div class="card">
+  <h2><span class="icon">🔋</span> Battery Status</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="getBattery()">Check Battery</button>
+  </div>
+  <div id="batteryResult" class="result" style="display:none"></div>
+</div>
+
+<!-- JS Bridge -->
+<div class="card">
+  <h2><span class="icon">🌉</span> JavaScript Bridge</h2>
+  <p style="font-size:12px;color:#6b7280;margin-bottom:8px">Tests native JS bridge communication (if available in app)</p>
+  <div class="btn-row">
+    <button class="btn" onclick="testJSBridge()">Call Native Bridge</button>
+    <button class="btn btn-teal" onclick="testAndroidBridge()">Android Bridge</button>
+  </div>
+  <div id="bridgeResult" class="result" style="display:none"></div>
+</div>
+
+<!-- Performance -->
+<div class="card">
+  <h2><span class="icon">⚡</span> Performance Test</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="runPerfTest()">Run Test</button>
+  </div>
+  <div class="progress-bar"><div class="fill" id="perfBar" style="width:0%"></div></div>
+  <div id="perfResult" class="result" style="display:none"></div>
+</div>
+
+<!-- API Feature Detection -->
+<div class="card">
+  <h2><span class="icon">🔍</span> API Feature Detection</h2>
+  <div class="btn-row">
+    <button class="btn" onclick="detectFeatures()">Detect All Features</button>
+  </div>
+  <div id="featureResult" class="result" style="display:none"></div>
+</div>
+
+</div><!-- /container -->
+
+<!-- Bottom Nav -->
+<nav class="nav-bottom">
+  <a href="#device-info" class="active"><span class="nav-icon">📱</span>Info</a>
+  <a href="#" onclick="scrollToSection('File & Media')"><span class="nav-icon">📁</span>Files</a>
+  <a href="#" onclick="scrollToSection('Scanning')"><span class="nav-icon">📊</span>Scan</a>
+  <a href="#" onclick="scrollToSection('Location')"><span class="nav-icon">📍</span>Location</a>
+  <a href="#" onclick="scrollToSection('Display')"><span class="nav-icon">🖥️</span>Display</a>
+</nav>
+
+<script>
+// ===== Utility =====
+function show(id, text, type) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  el.textContent = text;
+  el.className = 'result' + (type ? ' ' + type : '');
+}
+
+function scrollToSection(name) {
+  const titles = document.querySelectorAll('.section-title');
+  for (const t of titles) {
+    if (t.textContent.includes(name)) {
+      t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      break;
+    }
+  }
+}
+
+function switchTab(btn, tabId) {
+  document.querySelectorAll('#testTabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['tab1','tab2','tab3','tab4'].forEach(id => {
+    document.getElementById(id).style.display = id === tabId ? 'block' : 'none';
+  });
+}
+
+// ===== Device Info =====
+(function() {
+  const info = [
+    'UA: ' + navigator.userAgent,
+    'Platform: ' + navigator.platform,
+    'Language: ' + navigator.language,
+    'Screen: ' + screen.width + 'x' + screen.height + ' @' + devicePixelRatio + 'x',
+    'Viewport: ' + window.innerWidth + 'x' + window.innerHeight,
+    'Cores: ' + (navigator.hardwareConcurrency || 'N/A'),
+    'Memory: ' + (navigator.deviceMemory ? navigator.deviceMemory + 'GB' : 'N/A'),
+    'Touch: ' + ('ontouchstart' in window ? 'Yes' : 'No'),
+    'Online: ' + navigator.onLine,
+    'Cookies: ' + navigator.cookieEnabled,
+    'WebGL: ' + (!!document.createElement('canvas').getContext('webgl') ? 'Yes' : 'No'),
+  ];
+  document.getElementById('deviceResult').textContent = info.join('\n');
+})();
+
+// ===== Network =====
+function updateNetwork() {
+  const badge = document.getElementById('networkBadge');
+  const typeBadge = document.getElementById('networkType');
+  badge.textContent = navigator.onLine ? 'Online' : 'Offline';
+  badge.className = 'badge ' + (navigator.onLine ? 'badge-green' : 'badge-red');
+  const conn = navigator.connection || navigator.mozConnection;
+  if (conn) {
+    typeBadge.textContent = conn.effectiveType || conn.type || '--';
+    show('networkResult', 'Type: ' + (conn.effectiveType||'--') + ', Downlink: ' + (conn.downlink||'--') + ' Mbps, RTT: ' + (conn.rtt||'--') + 'ms, SaveData: ' + (conn.saveData||false));
+  } else {
+    typeBadge.textContent = '--';
+    show('networkResult', 'Network Information API not supported');
+  }
+}
+updateNetwork();
+window.addEventListener('online', updateNetwork);
+window.addEventListener('offline', updateNetwork);
+
+// ===== File Upload =====
+const fileDrop = document.getElementById('fileDrop');
+const fileInput = document.getElementById('fileInput');
+
+fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+fileDrop.addEventListener('dragover', (e) => { e.preventDefault(); fileDrop.classList.add('active'); });
+fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('active'));
+fileDrop.addEventListener('drop', (e) => {
+  e.preventDefault();
+  fileDrop.classList.remove('active');
+  handleFiles(e.dataTransfer.files);
+});
+
+function handleFiles(files) {
+  if (!files.length) return;
+  const info = Array.from(files).map(f => f.name + ' (' + (f.size/1024).toFixed(1) + 'KB, ' + f.type + ')').join('\n');
+  show('fileResult', 'Uploaded:\n' + info, 'success');
+  if (files[0].type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.getElementById('filePreview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(files[0]);
+  }
+}
+
+// ===== Camera Capture =====
+function captureImage(facing) {
+  const input = document.getElementById('cameraCaptureInput');
+  input.setAttribute('capture', facing);
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      show('cameraResult', 'Captured: ' + file.name + ' (' + (file.size/1024).toFixed(1) + 'KB)', 'success');
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = document.getElementById('cameraPreview');
+        img.src = ev.target.result;
+        img.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  input.click();
+}
+
+// ===== Camera Stream =====
+let cameraStream = null;
+async function startCamera() {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    const video = document.getElementById('cameraVideo');
+    video.srcObject = cameraStream;
+    video.style.display = 'block';
+    show('cameraStreamResult', 'Camera started', 'success');
+  } catch (e) {
+    show('cameraStreamResult', 'Camera error: ' + e.message, 'error');
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(t => t.stop());
+    cameraStream = null;
+    document.getElementById('cameraVideo').style.display = 'none';
+    show('cameraStreamResult', 'Camera stopped');
+  }
+}
+
+function takeSnapshot() {
+  const video = document.getElementById('cameraVideo');
+  const canvas = document.getElementById('snapshotCanvas');
+  if (!cameraStream) return show('cameraStreamResult', 'Start camera first', 'error');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  canvas.style.display = 'block';
+  show('cameraStreamResult', 'Snapshot taken (' + canvas.width + 'x' + canvas.height + ')', 'success');
+}
+
+// ===== File Download =====
+function downloadTextFile() {
+  download('test-file.txt', 'Hello from WebToApp!\nThis is a test file.\nTimestamp: ' + new Date().toISOString(), 'text/plain');
+  show('downloadResult', 'Text file download triggered', 'success');
+}
+function downloadJSON() {
+  download('test-data.json', JSON.stringify({ message: 'Hello from WebToApp', timestamp: Date.now(), features: ['upload','download','scan'] }, null, 2), 'application/json');
+  show('downloadResult', 'JSON file download triggered', 'success');
+}
+function downloadImage() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 400; canvas.height = 300;
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 400, 300);
+  grad.addColorStop(0, '#4f46e5'); grad.addColorStop(1, '#7c3aed');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, 400, 300);
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 28px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('WebToApp Test', 200, 140);
+  ctx.font = '16px sans-serif'; ctx.fillText(new Date().toLocaleString(), 200, 180);
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'test-image.png'; a.click();
+    URL.revokeObjectURL(url);
+    show('downloadResult', 'Image download triggered', 'success');
+  });
+}
+function downloadPDF() {
+  // Minimal PDF
+  const pdf = '%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<</Font<</F1 4 0 R>>>>>>endobj\n4 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj\nxref\n0 5\ntrailer<</Size 5/Root 1 0 R>>\nstartxref\n0\n%%EOF';
+  download('test-document.pdf', pdf, 'application/pdf');
+  show('downloadResult', 'PDF download triggered', 'success');
+}
+function download(name, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ===== Audio =====
+let audioCtx, oscillator;
+function playTestTone() {
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    oscillator = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    oscillator.connect(gain).connect(audioCtx.destination);
+    oscillator.start();
+    show('audioResult', 'Playing 440Hz tone', 'success');
+  } catch(e) { show('audioResult', 'Audio error: ' + e.message, 'error'); }
+}
+function stopTestTone() {
+  if (oscillator) { oscillator.stop(); oscillator = null; show('audioResult', 'Tone stopped'); }
+}
+
+// ===== Microphone =====
+let mediaRecorder, audioChunks = [];
+async function toggleMic() {
+  const btn = document.getElementById('micBtn');
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+    btn.textContent = 'Start Recording';
+    btn.className = 'btn';
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(audioChunks, { type: 'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      const playback = document.getElementById('micPlayback');
+      playback.src = url; playback.style.display = 'block';
+      document.getElementById('playRecBtn').style.display = 'inline-flex';
+      show('micResult', 'Recording saved (' + (blob.size/1024).toFixed(1) + 'KB)', 'success');
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start();
+    btn.textContent = 'Stop Recording';
+    btn.className = 'btn btn-red';
+    show('micResult', 'Recording...', 'success');
+  } catch(e) { show('micResult', 'Mic error: ' + e.message, 'error'); }
+}
+function playRecording() { document.getElementById('micPlayback').play(); }
+
+// ===== Barcode Scanner =====
+let barcodeStream = null, barcodeInterval = null;
+async function startBarcodeScanner() {
+  try {
+    if ('BarcodeDetector' in window) {
+      barcodeStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      const video = document.getElementById('barcodeVideo');
+      video.srcObject = barcodeStream;
+      video.style.display = 'block';
+      const detector = new BarcodeDetector({ formats: ['qr_code','ean_13','ean_8','code_128','code_39','upc_a','upc_e','codabar','itf','data_matrix','aztec','pdf417'] });
+      show('barcodeResult', 'Scanning... Point camera at a barcode or QR code', 'success');
+      barcodeInterval = setInterval(async () => {
+        try {
+          const barcodes = await detector.detect(video);
+          if (barcodes.length > 0) {
+            const b = barcodes[0];
+            show('barcodeResult', 'Detected!\nFormat: ' + b.format + '\nValue: ' + b.rawValue, 'success');
+            if (navigator.vibrate) navigator.vibrate(100);
+          }
+        } catch(e) {}
+      }, 500);
+    } else {
+      show('barcodeResult', 'BarcodeDetector API not available. This requires Chrome 83+ on Android or the app\'s native QR scanner feature.', 'error');
+    }
+  } catch(e) { show('barcodeResult', 'Scanner error: ' + e.message, 'error'); }
+}
+function stopBarcodeScanner() {
+  if (barcodeInterval) { clearInterval(barcodeInterval); barcodeInterval = null; }
+  if (barcodeStream) { barcodeStream.getTracks().forEach(t => t.stop()); barcodeStream = null; }
+  document.getElementById('barcodeVideo').style.display = 'none';
+  show('barcodeResult', 'Scanner stopped');
+}
+
+// ===== NFC =====
+async function readNFC() {
+  if ('NDEFReader' in window) {
+    try {
+      const reader = new NDEFReader();
+      await reader.scan();
+      show('nfcResult', 'NFC scanning... Hold a tag near the device', 'success');
+      reader.onreading = event => {
+        const records = event.message.records.map(r => r.recordType + ': ' + new TextDecoder().decode(r.data)).join('\n');
+        show('nfcResult', 'NFC Tag Read!\nSerial: ' + event.serialNumber + '\n' + records, 'success');
+      };
+    } catch(e) { show('nfcResult', 'NFC error: ' + e.message, 'error'); }
+  } else {
+    show('nfcResult', 'Web NFC API not supported. Requires Chrome on Android with NFC enabled.', 'error');
+  }
+}
+
+// ===== Geolocation =====
+let watchId = null;
+function getLocation() {
+  if (!navigator.geolocation) return show('locationResult', 'Geolocation not supported', 'error');
+  show('locationResult', 'Getting location...');
+  navigator.geolocation.getCurrentPosition(
+    pos => show('locationResult', 'Lat: ' + pos.coords.latitude.toFixed(6) + '\nLon: ' + pos.coords.longitude.toFixed(6) + '\nAccuracy: ' + pos.coords.accuracy.toFixed(0) + 'm\nAltitude: ' + (pos.coords.altitude?.toFixed(1) || 'N/A') + 'm\nSpeed: ' + (pos.coords.speed?.toFixed(1) || 'N/A') + ' m/s\nHeading: ' + (pos.coords.heading?.toFixed(1) || 'N/A') + '°', 'success'),
+    err => show('locationResult', 'Error: ' + err.message, 'error'),
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+function watchLocation() {
+  if (!navigator.geolocation) return show('locationResult', 'Geolocation not supported', 'error');
+  show('locationResult', 'Watching location...');
+  watchId = navigator.geolocation.watchPosition(
+    pos => show('locationResult', 'LIVE\nLat: ' + pos.coords.latitude.toFixed(6) + '\nLon: ' + pos.coords.longitude.toFixed(6) + '\nAccuracy: ' + pos.coords.accuracy.toFixed(0) + 'm\nUpdated: ' + new Date().toLocaleTimeString(), 'success'),
+    err => show('locationResult', 'Error: ' + err.message, 'error'),
+    { enableHighAccuracy: true }
+  );
+}
+function stopWatch() {
+  if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; show('locationResult', 'Watch stopped'); }
+}
+
+// ===== Orientation =====
+let orientationHandler = null;
+function startOrientation() {
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(p => {
+      if (p === 'granted') listenOrientation();
+      else show('orientationResult', 'Permission denied', 'error');
+    });
+  } else {
+    listenOrientation();
+  }
+}
+function listenOrientation() {
+  orientationHandler = (e) => {
+    show('orientationResult', 'Alpha (compass): ' + (e.alpha?.toFixed(1) || 'N/A') + '°\nBeta (front-back): ' + (e.beta?.toFixed(1) || 'N/A') + '°\nGamma (left-right): ' + (e.gamma?.toFixed(1) || 'N/A') + '°', 'success');
+  };
+  window.addEventListener('deviceorientation', orientationHandler);
+  show('orientationResult', 'Listening for orientation changes... Move your device', 'success');
+}
+function stopOrientation() {
+  if (orientationHandler) { window.removeEventListener('deviceorientation', orientationHandler); orientationHandler = null; }
+  show('orientationResult', 'Sensors stopped');
+}
+
+// ===== Bluetooth =====
+async function scanBluetooth() {
+  if (!navigator.bluetooth) return show('bluetoothResult', 'Web Bluetooth API not supported', 'error');
+  try {
+    show('bluetoothResult', 'Opening Bluetooth scanner...');
+    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+    show('bluetoothResult', 'Connected: ' + device.name + ' (ID: ' + device.id + ')', 'success');
+  } catch(e) { show('bluetoothResult', 'Bluetooth: ' + e.message, 'error'); }
+}
+
+// ===== Notifications =====
+function requestNotification() {
+  if (!('Notification' in window)) return show('notifResult', 'Notifications not supported', 'error');
+  Notification.requestPermission().then(p => show('notifResult', 'Permission: ' + p, p === 'granted' ? 'success' : 'error'));
+}
+function sendNotification() {
+  if (Notification.permission !== 'granted') return show('notifResult', 'Permission not granted. Request first.', 'error');
+  new Notification('WebToApp Test', { body: 'This is a test notification!', icon: '/favicon.svg', badge: '/favicon.svg' });
+  show('notifResult', 'Notification sent!', 'success');
+}
+
+// ===== Vibration =====
+function vibrate(pattern) {
+  if (!navigator.vibrate) return show('vibrateResult', 'Vibration API not supported', 'error');
+  navigator.vibrate(pattern);
+  show('vibrateResult', 'Vibrated: [' + pattern.join(', ') + '] ms', 'success');
+}
+
+// ===== Storage =====
+function saveStorage() {
+  const key = document.getElementById('storageKey').value || 'test_key';
+  const val = document.getElementById('storageVal').value || 'test_value';
+  localStorage.setItem(key, val);
+  show('storageResult', 'Saved: ' + key + ' = ' + val, 'success');
+}
+function loadStorage() {
+  const key = document.getElementById('storageKey').value || 'test_key';
+  const val = localStorage.getItem(key);
+  show('storageResult', val !== null ? 'Loaded: ' + key + ' = ' + val : 'Key not found: ' + key, val !== null ? 'success' : 'error');
+}
+function clearStorage() { localStorage.clear(); show('storageResult', 'All storage cleared', 'success'); }
+function listStorage() {
+  const items = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    items.push(k + ' = ' + localStorage.getItem(k));
+  }
+  show('storageResult', items.length ? items.join('\n') : 'Storage is empty');
+}
+
+// ===== Clipboard =====
+async function copyClipboard() {
+  try {
+    await navigator.clipboard.writeText(document.getElementById('clipboardInput').value);
+    show('clipboardResult', 'Copied to clipboard!', 'success');
+  } catch(e) { show('clipboardResult', 'Copy failed: ' + e.message, 'error'); }
+}
+async function pasteClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('clipboardInput').value = text;
+    show('clipboardResult', 'Pasted: ' + text, 'success');
+  } catch(e) { show('clipboardResult', 'Paste failed: ' + e.message, 'error'); }
+}
+
+// ===== Share =====
+async function shareText() {
+  if (!navigator.share) return show('shareResult', 'Share API not supported', 'error');
+  try {
+    await navigator.share({ title: 'WebToApp Test', text: 'Testing share from WebToApp!' });
+    show('shareResult', 'Shared!', 'success');
+  } catch(e) { show('shareResult', 'Share: ' + e.message, 'error'); }
+}
+async function shareURL() {
+  if (!navigator.share) return show('shareResult', 'Share API not supported', 'error');
+  try {
+    await navigator.share({ title: 'WebToApp', url: 'https://websitetoapp.app' });
+    show('shareResult', 'URL shared!', 'success');
+  } catch(e) { show('shareResult', 'Share: ' + e.message, 'error'); }
+}
+async function shareFile() {
+  if (!navigator.share || !navigator.canShare) return show('shareResult', 'File sharing not supported', 'error');
+  try {
+    const blob = new Blob(['Hello from WebToApp!'], { type: 'text/plain' });
+    const file = new File([blob], 'test.txt', { type: 'text/plain' });
+    if (navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'Test File' });
+      show('shareResult', 'File shared!', 'success');
+    } else show('shareResult', 'File sharing not supported on this device', 'error');
+  } catch(e) { show('shareResult', 'Share: ' + e.message, 'error'); }
+}
+
+// ===== Contacts =====
+async function pickContact() {
+  if (!('contacts' in navigator && 'ContactsManager' in window)) return show('contactResult', 'Contact Picker API not supported. Requires Chrome on Android.', 'error');
+  try {
+    const contacts = await navigator.contacts.select(['name', 'email', 'tel'], { multiple: false });
+    if (contacts.length) {
+      const c = contacts[0];
+      show('contactResult', 'Name: ' + (c.name||[]).join(', ') + '\nEmail: ' + (c.email||[]).join(', ') + '\nPhone: ' + (c.tel||[]).join(', '), 'success');
+    } else show('contactResult', 'No contact selected');
+  } catch(e) { show('contactResult', 'Contact: ' + e.message, 'error'); }
+}
+
+// ===== Fullscreen =====
+function goFullscreen() {
+  try {
+    document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : document.documentElement.webkitRequestFullscreen && document.documentElement.webkitRequestFullscreen();
+    show('fullscreenResult', 'Entered fullscreen', 'success');
+  } catch(e) { show('fullscreenResult', 'Fullscreen: ' + e.message, 'error'); }
+}
+function exitFullscreen() {
+  try {
+    document.exitFullscreen ? document.exitFullscreen() : document.webkitExitFullscreen && document.webkitExitFullscreen();
+    show('fullscreenResult', 'Exited fullscreen');
+  } catch(e) {}
+}
+
+// ===== Wake Lock =====
+let wakeLock = null;
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return show('wakeLockResult', 'Wake Lock API not supported', 'error');
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    show('wakeLockResult', 'Screen will stay on!', 'success');
+    wakeLock.addEventListener('release', () => show('wakeLockResult', 'Wake lock released'));
+  } catch(e) { show('wakeLockResult', 'Wake Lock: ' + e.message, 'error'); }
+}
+function releaseWakeLock() { if (wakeLock) { wakeLock.release(); wakeLock = null; } }
+
+// ===== Theme Color =====
+function setThemeColor(color) {
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); }
+  meta.content = color;
+  document.querySelector('.header').style.background = color;
+}
+
+// ===== WebAuthn =====
+async function testWebAuthn() {
+  if (!window.PublicKeyCredential) return show('authnResult', 'WebAuthn not supported', 'error');
+  try {
+    const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    if (!available) return show('authnResult', 'Platform authenticator not available', 'error');
+    show('authnResult', 'Platform authenticator available! Biometric auth is supported.', 'success');
+  } catch(e) { show('authnResult', 'WebAuthn: ' + e.message, 'error'); }
+}
+
+// ===== Battery =====
+async function getBattery() {
+  if (!navigator.getBattery) return show('batteryResult', 'Battery API not supported', 'error');
+  try {
+    const bat = await navigator.getBattery();
+    show('batteryResult', 'Level: ' + (bat.level * 100).toFixed(0) + '%\nCharging: ' + bat.charging + '\nCharge time: ' + (bat.chargingTime === Infinity ? 'N/A' : bat.chargingTime + 's') + '\nDischarge time: ' + (bat.dischargingTime === Infinity ? 'N/A' : bat.dischargingTime + 's'), 'success');
+  } catch(e) { show('batteryResult', 'Battery: ' + e.message, 'error'); }
+}
+
+// ===== JS Bridge =====
+function testJSBridge() {
+  const results = [];
+  if (window.WebToApp) results.push('WebToApp bridge: Available');
+  else results.push('WebToApp bridge: Not found');
+  if (window.ReactNativeWebView) results.push('ReactNative bridge: Available');
+  if (window.flutter_inappwebview) results.push('Flutter bridge: Available');
+  if (window.webkit && window.webkit.messageHandlers) results.push('iOS WKWebView bridge: Available');
+  if (window.chrome && window.chrome.webview) results.push('Edge WebView2 bridge: Available');
+  if (results.length <= 1) results.push('No native bridges detected (expected in browser)');
+  show('bridgeResult', results.join('\n'), results.length > 1 ? 'success' : '');
+}
+function testAndroidBridge() {
+  try {
+    if (window.Android) {
+      const result = window.Android.showToast ? (window.Android.showToast('Hello from WebView!'), 'showToast called') : 'Android bridge exists but no showToast method';
+      show('bridgeResult', result, 'success');
+    } else {
+      show('bridgeResult', 'window.Android not available (not in Android WebView)', 'error');
+    }
+  } catch(e) { show('bridgeResult', 'Android bridge error: ' + e.message, 'error'); }
+}
+
+// ===== Performance =====
+function runPerfTest() {
+  const bar = document.getElementById('perfBar');
+  bar.style.width = '0%';
+  const start = performance.now();
+  let count = 0;
+  const total = 1000000;
+  function step() {
+    for (let i = 0; i < 100000; i++) { count++; Math.sqrt(count * Math.PI); }
+    bar.style.width = ((count/total)*100) + '%';
+    if (count < total) requestAnimationFrame(step);
+    else {
+      const elapsed = (performance.now() - start).toFixed(1);
+      show('perfResult', '1M iterations in ' + elapsed + 'ms\nMemory: ' + (performance.memory ? (performance.memory.usedJSHeapSize/1024/1024).toFixed(1) + 'MB / ' + (performance.memory.totalJSHeapSize/1024/1024).toFixed(1) + 'MB' : 'N/A'), 'success');
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// ===== Feature Detection =====
+function detectFeatures() {
+  const checks = [
+    ['Geolocation', 'geolocation' in navigator],
+    ['Camera (getUserMedia)', !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)],
+    ['Notifications', 'Notification' in window],
+    ['Push API', 'PushManager' in window],
+    ['Service Workers', 'serviceWorker' in navigator],
+    ['Web Share', 'share' in navigator],
+    ['Contact Picker', 'contacts' in navigator],
+    ['Vibration', 'vibrate' in navigator],
+    ['Bluetooth', 'bluetooth' in navigator],
+    ['NFC (NDEFReader)', 'NDEFReader' in window],
+    ['WebAuthn', 'PublicKeyCredential' in window],
+    ['Barcode Detector', 'BarcodeDetector' in window],
+    ['Wake Lock', 'wakeLock' in navigator],
+    ['Battery', 'getBattery' in navigator],
+    ['Clipboard', !!(navigator.clipboard && navigator.clipboard.writeText)],
+    ['Fullscreen', 'requestFullscreen' in document.documentElement],
+    ['DeviceOrientation', 'DeviceOrientationEvent' in window],
+    ['DeviceMotion', 'DeviceMotionEvent' in window],
+    ['Network Info', 'connection' in navigator],
+    ['Storage (localStorage)', 'localStorage' in window],
+    ['IndexedDB', 'indexedDB' in window],
+    ['WebGL', !!document.createElement('canvas').getContext('webgl')],
+    ['WebSocket', 'WebSocket' in window],
+    ['Fetch API', 'fetch' in window],
+    ['Web Workers', 'Worker' in window],
+    ['WebAssembly', 'WebAssembly' in window],
+    ['Payment Request', 'PaymentRequest' in window],
+    ['Media Recorder', 'MediaRecorder' in window],
+    ['Screen Orientation', 'orientation' in screen],
+    ['Gamepad', 'getGamepads' in navigator],
+    ['USB', 'usb' in navigator],
+    ['Serial', 'serial' in navigator],
+    ['File System Access', 'showOpenFilePicker' in window],
+  ];
+  const lines = checks.map(([name, ok]) => (ok ? '✅' : '❌') + ' ' + name);
+  const supported = checks.filter(c => c[1]).length;
+  show('featureResult', supported + '/' + checks.length + ' APIs supported\n\n' + lines.join('\n'), 'success');
+}
+
+// Run feature detection on load
+detectFeatures();
+
+// Log URL params (for deep link testing)
+const params = new URLSearchParams(window.location.search);
+if (params.toString()) {
+  console.log('URL params:', Object.fromEntries(params));
+}
+</script>
+
+</body>
+</html>
