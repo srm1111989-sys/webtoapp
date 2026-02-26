@@ -1210,7 +1210,11 @@ function Step4PlanReview() {
             receipt: order.order_number,
             test_mode: paymentMode?.test_mode
           })
-          handleRazorpay(rpRes, order.id)
+          // Add order_id to response for handleRazorpay
+          handleRazorpay({
+            ...rpRes,
+            order_id: order.id
+          }, order.id)
         } catch {
           toast.error('Razorpay payment initialization failed.')
         }
