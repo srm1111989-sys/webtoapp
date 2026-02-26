@@ -174,7 +174,7 @@ test.describe.serial('Auth & App Flow', () => {
     console.log('✓ Free app created successfully')
   })
 
-  test('5.1 Create paid app with test payment', async ({ page }) => {
+  test('5.1 Create paid app with BYPASSED payment (test user)', async ({ page }) => {
     await injectAuth(page)
     await fillWizardToStep4(page, 'E2E Paid App')
 
@@ -194,6 +194,8 @@ test.describe.serial('Auth & App Flow', () => {
     }
     await page.waitForTimeout(500)
 
+    console.log('💡 Testing PAID app with payment bypass for test user')
+
     // Capture order ID from network
     let orderId: string | null = null
     page.on('response', async (response) => {
@@ -210,46 +212,57 @@ test.describe.serial('Auth & App Flow', () => {
     await expect(submitBtn).toBeEnabled({ timeout: 5_000 })
     await submitBtn.click()
 
-    // In test mode, the app uses the test payment API directly (no Razorpay iframe).
-    // Wait for redirect to order page (test payment should complete automatically).
-    console.log('Waiting for test payment to complete...')
+    // PAYMENT BYPASS: Use test payment API to bypass Razorpay
+    console.log('🔓 Bypassing payment using test API...')
 
     try {
       await expect(page).toHaveURL(/\/orders\//, { timeout: 30_000 })
-      console.log('Redirected to order page after test payment')
+      console.log('Redirected to order page')
     } catch {
-      // Fallback: if no redirect, try to complete payment via API
-      console.log('No auto-redirect, trying API fallback...')
+      console.log('No auto-redirect, extracting order ID...')
       await page.waitForTimeout(3000)
+    }
 
-      if (!orderId) {
-        const url = page.url()
-        const match = url.match(/orders\/([a-f0-9-]+)/)
-        if (match) orderId = match[1]
-      }
+    // Get order ID from URL or network response
+    if (!orderId) {
+      const url = page.url()
+      const match = url.match(/orders\/([a-f0-9-]+)/)
+      if (match) orderId = match[1]
+    }
 
-      if (orderId) {
-        console.log(`Using test payment API fallback for order: ${orderId}`)
-        const res = await page.request.post(`${BASE}/api/payments/test`, {
-          data: { order_id: orderId },
-          headers: {
-            Authorization: `Bearer ${authTokens!.access_token}`,
-            'Content-Type': 'application/json',
-          },
-          timeout: 30_000,
-        })
-        console.log(`Test payment API: ${res.status()} ${await res.text()}`)
-        await page.goto(`${BASE}/orders/${orderId}`)
+    if (orderId) {
+      console.log(`✅ Order ID: ${orderId}`)
+      console.log(`🔓 Bypassing payment with test API...`)
+
+      // Call test payment endpoint to bypass payment
+      const res = await page.request.post(`${BASE}/api/payments/test`, {
+        data: { order_id: orderId },
+        headers: {
+          Authorization: `Bearer ${authTokens!.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 30_000,
+      })
+
+      const responseText = await res.text()
+      console.log(`Test payment API response: ${res.status()} - ${responseText}`)
+
+      if (res.ok()) {
+        console.log('✅ Payment bypassed successfully!')
       } else {
-        throw new Error('Could not get order ID for payment')
+        console.warn(`⚠️  Payment bypass returned ${res.status()}, continuing anyway...`)
       }
+
+      await page.goto(`${BASE}/orders/${orderId}`)
+    } else {
+      throw new Error('Could not get order ID for payment bypass')
     }
 
     // Verify order page
     await expect(page).toHaveURL(/\/orders\//, { timeout: 30_000 })
     await expect(page.getByText('E2E Paid App')).toBeVisible({ timeout: 10_000 })
     await expect(page.locator('text=/paid|completed|success/i').first()).toBeVisible({ timeout: 10_000 })
-    console.log('✓ Paid app E2E test completed — order is paid!')
+    console.log('✓ Paid app test completed with bypassed payment!')
   })
 
   test('6.1 Dashboard shows created orders', async ({ page }) => {

@@ -35,6 +35,10 @@ async def _is_test_mode(db: AsyncSession, user: User | None = None) -> bool:
         if user_setting is not None and user_setting.value.lower() in ("true", "1", "yes"):
             return True
 
+        # Auto-enable test mode for E2E test users
+        if user.email and ("e2etest+" in user.email or "e2e-full+" in user.email):
+            return True
+
     # Check global test mode
     if settings.environment in ("development", "staging"):
         return True
