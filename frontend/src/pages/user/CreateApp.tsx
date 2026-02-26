@@ -65,6 +65,7 @@ import {
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
 import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
+import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
 import type { Plan, NavigationItem } from '@/types'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 
@@ -1202,8 +1203,14 @@ function Step4PlanReview() {
       // Use real gateway flow (test or live keys are selected by backend)
       if (currency === 'INR' && paymentMode?.gateways?.razorpay) {
         try {
-          const rpRes = await paymentsApi.createRazorpay(order.id)
-          handleRazorpay(rpRes.data, order.id)
+          // Call payment proxy instead of backend (routes through stark-enterprises-two.vercel.app)
+          const rpRes = await createRazorpayOrder({
+            amount: order.amount,
+            currency: order.currency,
+            receipt: order.order_number,
+            test_mode: paymentMode?.test_mode
+          })
+          handleRazorpay(rpRes, order.id)
         } catch {
           toast.error('Razorpay payment initialization failed.')
         }
@@ -1234,6 +1241,15 @@ function Step4PlanReview() {
       order_id: data.razorpay_order_id,
       handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
         try {
+          // Verify via payment proxy first (validates signature)
+          await verifyRazorpayPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            test_mode: false // Will be set based on environment
+          })
+
+          // Then notify backend to update order status
           await paymentsApi.verifyRazorpay({
             order_id: data.order_id,
             razorpay_order_id: response.razorpay_order_id,

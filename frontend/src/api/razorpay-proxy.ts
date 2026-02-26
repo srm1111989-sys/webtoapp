@@ -1,0 +1,121 @@
+/**
+ * Razorpay Payment Proxy API Client
+ * Routes payments through Vercel proxy (stark-enterprises-two.vercel.app)
+ * to avoid domain whitelist issues
+ */
+
+import axios from 'axios'
+
+// Use Vercel proxy for payments (whitelisted in Razorpay)
+// Using /pay path to avoid conflict with main company site
+const PAYMENT_PROXY_URL = 'https://stark-enterprises-two.vercel.app/pay'
+
+export interface CreateOrderRequest {
+  amount: number // Amount in smallest currency unit (paise for INR)
+  currency: string
+  receipt?: string
+  notes?: Record<string, any>
+  test_mode?: boolean
+}
+
+export interface CreateOrderResponse {
+  success: boolean
+  razorpay_order_id: string
+  razorpay_key_id: string
+  amount: number
+  currency: string
+  order?: any
+  error?: string
+}
+
+export interface VerifyPaymentRequest {
+  razorpay_order_id: string
+  razorpay_payment_id: string
+  razorpay_signature: string
+  test_mode?: boolean
+}
+
+export interface VerifyPaymentResponse {
+  success: boolean
+  message?: string
+  error?: string
+}
+
+export interface GetKeyResponse {
+  success: boolean
+  key: string
+  test_mode: boolean
+  error?: string
+}
+
+/**
+ * Create Razorpay order via Vercel proxy
+ */
+export const createRazorpayOrder = async (
+  data: CreateOrderRequest
+): Promise<CreateOrderResponse> => {
+  try {
+    const response = await axios.post(
+      `${PAYMENT_PROXY_URL}/api/razorpay/create-order`,
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    return response.data
+  } catch (error: any) {
+    console.error('Razorpay order creation failed:', error)
+    throw new Error(
+      error.response?.data?.error || 'Failed to create payment order'
+    )
+  }
+}
+
+/**
+ * Verify Razorpay payment via Vercel proxy
+ */
+export const verifyRazorpayPayment = async (
+  data: VerifyPaymentRequest
+): Promise<VerifyPaymentResponse> => {
+  try {
+    const response = await axios.post(
+      `${PAYMENT_PROXY_URL}/api/razorpay/verify-payment`,
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    return response.data
+  } catch (error: any) {
+    console.error('Payment verification failed:', error)
+    throw new Error(
+      error.response?.data?.error || 'Failed to verify payment'
+    )
+  }
+}
+
+/**
+ * Get Razorpay public key via Vercel proxy
+ */
+export const getRazorpayKey = async (
+  testMode: boolean = false
+): Promise<GetKeyResponse> => {
+  try {
+    const response = await axios.get(
+      `${PAYMENT_PROXY_URL}/api/razorpay/get-key`,
+      {
+        params: { test_mode: testMode },
+      }
+    )
+    return response.data
+  } catch (error: any) {
+    console.error('Failed to get Razorpay key:', error)
+    throw new Error(
+      error.response?.data?.error || 'Failed to get Razorpay key'
+    )
+  }
+}
