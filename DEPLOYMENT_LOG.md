@@ -163,8 +163,38 @@ If payment fails again, check:
 
 ---
 
+---
+
+## Update: Payment Proxy Solution (2026-02-26)
+
+### Issue
+Razorpay domain whitelist blocking payments from `websitetoapp.app`
+
+### Solution
+Created payment proxy on Vercel (`stark-enterprises-two.vercel.app/pay`) to route payments through whitelisted domain.
+
+**Repository**: https://gitlab.com/mokashiswapnil11/stark-enterprises
+
+**Payment Flow**:
+```
+websitetoapp.app → stark-enterprises-two.vercel.app/pay → Razorpay ✅
+```
+
+**API Endpoints**:
+- POST `/pay/api/razorpay/create-order`
+- POST `/pay/api/razorpay/verify-payment`
+- GET `/pay/api/razorpay/get-key`
+
+**Files Added to stark-enterprises repo**:
+- `/pay/api/razorpay/` - Payment proxy API
+- `vercel.json` - Vercel config with CORS
+- `package.json` - Dependencies
+- `README.md`, `DEPLOYMENT_GUIDE.md`, `QUICKSTART.md` - Documentation
+
+---
+
 **Deployment Status**: ✅ **SUCCESSFUL**
 
 **Deployed By**: Claude AI Assistant
 **Date**: February 26, 2026
-**Version**: Production Release with Razorpay SDK v1.4.2
+**Version**: Production Release with Razorpay SDK v1.4.2 + Payment Proxy
