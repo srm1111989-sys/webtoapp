@@ -48,7 +48,7 @@ async function waitForBuildComplete(page: Page, orderId: string): Promise<any> {
   while (Date.now() - startTime < MAX_BUILD_WAIT) {
     try {
       // Get builds for this order
-      const response = await page.request.get(`${BASE}/api/builds?order_id=${orderId}`, {
+      const response = await page.request.get(`${BASE}/api/builds/order/${orderId}`, {
         headers: {
           Authorization: `Bearer ${authTokens!.access_token}`,
         },
