@@ -19,7 +19,11 @@ const TEST_USER = {
   password: 'TestPass123!',
 }
 
+const MAX_BUILD_WAIT = 15 * 60 * 1000 // 15 minutes
+const BUILD_POLL_INTERVAL = 30 * 1000 // 30 seconds
+
 let authTokens: { access_token: string; refresh_token: string } | null = null
+let paidOrderId: string | null = null
 
 async function injectAuth(page: Page) {
   if (!authTokens) throw new Error('No auth tokens — login test must run first')
@@ -35,6 +39,58 @@ async function injectAuth(page: Page) {
     }
     window.localStorage.setItem('webtoapp-auth', JSON.stringify(state))
   }, authTokens)
+}
+
+async function waitForBuildComplete(page: Page, orderId: string): Promise<any> {
+  console.log(`\n🔨 Waiting for build to complete for order: ${orderId}`)
+  const startTime = Date.now()
+
+  while (Date.now() - startTime < MAX_BUILD_WAIT) {
+    try {
+      // Get builds for this order
+      const response = await page.request.get(`${BASE}/api/builds?order_id=${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${authTokens!.access_token}`,
+        },
+      })
+
+      if (response.ok()) {
+        const builds = await response.json()
+
+        if (builds && builds.length > 0) {
+          const latestBuild = builds[0]
+          console.log(`   Build status: ${latestBuild.status} (${latestBuild.progress || 0}%)`)
+
+          if (latestBuild.status === 'success') {
+            console.log(`✅ Build completed successfully!`)
+            console.log(`   APK: ${latestBuild.apk_url || 'N/A'}`)
+            console.log(`   AAB: ${latestBuild.aab_url || 'N/A'}`)
+            return latestBuild
+          }
+
+          if (latestBuild.status === 'failed') {
+            throw new Error(`Build failed: ${latestBuild.error_message || 'Unknown error'}`)
+          }
+
+          // Still building or pending - wait and poll again
+          console.log(`   Waiting ${BUILD_POLL_INTERVAL / 1000}s before next check...`)
+          await page.waitForTimeout(BUILD_POLL_INTERVAL)
+        } else {
+          // No builds yet - order might still be processing
+          console.log(`   No builds found yet, waiting...`)
+          await page.waitForTimeout(BUILD_POLL_INTERVAL)
+        }
+      } else {
+        console.error(`   API error: ${response.status()}`)
+        await page.waitForTimeout(BUILD_POLL_INTERVAL)
+      }
+    } catch (error: any) {
+      console.error(`   Error checking build status: ${error.message}`)
+      await page.waitForTimeout(BUILD_POLL_INTERVAL)
+    }
+  }
+
+  throw new Error(`Build timeout: Build did not complete in ${MAX_BUILD_WAIT / 1000 / 60} minutes`)
 }
 
 /** Click the blue "Next" button used in wizard Steps 1-3 (type="button") */
@@ -234,6 +290,9 @@ test.describe.serial('Auth & App Flow', () => {
       console.log(`✅ Order ID: ${orderId}`)
       console.log(`🔓 Bypassing payment with test API...`)
 
+      // Save order ID for build monitoring test
+      paidOrderId = orderId
+
       // Call test payment endpoint to bypass payment
       const res = await page.request.post(`${BASE}/api/payments/test`, {
         data: { order_id: orderId },
@@ -264,6 +323,25 @@ test.describe.serial('Auth & App Flow', () => {
     await expect(page.locator('text=/paid|completed|success/i').first()).toBeVisible({ timeout: 10_000 })
     console.log('✓ Paid app test completed with bypassed payment!')
   })
+
+  test('5.2 Wait for build to complete', async ({ page }) => {
+    if (!paidOrderId) {
+      throw new Error('No paid order ID from previous test')
+    }
+
+    console.log(`\n📦 Monitoring build for paid order: ${paidOrderId}`)
+
+    const build = await waitForBuildComplete(page, paidOrderId)
+
+    // Verify build succeeded
+    expect(build.status).toBe('success')
+    expect(build.apk_url).toBeTruthy()
+
+    console.log(`\n✅ Build completed successfully!`)
+    console.log(`   Build ID: ${build.id}`)
+    console.log(`   APK URL: ${build.apk_url}`)
+    console.log(`   Build time: ${build.completed_at}`)
+  }, { timeout: MAX_BUILD_WAIT + 60_000 }) // 16 minutes timeout
 
   test('6.1 Dashboard shows created orders', async ({ page }) => {
     await injectAuth(page)
