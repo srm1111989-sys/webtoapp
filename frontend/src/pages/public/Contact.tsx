@@ -68,6 +68,18 @@ export default function Contact() {
         </div>
       </div>
 
+      <div className="mt-12 bg-gray-50 rounded-xl p-8">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Business Information</h2>
+        <div className="text-gray-700 space-y-2">
+          <p className="font-semibold">Stark Enterprises</p>
+          <p>9/A, Panjab Bank Apart, Police Line Road</p>
+          <p>Sangli, Maharashtra 416416, India</p>
+          <p className="mt-4">
+            Email: <a href="mailto:support@websitetoapp.app" className="text-blue-600 hover:underline">support@websitetoapp.app</a>
+          </p>
+        </div>
+      </div>
+
       <div className="mt-8 text-center text-gray-500 text-sm">
         <p>Response time: Usually within 24 hours on business days.</p>
       </div>
