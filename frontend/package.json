@@ -9,7 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:e2e": "npx playwright test",
-    "test:e2e:ui": "npx playwright test --ui"
+    "test:e2e:ui": "npx playwright test --ui",
+    "test:e2e:full": "npx playwright test full-e2e-with-apk.spec.ts --headed --timeout=1800000",
+    "test:e2e:prod": "npx playwright test production-e2e.spec.ts --config=playwright.prod.config.ts",
+    "test:android:setup": "npx ts-node e2e/setup/android-setup.ts",
+    "test:android:create-avd": "npx ts-node e2e/setup/android-setup.ts --create-avd"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
