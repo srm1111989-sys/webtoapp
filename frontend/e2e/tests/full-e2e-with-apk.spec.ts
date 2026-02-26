@@ -92,7 +92,7 @@ async function waitForBuildComplete(orderId: string): Promise<any> {
   while (Date.now() - startTime < MAX_BUILD_WAIT) {
     try {
       // Get builds for this order
-      const builds = await apiCall(`/builds?order_id=${orderId}`)
+      const builds = await apiCall(`/builds/order/${orderId}`)
 
       if (builds && builds.length > 0) {
         const latestBuild = builds[0]
