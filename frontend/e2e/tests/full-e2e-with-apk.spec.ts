@@ -372,6 +372,19 @@ test.describe.serial('Complete E2E Flow with APK Testing', () => {
     const orderId = match[1]
     console.log(`Order ID: ${orderId}`)
 
+    // Trigger build manually (FREE plans don't auto-trigger)
+    console.log(`🔨 Triggering build for FREE order...`)
+    const triggerResponse = await page.request.post(`${BASE}/api/builds/trigger/${orderId}?platform=android`, {
+      headers: {
+        Authorization: `Bearer ${authTokens!.access_token}`,
+      },
+    })
+    if (!triggerResponse.ok()) {
+      throw new Error(`Failed to trigger build: ${triggerResponse.status()}`)
+    }
+    console.log(`✅ Build triggered successfully!`)
+    await page.waitForTimeout(5000) // Wait for build to start
+
     // Wait for build to complete
     const build = await waitForBuildComplete(orderId)
 
