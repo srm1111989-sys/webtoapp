@@ -240,7 +240,7 @@ export default function Landing() {
       </section>
 
       {/* Why Choose WebToApp */}
-      <section className="pt-0 pb-16 sm:pb-24 bg-gradient-to-b from-white to-gray-50">
+      <section className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Why Choose WebToApp?</h2>
@@ -424,16 +424,39 @@ export default function Landing() {
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
                 🔥 Most Popular
               </span>
+              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-4 py-2 rounded-full font-bold shadow-xl animate-pulse">
+                50% OFF
+              </div>
               <div className="flex items-center gap-2 mb-3">
                 <Smartphone className="w-6 h-6 text-primary-600" />
                 <h3 className="text-2xl font-bold">Android App</h3>
               </div>
               <p className="text-gray-500 text-sm mb-3">All features, one-time payment</p>
-              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-4 border-2 border-primary-200">
-                <span className="text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">{formatPlanPrice(ANDROID_PLANS[0].price_inr, ANDROID_PLANS[0].price_usd)}</span>
+
+              {/* Pricing with MRP */}
+              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-5 border-2 border-primary-200 relative overflow-hidden">
+                {/* MRP - Strikethrough */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-gray-500 font-medium">MRP:</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">₹4,999</span>
+                </div>
+
+                {/* Actual Price - Large and Bold */}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-6xl sm:text-7xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
+                    {formatPlanPrice(ANDROID_PLANS[0].price_inr, ANDROID_PLANS[0].price_usd)}
+                  </span>
+                </div>
+
+                {/* You Save Badge */}
+                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
+                  <Check className="w-4 h-4" />
+                  You Save ₹2,500
+                </div>
               </div>
-              <p className="text-sm font-semibold text-primary-600 mb-4">
-                💎 One-time payment
+
+              <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
+                💎 One-time payment · Lifetime access
               </p>
               <ul className="space-y-2 flex-1 mb-6">
                 {ANDROID_PLANS[0].highlights.map((h) => (
@@ -456,16 +479,39 @@ export default function Landing() {
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
                 💻 Best Value
               </span>
+              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-4 py-2 rounded-full font-bold shadow-xl animate-pulse">
+                50% OFF
+              </div>
               <div className="flex items-center gap-2 mb-3">
                 <Monitor className="w-6 h-6 text-primary-600" />
                 <h3 className="text-2xl font-bold">Desktop App</h3>
               </div>
               <p className="text-gray-500 text-sm mb-3">Full desktop app, one-time</p>
-              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-4 border-2 border-primary-200">
-                <span className="text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">{formatPlanPrice(DESKTOP_PLANS[0].price_inr, DESKTOP_PLANS[0].price_usd)}</span>
+
+              {/* Pricing with MRP */}
+              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-5 border-2 border-primary-200 relative overflow-hidden">
+                {/* MRP - Strikethrough */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-gray-500 font-medium">MRP:</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">₹3,999</span>
+                </div>
+
+                {/* Actual Price - Large and Bold */}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-6xl sm:text-7xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
+                    {formatPlanPrice(DESKTOP_PLANS[0].price_inr, DESKTOP_PLANS[0].price_usd)}
+                  </span>
+                </div>
+
+                {/* You Save Badge */}
+                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
+                  <Check className="w-4 h-4" />
+                  You Save ₹2,000
+                </div>
               </div>
-              <p className="text-sm font-semibold text-primary-600 mb-4">
-                💎 One-time payment
+
+              <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
+                💎 One-time payment · Lifetime access
               </p>
               <ul className="space-y-2 flex-1 mb-6">
                 {DESKTOP_PLANS[0].highlights.map((h) => (
