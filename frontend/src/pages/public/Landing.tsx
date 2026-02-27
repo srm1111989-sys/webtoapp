@@ -296,19 +296,22 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Horizontal Scrolling Features */}
+          {/* All Features - Grid on Desktop, Scroll on Mobile */}
           <div className="mb-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">All 40+ Features at a Glance</h3>
-              <p className="text-gray-600">👉 Swipe horizontally to see all features →</p>
+              <p className="text-gray-600 md:hidden">👉 Swipe horizontally to see all features →</p>
+              <p className="text-gray-600 hidden md:block">Everything included in one simple plan</p>
             </div>
-            <div className="relative -mx-4 sm:-mx-6 lg:-mx-8">
+
+            {/* Mobile - Horizontal Scroll */}
+            <div className="md:hidden relative -mx-4 sm:-mx-6">
               {/* Fade edges */}
-              <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none hidden sm:block"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none hidden sm:block"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
               {/* Scrollable container */}
-              <div className="overflow-x-scroll overflow-y-hidden pb-4 px-4 sm:px-6 lg:px-8 scrollbar-hide">
+              <div className="overflow-x-scroll overflow-y-hidden pb-4 px-4 sm:px-6 scrollbar-hide">
                 <div className="flex gap-4" style={{ minWidth: 'max-content' }}>
                   {allPremiumFeatures.map((feature, idx) => (
                     <div
@@ -326,6 +329,24 @@ export default function Landing() {
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* Desktop - Grid Layout */}
+            <div className="hidden md:grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {allPremiumFeatures.map((feature, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white rounded-xl border-2 border-primary-200 p-4 hover:border-primary-500 hover:shadow-xl transition-all"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mb-3 mx-auto shadow-lg">
+                    <feature.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="text-center">
+                    <p className="font-semibold text-sm text-gray-900 leading-tight mb-2">{feature.title}</p>
+                    <Check className="w-4 h-4 text-green-600 mx-auto" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
