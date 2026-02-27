@@ -216,9 +216,23 @@ export default function OrderDetail() {
         </div>
 
         {triggerBuild.isError && (
-          <div className="rounded-lg bg-red-50 p-3 mb-4 flex items-center gap-2 text-red-700 text-sm">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            Failed to trigger build. Please try again.
+          <div className="rounded-lg bg-red-50 border border-red-200 p-4 mb-4 text-sm">
+            <div className="flex items-start gap-2 text-red-700 mb-3">
+              <AlertCircle className="w-5 h-5 shrink-0" />
+              <div>
+                <p className="font-semibold">Failed to trigger build</p>
+                <p className="text-red-600 mt-1">Please try again or contact support if the issue persists.</p>
+              </div>
+            </div>
+            <a
+              href={`mailto:support@websitetoapp.app?subject=Build Trigger Failed - Order ${order.order_number}&body=Hi Support Team,%0D%0A%0D%0AI'm unable to trigger a build for my order.%0D%0A%0D%0AOrder Number: ${order.order_number}%0D%0A%0D%0APlease help me resolve this issue.%0D%0A%0D%0AThank you!`}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium text-sm"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Contact Support
+            </a>
           </div>
         )}
 
@@ -282,10 +296,26 @@ export default function OrderDetail() {
                   {build.status === 'building' && (
                     <span className="text-sm text-blue-600 font-medium flex items-center gap-1.5">
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Building...
+                      Building... {build.progress || 0}%
                     </span>
                   )}
                 </div>
+
+                {/* Progress bar for building status */}
+                {build.status === 'building' && (
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+                      <span>Build Progress</span>
+                      <span className="font-medium">{build.progress || 0}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+                        style={{ width: `${build.progress || 0}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {/* Download buttons on success */}
                 {build.status === 'success' && (
@@ -340,13 +370,27 @@ export default function OrderDetail() {
                 {/* Error message on failure */}
                 {build.status === 'failed' && build.error_message && (
                   <div className="mt-3 pt-3 border-t">
-                    <div className="rounded-lg bg-red-50 p-3 flex items-start gap-2 text-red-700 text-sm">
-                      <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium">Build failed</p>
-                        <p className="mt-0.5 text-red-600">
-                          {build.error_message}
-                        </p>
+                    <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm">
+                      <div className="flex items-start gap-2 text-red-700">
+                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-red-800">Build Failed</p>
+                          <p className="mt-1 text-red-700">
+                            {build.error_message}
+                          </p>
+                          <div className="mt-3 pt-3 border-t border-red-200">
+                            <p className="text-red-600 text-xs mb-2">Need help? Contact our support team:</p>
+                            <a
+                              href={`mailto:support@websitetoapp.app?subject=Build Failed - Order ${order.order_number}&body=Hi Support Team,%0D%0A%0D%0AMy build has failed with the following error:%0D%0A${encodeURIComponent(build.error_message)}%0D%0A%0D%0AOrder Number: ${order.order_number}%0D%0ABuild ID: ${build.id}%0D%0APlatform: ${build.platform}%0D%0A%0D%0APlease help me resolve this issue.%0D%0A%0D%0AThank you!`}
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                              Contact Support
+                            </a>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

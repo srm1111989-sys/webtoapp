@@ -10,6 +10,7 @@ class BuildResponse(BaseModel):
     status: str
     platform: str = "android"
     build_type: str
+    progress: int = 0
     apk_url: str | None = None
     aab_url: str | None = None
     exe_url: str | None = None

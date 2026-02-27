@@ -83,44 +83,44 @@ type BasicInfoData = z.infer<typeof basicInfoSchema>
 // ---------- Feature definitions ----------
 
 const FEATURES = [
-  { key: 'push_notifications', label: 'Push Notifications', description: 'Send push notifications via Firebase', icon: Bell },
-  { key: 'admob', label: 'AdMob Ads', description: 'Monetize with Google AdMob ads', icon: DollarSign },
-  { key: 'biometric_auth', label: 'Biometric Auth', description: 'Fingerprint and face unlock', icon: Fingerprint },
-  { key: 'deep_linking', label: 'Deep Linking', description: 'Handle deep links and URLs', icon: Link2 },
-  { key: 'offline_mode', label: 'Offline Mode', description: 'Cache content for offline access', icon: WifiOff },
-  { key: 'navigation_menu', label: 'Navigation Menu', description: 'Bottom nav or drawer menu', icon: Menu },
-  { key: 'qr_scanner', label: 'QR Scanner', description: 'Built-in QR code scanner', icon: QrCode },
-  { key: 'js_bridge', label: 'JS Bridge', description: 'JavaScript to native bridge', icon: Code2 },
-  { key: 'screenshot_prevention', label: 'Screenshot Prevention', description: 'Block screenshots in app', icon: ShieldOff },
-  { key: 'file_upload', label: 'File Upload', description: 'Support file uploads from device', icon: Upload },
-  { key: 'location_services', label: 'Location Services', description: 'Access device GPS location', icon: MapPin },
-  { key: 'camera_access', label: 'Camera Access', description: 'Access device camera', icon: Camera },
-  { key: 'onboarding_screen', label: 'Onboarding Screen', description: 'Welcome screens for first-time users', icon: BookOpen },
-  { key: 'app_shortcut', label: 'App Shortcut', description: 'Home screen quick action shortcuts', icon: Zap },
-  { key: 'secondary_navigation', label: 'Secondary Navigation', description: 'Additional navigation options', icon: LayoutList },
-  { key: 'social_login', label: 'Social Login', description: 'Sign in with social accounts', icon: Users },
-  { key: 'in_app_update', label: 'In-App Update', description: 'Prompt users to update the app', icon: RefreshCw },
-  { key: 'background_location', label: 'Background Location', description: 'Track location in background', icon: MapPinned },
-  { key: 'facebook_app_events', label: 'Facebook App Events', description: 'Track events with Facebook SDK', icon: BarChart3 },
-  { key: 'in_app_purchases', label: 'In-App Purchases', description: 'Sell digital goods in-app', icon: CreditCard },
-  { key: 'in_app_review', label: 'In-App Review', description: 'Prompt users to rate the app', icon: Star },
-  { key: 'background_service', label: 'Background Service', description: 'Run tasks in the background', icon: Server },
-  { key: 'native_contacts', label: 'Native Contacts', description: 'Access device contacts', icon: Contact },
-  { key: 'appsflyer', label: 'AppsFlyer', description: 'Attribution and analytics tracking', icon: Activity },
-  { key: 'custom_media_player', label: 'Custom Media Player', description: 'Built-in audio/video player', icon: Play },
-  { key: 'offer_card', label: 'Offer Card', description: 'Display promotional offer cards', icon: Gift },
-  { key: 'intercom', label: 'Intercom', description: 'In-app customer messaging', icon: MessageCircle },
-  { key: 'dynamic_app_icon', label: 'Dynamic App Icon', description: 'Change app icon dynamically', icon: Palette },
-  { key: 'bluetooth_connectivity', label: 'Bluetooth Connectivity', description: 'Connect to Bluetooth devices', icon: Bluetooth },
-  { key: 'download_file_manager', label: 'Download Manager', description: 'Manage file downloads in-app', icon: FolderDown },
-  { key: 'floating_action_menu', label: 'Floating Action Menu', description: 'Floating action button with menu', icon: CirclePlus },
-  { key: 'revenue_cat', label: 'Revenue Cat', description: 'Subscription management via RevenueCat', icon: Wallet },
-  { key: 'native_datastore', label: 'Native Datastore', description: 'Local data storage on device', icon: Database },
-  { key: 'passcode_lock', label: 'Passcode Lock', description: 'App lock with passcode', icon: Lock },
-  { key: 'app_auto_launch', label: 'App Auto Launch', description: 'Launch app on device boot', icon: Power },
-  { key: 'advanced_bottom_navigation', label: 'Advanced Bottom Nav', description: 'Enhanced bottom navigation bar', icon: PanelBottom },
-  { key: 'firebase_notification', label: 'Firebase Notification', description: 'Firebase Cloud Messaging notifications', icon: BellRing },
-  { key: 'tap_to_pay', label: 'Tap to Pay', description: 'NFC-based tap to pay support', icon: Nfc },
+  { key: 'push_notifications', label: 'Push Notifications', description: 'Send real-time push notifications to users via Firebase Cloud Messaging (FCM). Engage users with timely updates, promotions, and alerts.', helpUrl: 'https://firebase.google.com/docs/cloud-messaging', icon: Bell },
+  { key: 'admob', label: 'AdMob Ads', description: 'Monetize your app with Google AdMob banner, interstitial, and rewarded ads. Earn revenue from ad impressions and clicks.', helpUrl: 'https://admob.google.com/home/', icon: DollarSign },
+  { key: 'biometric_auth', label: 'Biometric Auth', description: 'Secure your app with fingerprint or face unlock authentication. Provides enhanced security and convenience for users.', helpUrl: 'https://developer.android.com/training/sign-in/biometric-auth', icon: Fingerprint },
+  { key: 'deep_linking', label: 'Deep Linking', description: 'Handle deep links and custom URL schemes to navigate users directly to specific content within your app from external sources.', helpUrl: 'https://developer.android.com/training/app-links/deep-linking', icon: Link2 },
+  { key: 'offline_mode', label: 'Offline Mode', description: 'Cache website content locally for offline access. Users can view previously loaded pages without internet connection.', helpUrl: 'https://developer.android.com/training/data-storage', icon: WifiOff },
+  { key: 'navigation_menu', label: 'Navigation Menu', description: 'Add custom bottom navigation bar or drawer menu with multiple tabs/items. Configure menu items with icons and URLs.', helpUrl: 'https://m2.material.io/components/bottom-navigation', icon: Menu },
+  { key: 'qr_scanner', label: 'QR Scanner', description: 'Built-in QR code and barcode scanner using device camera. Scan codes directly within your app without external apps.', helpUrl: 'https://developer.android.com/training/camerax', icon: QrCode },
+  { key: 'js_bridge', label: 'JS Bridge', description: 'JavaScript-to-native bridge for bi-directional communication. Call native Android functions from your website JavaScript.', helpUrl: 'https://developer.android.com/develop/ui/views/layout/webapps/webview', icon: Code2 },
+  { key: 'screenshot_prevention', label: 'Screenshot Prevention', description: 'Block users from taking screenshots or screen recordings within your app for enhanced content security and privacy.', helpUrl: 'https://developer.android.com/reference/android/view/WindowManager.LayoutParams#FLAG_SECURE', icon: ShieldOff },
+  { key: 'file_upload', label: 'File Upload', description: 'Enable file uploads from device storage, camera, or gallery. Users can upload documents, images, and videos to your website.', helpUrl: 'https://developer.android.com/training/data-storage/shared/documents-files', icon: Upload },
+  { key: 'location_services', label: 'Location Services', description: 'Access device GPS location to provide location-based features. Get real-time coordinates for mapping and proximity services.', helpUrl: 'https://developer.android.com/training/location', icon: MapPin },
+  { key: 'camera_access', label: 'Camera Access', description: 'Direct access to device camera for taking photos and videos. Capture media without leaving your app.', helpUrl: 'https://developer.android.com/training/camerax', icon: Camera },
+  { key: 'onboarding_screen', label: 'Onboarding Screen', description: 'Welcome screens with tutorials for first-time users. Create engaging onboarding flow with images and descriptions.', helpUrl: 'https://m2.material.io/design/communication/onboarding.html', icon: BookOpen },
+  { key: 'app_shortcut', label: 'App Shortcut', description: 'Home screen quick action shortcuts for common tasks. Long-press app icon to reveal shortcut menu.', helpUrl: 'https://developer.android.com/develop/ui/views/launch/shortcuts', icon: Zap },
+  { key: 'secondary_navigation', label: 'Secondary Navigation', description: 'Additional navigation options beyond primary menu. Add tabs, segments, or hierarchical navigation.', helpUrl: 'https://m2.material.io/components/navigation', icon: LayoutList },
+  { key: 'social_login', label: 'Social Login', description: 'Sign in with Google, Facebook, Twitter, and other social accounts. Simplify user authentication with OAuth.', helpUrl: 'https://developers.google.com/identity/sign-in/android/start', icon: Users },
+  { key: 'in_app_update', label: 'In-App Update', description: 'Prompt users to update the app when new version is available on Play Store. Flexible or immediate update flows.', helpUrl: 'https://developer.android.com/guide/playcore/in-app-updates', icon: RefreshCw },
+  { key: 'background_location', label: 'Background Location', description: 'Track user location even when app is in background. Useful for delivery, tracking, and fitness apps.', helpUrl: 'https://developer.android.com/training/location/background', icon: MapPinned },
+  { key: 'facebook_app_events', label: 'Facebook App Events', description: 'Track custom events with Facebook Analytics SDK for ad optimization and user behavior insights.', helpUrl: 'https://developers.facebook.com/docs/app-events/android', icon: BarChart3 },
+  { key: 'in_app_purchases', label: 'In-App Purchases', description: 'Sell digital goods, subscriptions, and premium features via Google Play Billing. Monetize your app content.', helpUrl: 'https://developer.android.com/google/play/billing', icon: CreditCard },
+  { key: 'in_app_review', label: 'In-App Review', description: 'Prompt users to rate and review your app within the app using Google Play In-App Review API.', helpUrl: 'https://developer.android.com/guide/playcore/in-app-review', icon: Star },
+  { key: 'background_service', label: 'Background Service', description: 'Run tasks in background such as syncing data, processing jobs, or handling long-running operations.', helpUrl: 'https://developer.android.com/develop/background-work/services', icon: Server },
+  { key: 'native_contacts', label: 'Native Contacts', description: 'Access and manage device contacts. Read, search, and add contacts programmatically from your app.', helpUrl: 'https://developer.android.com/training/contacts-provider', icon: Contact },
+  { key: 'appsflyer', label: 'AppsFlyer', description: 'Mobile attribution and analytics platform. Track installs, campaigns, and user acquisition sources.', helpUrl: 'https://www.appsflyer.com/resources/guides/android-sdk-integration/', icon: Activity },
+  { key: 'custom_media_player', label: 'Custom Media Player', description: 'Built-in audio and video player with custom controls. Stream or play local media files.', helpUrl: 'https://developer.android.com/guide/topics/media/exoplayer', icon: Play },
+  { key: 'offer_card', label: 'Offer Card', description: 'Display promotional cards with offers, deals, and announcements. Eye-catching banners for marketing.', helpUrl: 'https://m2.material.io/components/cards', icon: Gift },
+  { key: 'intercom', label: 'Intercom', description: 'In-app customer messaging and support chat. Engage users with real-time conversations and help articles.', helpUrl: 'https://developers.intercom.com/installing-intercom/docs/android-installation', icon: MessageCircle },
+  { key: 'dynamic_app_icon', label: 'Dynamic App Icon', description: 'Change app icon dynamically based on themes, events, or user preferences without app update.', helpUrl: 'https://developer.android.com/develop/ui/views/launch/icon', icon: Palette },
+  { key: 'bluetooth_connectivity', label: 'Bluetooth Connectivity', description: 'Connect to Bluetooth devices like printers, sensors, wearables, and IoT devices.', helpUrl: 'https://developer.android.com/guide/topics/connectivity/bluetooth', icon: Bluetooth },
+  { key: 'download_file_manager', label: 'Download Manager', description: 'Manage and track file downloads within your app. Download progress, pause, resume functionality.', helpUrl: 'https://developer.android.com/reference/android/app/DownloadManager', icon: FolderDown },
+  { key: 'floating_action_menu', label: 'Floating Action Menu', description: 'Floating action button (FAB) with expandable menu options for quick access to key actions.', helpUrl: 'https://m2.material.io/components/buttons-floating-action-button', icon: CirclePlus },
+  { key: 'revenue_cat', label: 'Revenue Cat', description: 'Subscription and in-app purchase management via RevenueCat. Cross-platform subscription infrastructure.', helpUrl: 'https://www.revenuecat.com/docs/getting-started/installation/android', icon: Wallet },
+  { key: 'native_datastore', label: 'Native Datastore', description: 'Local data storage on device using Room database or DataStore. Persist app data securely offline.', helpUrl: 'https://developer.android.com/training/data-storage', icon: Database },
+  { key: 'passcode_lock', label: 'Passcode Lock', description: 'Secure your app with PIN or pattern lock. Require authentication before accessing app content.', helpUrl: 'https://developer.android.com/training/sign-in/credentials', icon: Lock },
+  { key: 'app_auto_launch', label: 'App Auto Launch', description: 'Automatically launch app when device boots up. Useful for kiosk mode or background services.', helpUrl: 'https://developer.android.com/training/scheduling/wakelock', icon: Power },
+  { key: 'advanced_bottom_navigation', label: 'Advanced Bottom Nav', description: 'Enhanced bottom navigation with badges, animations, and advanced customization options.', helpUrl: 'https://m3.material.io/components/navigation-bar', icon: PanelBottom },
+  { key: 'firebase_notification', label: 'Firebase Notification', description: 'Firebase Cloud Messaging (FCM) for push notifications with rich media, actions, and deep links.', helpUrl: 'https://firebase.google.com/docs/cloud-messaging/android/client', icon: BellRing },
+  { key: 'tap_to_pay', label: 'Tap to Pay', description: 'NFC-based contactless payment support. Accept tap-to-pay transactions using device NFC hardware.', helpUrl: 'https://developer.android.com/develop/connectivity/nfc', icon: Nfc },
 ] as const
 
 // ---------- Step indicator ----------
@@ -773,19 +773,9 @@ function Step2Features() {
         <p className="text-sm text-gray-500">Toggle features for your mobile app.</p>
       </div>
 
-      {desktopOnly ? (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
-          <p className="text-gray-600">
-            App features like push notifications, AdMob, biometric auth, etc. are
-            available for Android apps only. Desktop apps use your website as-is.
-          </p>
-          <p className="text-gray-400 text-sm mt-2">
-            Select Android platform to configure these features.
-          </p>
-        </div>
-      ) : (
+      {hasAndroid && (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {FEATURES.map(({ key, label, description, icon: Icon }) => {
+        {FEATURES.map(({ key, label, description, icon: Icon, helpUrl }) => {
           const enabled = features[key] ?? false
           return (
             <button
@@ -817,6 +807,17 @@ function Step2Features() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+                {helpUrl && (
+                  <a
+                    href={helpUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-xs text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 mt-1"
+                  >
+                    Learn more <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             </button>
           )
@@ -1369,7 +1370,7 @@ function Step4PlanReview() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any)).map((plan) => {
+            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any) && (p.price_inr > 0 || p.price_usd > 0)).map((plan) => {
               const isSelected = selectedPlan === plan.id
               const missing = getMissingFeatures(plan)
               const hasMissing = missing.length > 0
@@ -1425,32 +1426,34 @@ function Step4PlanReview() {
                     </div>
                   )}
 
-                  <ul className="mt-4 space-y-1.5 text-sm text-gray-600">
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-green-500" />
+                  <ul className="mt-4 space-y-1.5 text-xs text-gray-600 max-h-64 overflow-y-auto">
+                    <li className="flex items-center gap-2 font-medium text-sm">
+                      <Check className="w-4 h-4 text-green-500 shrink-0" />
                       Up to {plan.max_apps} app{plan.max_apps !== 1 ? 's' : ''}
                     </li>
-                    <li className="flex items-center gap-2">
+                    <li className="flex items-center gap-2 font-medium text-sm">
                       {plan.price_inr === 0 ? (
                         <>
-                          <AlertTriangle className="w-4 h-4 text-amber-500" />
+                          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
                           <span className="text-amber-600">WebToApp branding</span>
                         </>
                       ) : (
                         <>
-                          <Check className="w-4 h-4 text-green-500" />
+                          <Check className="w-4 h-4 text-green-500 shrink-0" />
                           No branding / watermark
                         </>
                       )}
                     </li>
-                    {Object.entries(plan.features)
-                      .filter(([, v]) => v)
-                      .map(([key]) => (
-                        <li key={key} className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-green-500" />
-                          {key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                        </li>
-                      ))}
+                    {Object.entries(plan.features).map(([key, value]) => (
+                      <li key={key} className={`flex items-center gap-2 ${value ? '' : 'text-gray-400'}`}>
+                        {value ? (
+                          <Check className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                        ) : (
+                          <X className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                        )}
+                        <span className="truncate">{key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</span>
+                      </li>
+                    ))}
                   </ul>
                 </button>
               )

@@ -78,8 +78,10 @@ export default function App() {
 
       {/* Payment routes */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/cancel" element={<PaymentCancel />} />
+        <Route element={<UserLayout />}>
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/cancel" element={<PaymentCancel />} />
+        </Route>
       </Route>
 
       {/* Admin routes */}

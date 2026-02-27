@@ -15,6 +15,7 @@ class Build(Base):
     status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, building, success, failed
     platform: Mapped[str] = mapped_column(String(10), default="android")
     build_type: Mapped[str] = mapped_column(String(10), default="apk")  # apk, aab
+    progress: Mapped[int] = mapped_column(Integer, default=0)  # 0-100 percentage
     apk_url: Mapped[str | None] = mapped_column(String(500))
     aab_url: Mapped[str | None] = mapped_column(String(500))
     exe_url: Mapped[str | None] = mapped_column(String(500))

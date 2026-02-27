@@ -105,6 +105,7 @@ export interface Build {
   status: 'pending' | 'building' | 'success' | 'failed'
   platform: 'android' | 'desktop'
   build_type: string
+  progress: number
   apk_url?: string
   aab_url?: string
   exe_url?: string

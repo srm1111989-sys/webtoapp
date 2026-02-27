@@ -173,6 +173,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
     if pipeline_status == "success":
         build.status = "success"
+        build.progress = 100
         build.completed_at = now
 
         # Download artifacts and save build log
@@ -230,6 +231,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
     elif pipeline_status == "failed":
         build.status = "failed"
+        build.progress = 0
         build.completed_at = now
 
         # Fetch pipeline job logs for failure analysis
@@ -256,5 +258,15 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.status = "building"
         if not build.started_at:
             build.started_at = now
+
+        # Calculate progress based on pipeline duration (estimated 5 minutes total)
+        # Progress: 10% (started) -> 90% (running) based on elapsed time
+        if build.started_at:
+            elapsed = (now - build.started_at).total_seconds()
+            estimated_total = 300  # 5 minutes
+            progress = min(10 + int((elapsed / estimated_total) * 80), 90)
+            build.progress = progress
+        else:
+            build.progress = 10
 
     logger.info(f"Build {build.id} updated to {build.status} (pipeline {pipeline_id})")
