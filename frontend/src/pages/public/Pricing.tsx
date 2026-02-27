@@ -130,39 +130,30 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* Android Plans */}
+      {/* All Plans */}
       <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">Android App Plans</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-12">
-          {androidPlans.filter((p: any) => Object.keys(p.features).length > 0).map((plan: any) => (
+        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Choose Your Plan</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
+          {/* Android Paid Plan */}
+          {androidPlans.filter((p: any) => Object.keys(p.features).length > 0 && p.price_inr > 0).map((plan: any) => (
             <div
               key={plan.slug}
-              className={clsx(
-                'border rounded-xl p-4 sm:p-6 flex flex-col',
-                plan.slug === 'android-paid' ? 'border-primary-500 ring-2 ring-primary-500 relative' : ''
-              )}
+              className="border border-primary-500 ring-2 ring-primary-500 relative rounded-xl p-4 sm:p-6 flex flex-col bg-white"
             >
-              {plan.slug === 'android-paid' && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                  Best Value
-                </span>
-              )}
-              <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                🔥 Most Popular
+              </span>
+              <h3 className="text-xl font-bold mb-1">Android App</h3>
               <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
               <div className="mb-4">
                 <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
-                {(getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 && <span className="text-green-700 text-sm font-semibold"> one-time</span>}
+                <span className="text-green-700 text-sm font-semibold"> one-time</span>
               </div>
               <Link
                 to="/register"
-                className={clsx(
-                  'block text-center py-2 rounded-lg font-medium mb-6',
-                  plan.slug === 'android-paid'
-                    ? 'bg-primary-600 text-white hover:bg-primary-700'
-                    : 'border border-gray-300 hover:border-gray-400'
-                )}
+                className="block text-center py-2 rounded-lg font-medium mb-6 bg-primary-600 text-white hover:bg-primary-700"
               >
-                {plan.price_inr === 0 ? 'Start Free' : 'Get Started'}
+                Get Started
               </Link>
               <ul className="space-y-2 flex-1">
                 {Object.entries(featureLabels).map(([key, label]) => {
@@ -181,62 +172,45 @@ export default function Pricing() {
               </ul>
             </div>
           ))}
-        </div>
-      </section>
 
-      {/* Desktop Plans */}
-      <section className="py-8 sm:py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Desktop App Plans</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl">
-            {desktopPlans.map((plan: any) => (
-              <div
-                key={plan.slug}
-                className={clsx(
-                  'border rounded-xl p-4 sm:p-6 flex flex-col bg-white',
-                  plan.slug === 'desktop-paid' ? 'border-primary-500 ring-2 ring-primary-500 relative' : ''
-                )}
-              >
-                {plan.slug === 'desktop-paid' && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                    Best Value
-                  </span>
-                )}
-                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
-                <div className="mb-4">
-                  <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
-                  {(getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 && <span className="text-green-700 text-sm font-semibold"> one-time</span>}
-                </div>
-                <Link
-                  to="/register"
-                  className={clsx(
-                    'block text-center py-2 rounded-lg font-medium mb-6',
-                    plan.slug === 'desktop-paid'
-                      ? 'bg-primary-600 text-white hover:bg-primary-700'
-                      : 'border border-gray-300 hover:border-gray-400'
-                  )}
-                >
-                  {plan.price_inr === 0 ? 'Start Free Trial' : 'Get Started'}
-                </Link>
-                <ul className="space-y-2 flex-1">
-                  {Object.entries(desktopFeatureLabels).map(([key, label]) => {
-                    const enabled = (plan.features as Record<string, boolean>)[key]
-                    return (
-                    <li key={key} className="flex items-center gap-2 text-sm">
-                      {enabled ? (
-                        <Check className="w-4 h-4 text-green-500 shrink-0" />
-                      ) : (
-                        <X className="w-4 h-4 text-gray-300 shrink-0" />
-                      )}
-                      <span className={enabled ? '' : 'text-gray-400'}>{label}</span>
-                    </li>
-                    )
-                  })}
-                </ul>
+          {/* Desktop Paid Plan */}
+          {desktopPlans.filter((p: any) => p.price_inr > 0).map((plan: any) => (
+            <div
+              key={plan.slug}
+              className="border border-primary-500 ring-2 ring-primary-500 relative rounded-xl p-4 sm:p-6 flex flex-col bg-white"
+            >
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                💻 Best Value
+              </span>
+              <h3 className="text-xl font-bold mb-1">Desktop App</h3>
+              <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
+                <span className="text-green-700 text-sm font-semibold"> one-time</span>
               </div>
-            ))}
-          </div>
+              <Link
+                to="/register"
+                className="block text-center py-2 rounded-lg font-medium mb-6 bg-primary-600 text-white hover:bg-primary-700"
+              >
+                Get Started
+              </Link>
+              <ul className="space-y-2 flex-1">
+                {Object.entries(desktopFeatureLabels).map(([key, label]) => {
+                  const enabled = (plan.features as Record<string, boolean>)[key]
+                  return (
+                  <li key={key} className="flex items-center gap-2 text-sm">
+                    {enabled ? (
+                      <Check className="w-4 h-4 text-green-500 shrink-0" />
+                    ) : (
+                      <X className="w-4 h-4 text-gray-300 shrink-0" />
+                    )}
+                    <span className={enabled ? '' : 'text-gray-400'}>{label}</span>
+                  </li>
+                  )
+                })}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
     </div>

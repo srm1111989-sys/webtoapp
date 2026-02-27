@@ -64,7 +64,7 @@ const allPremiumFeatures = [
 const steps = [
   { num: '1', title: 'Enter Your URL', desc: 'Paste your website URL and configure basic settings.' },
   { num: '2', title: 'Customize', desc: 'Upload icon, set colors, enable features like push notifications.' },
-  { num: '3', title: 'Choose Plan', desc: 'Choose Free or Paid plan for your platform.' },
+  { num: '3', title: 'Choose Plan', desc: 'Choose your plan and complete payment.' },
   { num: '4', title: 'Get Your App', desc: 'Download APK, AAB, or Windows .exe built automatically.' },
 ]
 
@@ -86,7 +86,7 @@ const testimonials = [
   {
     name: 'Alex Kim',
     role: 'Startup Founder',
-    text: 'The free tier let me validate the idea before investing. Upgraded to Pro when we needed push notifications.',
+    text: 'WebToApp helped me validate the idea quickly. One-time payment made it affordable compared to monthly subscriptions.',
     rating: 5,
     avatar: 'https://ui-avatars.com/api/?name=Alex+Kim&background=06b6d4&color=fff&size=80',
   },
@@ -146,7 +146,6 @@ const DESKTOP_PLANS = [
 const faqs = [
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
   { q: 'Can I publish to Google Play Store?', a: 'Yes! The Paid plan includes signed AAB files ready for Play Store submission.' },
-  { q: 'Is the free plan really free?', a: 'Yes. The Android free plan lets you build apps with basic features (includes a small watermark). The Desktop free plan gives you a 15-day trial with basic features and watermark. No credit card required.' },
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
@@ -155,7 +154,7 @@ const faqs = [
 export default function Landing() {
   useSEO({
     title: 'Convert Any Website Into Android & Windows Apps',
-    description: 'Convert your website into professional Android APK, AAB, and Windows .exe apps in minutes. No coding required. Free plan available.',
+    description: 'Convert your website into professional Android APK, AAB, and Windows .exe apps in minutes. No coding required. One-time payment, no subscriptions.',
   })
   const { accessToken } = useAuthStore()
   const isLoggedIn = !!accessToken
@@ -174,21 +173,19 @@ export default function Landing() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-8 sm:py-12 lg:py-14">
+      <section className="bg-gradient-to-b from-white via-primary-50 to-white py-6 sm:py-8 lg:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-            Convert Any Website Into<br className="hidden sm:block" />
-            <span className="sm:hidden"> </span>Android & Desktop Apps<br className="hidden sm:block" />
-            <span className="sm:hidden"> </span><span className="text-primary-200">in 5 Minutes</span>
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-gray-900 text-center">
+            Convert Any Website Into Android & Desktop Apps <span className="text-primary-600">in 5 Minutes</span>
           </h1>
-          <p className="text-sm sm:text-lg text-primary-200 mb-6 sm:mb-8 max-w-3xl">
+          <p className="text-sm sm:text-lg text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto text-center">
             No coding required. Cheaper than any other platform. One-time payment, no subscriptions.
           </p>
 
           {/* URL Input Box */}
-          <div className="max-w-4xl mb-8">
-            <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3">
-              <div className="flex-1 flex items-center bg-white rounded-lg px-4">
+          <div className="max-w-4xl mb-0 mx-auto">
+            <div className="flex flex-col sm:flex-row gap-3 bg-white rounded-xl p-2 sm:p-3 shadow-xl border-2 border-primary-100">
+              <div className="flex-1 flex items-center bg-gray-50 rounded-lg px-4 border border-gray-200">
                 <Globe className="w-5 h-5 text-gray-400 shrink-0" />
                 <input
                   type="url"
@@ -201,15 +198,15 @@ export default function Landing() {
               </div>
               <button
                 onClick={handleGetStarted}
-                className="bg-primary-500 hover:bg-primary-400 text-white px-10 py-3.5 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
+                className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-10 py-3.5 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 transition-all shadow-lg whitespace-nowrap"
               >
-                {isLoggedIn ? 'Create App' : 'Get Started Free'} <ArrowRight className="w-5 h-5" />
+                {isLoggedIn ? 'Create App' : 'Convert'} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </div>
 
-          {/* Inline Pricing */}
-          <div className="max-w-6xl mx-auto">
+          {/* Inline Pricing - COMMENTED OUT */}
+          {/* <div className="max-w-6xl mx-auto">
             <p className="text-primary-200 text-xs sm:text-sm mb-4 uppercase tracking-wider font-medium">Simple, transparent pricing</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
               {[...ANDROID_PLANS, ...DESKTOP_PLANS].map((plan) => (
@@ -235,6 +232,142 @@ export default function Landing() {
             <p className="mt-4 text-primary-200 text-xs sm:text-sm">
               No credit card required for free plans. No hidden charges. No subscriptions.
             </p>
+          </div> */}
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-6 sm:py-10 bg-white scroll-mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Pricing Header */}
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl sm:text-4xl font-bold mb-2">Simple, Transparent Pricing</h2>
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-full px-6 py-3 mb-2">
+              <Check className="w-5 h-5 text-green-600" />
+              <span className="font-semibold text-green-900">ALL 40+ Features Included</span>
+            </div>
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+              One-time payment • No subscriptions • No hidden charges • Lifetime access
+            </p>
+          </div>
+
+          {/* Pricing Cards - Android & Desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
+            {/* Android Card */}
+            <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-4 sm:p-5 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
+                🔥 Most Popular
+              </span>
+              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-4 py-2 rounded-full font-bold shadow-xl animate-pulse">
+                50% OFF
+              </div>
+              <div className="flex items-center gap-2 mb-3">
+                <Smartphone className="w-6 h-6 text-primary-600" />
+                <h3 className="text-2xl font-bold">Android App</h3>
+              </div>
+              <p className="text-gray-500 text-sm mb-3">All features, one-time payment</p>
+
+              {/* Pricing with MRP */}
+              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-3 sm:p-4 border-2 border-primary-200 relative overflow-hidden">
+                {/* MRP - Strikethrough */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-gray-500 font-medium">MRP:</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">₹4,999</span>
+                </div>
+
+                {/* Actual Price - Large and Bold */}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
+                    {formatPlanPrice(ANDROID_PLANS[0].price_inr, ANDROID_PLANS[0].price_usd)}
+                  </span>
+                </div>
+
+                {/* You Save Badge */}
+                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
+                  <Check className="w-4 h-4" />
+                  You Save ₹2,500
+                </div>
+              </div>
+
+              <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
+                💎 One-time payment · Lifetime access
+              </p>
+              <ul className="space-y-2 flex-1 mb-6">
+                {ANDROID_PLANS[0].highlights.map((h) => (
+                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
+                    <Check className="w-4 h-4 text-green-500 shrink-0" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to={isLoggedIn ? '/apps/create' : '/register'}
+                className="block text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-lg"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            {/* Desktop Card */}
+            <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-4 sm:p-5 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
+                💻 Best Value
+              </span>
+              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-4 py-2 rounded-full font-bold shadow-xl animate-pulse">
+                50% OFF
+              </div>
+              <div className="flex items-center gap-2 mb-3">
+                <Monitor className="w-6 h-6 text-primary-600" />
+                <h3 className="text-2xl font-bold">Desktop App</h3>
+              </div>
+              <p className="text-gray-500 text-sm mb-3">Full desktop app, one-time</p>
+
+              {/* Pricing with MRP */}
+              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-3 sm:p-4 border-2 border-primary-200 relative overflow-hidden">
+                {/* MRP - Strikethrough */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-gray-500 font-medium">MRP:</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">₹3,999</span>
+                </div>
+
+                {/* Actual Price - Large and Bold */}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
+                    {formatPlanPrice(DESKTOP_PLANS[0].price_inr, DESKTOP_PLANS[0].price_usd)}
+                  </span>
+                </div>
+
+                {/* You Save Badge */}
+                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
+                  <Check className="w-4 h-4" />
+                  You Save ₹2,000
+                </div>
+              </div>
+
+              <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
+                💎 One-time payment · Lifetime access
+              </p>
+              <ul className="space-y-2 flex-1 mb-6">
+                {DESKTOP_PLANS[0].highlights.map((h) => (
+                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
+                    <Check className="w-4 h-4 text-green-500 shrink-0" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to={isLoggedIn ? '/apps/create' : '/register'}
+                className="block text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-lg"
+              >
+                Get Started
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link to="/pricing" className="text-primary-600 hover:text-primary-700 font-medium text-sm">
+              View full feature comparison →
+            </Link>
           </div>
         </div>
       </section>
@@ -419,142 +552,6 @@ export default function Landing() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="py-20 sm:py-32 bg-gray-50 scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Pricing Header */}
-          <div className="mb-12">
-            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-full px-6 py-3 mb-4">
-              <Check className="w-5 h-5 text-green-600" />
-              <span className="font-semibold text-green-900">ALL 40+ Features Included</span>
-            </div>
-            <p className="text-gray-600 max-w-2xl text-sm sm:text-base">
-              One-time payment • No subscriptions • No hidden charges • Lifetime access
-            </p>
-          </div>
-
-          {/* Pricing Cards - Android & Desktop in same row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
-            {/* Android Card */}
-            <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
-                🔥 Most Popular
-              </span>
-              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-4 py-2 rounded-full font-bold shadow-xl animate-pulse">
-                50% OFF
-              </div>
-              <div className="flex items-center gap-2 mb-3">
-                <Smartphone className="w-6 h-6 text-primary-600" />
-                <h3 className="text-2xl font-bold">Android App</h3>
-              </div>
-              <p className="text-gray-500 text-sm mb-3">All features, one-time payment</p>
-
-              {/* Pricing with MRP */}
-              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-5 border-2 border-primary-200 relative overflow-hidden">
-                {/* MRP - Strikethrough */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">₹4,999</span>
-                </div>
-
-                {/* Actual Price - Large and Bold */}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-6xl sm:text-7xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
-                    {formatPlanPrice(ANDROID_PLANS[0].price_inr, ANDROID_PLANS[0].price_usd)}
-                  </span>
-                </div>
-
-                {/* You Save Badge */}
-                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
-                  <Check className="w-4 h-4" />
-                  You Save ₹2,500
-                </div>
-              </div>
-
-              <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
-                💎 One-time payment · Lifetime access
-              </p>
-              <ul className="space-y-2 flex-1 mb-6">
-                {ANDROID_PLANS[0].highlights.map((h) => (
-                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
-                    <Check className="w-4 h-4 text-green-500 shrink-0" />
-                    {h}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to={isLoggedIn ? '/apps/create' : '/register'}
-                className="block text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-lg"
-              >
-                Get Started
-              </Link>
-            </div>
-
-            {/* Desktop Card */}
-            <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
-                💻 Best Value
-              </span>
-              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm px-4 py-2 rounded-full font-bold shadow-xl animate-pulse">
-                50% OFF
-              </div>
-              <div className="flex items-center gap-2 mb-3">
-                <Monitor className="w-6 h-6 text-primary-600" />
-                <h3 className="text-2xl font-bold">Desktop App</h3>
-              </div>
-              <p className="text-gray-500 text-sm mb-3">Full desktop app, one-time</p>
-
-              {/* Pricing with MRP */}
-              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-5 border-2 border-primary-200 relative overflow-hidden">
-                {/* MRP - Strikethrough */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">₹3,999</span>
-                </div>
-
-                {/* Actual Price - Large and Bold */}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-6xl sm:text-7xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
-                    {formatPlanPrice(DESKTOP_PLANS[0].price_inr, DESKTOP_PLANS[0].price_usd)}
-                  </span>
-                </div>
-
-                {/* You Save Badge */}
-                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
-                  <Check className="w-4 h-4" />
-                  You Save ₹2,000
-                </div>
-              </div>
-
-              <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
-                💎 One-time payment · Lifetime access
-              </p>
-              <ul className="space-y-2 flex-1 mb-6">
-                {DESKTOP_PLANS[0].highlights.map((h) => (
-                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
-                    <Check className="w-4 h-4 text-green-500 shrink-0" />
-                    {h}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to={isLoggedIn ? '/apps/create' : '/register'}
-                className="block text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-lg"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-
-          <div className="text-center mt-8">
-            <Link to="/pricing" className="text-primary-600 hover:text-primary-700 font-medium text-sm">
-              View full feature comparison →
-            </Link>
           </div>
         </div>
       </section>
