@@ -1,0 +1,17 @@
+{
+  "name": "webtoapp-payment-proxy",
+  "version": "1.0.0",
+  "description": "Payment proxy for WebToApp - Routes payments through Vercel to Razorpay",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "razorpay": "^2.9.4",
+    "crypto": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}

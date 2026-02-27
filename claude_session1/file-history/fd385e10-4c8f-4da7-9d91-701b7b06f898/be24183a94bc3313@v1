@@ -80,6 +80,11 @@ const testimonials = [
 
 const ANDROID_PLANS = [
   {
+    name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0,
+    description: 'Try with basic features',
+    highlights: ['Custom App Icon', 'Splash Screen', 'Custom Colors', 'Full-screen Mode', 'Up to 10 Builds', 'Includes Watermark'],
+  },
+  {
     name: 'Paid', slug: 'android-paid', price_inr: 250000, price_usd: 3000,
     description: 'All features, one-time payment',
     highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days'],
@@ -132,7 +137,7 @@ export default function Landing() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-12 sm:py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
             Convert Any Website Into<br className="hidden sm:block" />
             <span className="sm:hidden"> </span>Android & Desktop Apps<br className="hidden sm:block" />
             <span className="sm:hidden"> </span><span className="text-primary-200">in 5 Minutes</span>
@@ -275,18 +280,18 @@ export default function Landing() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-20 sm:py-32 bg-gray-50 scroll-mt-16">
+      <section id="pricing" className="py-12 sm:py-20 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Android Pricing */}
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Android App Pricing</h2>
           <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
             One-time payment. No subscriptions. No hidden charges.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
             {ANDROID_PLANS.map((plan) => (
               <div
                 key={plan.slug}
-                className={`bg-white border rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-lg hover:shadow-xl transition-shadow ${
+                className={`bg-white border rounded-xl p-4 sm:p-6 flex flex-col relative ${
                   plan.slug === 'android-paid' ? 'border-primary-500 ring-2 ring-primary-500' : ''
                 }`}
               >
@@ -330,11 +335,11 @@ export default function Landing() {
           <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
             Windows .exe app from your website. One-time payment.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
             {DESKTOP_PLANS.map((plan) => (
               <div
                 key={plan.slug}
-                className={`bg-white border rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-lg hover:shadow-xl transition-shadow ${
+                className={`bg-white border rounded-xl p-4 sm:p-6 flex flex-col relative ${
                   plan.slug === 'desktop-paid' ? 'border-primary-500 ring-2 ring-primary-500' : ''
                 }`}
               >

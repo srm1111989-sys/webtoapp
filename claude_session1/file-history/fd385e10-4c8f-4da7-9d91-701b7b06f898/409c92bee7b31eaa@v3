@@ -1,0 +1,60 @@
+{
+  "rewrites": [
+    {
+      "source": "/pay/api/razorpay/create-order",
+      "destination": "/api/pay/razorpay/create-order"
+    },
+    {
+      "source": "/pay/api/razorpay/verify-payment",
+      "destination": "/api/pay/razorpay/verify-payment"
+    },
+    {
+      "source": "/pay/api/razorpay/get-key",
+      "destination": "/api/pay/razorpay/get-key"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/pay/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://websitetoapp.app"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "source": "/pay/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://websitetoapp.app"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}

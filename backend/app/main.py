@@ -7,7 +7,7 @@ from pathlib import Path
 from app.config import get_settings
 from app.middleware.logging import RequestLoggingMiddleware
 from app.rate_limit import limiter
-from app.routers import auth, users, apps, orders, payments, builds, webhooks, admin, plans
+from app.routers import auth, users, apps, orders, payments, builds, webhooks, admin, plans, blog, seo
 
 settings = get_settings()
 
@@ -45,6 +45,8 @@ app.include_router(builds.router)
 app.include_router(webhooks.router)
 app.include_router(plans.router)
 app.include_router(admin.router)
+app.include_router(blog.router)
+app.include_router(seo.router)
 
 
 # Serve local artifacts when S3 is not configured

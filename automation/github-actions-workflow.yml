@@ -1,0 +1,109 @@
+# .github/workflows/auto-publish.yml
+# GitHub Actions workflow for automated content publishing
+
+name: Auto-Publish Content
+
+# Run daily at 8 AM UTC
+on:
+  schedule:
+    - cron: '0 8 * * *'  # Every day at 8 AM UTC
+
+  # Also allow manual trigger
+  workflow_dispatch:
+    inputs:
+      week:
+        description: 'Generate content for specific week (e.g., 2)'
+        required: false
+        type: number
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install anthropic
+
+      - name: Check for today's content
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          python automation/auto_publish.py --today
+
+      - name: Generate week content (if manual trigger)
+        if: ${{ github.event.inputs.week }}
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          python automation/auto_publish.py --week ${{ github.event.inputs.week }}
+
+      - name: Regenerate sitemap
+        run: |
+          node automation/sitemap-generator.js
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-publish content for $(date +%Y-%m-%d)"
+          git push
+
+      - name: Deploy to Vercel (if using Vercel)
+        if: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Auto-publish failed',
+              body: 'The automated content publishing workflow failed. Check the logs.'
+            })
+
+---
+
+# Alternative: Simpler workflow for Next.js sites
+name: Daily Content Check
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 9 AM daily
+
+jobs:
+  check-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build site
+        run: npm run build
+
+      - name: Deploy to Vercel
+        run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+
+# Note: Middleware will automatically show/hide content based on dates
+# No need to manually publish - just redeploy daily

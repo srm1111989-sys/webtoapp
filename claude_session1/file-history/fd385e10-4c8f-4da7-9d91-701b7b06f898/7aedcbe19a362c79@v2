@@ -1,0 +1,7 @@
+# Razorpay Live Keys
+RAZORPAY_KEY_ID=rzp_live_SJBT7Uhme061Lm
+RAZORPAY_KEY_SECRET=ZWo49BFmgaxdfG3kM2I9btl4
+
+# Razorpay Test Keys
+RAZORPAY_TEST_KEY_ID=rzp_test_SJBgkHSwwfVzCK
+RAZORPAY_TEST_KEY_SECRET=dFHjwxBMDceGPc7vsw8vKDgs

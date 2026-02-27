@@ -1,0 +1,71 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "WebToApp" [ref=e6] [cursor=pointer]:
+        - /url: /dashboard
+        - img [ref=e7]
+        - text: WebToApp
+      - generic [ref=e9]:
+        - img [ref=e11]
+        - button [ref=e14]:
+          - img [ref=e15]
+  - generic [ref=e19]:
+    - complementary [ref=e20]:
+      - navigation [ref=e21]:
+        - link "Dashboard" [ref=e22] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e23]
+          - text: Dashboard
+        - link "Create App" [ref=e28] [cursor=pointer]:
+          - /url: /apps/create
+          - img [ref=e29]
+          - text: Create App
+        - link "My Apps" [ref=e30] [cursor=pointer]:
+          - /url: /apps
+          - img [ref=e31]
+          - text: My Apps
+        - link "Orders" [ref=e33] [cursor=pointer]:
+          - /url: /orders
+          - img [ref=e34]
+          - text: Orders
+    - main [ref=e38]:
+      - generic [ref=e39]:
+        - link "Back to Orders" [ref=e40] [cursor=pointer]:
+          - /url: /orders
+          - img [ref=e41]
+          - text: Back to Orders
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - generic [ref=e45]:
+              - heading "Order WTA-26DB469C" [level=1] [ref=e46]
+              - paragraph [ref=e47]: Placed on Feb 27, 2026, 01:11 AM
+            - generic [ref=e48]: paid
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - paragraph [ref=e51]: Amount
+              - paragraph [ref=e52]: ₹0
+            - generic [ref=e53]:
+              - paragraph [ref=e54]: Plan
+              - paragraph [ref=e55]: Android Free
+            - generic [ref=e56]:
+              - paragraph [ref=e57]: App
+              - paragraph [ref=e58]: E2E Test App mm3vcpzw
+            - generic [ref=e59]:
+              - paragraph [ref=e60]: Payment
+              - paragraph [ref=e61]: free
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - heading "Build Status" [level=2] [ref=e64]:
+              - img [ref=e65]
+              - text: Build Status
+            - button "Build Android" [ref=e70]:
+              - img [ref=e71]
+              - text: Build Android
+          - generic [ref=e76]:
+            - img [ref=e77]
+            - paragraph [ref=e81]: No builds yet.
+            - paragraph [ref=e82]: Trigger a build to generate your APK and AAB files.
+```

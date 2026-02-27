@@ -1,0 +1,65 @@
+# Quick Start - Deploy in 5 Minutes
+
+## 1️⃣ Install Vercel CLI
+```bash
+npm install -g vercel
+```
+
+## 2️⃣ Navigate to Payment Proxy
+```bash
+cd C:/Projects/Projects-2026/webtoapp/payment-proxy
+```
+
+## 3️⃣ Deploy to Vercel
+```bash
+# Login to Vercel
+vercel login
+
+# Deploy
+vercel --prod
+```
+
+When prompted:
+- **Set up and deploy?** → Yes
+- **Which scope?** → Select your account
+- **Link to existing project?** → Yes
+- **Project name?** → stark-enterprises-two
+
+## 4️⃣ Set Environment Variables
+
+Go to: https://vercel.com/dashboard
+
+1. Select **stark-enterprises-two** project
+2. Click **Settings** → **Environment Variables**
+3. Add these 4 variables:
+
+| Name | Value | Environment |
+|------|-------|-------------|
+| `RAZORPAY_KEY_ID` | `rzp_live_SJBT7Uhme061Lm` | Production |
+| `RAZORPAY_KEY_SECRET` | `ZWo49BFmgaxdfG3kM2I9btl4` | Production |
+| `RAZORPAY_TEST_KEY_ID` | `rzp_test_SJBgkHSwwfVzCK` | Production |
+| `RAZORPAY_TEST_KEY_SECRET` | `dFHjwxBMDceGPc7vsw8vKDgs` | Production |
+
+4. Click **Save**
+
+## 5️⃣ Redeploy (to load env vars)
+```bash
+vercel --prod
+```
+
+## 6️⃣ Test It!
+```bash
+curl https://stark-enterprises-two.vercel.app/api/razorpay/get-key?test_mode=true
+```
+
+Should return:
+```json
+{"success":true,"key":"rzp_test_SJBgkHSwwfVzCK","test_mode":true}
+```
+
+## ✅ Done!
+
+Your payment proxy is now live at:
+**https://stark-enterprises-two.vercel.app**
+
+Next: Update your frontend to use the proxy (see DEPLOYMENT_GUIDE.md Step 7)
