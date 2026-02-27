@@ -195,20 +195,71 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-12 sm:py-20 bg-white">
+      {/* Why Choose WebToApp */}
+      <section className="py-16 sm:py-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Why WebToApp?</h2>
-          <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
-            Everything you need to convert your website into professional Android and desktop apps.
-          </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Why Choose WebToApp?</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+              Get <span className="text-primary-600 font-semibold">40+ premium features</span> in one affordable plan.
+              No subscriptions. No hidden fees. Just a simple one-time payment.
+            </p>
+          </div>
+
+          {/* Value Props */}
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 mb-16">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border-2 border-primary-100 hover:border-primary-300 transition-all">
+              <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center mb-4">
+                <Star className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">40+ Premium Features</h3>
+              <p className="text-gray-600 mb-4">
+                Push notifications, biometric auth, AdMob ads, offline mode, navigation menus, and 35+ more features included.
+              </p>
+              <Link to="/features" className="text-primary-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+                View all features <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-lg border-2 border-green-100 hover:border-green-300 transition-all">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-700 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
+              <p className="text-gray-600 mb-4">
+                Pay once, own forever. Android: ₹2,500 / $30. Desktop: ₹1,000 / $12.
+                <span className="font-semibold text-green-600"> 80% cheaper than competitors!</span>
+              </p>
+              <Link to="/pricing" className="text-green-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+                See pricing <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-lg border-2 border-blue-100 hover:border-blue-300 transition-all">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center mb-4">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Build in 5 Minutes</h3>
+              <p className="text-gray-600 mb-4">
+                Simple 4-step wizard. Enter URL, customize visuals, enable features, pay.
+                Your APK/AAB/EXE builds automatically via CI/CD.
+              </p>
+              <Link to="/register" className="text-blue-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+                Get started free <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Quick Features Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {features.map((f) => (
-              <div key={f.title} className="text-center p-6 rounded-xl border hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div key={f.title} className="text-center p-6 bg-white rounded-xl border-2 border-gray-100 hover:border-primary-200 hover:shadow-lg transition-all">
+                <div className="w-12 h-12 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <f.icon className="w-6 h-6 text-primary-600" />
                 </div>
-                <h3 className="font-semibold mb-2">{f.title}</h3>
+                <h3 className="font-semibold mb-2 text-gray-900">{f.title}</h3>
                 <p className="text-gray-600 text-sm">{f.desc}</p>
               </div>
             ))}
@@ -278,10 +329,16 @@ export default function Landing() {
       <section id="pricing" className="py-20 sm:py-32 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Android Pricing */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Android App Pricing</h2>
-          <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
-            One-time payment. No subscriptions. No hidden charges.
-          </p>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Android App Pricing</h2>
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-full px-6 py-3 mb-4">
+              <Check className="w-5 h-5 text-green-600" />
+              <span className="font-semibold text-green-900">ALL 40+ Features Included</span>
+            </div>
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+              One-time payment • No subscriptions • No hidden charges • Lifetime access
+            </p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
             {ANDROID_PLANS.map((plan) => (
               <div
@@ -326,10 +383,16 @@ export default function Landing() {
           </div>
 
           {/* Desktop Pricing */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4 mt-16 sm:mt-20">Desktop App Pricing</h2>
-          <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
-            Windows .exe app from your website. One-time payment.
-          </p>
+          <div className="text-center mb-8 mt-16 sm:mt-20">
+            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Desktop App Pricing</h2>
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-full px-6 py-3 mb-4">
+              <Check className="w-5 h-5 text-indigo-600" />
+              <span className="font-semibold text-indigo-900">Complete Desktop Features</span>
+            </div>
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+              Windows .exe with system tray, custom window • One-time payment • No subscriptions
+            </p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
             {DESKTOP_PLANS.map((plan) => (
               <div
