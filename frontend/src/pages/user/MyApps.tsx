@@ -2,14 +2,14 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { appsApi } from '@/api/apps'
 import { formatDate } from '@/utils/format'
-import { AppWindow, Plus, Globe, Loader2, AlertCircle } from 'lucide-react'
+import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-800',
-  active: 'bg-green-100 text-green-800',
-  pending: 'bg-yellow-100 text-yellow-800',
-  building: 'bg-blue-100 text-blue-800',
-  disabled: 'bg-red-100 text-red-800',
+  draft: 'bg-amber-50 text-amber-700 border border-amber-200',
+  active: 'bg-green-50 text-green-700 border border-green-200',
+  pending: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
+  building: 'bg-blue-50 text-blue-700 border border-blue-200',
+  disabled: 'bg-red-50 text-red-700 border border-red-200',
 }
 
 export default function MyApps() {
@@ -27,99 +27,132 @@ export default function MyApps() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Apps</h1>
-          <p className="mt-1 text-gray-500 text-sm">
-            Manage your web-to-app conversions.
+          <h1 className="text-3xl font-bold text-gray-900">My Apps</h1>
+          <p className="mt-2 text-gray-600">
+            Manage and track all your app conversions in one place
           </p>
         </div>
         <Link
           to="/apps/create"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-200 hover:shadow-xl font-medium self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" />
-          Create App
+          <Plus className="w-5 h-5" />
+          Create New App
         </Link>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+        <div className="flex items-center justify-center py-32">
+          <Loader2 className="w-10 h-10 animate-spin text-primary-600" />
         </div>
       ) : isError ? (
-        <div className="rounded-lg bg-red-50 p-4 flex items-center gap-3 text-red-700">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          <p>Failed to load your apps. Please try refreshing the page.</p>
+        <div className="rounded-xl bg-red-50 border border-red-200 p-6 flex items-start gap-3 text-red-700">
+          <AlertCircle className="w-6 h-6 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold">Failed to load apps</p>
+            <p className="text-sm mt-1 text-red-600">Please try refreshing the page or contact support if the issue persists.</p>
+          </div>
         </div>
       ) : apps.length === 0 ? (
-        <div className="bg-white rounded-xl border py-16 text-center">
-          <AppWindow className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-1">
+        <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 py-20 text-center">
+          <div className="inline-flex p-5 rounded-full bg-primary-50 mb-6">
+            <AppWindow className="w-16 h-16 text-primary-600" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">
             No apps yet
           </h3>
-          <p className="text-gray-500 mb-4">
-            Create your first app to convert any website into a native mobile
-            app.
+          <p className="text-gray-600 mb-8 max-w-md mx-auto">
+            Start converting your websites into native Android and Windows apps in just a few minutes
           </p>
           <Link
             to="/apps/create"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition font-medium shadow-lg"
           >
-            <Plus className="w-4 h-4" />
-            Create New App
+            <Plus className="w-5 h-5" />
+            Create Your First App
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {apps.map((app) => (
-            <div
+            <Link
               key={app.id}
-              className="bg-white rounded-xl border hover:shadow-md transition overflow-hidden"
+              to={`/apps/${app.id}`}
+              className="group bg-white rounded-2xl border-2 border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all overflow-hidden"
             >
-              <div className="p-5">
-                <div className="flex items-start gap-4">
-                  {/* App icon */}
+              <div className="p-6">
+                {/* Header with icon and name */}
+                <div className="flex items-start gap-4 mb-4">
                   {app.icon_url ? (
                     <img
                       src={app.icon_url}
                       alt={app.name}
-                      className="w-14 h-14 rounded-xl object-cover border shrink-0"
+                      className="w-16 h-16 rounded-2xl object-cover border-2 border-gray-100 shrink-0"
                     />
                   ) : (
                     <div
-                      className="w-14 h-14 rounded-xl border flex items-center justify-center shrink-0"
+                      className="w-16 h-16 rounded-2xl border-2 border-gray-100 flex items-center justify-center shrink-0"
                       style={{
                         backgroundColor: app.primary_color || '#6366f1',
                       }}
                     >
-                      <AppWindow className="w-7 h-7 text-white" />
+                      <AppWindow className="w-8 h-8 text-white" />
                     </div>
                   )}
 
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-base font-semibold text-gray-900 truncate">
+                    <h3 className="text-lg font-bold text-gray-900 truncate group-hover:text-primary-600 transition">
                       {app.name}
                     </h3>
-                    <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-500 truncate">
-                      <Globe className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">{app.url}</span>
+                    <div className="flex items-center gap-2 mt-1.5 text-sm text-gray-500">
+                      <Globe className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{new URL(app.url).hostname}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                {/* Platform badges */}
+                {(app.selected_platforms && app.selected_platforms.length > 0) && (
+                  <div className="flex gap-2 mb-4">
+                    {app.selected_platforms.includes('android') && (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium">
+                        <Smartphone className="w-3.5 h-3.5" />
+                        Android
+                      </span>
+                    )}
+                    {app.selected_platforms.includes('desktop') && (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-medium">
+                        <Monitor className="w-3.5 h-3.5" />
+                        Desktop
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-4 border-t-2 border-gray-50">
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[app.status] ?? 'bg-gray-100 text-gray-800'}`}
+                    className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold ${statusColors[app.status] ?? 'bg-gray-50 text-gray-700 border border-gray-200'}`}
                   >
-                    {app.status}
+                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                   </span>
+                  <span className="inline-flex items-center gap-1 text-xs text-gray-500 group-hover:text-primary-600 transition">
+                    <span className="hidden sm:inline">View details</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+
+                {/* Creation date */}
+                <div className="mt-3 pt-3 border-t border-gray-50">
                   <span className="text-xs text-gray-400">
                     Created {formatDate(app.created_at)}
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
