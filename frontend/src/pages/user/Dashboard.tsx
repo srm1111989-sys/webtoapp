@@ -69,11 +69,11 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-6 sm:p-8 text-white shadow-lg">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 text-white shadow-lg">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2">
           Welcome back, {user?.full_name ?? 'User'} 👋
         </h1>
-        <p className="text-primary-100 text-sm sm:text-base">
+        <p className="text-primary-100 text-xs sm:text-sm lg:text-base">
           Manage your mobile apps and track your orders from one place
         </p>
       </div>
@@ -90,41 +90,41 @@ export default function Dashboard() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white rounded-2xl border-2 border-gray-100 p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 text-primary-600">
-                  <AppWindow className="w-7 h-7" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary-50 to-primary-100 text-primary-600">
+                  <AppWindow className="w-5 h-5 sm:w-7 sm:h-7" />
                 </div>
                 <div className="text-right">
-                  <p className="text-3xl font-bold text-gray-900">{totalApps}</p>
-                  <p className="text-xs text-gray-500 mt-1">Total Apps</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">{totalApps}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">Total Apps</p>
                 </div>
               </div>
               <div className="h-1 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full"></div>
             </div>
 
-            <div className="bg-white rounded-2xl border-2 border-gray-100 p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600">
-                  <ShoppingCart className="w-7 h-7" />
+            <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600">
+                  <ShoppingCart className="w-5 h-5 sm:w-7 sm:h-7" />
                 </div>
                 <div className="text-right">
-                  <p className="text-3xl font-bold text-gray-900">{activeOrders}</p>
-                  <p className="text-xs text-gray-500 mt-1">Active Orders</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">{activeOrders}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">Active Orders</p>
                 </div>
               </div>
               <div className="h-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></div>
             </div>
 
-            <div className="bg-white rounded-2xl border-2 border-gray-100 p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100 text-green-600">
-                  <CheckCircle2 className="w-7 h-7" />
+            <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-50 to-green-100 text-green-600">
+                  <CheckCircle2 className="w-5 h-5 sm:w-7 sm:h-7" />
                 </div>
                 <div className="text-right">
-                  <p className="text-3xl font-bold text-gray-900">{completedBuilds}</p>
-                  <p className="text-xs text-gray-500 mt-1">Completed Builds</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">{completedBuilds}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 sm:mt-1">Completed Builds</p>
                 </div>
               </div>
               <div className="h-1 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
@@ -145,27 +145,27 @@ export default function Dashboard() {
           )}
 
           {/* Quick Actions */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <Link
               to="/apps/create"
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-200 hover:shadow-xl font-medium"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg sm:rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-200 hover:shadow-xl font-medium text-sm sm:text-base"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
               Create New App
             </Link>
             <Link
               to="/orders"
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-gray-300 hover:shadow-md transition-all font-medium"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-white border-2 border-gray-200 text-gray-700 rounded-lg sm:rounded-xl hover:border-gray-300 hover:shadow-md transition-all font-medium text-sm sm:text-base"
             >
-              <LayoutDashboard className="w-5 h-5" />
+              <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
               View All Orders
             </Link>
           </div>
 
           {/* Recent Orders */}
-          <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-6 py-5 border-b-2 border-gray-100 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
-              <h2 className="text-xl font-bold text-gray-900">
+          <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 shadow-sm overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 sm:py-5 border-b-2 border-gray-100 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900">
                 Recent Orders
               </h2>
               {orders.length > 5 && (
@@ -199,29 +199,29 @@ export default function Dashboard() {
                   <Link
                     key={order.id}
                     to={`/orders/${order.id}`}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 hover:bg-gradient-to-r hover:from-gray-50 hover:to-white transition-all gap-2 sm:gap-0 group"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 sm:py-4 hover:bg-gradient-to-r hover:from-gray-50 hover:to-white transition-all gap-2 sm:gap-0 group"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-gray-900 group-hover:text-primary-600 transition">
+                      <p className="text-xs sm:text-sm font-semibold text-gray-900 group-hover:text-primary-600 transition">
                         {order.order_number}
                       </p>
-                      <p className="text-sm text-gray-600 truncate mt-0.5">
+                      <p className="text-xs sm:text-sm text-gray-600 truncate mt-0.5">
                         {order.app_name ?? 'App'} <span className="text-gray-400">•</span> {order.plan_name ?? 'Plan'}
                       </p>
                     </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="text-sm font-bold text-gray-900">
+                    <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-wrap sm:flex-nowrap">
+                      <span className="text-xs sm:text-sm font-bold text-gray-900">
                         {formatCurrency(order.amount, order.currency)}
                       </span>
                       <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${statusColors[order.status] ?? 'bg-gray-100 text-gray-800'}`}
+                        className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${statusColors[order.status] ?? 'bg-gray-100 text-gray-800'}`}
                       >
                         {order.status}
                       </span>
                       <span className="hidden sm:block text-xs text-gray-400 min-w-[80px] text-right">
                         {formatDate(order.created_at)}
                       </span>
-                      <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-all" />
                     </div>
                   </Link>
                 ))}
