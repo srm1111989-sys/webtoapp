@@ -2,7 +2,13 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 import { formatPlanPrice } from '@/utils/format'
-import { Smartphone, Monitor, Zap, Shield, ArrowRight, Star, Globe, Check } from 'lucide-react'
+import {
+  Smartphone, Monitor, Zap, Shield, ArrowRight, Star, Globe, Check,
+  Bell, Fingerprint, QrCode, WifiOff, Navigation, Camera, MapPin, Upload,
+  Code, Palette, Share2, RefreshCw, LogOut, Cookie, Database, Settings,
+  Video, Volume2, Vibrate, Battery, Info, BarChart, AlertCircle, Languages,
+  Download, RotateCw, Maximize
+} from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
 
 const features = [
@@ -10,6 +16,49 @@ const features = [
   { icon: Monitor, title: 'Windows Desktop Apps', desc: 'Generate a Windows .exe installer with configurable window, system tray, and more.' },
   { icon: Zap, title: 'Built in Minutes', desc: 'Configure your app with our wizard, pay, and get your builds automatically via CI/CD.' },
   { icon: Shield, title: 'Feature-Rich', desc: 'Push notifications, biometric auth, QR scanner, AdMob, navigation menus, and 10+ features.' },
+]
+
+const allPremiumFeatures = [
+  { icon: Smartphone, title: 'Android App' },
+  { icon: Monitor, title: 'Desktop App' },
+  { icon: Bell, title: 'Push Notifications' },
+  { icon: Fingerprint, title: 'Biometric Auth' },
+  { icon: QrCode, title: 'QR Scanner' },
+  { icon: WifiOff, title: 'Offline Mode' },
+  { icon: Shield, title: 'Screenshot Block' },
+  { icon: Navigation, title: 'Custom Navigation' },
+  { icon: Camera, title: 'Camera Access' },
+  { icon: MapPin, title: 'Location Services' },
+  { icon: Upload, title: 'File Upload' },
+  { icon: Code, title: 'JS Bridge' },
+  { icon: Monitor, title: 'AdMob Ads' },
+  { icon: Palette, title: 'Full Branding' },
+  { icon: Share2, title: 'Social Sharing' },
+  { icon: Star, title: 'Rate App' },
+  { icon: RefreshCw, title: 'Pull to Refresh' },
+  { icon: Shield, title: 'SSL Pinning' },
+  { icon: Globe, title: 'Deep Linking' },
+  { icon: Globe, title: 'In-App Browser' },
+  { icon: LogOut, title: 'Exit Confirm' },
+  { icon: Palette, title: 'Custom Fonts' },
+  { icon: Settings, title: 'User Agent' },
+  { icon: RotateCw, title: 'Orientation Lock' },
+  { icon: Maximize, title: 'Fullscreen Mode' },
+  { icon: Monitor, title: 'Keep Screen On' },
+  { icon: Download, title: 'Download Manager' },
+  { icon: Cookie, title: 'Cookie Control' },
+  { icon: Database, title: 'Cache Manager' },
+  { icon: Settings, title: 'Custom Headers' },
+  { icon: Zap, title: 'Hardware Accel' },
+  { icon: Video, title: 'Media Playback' },
+  { icon: Volume2, title: 'Audio Focus' },
+  { icon: Vibrate, title: 'Vibration API' },
+  { icon: Battery, title: 'Battery Status' },
+  { icon: Info, title: 'Device Info' },
+  { icon: BarChart, title: 'Analytics' },
+  { icon: AlertCircle, title: 'Crash Reports' },
+  { icon: Zap, title: 'Auto Updates' },
+  { icon: Languages, title: 'Multi-Language' },
 ]
 
 const steps = [
@@ -132,7 +181,7 @@ export default function Landing() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-8 sm:py-12 lg:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
             Convert Any Website Into<br className="hidden sm:block" />
             <span className="sm:hidden"> </span>Android & Desktop Apps<br className="hidden sm:block" />
             <span className="sm:hidden"> </span><span className="text-primary-200">in 5 Minutes</span>
@@ -249,6 +298,41 @@ export default function Landing() {
               <Link to="/register" className="text-blue-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
                 Get started free <ArrowRight className="w-4 h-4" />
               </Link>
+            </div>
+          </div>
+
+          {/* Horizontal Scrolling Features */}
+          <div className="mb-16">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl sm:text-3xl font-bold mb-2">All 40+ Features at a Glance</h3>
+              <p className="text-gray-600">Scroll to see everything included in your plan</p>
+            </div>
+            <div className="relative">
+              {/* Fade edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
+
+              {/* Scrollable container */}
+              <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
+                <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+                  {allPremiumFeatures.map((feature, idx) => (
+                    <div
+                      key={idx}
+                      className="flex-shrink-0 w-40 bg-white rounded-xl border-2 border-primary-100 p-4 hover:border-primary-300 hover:shadow-lg transition-all"
+                    >
+                      <div className="w-10 h-10 bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg flex items-center justify-center mb-3 mx-auto">
+                        <feature.icon className="w-5 h-5 text-primary-600" />
+                      </div>
+                      <div className="text-center">
+                        <p className="font-semibold text-sm text-gray-900">{feature.title}</p>
+                      </div>
+                      <div className="mt-2 flex justify-center">
+                        <Check className="w-4 h-4 text-green-600" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 

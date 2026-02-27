@@ -12,3 +12,13 @@
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a5f;
 }
+
+/* Hide scrollbar for horizontal scrolling features */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
