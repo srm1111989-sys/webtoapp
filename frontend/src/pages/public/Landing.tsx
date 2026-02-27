@@ -240,7 +240,7 @@ export default function Landing() {
       </section>
 
       {/* Why Choose WebToApp */}
-      <section className="py-16 sm:py-24 bg-gradient-to-b from-white to-gray-50">
+      <section className="pt-0 pb-16 sm:pb-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Why Choose WebToApp?</h2>
@@ -297,31 +297,23 @@ export default function Landing() {
           </div>
 
           {/* Horizontal Scrolling Features */}
-          <div className="mb-16 -mx-4 sm:-mx-6 lg:-mx-8">
-            <div className="text-center mb-8 px-4 sm:px-6 lg:px-8">
+          <div className="mb-16">
+            <div className="text-center mb-8">
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">All 40+ Features at a Glance</h3>
-              <p className="text-gray-600">👉 Swipe to see all features →</p>
+              <p className="text-gray-600">👉 Swipe horizontally to see all features →</p>
             </div>
-            <div className="relative">
+            <div className="relative -mx-4 sm:-mx-6 lg:-mx-8">
               {/* Fade edges */}
-              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 via-gray-50/80 to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 via-gray-50/80 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none hidden sm:block"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none hidden sm:block"></div>
 
-              {/* Scrollable container - Must scroll */}
-              <div
-                className="overflow-x-auto overflow-y-hidden scrollbar-hide px-4 sm:px-6 lg:px-8"
-                style={{
-                  overflowX: 'auto',
-                  WebkitOverflowScrolling: 'touch',
-                  scrollbarWidth: 'none',
-                  msOverflowStyle: 'none'
-                }}
-              >
-                <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+              {/* Scrollable container */}
+              <div className="overflow-x-scroll overflow-y-hidden pb-4 px-4 sm:px-6 lg:px-8 scrollbar-hide">
+                <div className="flex gap-4" style={{ minWidth: 'max-content' }}>
                   {allPremiumFeatures.map((feature, idx) => (
                     <div
                       key={idx}
-                      className="flex-shrink-0 w-36 sm:w-40 bg-white rounded-xl border-2 border-primary-200 p-4 hover:border-primary-500 hover:shadow-xl transition-all"
+                      className="flex-none w-40 bg-white rounded-xl border-2 border-primary-200 p-4 hover:border-primary-500 hover:shadow-xl transition-all"
                     >
                       <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mb-3 mx-auto shadow-lg">
                         <feature.icon className="w-6 h-6 text-white" />
