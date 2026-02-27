@@ -180,18 +180,18 @@ export default function Landing() {
     <div>
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-900 text-white py-8 sm:py-12 lg:py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
             Convert Any Website Into<br className="hidden sm:block" />
             <span className="sm:hidden"> </span>Android & Desktop Apps<br className="hidden sm:block" />
             <span className="sm:hidden"> </span><span className="text-primary-200">in 5 Minutes</span>
           </h1>
-          <p className="text-sm sm:text-lg text-primary-200 mb-6 sm:mb-8 max-w-3xl mx-auto">
+          <p className="text-sm sm:text-lg text-primary-200 mb-6 sm:mb-8 max-w-3xl">
             No coding required. Cheaper than any other platform. One-time payment, no subscriptions.
           </p>
 
           {/* URL Input Box */}
-          <div className="max-w-4xl mx-auto mb-8">
+          <div className="max-w-4xl mb-8">
             <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3">
               <div className="flex-1 flex items-center bg-white rounded-lg px-4">
                 <Globe className="w-5 h-5 text-gray-400 shrink-0" />
@@ -305,29 +305,29 @@ export default function Landing() {
           <div className="mb-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">All 40+ Features at a Glance</h3>
-              <p className="text-gray-600">Scroll to see everything included in your plan</p>
+              <p className="text-gray-600">👉 Scroll horizontally to see all features →</p>
             </div>
             <div className="relative">
               {/* Fade edges */}
-              <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
               {/* Scrollable container */}
-              <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
-                <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+              <div className="overflow-x-scroll scrollbar-hide -mx-4 px-4 scroll-smooth">
+                <div className="flex gap-3 sm:gap-4 pb-4 min-w-max">
                   {allPremiumFeatures.map((feature, idx) => (
                     <div
                       key={idx}
-                      className="flex-shrink-0 w-40 bg-white rounded-xl border-2 border-primary-100 p-4 hover:border-primary-300 hover:shadow-lg transition-all"
+                      className="flex-none w-32 sm:w-40 bg-white rounded-xl border-2 border-primary-100 p-3 sm:p-4 hover:border-primary-400 hover:shadow-lg transition-all cursor-pointer"
                     >
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg flex items-center justify-center mb-3 mx-auto">
-                        <feature.icon className="w-5 h-5 text-primary-600" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg flex items-center justify-center mb-2 sm:mb-3 mx-auto">
+                        <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
                       </div>
                       <div className="text-center">
-                        <p className="font-semibold text-sm text-gray-900">{feature.title}</p>
+                        <p className="font-semibold text-xs sm:text-sm text-gray-900 leading-tight">{feature.title}</p>
                       </div>
                       <div className="mt-2 flex justify-center">
-                        <Check className="w-4 h-4 text-green-600" />
+                        <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
                       </div>
                     </div>
                   ))}
@@ -413,17 +413,17 @@ export default function Landing() {
       <section id="pricing" className="py-20 sm:py-32 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Android Pricing */}
-          <div className="text-center mb-8">
+          <div className="mb-8">
             <h2 className="text-2xl sm:text-4xl font-bold mb-4">Android App Pricing</h2>
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-full px-6 py-3 mb-4">
               <Check className="w-5 h-5 text-green-600" />
               <span className="font-semibold text-green-900">ALL 40+ Features Included</span>
             </div>
-            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+            <p className="text-gray-600 max-w-2xl text-sm sm:text-base">
               One-time payment • No subscriptions • No hidden charges • Lifetime access
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl">
             {ANDROID_PLANS.map((plan) => (
               <div
                 key={plan.slug}
@@ -467,17 +467,17 @@ export default function Landing() {
           </div>
 
           {/* Desktop Pricing */}
-          <div className="text-center mb-8 mt-16 sm:mt-20">
+          <div className="mb-8 mt-16 sm:mt-20">
             <h2 className="text-2xl sm:text-4xl font-bold mb-4">Desktop App Pricing</h2>
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-full px-6 py-3 mb-4">
               <Check className="w-5 h-5 text-indigo-600" />
               <span className="font-semibold text-indigo-900">Complete Desktop Features</span>
             </div>
-            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+            <p className="text-gray-600 max-w-2xl text-sm sm:text-base">
               Windows .exe with system tray, custom window • One-time payment • No subscriptions
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl">
             {DESKTOP_PLANS.map((plan) => (
               <div
                 key={plan.slug}
