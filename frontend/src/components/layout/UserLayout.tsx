@@ -19,7 +19,7 @@ export default function UserLayout() {
       {/* Top nav */}
       <header className="bg-white border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-14 sm:h-16">
-          <Link to="/dashboard" className="flex items-center gap-2 text-lg sm:text-xl font-bold text-primary-600">
+          <Link to="/" className="flex items-center gap-2 text-lg sm:text-xl font-bold text-primary-600 hover:text-primary-700 transition">
             <Smartphone className="w-5 h-5 sm:w-6 sm:h-6" />
             WebToApp
           </Link>
@@ -75,6 +75,12 @@ export default function UserLayout() {
               </p>
             </div>
             <div className="flex items-center gap-6">
+              <Link
+                to="/"
+                className="text-sm text-gray-600 hover:text-primary-600 transition font-medium"
+              >
+                Home
+              </Link>
               <a
                 href="mailto:support@websitetoapp.app"
                 className="text-sm text-gray-600 hover:text-primary-600 transition inline-flex items-center gap-2"

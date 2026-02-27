@@ -64583,3 +64583,725 @@ String:       {hasAndroid && (
 2026-02-27T12:58:53.846Z [DEBUG] High write ratio: blit=0, write=128616 (100.0% writes), screen=1465x209
 2026-02-27T12:58:53.850Z [DEBUG] Session environment not yet supported on Windows
 2026-02-27T12:58:53.850Z [DEBUG] Spawning shell without login (-l flag skipped)
+2026-02-27T12:58:53.993Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:54.250Z [DEBUG] High write ratio: blit=0, write=128777 (100.0% writes), screen=1468x209
+2026-02-27T12:58:55.261Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197135261
+2026-02-27T12:58:55.261Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T12:58:55.262Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T12:58:55.263Z [DEBUG] Applied original permissions to temp file
+2026-02-27T12:58:55.263Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197135261 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T12:58:55.264Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T12:58:55.265Z [DEBUG] Tool search disabled for model 'claude-haiku-4-5@20251001': model does not support tool_reference blocks. This feature is only available on Claude Sonnet 4+, Opus 4+, and newer models.
+2026-02-27T12:58:55.265Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.06f; cc_entrypoint=cli; cch=00000;
+2026-02-27T12:58:55.266Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.266Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T12:58:55.266Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T12:58:55.295Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.300Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2026-02-27T12:58:55.300Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T12:58:55.300Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2026-02-27T12:58:55.300Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T12:58:55.303Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.305Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T12:58:55.305Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T12:58:55.305Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T12:58:55.305Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T12:58:55.309Z [DEBUG] [useDeferredValue] Messages deferred by 1 (736→737)
+2026-02-27T12:58:55.366Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.631Z [DEBUG] High write ratio: blit=0, write=128777 (100.0% writes), screen=1468x209
+2026-02-27T12:58:55.703Z [DEBUG] autocompact: tokens=129374 threshold=167000 effectiveWindow=180000
+2026-02-27T12:58:55.704Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T12:58:55.708Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197135708
+2026-02-27T12:58:55.708Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T12:58:55.711Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T12:58:55.711Z [DEBUG] Applied original permissions to temp file
+2026-02-27T12:58:55.711Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197135708 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T12:58:55.712Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T12:58:55.714Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T12:58:55.714Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.715Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T12:58:55.715Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T12:58:55.715Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.733Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T12:58:55.734Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.738Z [DEBUG] [useDeferredValue] Messages deferred by 1 (736→737)
+2026-02-27T12:58:55.740Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:55.941Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:58:56.365Z [DEBUG] High write ratio: blit=0, write=129139 (100.0% writes), screen=1471x209
+2026-02-27T12:58:57.228Z [DEBUG] Stream started - received first chunk
+2026-02-27T12:59:00.098Z [DEBUG] Stream started - received first chunk
+2026-02-27T12:59:00.100Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:00.113Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:03.068Z [DEBUG] [useDeferredValue] Messages deferred by 1 (737→738)
+2026-02-27T12:59:03.071Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:03.234Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:03.574Z [DEBUG] High write ratio: blit=0, write=129139 (100.0% writes), screen=1471x209
+2026-02-27T12:59:03.783Z [DEBUG] [useDeferredValue] Messages deferred by 1 (738→739)
+2026-02-27T12:59:03.786Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:03.803Z [DEBUG] [useDeferredValue] Messages deferred by 1 (738→739)
+2026-02-27T12:59:03.905Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:04.188Z [DEBUG] High write ratio: blit=0, write=129174 (100.0% writes), screen=1473x209
+2026-02-27T12:59:04.288Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:04.686Z [DEBUG] High write ratio: blit=0, write=129250 (100.0% writes), screen=1475x209
+2026-02-27T12:59:04.842Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:04.866Z [DEBUG] executePreToolHooks called for tool: Read
+2026-02-27T12:59:04.874Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2026-02-27T12:59:04.874Z [DEBUG] Found 0 hook matchers in settings
+2026-02-27T12:59:04.874Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2026-02-27T12:59:04.886Z [DEBUG] [useDeferredValue] Messages deferred by 1 (739→740)
+2026-02-27T12:59:04.967Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:05.185Z [DEBUG] High write ratio: blit=0, write=129215 (100.0% writes), screen=1473x209
+2026-02-27T12:59:05.272Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197145272
+2026-02-27T12:59:05.272Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T12:59:05.275Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T12:59:05.276Z [DEBUG] Applied original permissions to temp file
+2026-02-27T12:59:05.276Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197145272 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T12:59:05.277Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T12:59:05.307Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2026-02-27T12:59:05.307Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T12:59:05.307Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2026-02-27T12:59:05.309Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T12:59:05.309Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T12:59:05.309Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T12:59:05.309Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T12:59:05.314Z [DEBUG] [useDeferredValue] Messages deferred by 4 (739→743)
+2026-02-27T12:59:05.399Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:05.659Z [DEBUG] High write ratio: blit=0, write=129215 (100.0% writes), screen=1473x209
+2026-02-27T12:59:05.820Z [DEBUG] autocompact: tokens=135066 threshold=167000 effectiveWindow=180000
+2026-02-27T12:59:05.820Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T12:59:05.826Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197145826
+2026-02-27T12:59:05.826Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T12:59:05.832Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T12:59:05.832Z [DEBUG] Applied original permissions to temp file
+2026-02-27T12:59:05.832Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197145826 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T12:59:05.833Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T12:59:05.836Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T12:59:05.836Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:05.836Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T12:59:05.836Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T12:59:05.836Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:05.859Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T12:59:05.860Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:05.865Z [DEBUG] [useDeferredValue] Messages deferred by 5 (739→744)
+2026-02-27T12:59:05.867Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:06.015Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:06.225Z [DEBUG] High write ratio: blit=0, write=129289 (100.0% writes), screen=1476x209
+2026-02-27T12:59:09.077Z [DEBUG] Stream started - received first chunk
+2026-02-27T12:59:09.080Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:11.299Z [DEBUG] [useDeferredValue] Messages deferred by 1 (744→745)
+2026-02-27T12:59:11.363Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:11.713Z [DEBUG] High write ratio: blit=0, write=129282 (100.0% writes), screen=1476x209
+2026-02-27T12:59:11.718Z [DEBUG] [useDeferredValue] Messages deferred by 1 (744→745)
+2026-02-27T12:59:11.720Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:11.809Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:12.067Z [DEBUG] High write ratio: blit=0, write=129288 (100.0% writes), screen=1476x209
+2026-02-27T12:59:12.653Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:12.667Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:12.674Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:15.536Z [DEBUG] Slow render: 93.8ms, screen: 1476x209, damage: 209x1476 at (0,0), changes: 12
+2026-02-27T12:59:16.157Z [DEBUG] Slow render: 303.7ms, screen: 1476x209, damage: 209x1476 at (0,0), changes: 16
+2026-02-27T12:59:16.657Z [DEBUG] Slow render: 146.3ms, screen: 1476x209, damage: 209x1476 at (0,0), changes: 37
+2026-02-27T12:59:17.386Z [DEBUG] Slow render: 228.8ms, screen: 1476x209, damage: 209x1476 at (0,0), changes: 77
+2026-02-27T12:59:28.224Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.244Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.264Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.289Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.313Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.348Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.391Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.442Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.497Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.644Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:28.662Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:41.319Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.451Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.461Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.603Z [DEBUG] High write ratio: blit=5016, write=127623 (96.2% writes), screen=1476x209
+2026-02-27T12:59:50.614Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.722Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.790Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.802Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.811Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.819Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.836Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:50.845Z [DEBUG] executePreToolHooks called for tool: Edit
+2026-02-27T12:59:50.847Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2026-02-27T12:59:50.847Z [DEBUG] Found 0 hook matchers in settings
+2026-02-27T12:59:50.847Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2026-02-27T12:59:50.854Z [DEBUG] FileHistory: Tracked file modification for C:\Projects\Projects-2026\webtoapp\frontend\src\pages\user\MyApps.tsx
+2026-02-27T12:59:50.859Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\frontend\src\pages\user\MyApps.tsx.tmp.143284.1772197190859
+2026-02-27T12:59:50.859Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T12:59:50.860Z [DEBUG] Temp file written successfully, size: 7236 bytes
+2026-02-27T12:59:50.860Z [DEBUG] Applied original permissions to temp file
+2026-02-27T12:59:50.860Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\frontend\src\pages\user\MyApps.tsx.tmp.143284.1772197190859 to C:\Projects\Projects-2026\webtoapp\frontend\src\pages\user\MyApps.tsx
+2026-02-27T12:59:50.861Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\frontend\src\pages\user\MyApps.tsx written atomically
+2026-02-27T12:59:50.863Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197190863
+2026-02-27T12:59:50.863Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T12:59:50.864Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T12:59:50.864Z [DEBUG] Applied original permissions to temp file
+2026-02-27T12:59:50.864Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197190863 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T12:59:50.864Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T12:59:50.904Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2026-02-27T12:59:50.904Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T12:59:50.904Z [DEBUG] Matched 1 unique hooks for query "Edit" (1 before deduplication)
+2026-02-27T12:59:50.906Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T12:59:50.906Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T12:59:50.906Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T12:59:50.906Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T12:59:50.908Z [DEBUG] [useDeferredValue] Messages deferred by 4 (745→749)
+2026-02-27T12:59:50.934Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:51.055Z [DEBUG] High write ratio: blit=0, write=129272 (100.0% writes), screen=1476x209
+2026-02-27T12:59:51.057Z [DEBUG] [lspRecommendation] Looking for LSP plugins for .tsx
+2026-02-27T12:59:51.061Z [DEBUG] [binaryCheck] Cache hit for 'typescript-language-server': false
+2026-02-27T12:59:51.061Z [DEBUG] [lspRecommendation] Skipping typescript-lsp@claude-plugins-official (binary 'typescript-language-server' not found)
+2026-02-27T12:59:51.070Z [DEBUG] autocompact: tokens=142387 threshold=167000 effectiveWindow=180000
+2026-02-27T12:59:51.070Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T12:59:51.074Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197191074
+2026-02-27T12:59:51.074Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T12:59:51.076Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T12:59:51.076Z [DEBUG] Applied original permissions to temp file
+2026-02-27T12:59:51.076Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197191074 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T12:59:51.076Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T12:59:51.078Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T12:59:51.079Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:51.079Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T12:59:51.079Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T12:59:51.079Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:51.107Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T12:59:51.109Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:51.114Z [DEBUG] [useDeferredValue] Messages deferred by 4 (745→749)
+2026-02-27T12:59:51.116Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:51.277Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:51.459Z [DEBUG] High write ratio: blit=0, write=155273 (100.0% writes), screen=1670x209
+2026-02-27T12:59:52.358Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:52.489Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:52.492Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:52.503Z [DEBUG] Stored image 13 to C:\Projects\Projects-2026\webtoapp\claude_session1\image-cache\fd385e10-4c8f-4da7-9d91-701b7b06f898\13.png
+2026-02-27T12:59:53.290Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:53.516Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:53.606Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:53.865Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:54.140Z [DEBUG] Stream started - received first chunk
+2026-02-27T12:59:54.142Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:54.534Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:54.789Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:54.896Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:55.150Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:55.945Z [DEBUG] [useDeferredValue] Messages deferred by 1 (749→750)
+2026-02-27T12:59:55.946Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:55.984Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:56.134Z [DEBUG] High write ratio: blit=0, write=155285 (100.0% writes), screen=1671x209
+2026-02-27T12:59:56.140Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:56.279Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:56.354Z [DEBUG] [useDeferredValue] Messages deferred by 1 (750→751)
+2026-02-27T12:59:56.380Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:56.562Z [DEBUG] High write ratio: blit=0, write=155293 (100.0% writes), screen=1671x209
+2026-02-27T12:59:56.565Z [DEBUG] [useDeferredValue] Messages deferred by 1 (750→751)
+2026-02-27T12:59:56.565Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:56.599Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:56.771Z [DEBUG] High write ratio: blit=0, write=155345 (100.0% writes), screen=1673x209
+2026-02-27T12:59:56.830Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:56.915Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:57.021Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:57.701Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:58.234Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:58.399Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:58.517Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:58.748Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:59.282Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:59.478Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:59.853Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T12:59:59.931Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:00.356Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:00.367Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:00.420Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:00.434Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:00.691Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:00.701Z [DEBUG] [useDeferredValue] Messages deferred by 1 (751→752)
+2026-02-27T13:00:00.728Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:00.885Z [DEBUG] High write ratio: blit=0, write=155355 (100.0% writes), screen=1673x209
+2026-02-27T13:00:00.900Z [DEBUG] executePreToolHooks called for tool: Bash
+2026-02-27T13:00:00.901Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2026-02-27T13:00:00.901Z [DEBUG] Found 0 hook matchers in settings
+2026-02-27T13:00:00.901Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2026-02-27T13:00:00.918Z [DEBUG] [useDeferredValue] Messages deferred by 1 (751→752)
+2026-02-27T13:00:00.944Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.093Z [DEBUG] High write ratio: blit=0, write=155356 (100.0% writes), screen=1673x209
+2026-02-27T13:00:01.096Z [DEBUG] Session environment not yet supported on Windows
+2026-02-27T13:00:01.096Z [DEBUG] Spawning shell without login (-l flag skipped)
+2026-02-27T13:00:01.097Z [DEBUG] [useDeferredValue] Messages deferred by 1 (751→752)
+2026-02-27T13:00:01.098Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.173Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.354Z [DEBUG] High write ratio: blit=0, write=155516 (100.0% writes), screen=1676x209
+2026-02-27T13:00:01.361Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.465Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197201465
+2026-02-27T13:00:01.465Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:01.467Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:01.467Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:01.467Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197201465 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:01.468Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:01.468Z [DEBUG] Tool search disabled for model 'claude-haiku-4-5@20251001': model does not support tool_reference blocks. This feature is only available on Claude Sonnet 4+, Opus 4+, and newer models.
+2026-02-27T13:00:01.469Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.06f; cc_entrypoint=cli; cch=00000;
+2026-02-27T13:00:01.469Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.469Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T13:00:01.469Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T13:00:01.487Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.488Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2026-02-27T13:00:01.488Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T13:00:01.488Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2026-02-27T13:00:01.488Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T13:00:01.489Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.490Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T13:00:01.490Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T13:00:01.490Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T13:00:01.490Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T13:00:01.492Z [DEBUG] [useDeferredValue] Messages deferred by 1 (752→753)
+2026-02-27T13:00:01.525Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.678Z [DEBUG] High write ratio: blit=0, write=155517 (100.0% writes), screen=1676x209
+2026-02-27T13:00:01.684Z [DEBUG] [useDeferredValue] Messages deferred by 1 (752→753)
+2026-02-27T13:00:01.685Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.716Z [DEBUG] autocompact: tokens=143422 threshold=167000 effectiveWindow=180000
+2026-02-27T13:00:01.716Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T13:00:01.719Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197201719
+2026-02-27T13:00:01.719Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:01.723Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:01.723Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:01.723Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197201719 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:01.724Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:01.727Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T13:00:01.727Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.727Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T13:00:01.727Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T13:00:01.728Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.761Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T13:00:01.762Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.763Z [DEBUG] [useDeferredValue] Messages deferred by 1 (752→753)
+2026-02-27T13:00:01.765Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.814Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:01.997Z [DEBUG] High write ratio: blit=0, write=155611 (100.0% writes), screen=1677x209
+2026-02-27T13:00:02.016Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:02.279Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:02.374Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:02.563Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:02.732Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:02.825Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:03.073Z [DEBUG] Stream started - received first chunk
+2026-02-27T13:00:03.110Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:03.632Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:03.685Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:03.791Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:03.977Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:04.166Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:04.361Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:04.462Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:04.574Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:04.744Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:04.863Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:04.996Z [DEBUG] Stream started - received first chunk
+2026-02-27T13:00:04.998Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:05.114Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:05.244Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:05.398Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:05.398Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:05.412Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197205412
+2026-02-27T13:00:05.412Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:05.415Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:05.415Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:05.415Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197205412 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:05.416Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:05.417Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:05.667Z [DEBUG] [useDeferredValue] Messages deferred by 1 (753→754)
+2026-02-27T13:00:05.697Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:05.859Z [DEBUG] High write ratio: blit=0, write=155681 (100.0% writes), screen=1679x209
+2026-02-27T13:00:05.901Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:06.086Z [DEBUG] High write ratio: blit=0, write=155681 (100.0% writes), screen=1679x209
+2026-02-27T13:00:06.099Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:06.315Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:06.333Z [DEBUG] [useDeferredValue] Messages deferred by 1 (754→755)
+2026-02-27T13:00:06.358Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:06.537Z [DEBUG] High write ratio: blit=0, write=155681 (100.0% writes), screen=1679x209
+2026-02-27T13:00:06.551Z [DEBUG] executePreToolHooks called for tool: Bash
+2026-02-27T13:00:06.553Z [DEBUG] Getting matching hook commands for PreToolUse with query: Bash
+2026-02-27T13:00:06.553Z [DEBUG] Found 0 hook matchers in settings
+2026-02-27T13:00:06.553Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2026-02-27T13:00:06.563Z [DEBUG] [useDeferredValue] Messages deferred by 1 (754→755)
+2026-02-27T13:00:06.591Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:06.741Z [DEBUG] High write ratio: blit=0, write=155681 (100.0% writes), screen=1679x209
+2026-02-27T13:00:06.746Z [DEBUG] Session environment not yet supported on Windows
+2026-02-27T13:00:06.746Z [DEBUG] Spawning shell without login (-l flag skipped)
+2026-02-27T13:00:06.794Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:07.012Z [DEBUG] High write ratio: blit=0, write=155762 (100.0% writes), screen=1682x209
+2026-02-27T13:00:09.441Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:09.922Z [DEBUG] High write ratio: blit=5016, write=154112 (96.8% writes), screen=1682x209
+2026-02-27T13:00:09.940Z [DEBUG] [useDeferredValue] Messages deferred by 1 (755→756)
+2026-02-27T13:00:09.971Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:10.795Z [DEBUG] High write ratio: blit=0, write=155788 (100.0% writes), screen=1683x209
+2026-02-27T13:00:10.964Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:11.383Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:11.408Z [DEBUG] [useDeferredValue] Messages deferred by 1 (756→757)
+2026-02-27T13:00:11.435Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:11.918Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:12.065Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:12.507Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:12.523Z [DEBUG] [useDeferredValue] Messages deferred by 1 (757→758)
+2026-02-27T13:00:12.548Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:13.037Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:13.166Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:15.294Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:15.316Z [DEBUG] [useDeferredValue] Messages deferred by 1 (758→759)
+2026-02-27T13:00:15.335Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:15.630Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:15.645Z [DEBUG] [useDeferredValue] Messages deferred by 2 (758→760)
+2026-02-27T13:00:15.658Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:15.961Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:16.036Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:16.450Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:16.636Z [DEBUG] [useDeferredValue] Messages deferred by 1 (760→761)
+2026-02-27T13:00:16.664Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:16.996Z [DEBUG] High write ratio: blit=0, write=155793 (100.0% writes), screen=1683x209
+2026-02-27T13:00:17.114Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:17.522Z [DEBUG] High write ratio: blit=0, write=155794 (100.0% writes), screen=1683x209
+2026-02-27T13:00:17.946Z [DEBUG] [useDeferredValue] Messages deferred by 1 (761→762)
+2026-02-27T13:00:17.977Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:18.363Z [DEBUG] High write ratio: blit=0, write=155794 (100.0% writes), screen=1683x209
+2026-02-27T13:00:18.888Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197218888
+2026-02-27T13:00:18.888Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:18.891Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:18.891Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:18.891Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197218888 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:18.892Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:18.892Z [DEBUG] Tool search disabled for model 'claude-haiku-4-5@20251001': model does not support tool_reference blocks. This feature is only available on Claude Sonnet 4+, Opus 4+, and newer models.
+2026-02-27T13:00:18.893Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.06f; cc_entrypoint=cli; cch=00000;
+2026-02-27T13:00:18.893Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:18.893Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T13:00:18.893Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T13:00:18.912Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:18.913Z [DEBUG] Getting matching hook commands for PostToolUse with query: Bash
+2026-02-27T13:00:18.913Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T13:00:18.913Z [DEBUG] Matched 0 unique hooks for query "Bash" (0 before deduplication)
+2026-02-27T13:00:18.913Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T13:00:18.914Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:18.915Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T13:00:18.915Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T13:00:18.915Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T13:00:18.915Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T13:00:18.919Z [DEBUG] [useDeferredValue] Messages deferred by 2 (761→763)
+2026-02-27T13:00:18.973Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:19.232Z [DEBUG] High write ratio: blit=0, write=155762 (100.0% writes), screen=1682x209
+2026-02-27T13:00:19.294Z [DEBUG] autocompact: tokens=145645 threshold=167000 effectiveWindow=180000
+2026-02-27T13:00:19.295Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T13:00:19.300Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197219300
+2026-02-27T13:00:19.300Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:19.304Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:19.304Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:19.304Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197219300 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:19.306Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:19.310Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T13:00:19.310Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:19.311Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T13:00:19.311Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T13:00:19.311Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:19.349Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T13:00:19.350Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:19.365Z [DEBUG] [useDeferredValue] Messages deferred by 3 (761→764)
+2026-02-27T13:00:19.366Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:19.580Z [DEBUG] Slow render: 63.3ms, screen: 1679x209, damage: 209x1679 at (0,0), changes: 29
+2026-02-27T13:00:20.510Z [DEBUG] Slow render: 155.0ms, screen: 1679x209, damage: 209x1679 at (0,0), changes: 14
+2026-02-27T13:00:20.900Z [DEBUG] Stream started - received first chunk
+2026-02-27T13:00:21.667Z [DEBUG] Slow render: 140.5ms, screen: 1679x209, damage: 209x1679 at (0,0), changes: 51
+2026-02-27T13:00:22.334Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:22.677Z [DEBUG] High write ratio: blit=0, write=155807 (100.0% writes), screen=1683x209
+2026-02-27T13:00:24.025Z [DEBUG] Stream started - received first chunk
+2026-02-27T13:00:24.028Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:24.039Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:26.519Z [DEBUG] [useDeferredValue] Messages deferred by 1 (764→765)
+2026-02-27T13:00:26.523Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:26.628Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:26.978Z [DEBUG] High write ratio: blit=0, write=155813 (100.0% writes), screen=1683x209
+2026-02-27T13:00:26.992Z [DEBUG] [useDeferredValue] Messages deferred by 1 (765→766)
+2026-02-27T13:00:27.100Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:27.560Z [DEBUG] High write ratio: blit=0, write=155848 (100.0% writes), screen=1685x209
+2026-02-27T13:00:27.576Z [DEBUG] [useDeferredValue] Messages deferred by 2 (765→767)
+2026-02-27T13:00:27.642Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:28.104Z [DEBUG] High write ratio: blit=0, write=155813 (100.0% writes), screen=1683x209
+2026-02-27T13:00:28.123Z [DEBUG] executePreToolHooks called for tool: Read
+2026-02-27T13:00:28.132Z [DEBUG] Getting matching hook commands for PreToolUse with query: Read
+2026-02-27T13:00:28.132Z [DEBUG] Found 0 hook matchers in settings
+2026-02-27T13:00:28.132Z [DEBUG] Matched 0 unique hooks for query "Read" (0 before deduplication)
+2026-02-27T13:00:28.150Z [DEBUG] [useDeferredValue] Messages deferred by 2 (765→767)
+2026-02-27T13:00:28.279Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:28.693Z [DEBUG] High write ratio: blit=0, write=155813 (100.0% writes), screen=1683x209
+2026-02-27T13:00:28.788Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197228788
+2026-02-27T13:00:28.788Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:28.790Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:28.791Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:28.791Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197228788 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:28.792Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:28.824Z [DEBUG] Getting matching hook commands for PostToolUse with query: Read
+2026-02-27T13:00:28.824Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T13:00:28.825Z [DEBUG] Matched 1 unique hooks for query "Read" (1 before deduplication)
+2026-02-27T13:00:28.828Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T13:00:28.828Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T13:00:28.828Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T13:00:28.828Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T13:00:28.840Z [DEBUG] [useDeferredValue] Messages deferred by 5 (765→770)
+2026-02-27T13:00:28.901Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:29.225Z [DEBUG] High write ratio: blit=0, write=155813 (100.0% writes), screen=1683x209
+2026-02-27T13:00:29.339Z [DEBUG] autocompact: tokens=145709 threshold=167000 effectiveWindow=180000
+2026-02-27T13:00:29.340Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T13:00:29.349Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197229349
+2026-02-27T13:00:29.350Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:29.354Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:29.355Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:29.355Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197229349 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:29.356Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:29.363Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T13:00:29.363Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:29.364Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T13:00:29.364Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T13:00:29.364Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:29.394Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T13:00:29.396Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:29.403Z [DEBUG] [useDeferredValue] Messages deferred by 5 (765→770)
+2026-02-27T13:00:29.407Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:29.613Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:30.043Z [DEBUG] High write ratio: blit=0, write=155974 (100.0% writes), screen=1688x209
+2026-02-27T13:00:32.794Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:32.942Z [DEBUG] High write ratio: blit=5016, write=154325 (96.9% writes), screen=1688x209
+2026-02-27T13:00:32.958Z [DEBUG] Stream started - received first chunk
+2026-02-27T13:00:32.960Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:33.435Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:33.546Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:33.557Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:33.760Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:34.497Z [DEBUG] [useDeferredValue] Messages deferred by 1 (770→771)
+2026-02-27T13:00:34.560Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:34.705Z [DEBUG] High write ratio: blit=0, write=155951 (100.0% writes), screen=1688x209
+2026-02-27T13:00:34.708Z [DEBUG] [useDeferredValue] Messages deferred by 1 (770→771)
+2026-02-27T13:00:34.709Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:34.740Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:34.935Z [DEBUG] High write ratio: blit=0, write=155952 (100.0% writes), screen=1688x209
+2026-02-27T13:00:34.940Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.155Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.315Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.397Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.520Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.708Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.786Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.906Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:35.912Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:36.212Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:36.311Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:36.402Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.030Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.038Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.084Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.398Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.663Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.966Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.974Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.976Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.978Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.979Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.981Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.983Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.989Z [DEBUG] [useDeferredValue] Messages deferred by 1 (771→772)
+2026-02-27T13:00:37.990Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:37.994Z [DEBUG] [useDeferredValue] Messages deferred by 1 (771→772)
+2026-02-27T13:00:38.019Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.161Z [DEBUG] High write ratio: blit=0, write=155952 (100.0% writes), screen=1688x209
+2026-02-27T13:00:38.166Z [DEBUG] executePreToolHooks called for tool: Edit
+2026-02-27T13:00:38.167Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2026-02-27T13:00:38.167Z [DEBUG] Found 0 hook matchers in settings
+2026-02-27T13:00:38.167Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2026-02-27T13:00:38.169Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx.tmp.143284.1772197238169
+2026-02-27T13:00:38.170Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:38.173Z [DEBUG] Temp file written successfully, size: 4682 bytes
+2026-02-27T13:00:38.174Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:38.174Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx.tmp.143284.1772197238169 to C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx
+2026-02-27T13:00:38.174Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx written atomically
+2026-02-27T13:00:38.176Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197238176
+2026-02-27T13:00:38.176Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:38.177Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:38.178Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:38.178Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197238176 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:38.178Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:38.191Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2026-02-27T13:00:38.191Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T13:00:38.191Z [DEBUG] Matched 1 unique hooks for query "Edit" (1 before deduplication)
+2026-02-27T13:00:38.192Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T13:00:38.192Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T13:00:38.192Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T13:00:38.192Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T13:00:38.193Z [DEBUG] [useDeferredValue] Messages deferred by 4 (771→775)
+2026-02-27T13:00:38.194Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.222Z [DEBUG] autocompact: tokens=146597 threshold=167000 effectiveWindow=180000
+2026-02-27T13:00:38.223Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T13:00:38.226Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197238226
+2026-02-27T13:00:38.226Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:38.228Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:38.228Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:38.228Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197238226 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:38.229Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:38.232Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T13:00:38.232Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.232Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T13:00:38.232Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T13:00:38.232Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.258Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T13:00:38.259Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.260Z [DEBUG] [useDeferredValue] Messages deferred by 4 (771→775)
+2026-02-27T13:00:38.261Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.285Z [DEBUG] [useDeferredValue] Messages deferred by 4 (771→775)
+2026-02-27T13:00:38.286Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.340Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:38.485Z [DEBUG] High write ratio: blit=0, write=156701 (100.0% writes), screen=1698x209
+2026-02-27T13:00:38.504Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:39.046Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:39.210Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:40.211Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:40.721Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:41.545Z [DEBUG] Stream started - received first chunk
+2026-02-27T13:00:41.546Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:42.070Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:42.166Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:42.266Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:42.547Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:42.808Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.028Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.174Z [DEBUG] [useDeferredValue] Messages deferred by 1 (775→776)
+2026-02-27T13:00:43.176Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.182Z [DEBUG] [useDeferredValue] Messages deferred by 1 (775→776)
+2026-02-27T13:00:43.206Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.365Z [DEBUG] High write ratio: blit=0, write=156717 (100.0% writes), screen=1698x209
+2026-02-27T13:00:43.369Z [DEBUG] [useDeferredValue] Messages deferred by 1 (775→776)
+2026-02-27T13:00:43.377Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.409Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.558Z [DEBUG] High write ratio: blit=0, write=156718 (100.0% writes), screen=1698x209
+2026-02-27T13:00:43.562Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.730Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.764Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.782Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:43.879Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:44.079Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:44.324Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:44.471Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:44.629Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:44.722Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:44.904Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:45.045Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.061Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.235Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.457Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.584Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.880Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.889Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.892Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.937Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.945Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.948Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:46.951Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:47.572Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:48.096Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.055Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.256Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.353Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.696Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.704Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.707Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.710Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.712Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.713Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.719Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.721Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.723Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.726Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.728Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.730Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.735Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.739Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.745Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.748Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.754Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.756Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.758Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.760Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.762Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.765Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.771Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.774Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.777Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.779Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.781Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.786Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.789Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.791Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.794Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.797Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.802Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.806Z [DEBUG] [useDeferredValue] Messages deferred by 1 (776→777)
+2026-02-27T13:00:49.832Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:49.989Z [DEBUG] High write ratio: blit=0, write=156758 (100.0% writes), screen=1698x209
+2026-02-27T13:00:49.994Z [DEBUG] executePreToolHooks called for tool: Edit
+2026-02-27T13:00:49.996Z [DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+2026-02-27T13:00:49.996Z [DEBUG] Found 0 hook matchers in settings
+2026-02-27T13:00:49.996Z [DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+2026-02-27T13:00:49.999Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx.tmp.143284.1772197249999
+2026-02-27T13:00:49.999Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:50.003Z [DEBUG] Temp file written successfully, size: 4886 bytes
+2026-02-27T13:00:50.003Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:50.003Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx.tmp.143284.1772197249999 to C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx
+2026-02-27T13:00:50.004Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\frontend\src\components\layout\UserLayout.tsx written atomically
+2026-02-27T13:00:50.007Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197250007
+2026-02-27T13:00:50.007Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:50.009Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:50.009Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:50.009Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197250007 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:50.009Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:50.038Z [DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+2026-02-27T13:00:50.038Z [DEBUG] Found 5 hook matchers in settings
+2026-02-27T13:00:50.039Z [DEBUG] Matched 1 unique hooks for query "Edit" (1 before deduplication)
+2026-02-27T13:00:50.041Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-02-27T13:00:50.041Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-02-27T13:00:50.042Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-02-27T13:00:50.042Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-02-27T13:00:50.044Z [DEBUG] [useDeferredValue] Messages deferred by 4 (776→780)
+2026-02-27T13:00:50.044Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:50.052Z [DEBUG] [useDeferredValue] Messages deferred by 4 (776→780)
+2026-02-27T13:00:50.053Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:50.074Z [DEBUG] autocompact: tokens=147498 threshold=167000 effectiveWindow=180000
+2026-02-27T13:00:50.075Z [DEBUG] Auto tool search disabled: 8081 tokens (threshold: 20000, 10% of context) [source: query]
+2026-02-27T13:00:50.078Z [DEBUG] Writing to temp file: C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197250078
+2026-02-27T13:00:50.078Z [DEBUG] Preserving file permissions: 100666
+2026-02-27T13:00:50.081Z [DEBUG] Temp file written successfully, size: 2727 bytes
+2026-02-27T13:00:50.081Z [DEBUG] Applied original permissions to temp file
+2026-02-27T13:00:50.081Z [DEBUG] Renaming C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json.tmp.143284.1772197250078 to C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json
+2026-02-27T13:00:50.082Z [DEBUG] File C:\Projects\Projects-2026\webtoapp\claude_session1\.claude.json written atomically
+2026-02-27T13:00:50.084Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.59.03c; cc_entrypoint=cli; cch=00000;
+2026-02-27T13:00:50.085Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:50.085Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-02-27T13:00:50.085Z [DEBUG] [API:auth] OAuth token check starting
+2026-02-27T13:00:50.086Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:50.113Z [DEBUG] [API:auth] OAuth token check complete
+2026-02-27T13:00:50.114Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:50.116Z [DEBUG] [useDeferredValue] Messages deferred by 4 (776→780)
+2026-02-27T13:00:50.118Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:50.216Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:50.366Z [DEBUG] High write ratio: blit=0, write=158317 (100.0% writes), screen=1713x209
+2026-02-27T13:00:50.415Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:51.243Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:51.542Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:51.765Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:51.889Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:52.635Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:52.781Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:53.276Z [DEBUG] Stream started - received first chunk
+2026-02-27T13:00:53.278Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:53.779Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:54.288Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:54.972Z [DEBUG] [useDeferredValue] Messages deferred by 1 (780→781)
+2026-02-27T13:00:54.973Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:55.012Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:55.170Z [DEBUG] High write ratio: blit=0, write=158335 (100.0% writes), screen=1713x209
+2026-02-27T13:00:55.203Z [DEBUG] Fast mode unavailable: Fast mode is not available on Bedrock, Vertex, or Foundry
+2026-02-27T13:00:55.349Z [DEBUG] High write ratio: blit=0, write=158335 (100.0% writes), screen=1713x209
