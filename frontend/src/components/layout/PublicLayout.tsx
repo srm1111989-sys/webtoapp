@@ -10,7 +10,7 @@ export default function PublicLayout() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b bg-white sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
           <div className="flex items-center h-16 gap-8">
             {/* Logo - Left aligned */}
             <Link to={accessToken ? '/dashboard' : '/'} className="flex items-center gap-2 text-xl font-bold text-primary-600 hover:text-primary-700 transition">
