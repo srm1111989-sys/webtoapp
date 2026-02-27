@@ -129,38 +129,42 @@ const STEP_LABELS = ['Basic Info', 'Visuals', 'Features', 'Advanced', 'Plan & Re
 
 function StepIndicator({ currentStep }: { currentStep: number }) {
   return (
-    <div className="flex items-center justify-center mb-6 sm:mb-10 overflow-x-auto">
-      {STEP_LABELS.map((label, idx) => (
-        <div key={label} className="flex items-center">
-          <div className="flex flex-col items-center">
-            <div
-              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold border-2 transition-colors ${
-                idx < currentStep
-                  ? 'bg-blue-600 border-blue-600 text-white'
-                  : idx === currentStep
-                    ? 'border-blue-600 text-blue-600 bg-blue-50'
-                    : 'border-gray-300 text-gray-400 bg-white'
-              }`}
-            >
-              {idx < currentStep ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : idx + 1}
+    <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-4 sm:p-6 mb-8 sm:mb-12 border-2 border-gray-100 shadow-sm">
+      <div className="flex items-center justify-between overflow-x-auto pb-2">
+        {STEP_LABELS.map((label, idx) => (
+          <div key={label} className="flex items-center flex-1 min-w-0">
+            <div className="flex flex-col items-center w-full">
+              <div
+                className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full sm:rounded-2xl flex items-center justify-center text-sm sm:text-lg font-bold border-3 transition-all transform ${
+                  idx < currentStep
+                    ? 'bg-gradient-to-br from-green-500 to-green-600 border-green-600 text-white shadow-lg scale-110'
+                    : idx === currentStep
+                      ? 'border-primary-600 text-primary-600 bg-gradient-to-br from-primary-50 to-primary-100 shadow-lg ring-4 ring-primary-200 scale-110'
+                      : 'border-gray-300 text-gray-400 bg-white'
+                }`}
+              >
+                {idx < currentStep ? <Check className="w-5 h-5 sm:w-7 sm:h-7 font-bold" /> : idx + 1}
+              </div>
+              <span
+                className={`mt-2 sm:mt-3 text-xs sm:text-sm font-semibold text-center hidden sm:block whitespace-nowrap ${
+                  idx <= currentStep ? 'text-primary-600' : 'text-gray-400'
+                }`}
+              >
+                {label}
+              </span>
             </div>
-            <span
-              className={`mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-medium hidden sm:block ${
-                idx <= currentStep ? 'text-blue-600' : 'text-gray-400'
-              }`}
-            >
-              {label}
-            </span>
+            {idx < STEP_LABELS.length - 1 && (
+              <div className="flex-1 mx-2 sm:mx-4">
+                <div
+                  className={`h-1 sm:h-1.5 rounded-full transition-all ${
+                    idx < currentStep ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gray-300'
+                  }`}
+                />
+              </div>
+            )}
           </div>
-          {idx < STEP_LABELS.length - 1 && (
-            <div
-              className={`w-6 sm:w-16 h-0.5 mx-1 sm:mx-2 mb-2 sm:mb-5 ${
-                idx < currentStep ? 'bg-blue-600' : 'bg-gray-300'
-              }`}
-            />
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
@@ -354,13 +358,15 @@ export default function CreateApp() {
   const setStep = (s: number) => wizard.setStep(s)
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Create New App</h1>
-      <p className="text-gray-500 mb-8">Convert your website into a mobile app in minutes.</p>
+    <div className="max-w-5xl mx-auto py-6 sm:py-10 px-3 sm:px-4">
+      <div className="mb-8 sm:mb-12">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">Create Your App</h1>
+        <p className="text-base sm:text-lg text-gray-600">Convert your website into a professional mobile app in just 5 simple steps</p>
+      </div>
 
       <StepIndicator currentStep={step} />
 
-      <div className="bg-white rounded-2xl shadow-sm border p-4 sm:p-8">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border-2 border-gray-100 p-5 sm:p-8 lg:p-10">
         {step === 0 && <Step0BasicInfo />}
         {step === 1 && <Step1Visuals />}
         {step === 2 && <Step2Features />}
@@ -446,110 +452,127 @@ function Step0BasicInfo() {
   }
 
   const isLoading = createApp.isPending || updateApp.isPending
-  const inputClass = 'w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+  const inputClass = 'w-full border-2 border-gray-300 rounded-xl px-5 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-gray-400'
 
   const selectPlatform = (platform: Platform) => {
     wizard.setSelectedPlatforms([platform])
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {/* Platform Selector */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Target Platform *</label>
-        <p className="text-xs text-gray-500 mb-3">Select one platform at a time.</p>
-        <div className="grid grid-cols-2 gap-4">
+        <label className="block text-base font-semibold text-gray-900 mb-3">Choose Your Platform *</label>
+        <p className="text-sm text-gray-600 mb-5">Select Android or Desktop to create your app</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <button
             type="button"
             onClick={() => selectPlatform('android')}
-            className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${
+            className={`group relative flex flex-col items-center gap-4 p-6 sm:p-8 rounded-2xl border-3 text-center transition-all transform hover:scale-105 ${
               wizard.selectedPlatforms.includes('android')
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-gray-300 bg-white'
+                ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-primary-100 shadow-xl ring-4 ring-primary-200'
+                : 'border-gray-300 hover:border-primary-300 bg-white shadow-lg hover:shadow-xl'
             }`}
           >
-            <div className={`p-2 rounded-lg ${wizard.selectedPlatforms.includes('android') ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
-              <Smartphone className="w-6 h-6" />
+            {wizard.selectedPlatforms.includes('android') && (
+              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
+                Selected ✓
+              </div>
+            )}
+            <div className={`p-4 rounded-2xl transition-all ${
+              wizard.selectedPlatforms.includes('android')
+                ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg'
+                : 'bg-gray-100 text-gray-600 group-hover:bg-primary-100 group-hover:text-primary-600'
+            }`}>
+              <Smartphone className="w-12 h-12" />
             </div>
             <div>
-              <span className="text-sm font-semibold text-gray-900">Android</span>
-              <p className="text-xs text-gray-500">APK & AAB for mobile</p>
+              <span className="text-lg font-bold text-gray-900 block mb-1">Android App</span>
+              <p className="text-sm text-gray-600">APK & AAB for Play Store</p>
             </div>
-            {wizard.selectedPlatforms.includes('android') && (
-              <Check className="w-5 h-5 text-blue-600 ml-auto" />
-            )}
           </button>
           <button
             type="button"
             onClick={() => selectPlatform('desktop')}
-            className={`flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-all ${
+            className={`group relative flex flex-col items-center gap-4 p-6 sm:p-8 rounded-2xl border-3 text-center transition-all transform hover:scale-105 ${
               wizard.selectedPlatforms.includes('desktop')
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-gray-300 bg-white'
+                ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-primary-100 shadow-xl ring-4 ring-primary-200'
+                : 'border-gray-300 hover:border-primary-300 bg-white shadow-lg hover:shadow-xl'
             }`}
           >
-            <div className={`p-2 rounded-lg ${wizard.selectedPlatforms.includes('desktop') ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
-              <Monitor className="w-6 h-6" />
+            {wizard.selectedPlatforms.includes('desktop') && (
+              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
+                Selected ✓
+              </div>
+            )}
+            <div className={`p-4 rounded-2xl transition-all ${
+              wizard.selectedPlatforms.includes('desktop')
+                ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg'
+                : 'bg-gray-100 text-gray-600 group-hover:bg-primary-100 group-hover:text-primary-600'
+            }`}>
+              <Monitor className="w-12 h-12" />
             </div>
             <div>
-              <span className="text-sm font-semibold text-gray-900">Windows Desktop</span>
-              <p className="text-xs text-gray-500">EXE installer via Electron</p>
+              <span className="text-lg font-bold text-gray-900 block mb-1">Desktop App</span>
+              <p className="text-sm text-gray-600">Windows EXE installer</p>
             </div>
-            {wizard.selectedPlatforms.includes('desktop') && (
-              <Check className="w-5 h-5 text-blue-600 ml-auto" />
-            )}
           </button>
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">App Name *</label>
+        <label className="block text-base font-semibold text-gray-900 mb-2">App Name *</label>
         <input
           {...register('name')}
           className={inputClass}
           placeholder="My Awesome App"
         />
-        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+        {errors.name && <p className="text-red-600 text-sm mt-2 font-medium">{errors.name.message}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Website URL *</label>
+        <label className="block text-base font-semibold text-gray-900 mb-2">Website URL *</label>
         <div className="relative">
-          <Globe className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+          <Globe className="absolute left-4 top-4 w-6 h-6 text-gray-400" />
           <input
             {...register('url')}
-            className="w-full border rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full border-2 border-gray-300 rounded-xl pl-14 pr-5 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-gray-400"
             placeholder="https://example.com"
           />
         </div>
-        {errors.url && <p className="text-red-500 text-xs mt-1">{errors.url.message}</p>}
+        {errors.url && <p className="text-red-600 text-sm mt-2 font-medium">{errors.url.message}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Package Name</label>
+        <label className="block text-base font-semibold text-gray-900 mb-2">
+          Package Name <span className="text-sm font-normal text-gray-500">(Optional)</span>
+        </label>
         <input
           {...register('package_name')}
           className={inputClass}
           placeholder="com.example.myapp (auto-generated if empty)"
         />
+        <p className="text-sm text-gray-500 mt-2">Leave empty to auto-generate</p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+        <label className="block text-base font-semibold text-gray-900 mb-2">
+          Description <span className="text-sm font-normal text-gray-500">(Optional)</span>
+        </label>
         <textarea
           {...register('description')}
-          rows={3}
+          rows={4}
           className={`${inputClass} resize-none`}
-          placeholder="Describe your app..."
+          placeholder="Tell us what makes your app special..."
         />
-        {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+        {errors.description && <p className="text-red-600 text-sm mt-2 font-medium">{errors.description.message}</p>}
       </div>
 
-      <div className="flex justify-end pt-4">
+      <div className="flex justify-end pt-6 border-t-2 border-gray-100">
         <button
           type="submit"
           disabled={isLoading}
-          className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white px-8 py-4 rounded-xl font-semibold text-base hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           {isLoading ? (
             <Loader2 className="w-4 h-4 animate-spin" />
