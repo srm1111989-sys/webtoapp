@@ -137,14 +137,9 @@ const ANDROID_PLANS = [
 
 const DESKTOP_PLANS = [
   {
-    name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0,
-    description: '15-day free trial',
-    highlights: ['Windows .exe App', 'Custom Icon', 'Basic Features', 'Up to 10 Builds', 'Includes Watermark', '15-Day Trial'],
-  },
-  {
     name: 'Paid', slug: 'desktop-paid', price_inr: 200000, price_usd: 2400,
     description: 'Full desktop app, one-time',
-    highlights: ['All Desktop Features', 'No Watermark', 'No Trial Limit', 'System Tray Support', 'Custom Window Settings'],
+    highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '10 Builds / 30 Days'],
   },
 ]
 
@@ -302,32 +297,38 @@ export default function Landing() {
           </div>
 
           {/* Horizontal Scrolling Features */}
-          <div className="mb-16">
-            <div className="text-center mb-8">
+          <div className="mb-16 -mx-4 sm:-mx-6 lg:-mx-8">
+            <div className="text-center mb-8 px-4 sm:px-6 lg:px-8">
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">All 40+ Features at a Glance</h3>
-              <p className="text-gray-600">👉 Scroll horizontally to see all features →</p>
+              <p className="text-gray-600">👉 Swipe to see all features →</p>
             </div>
             <div className="relative">
               {/* Fade edges */}
-              <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-gray-50 via-gray-50/80 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 via-gray-50/80 to-transparent z-10 pointer-events-none"></div>
 
-              {/* Scrollable container */}
-              <div className="overflow-x-scroll scrollbar-hide -mx-4 px-4 scroll-smooth">
-                <div className="flex gap-3 sm:gap-4 pb-4 min-w-max">
+              {/* Scrollable container - Must scroll */}
+              <div
+                className="overflow-x-auto overflow-y-hidden scrollbar-hide px-4 sm:px-6 lg:px-8"
+                style={{
+                  overflowX: 'auto',
+                  WebkitOverflowScrolling: 'touch',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}
+              >
+                <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
                   {allPremiumFeatures.map((feature, idx) => (
                     <div
                       key={idx}
-                      className="flex-none w-32 sm:w-40 bg-white rounded-xl border-2 border-primary-100 p-3 sm:p-4 hover:border-primary-400 hover:shadow-lg transition-all cursor-pointer"
+                      className="flex-shrink-0 w-36 sm:w-40 bg-white rounded-xl border-2 border-primary-200 p-4 hover:border-primary-500 hover:shadow-xl transition-all"
                     >
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg flex items-center justify-center mb-2 sm:mb-3 mx-auto">
-                        <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mb-3 mx-auto shadow-lg">
+                        <feature.icon className="w-6 h-6 text-white" />
                       </div>
                       <div className="text-center">
-                        <p className="font-semibold text-xs sm:text-sm text-gray-900 leading-tight">{feature.title}</p>
-                      </div>
-                      <div className="mt-2 flex justify-center">
-                        <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                        <p className="font-semibold text-sm text-gray-900 leading-tight mb-2">{feature.title}</p>
+                        <Check className="w-4 h-4 text-green-600 mx-auto" />
                       </div>
                     </div>
                   ))}
@@ -412,9 +413,9 @@ export default function Landing() {
       {/* Pricing */}
       <section id="pricing" className="py-20 sm:py-32 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Android Pricing */}
-          <div className="mb-8">
-            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Android App Pricing</h2>
+          {/* Pricing Header */}
+          <div className="mb-12">
+            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-full px-6 py-3 mb-4">
               <Check className="w-5 h-5 text-green-600" />
               <span className="font-semibold text-green-900">ALL 40+ Features Included</span>
@@ -423,101 +424,72 @@ export default function Landing() {
               One-time payment • No subscriptions • No hidden charges • Lifetime access
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl">
-            {ANDROID_PLANS.map((plan) => (
-              <div
-                key={plan.slug}
-                className={`bg-white border rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-lg hover:shadow-xl transition-shadow ${
-                  plan.slug === 'android-paid' ? 'border-primary-500 ring-2 ring-primary-500' : ''
-                }`}
-              >
-                {plan.slug === 'android-paid' && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                    Best Value
-                  </span>
-                )}
-                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                <p className="text-gray-500 text-sm mb-3">{plan.description}</p>
-                <div className="mb-1">
-                  <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">
-                  {plan.price_inr > 0 ? 'one-time' : 'forever free'}
-                </p>
-                <ul className="space-y-2 flex-1 mb-6">
-                  {plan.highlights.map((h) => (
-                    <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
-                      <Check className="w-4 h-4 text-green-500 shrink-0" />
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to={isLoggedIn ? '/apps/create' : '/register'}
-                  className={`block text-center py-2.5 rounded-lg font-medium transition-colors ${
-                    plan.slug === 'android-paid'
-                      ? 'bg-primary-600 text-white hover:bg-primary-700'
-                      : 'border border-gray-300 hover:border-gray-400 text-gray-700'
-                  }`}
-                >
-                  {plan.price_inr === 0 ? 'Start Free' : 'Get Started'}
-                </Link>
-              </div>
-            ))}
-          </div>
 
-          {/* Desktop Pricing */}
-          <div className="mb-8 mt-16 sm:mt-20">
-            <h2 className="text-2xl sm:text-4xl font-bold mb-4">Desktop App Pricing</h2>
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-full px-6 py-3 mb-4">
-              <Check className="w-5 h-5 text-indigo-600" />
-              <span className="font-semibold text-indigo-900">Complete Desktop Features</span>
-            </div>
-            <p className="text-gray-600 max-w-2xl text-sm sm:text-base">
-              Windows .exe with system tray, custom window • One-time payment • No subscriptions
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl">
-            {DESKTOP_PLANS.map((plan) => (
-              <div
-                key={plan.slug}
-                className={`bg-white border rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-lg hover:shadow-xl transition-shadow ${
-                  plan.slug === 'desktop-paid' ? 'border-primary-500 ring-2 ring-primary-500' : ''
-                }`}
-              >
-                {plan.slug === 'desktop-paid' && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                    Best Value
-                  </span>
-                )}
-                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                <p className="text-gray-500 text-sm mb-3">{plan.description}</p>
-                <div className="mb-1">
-                  <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">
-                  {plan.price_inr > 0 ? 'one-time' : '15-day trial'}
-                </p>
-                <ul className="space-y-2 flex-1 mb-6">
-                  {plan.highlights.map((h) => (
-                    <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
-                      <Check className="w-4 h-4 text-green-500 shrink-0" />
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to={isLoggedIn ? '/apps/create' : '/register'}
-                  className={`block text-center py-2.5 rounded-lg font-medium transition-colors ${
-                    plan.slug === 'desktop-paid'
-                      ? 'bg-primary-600 text-white hover:bg-primary-700'
-                      : 'border border-gray-300 hover:border-gray-400 text-gray-700'
-                  }`}
-                >
-                  {plan.price_inr === 0 ? 'Start Free Trial' : 'Get Started'}
-                </Link>
+          {/* Pricing Cards - Android & Desktop in same row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
+            {/* Android Card */}
+            <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
+                🔥 Most Popular
+              </span>
+              <div className="flex items-center gap-2 mb-3">
+                <Smartphone className="w-6 h-6 text-primary-600" />
+                <h3 className="text-2xl font-bold">Android App</h3>
               </div>
-            ))}
+              <p className="text-gray-500 text-sm mb-3">All features, one-time payment</p>
+              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-4 border-2 border-primary-200">
+                <span className="text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">{formatPlanPrice(ANDROID_PLANS[0].price_inr, ANDROID_PLANS[0].price_usd)}</span>
+              </div>
+              <p className="text-sm font-semibold text-primary-600 mb-4">
+                💎 One-time payment
+              </p>
+              <ul className="space-y-2 flex-1 mb-6">
+                {ANDROID_PLANS[0].highlights.map((h) => (
+                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
+                    <Check className="w-4 h-4 text-green-500 shrink-0" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to={isLoggedIn ? '/apps/create' : '/register'}
+                className="block text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-lg"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            {/* Desktop Card */}
+            <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-6 sm:p-8 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
+                💻 Best Value
+              </span>
+              <div className="flex items-center gap-2 mb-3">
+                <Monitor className="w-6 h-6 text-primary-600" />
+                <h3 className="text-2xl font-bold">Desktop App</h3>
+              </div>
+              <p className="text-gray-500 text-sm mb-3">Full desktop app, one-time</p>
+              <div className="mb-1 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-4 border-2 border-primary-200">
+                <span className="text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">{formatPlanPrice(DESKTOP_PLANS[0].price_inr, DESKTOP_PLANS[0].price_usd)}</span>
+              </div>
+              <p className="text-sm font-semibold text-primary-600 mb-4">
+                💎 One-time payment
+              </p>
+              <ul className="space-y-2 flex-1 mb-6">
+                {DESKTOP_PLANS[0].highlights.map((h) => (
+                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
+                    <Check className="w-4 h-4 text-green-500 shrink-0" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to={isLoggedIn ? '/apps/create' : '/register'}
+                className="block text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-lg"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
 
           <div className="text-center mt-8">
