@@ -9,32 +9,27 @@ export default function PublicLayout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b bg-white sticky top-0 z-50 shadow-sm">
+      <header className="border-b bg-white sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16 gap-8">
-            {/* Logo - Left aligned */}
-            <Link to={accessToken ? '/dashboard' : '/'} className="flex items-center gap-2 text-xl font-bold text-primary-600 hover:text-primary-700 transition">
+          <div className="flex justify-between items-center h-16">
+            <Link to={accessToken ? '/dashboard' : '/'} className="flex items-center gap-2 text-xl font-bold text-primary-600">
               <Smartphone className="w-6 h-6" />
-              <span>WebToApp</span>
+              WebToApp
             </Link>
-
-            {/* Navigation - Center */}
-            <nav className="hidden md:flex items-center gap-8 flex-1">
-              <Link to="/features" className="text-gray-600 hover:text-gray-900 font-medium transition">Features</Link>
-              <Link to="/pricing" className="text-gray-600 hover:text-gray-900 font-medium transition">Pricing</Link>
-              <Link to="/blog" className="text-gray-600 hover:text-gray-900 font-medium transition">Blog</Link>
+            <nav className="hidden md:flex items-center gap-6">
+              <Link to="/features" className="text-gray-600 hover:text-gray-900">Features</Link>
+              <Link to="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link>
+              <Link to="/blog" className="text-gray-600 hover:text-gray-900">Blog</Link>
             </nav>
-
-            {/* Auth buttons - Right aligned */}
-            <div className="flex items-center gap-3 ml-auto">
+            <div className="flex items-center gap-3">
               {accessToken ? (
-                <Link to="/dashboard" className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-2.5 rounded-lg hover:from-primary-700 hover:to-primary-800 font-medium shadow-lg shadow-primary-200 transition-all">
+                <Link to="/dashboard" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 text-sm">
                   Dashboard
                 </Link>
               ) : (
                 <>
-                  <Link to="/login" className="hidden sm:inline text-gray-600 hover:text-gray-900 font-medium transition">Login</Link>
-                  <Link to="/register" className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-2.5 rounded-lg hover:from-primary-700 hover:to-primary-800 font-medium shadow-lg shadow-primary-200 transition-all">
+                  <Link to="/login" className="hidden sm:inline text-gray-600 hover:text-gray-900 text-sm">Login</Link>
+                  <Link to="/register" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 text-sm">
                     Get Started
                   </Link>
                 </>
