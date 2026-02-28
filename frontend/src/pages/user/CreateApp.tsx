@@ -1208,9 +1208,11 @@ function Step4PlanReview() {
       if (!wizard.appId || !selectedPlan) throw new Error('Missing data')
       const plan = (plans as Plan[])?.find((p) => p.id === selectedPlan)
 
+      const userCurrency = getUserCurrency()
       const res = await ordersApi.create({
         app_config_id: wizard.appId,
         plan_id: selectedPlan,
+        currency: userCurrency,
       })
       return { data: res.data, plan }
     },
