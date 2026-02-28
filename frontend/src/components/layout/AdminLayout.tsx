@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 import { LayoutDashboard, Users, ShoppingCart, Hammer, CreditCard, Settings, LogOut, Smartphone, Menu, X } from 'lucide-react'
 import { clsx } from 'clsx'
+import { useSEO } from '@/hooks/useSEO'
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -17,6 +18,12 @@ export default function AdminLayout() {
   const location = useLocation()
   const { logout } = useAuthStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Prevent admin pages from being indexed by search engines
+  useSEO({
+    title: 'Admin Dashboard',
+    noindex: true
+  })
 
   return (
     <div className="min-h-screen bg-gray-50">

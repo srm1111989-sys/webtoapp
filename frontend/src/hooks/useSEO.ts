@@ -5,9 +5,10 @@ interface SEOProps {
   description?: string
   canonical?: string
   ogType?: string
+  noindex?: boolean
 }
 
-export function useSEO({ title, description, canonical, ogType }: SEOProps) {
+export function useSEO({ title, description, canonical, ogType, noindex }: SEOProps) {
   useEffect(() => {
     document.title = `${title} | WebToApp`
 
@@ -24,6 +25,11 @@ export function useSEO({ title, description, canonical, ogType }: SEOProps) {
       setMeta('property', 'og:type', ogType)
     }
 
+    // Handle noindex for admin/private pages
+    if (noindex) {
+      setMeta('name', 'robots', 'noindex, nofollow')
+    }
+
     if (canonical) {
       let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
       if (link) {
@@ -38,8 +44,15 @@ export function useSEO({ title, description, canonical, ogType }: SEOProps) {
 
     return () => {
       document.title = 'WebToApp - Convert Any Website Into Android & Windows Apps'
+      // Remove noindex when leaving the page
+      if (noindex) {
+        const robotsMeta = document.querySelector<HTMLMetaElement>('meta[name="robots"]')
+        if (robotsMeta) {
+          robotsMeta.remove()
+        }
+      }
     }
-  }, [title, description, canonical, ogType])
+  }, [title, description, canonical, ogType, noindex])
 }
 
 function setMeta(attr: 'name' | 'property', key: string, content: string) {

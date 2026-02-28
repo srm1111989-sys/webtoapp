@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import { Shield, Mail, Lock, Loader2 } from 'lucide-react'
 import { adminApi } from '@/api/admin'
 import { useAuthStore } from '@/store/authStore'
+import { useSEO } from '@/hooks/useSEO'
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email'),
@@ -19,6 +20,12 @@ type LoginData = z.infer<typeof loginSchema>
 export default function AdminLogin() {
   const navigate = useNavigate()
   const { setTokens, setAdmin } = useAuthStore()
+
+  // Prevent admin login page from being indexed
+  useSEO({
+    title: 'Admin Login',
+    noindex: true
+  })
 
   const {
     register,
