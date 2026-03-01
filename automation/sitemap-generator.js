@@ -12,8 +12,8 @@ const CONTENT_SCHEDULE = {
   '/features': { date: '2026-02-28', priority: '0.8', changefreq: 'monthly' },
 
   // Week 1 - Pillar Posts
-  '/blog/convert-website-to-android-app': {
-    date: '2026-03-02',
+  '/blog/convert-website-to-android-app-2026': {
+    date: '2026-03-01',
     priority: '1.0',
     changefreq: 'weekly',
   },
