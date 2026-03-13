@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
-import { formatPlanPrice } from '@/utils/format'
+import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 import {
   Smartphone, Monitor, Zap, Shield, ArrowRight, Star, Globe, Check,
   Bell, Fingerprint, QrCode, WifiOff, Navigation, Camera, MapPin, Upload,
   Code, Palette, Share2, RefreshCw, LogOut, Cookie, Database, Settings,
   Video, Volume2, Vibrate, Battery, Info, BarChart, AlertCircle, Languages,
-  Download, RotateCw, Maximize
+  Download, RotateCw, Maximize, TrendingDown, IndianRupee, DollarSign
 } from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
 
@@ -153,8 +153,8 @@ const faqs = [
 
 export default function Landing() {
   useSEO({
-    title: 'Convert Any Website Into Android & Windows Apps',
-    description: 'Convert your website into professional Android APK, AAB, and Windows .exe apps in minutes. No coding required. One-time payment, no subscriptions.',
+    title: 'WebToApp - Convert Any Website Into Android APK & Windows Apps Free',
+    description: 'WebToApp converts any website into professional Android APK, AAB, and Windows .exe apps in minutes. No coding required. Free plan available, one-time payment.',
   })
   const { accessToken } = useAuthStore()
   const isLoggedIn = !!accessToken
@@ -519,8 +519,117 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Price Comparison */}
       <section className="py-12 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-14">
+            <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+              <TrendingDown className="w-4 h-4" />
+              Save up to 95%
+            </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+              Why Pay More Elsewhere?
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+              Most web-to-app services charge recurring fees or expensive one-time prices with fewer features.
+            </p>
+          </div>
+
+          {/* Compact Comparison */}
+          <div className="max-w-4xl mx-auto overflow-x-auto -mx-4 px-4 sm:mx-auto sm:px-0">
+            <table className="w-full border-collapse min-w-[600px]">
+              <thead>
+                <tr>
+                  <th className="text-left py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-500 border-b-2 border-gray-100"></th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service A</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service B</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service C</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-bold border-b-2 border-primary-300 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(getUserCurrency() === 'INR' ? [
+                  { feature: 'Android App', a: '₹8,000/yr', b: '₹15,000', c: '₹25,000+', us: '₹2,499', bold: true },
+                  { feature: 'Desktop App', a: '₹12,000/yr', b: '₹20,000', c: '₹30,000+', us: '₹1,999', bold: true },
+                  { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', bold: false },
+                  { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', bold: false },
+                  { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', bold: false },
+                  { feature: 'Push Notifications', a: 'Extra ₹2,000/yr', b: 'Included', c: 'Extra', us: 'Included', bold: false },
+                  { feature: 'AdMob / Monetization', a: 'Extra ₹1,500', b: 'N/A', c: 'Extra', us: 'Included', bold: false },
+                  { feature: 'Biometric Auth', a: 'N/A', b: 'N/A', c: 'Extra ₹5,000', us: 'Included', bold: false },
+                  { feature: 'Keystore / Source', a: 'N/A', b: 'Extra ₹5,000', c: 'Included', us: 'Included', bold: false },
+                  { feature: 'Builds / Month', a: '1', b: '3', c: '5', us: '10', bold: false },
+                ] : [
+                  { feature: 'Android App', a: '$99/yr', b: '$199', c: '$499+', us: '$29.99', bold: true },
+                  { feature: 'Desktop App', a: '$149/yr', b: '$249', c: '$599+', us: '$23.99', bold: true },
+                  { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', bold: false },
+                  { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', bold: false },
+                  { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', bold: false },
+                  { feature: 'Push Notifications', a: 'Extra $25/yr', b: 'Included', c: 'Extra', us: 'Included', bold: false },
+                  { feature: 'AdMob / Monetization', a: 'Extra $19', b: 'N/A', c: 'Extra', us: 'Included', bold: false },
+                  { feature: 'Biometric Auth', a: 'N/A', b: 'N/A', c: 'Extra $59', us: 'Included', bold: false },
+                  { feature: 'Keystore / Source', a: 'N/A', b: 'Extra $49', c: 'Included', us: 'Included', bold: false },
+                  { feature: 'Builds / Month', a: '1', b: '3', c: '5', us: '10', bold: false },
+                ]).map((row, idx) => (
+                  <tr key={idx} className={row.bold ? 'bg-gray-50' : ''}>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm font-medium text-gray-900 border-b border-gray-100">{row.feature}</td>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.a}</td>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.b}</td>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.c}</td>
+                    <td className={`py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-center border-b border-primary-100 bg-primary-50 ${
+                      row.bold ? 'font-bold text-primary-700 text-sm sm:text-base' : 'font-semibold text-primary-600'
+                    }`}>{row.us}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Savings Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mt-10">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-5 text-center">
+              <div className="inline-flex p-2.5 rounded-xl bg-green-100 mb-3">
+                {getUserCurrency() === 'INR'
+                  ? <IndianRupee className="w-5 h-5 text-green-600" />
+                  : <DollarSign className="w-5 h-5 text-green-600" />
+                }
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-green-700">
+                {getUserCurrency() === 'INR' ? 'Save ₹22,500+' : 'Save $470+'}
+              </p>
+              <p className="text-xs text-green-600 mt-1 font-medium">vs market average</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5 text-center">
+              <div className="inline-flex p-2.5 rounded-xl bg-blue-100 mb-3">
+                <Shield className="w-5 h-5 text-blue-600" />
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-blue-700">No Subscriptions</p>
+              <p className="text-xs text-blue-600 mt-1 font-medium">One-time payment only</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-50 to-violet-50 border-2 border-purple-200 rounded-2xl p-5 text-center">
+              <div className="inline-flex p-2.5 rounded-xl bg-purple-100 mb-3">
+                <Zap className="w-5 h-5 text-purple-600" />
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-purple-700">50+ Features</p>
+              <p className="text-xs text-purple-600 mt-1 font-medium">All included, no extras</p>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              to="/pricing"
+              className="text-primary-600 hover:text-primary-700 font-semibold text-sm inline-flex items-center gap-1.5 hover:gap-2.5 transition-all"
+            >
+              View full comparison <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-12 sm:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">What Our Users Say</h2>
           <p className="text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
