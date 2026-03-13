@@ -4399,8 +4399,8 @@ The system automatically detects:
 #### Step 3: Configure Platform-Specific Settings
 
 **Android Package Name:**
-Automatically generated as `com.yourwebsite.app` but you can customize it to:
-- `com.yourcompany.appname`
+Automatically generated as com.yourwebsite.app but you can customize it to:
+- com.yourcompany.appname
 - Must be unique (especially for Play Store)
 - Cannot be changed after first Play Store upload
 
@@ -4422,7 +4422,7 @@ Automatically set to latest Android SDK (Android 14/15 in 2026) for Play Store c
 1. Create Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
 2. Add Android app to Firebase
 3. Enter your package name from Step 3
-4. Download `google-services.json`
+4. Download google-services.json
 5. Upload to WebsiteToApp dashboard
 6. Configure notification icon and color
 7. Done! You can now send push via Firebase Console or API
