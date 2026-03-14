@@ -15,6 +15,7 @@ import RefundPolicy from '@/pages/public/RefundPolicy'
 import Contact from '@/pages/public/Contact'
 import Blog from '@/pages/public/Blog'
 import BlogPost from '@/pages/public/BlogPost'
+import ConvertPage from '@/pages/public/ConvertPage'
 
 // Auth pages
 import Login from '@/pages/auth/Login'
@@ -55,6 +56,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/convert/:slug" element={<ConvertPage />} />
       </Route>
 
       {/* Auth routes */}
