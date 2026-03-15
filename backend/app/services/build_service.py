@@ -56,9 +56,11 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
     """Convert app config to GitLab CI pipeline variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
 
-    # Determine watermark: free plans (amount=0) get watermark
+    # Determine watermark and trial: free plans (amount=0) get watermark + 15-day trial
     is_free = order.amount == 0
     show_watermark = is_free
+    trial_days = 15 if is_free else 0
+    purchase_url = f"{settings.app_url}/pricing" if is_free else ""
 
     variables = {
         "APP_NAME": app_config.name,
@@ -81,7 +83,13 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
     # Feature flags
     features = dict(app_config.features or {})
     features["show_watermark"] = show_watermark
+    features["trial_days"] = trial_days
+    features["purchase_url"] = purchase_url
     variables["FEATURES_JSON"] = json.dumps(features)
+
+    # Trial and purchase variables for template
+    variables["TRIAL_DAYS"] = str(trial_days)
+    variables["PURCHASE_URL"] = purchase_url
 
     # Firebase
     if app_config.firebase_config:

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import { GoogleLogin } from '@react-oauth/google'
 import { authApi } from '@/api/auth'
 import { useAuthStore } from '@/store/authStore'
+import { trackRegistration, trackGoogleSignUp } from '@/utils/gtag'
 
 const registerSchema = z
   .object({
@@ -49,6 +50,7 @@ export default function Register() {
         password: data.password,
       })
       setSuccess(true)
+      trackRegistration()
       toast.success('Account created successfully!')
     } catch (err: any) {
       const message = err?.response?.data?.detail || 'Registration failed. Please try again.'
@@ -68,6 +70,7 @@ export default function Register() {
       const userRes = await authApi.getMe()
       setUser(userRes.data)
 
+      trackGoogleSignUp()
       toast.success('Account created successfully!')
       navigate('/dashboard')
     } catch (err: any) {

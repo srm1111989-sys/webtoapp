@@ -4,13 +4,16 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -61,6 +65,14 @@ public class WebViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         loadConfig();
         setupWindow();
+
+        // Check trial expiry for free plan apps
+        int trialDays = features.optInt("trial_days", 0);
+        if (trialDays > 0 && isTrialExpired(trialDays)) {
+            showTrialExpiredScreen();
+            return;
+        }
+
         setupLayout();
         setupWebView();
         setupFeatures();
@@ -387,9 +399,116 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isTrialExpired(int trialDays) {
+        SharedPreferences prefs = getSharedPreferences("webtoapp_trial", MODE_PRIVATE);
+        long firstLaunch = prefs.getLong("first_launch", 0);
+        if (firstLaunch == 0) {
+            prefs.edit().putLong("first_launch", System.currentTimeMillis()).apply();
+            return false;
+        }
+        long elapsed = System.currentTimeMillis() - firstLaunch;
+        long trialMs = (long) trialDays * 24 * 60 * 60 * 1000;
+        return elapsed > trialMs;
+    }
+
+    private void showTrialExpiredScreen() {
+        String primaryColor = config.optString("primary_color", "#2563EB");
+        String purchaseUrl = features.optString("purchase_url", "https://websitetoapp.app/pricing");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setGravity(Gravity.CENTER);
+        layout.setBackgroundColor(Color.WHITE);
+        int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
+                getResources().getDisplayMetrics());
+        layout.setPadding(padding, padding, padding, padding);
+
+        // Trial expired icon
+        TextView icon = new TextView(this);
+        icon.setText("\u23F0");
+        icon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 64);
+        icon.setGravity(Gravity.CENTER);
+        layout.addView(icon);
+
+        // Title
+        TextView title = new TextView(this);
+        title.setText("Trial Expired");
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+        title.setTypeface(null, Typeface.BOLD);
+        title.setTextColor(Color.parseColor("#111827"));
+        title.setGravity(Gravity.CENTER);
+        int titleMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16,
+                getResources().getDisplayMetrics());
+        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        titleParams.setMargins(0, titleMargin, 0, 0);
+        title.setLayoutParams(titleParams);
+        layout.addView(title);
+
+        // Message
+        TextView message = new TextView(this);
+        message.setText("Your 15-day free trial has ended.\nUpgrade to Premium to continue using this app with all features and no watermark.");
+        message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        message.setTextColor(Color.parseColor("#6B7280"));
+        message.setGravity(Gravity.CENTER);
+        message.setLineSpacing(8, 1);
+        LinearLayout.LayoutParams msgParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int msgMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12,
+                getResources().getDisplayMetrics());
+        msgParams.setMargins(0, msgMargin, 0, 0);
+        message.setLayoutParams(msgParams);
+        layout.addView(message);
+
+        // Purchase button
+        Button buyButton = new Button(this);
+        buyButton.setText("Upgrade to Premium");
+        buyButton.setTextColor(Color.WHITE);
+        buyButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        buyButton.setTypeface(null, Typeface.BOLD);
+        buyButton.setAllCaps(false);
+        GradientDrawable btnBg = new GradientDrawable();
+        btnBg.setColor(Color.parseColor(primaryColor));
+        btnBg.setCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12,
+                getResources().getDisplayMetrics()));
+        buyButton.setBackground(btnBg);
+        int btnPadH = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
+                getResources().getDisplayMetrics());
+        int btnPadV = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14,
+                getResources().getDisplayMetrics());
+        buyButton.setPadding(btnPadH, btnPadV, btnPadH, btnPadV);
+        LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int btnMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24,
+                getResources().getDisplayMetrics());
+        btnParams.setMargins(0, btnMargin, 0, 0);
+        buyButton.setLayoutParams(btnParams);
+        buyButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(purchaseUrl));
+            startActivity(intent);
+        });
+        layout.addView(buyButton);
+
+        // Powered by text
+        TextView powered = new TextView(this);
+        powered.setText("Powered by WebToApp");
+        powered.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        powered.setTextColor(Color.parseColor("#9CA3AF"));
+        powered.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams poweredParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int poweredMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
+                getResources().getDisplayMetrics());
+        poweredParams.setMargins(0, poweredMargin, 0, 0);
+        powered.setLayoutParams(poweredParams);
+        layout.addView(powered);
+
+        setContentView(layout);
+    }
+
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
+        if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();

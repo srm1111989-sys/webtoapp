@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { appsApi } from '@/api/apps'
+import { ordersApi } from '@/api/orders'
 import { formatDate } from '@/utils/format'
-import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight } from 'lucide-react'
+import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
   draft: 'bg-amber-50 text-amber-700 border border-amber-200',
@@ -23,7 +24,18 @@ export default function MyApps() {
     select: (res) => res.data,
   })
 
+  const { data: ordersData } = useQuery({
+    queryKey: ['orders'],
+    queryFn: () => ordersApi.list(1, 100),
+    select: (res) => res.data,
+  })
+
   const apps = appsData?.apps ?? []
+  const orders = ordersData?.orders ?? []
+  const hasPaidOrder = orders.some((o) => o.amount > 0 && o.status === 'paid')
+  const isFreeUser = !hasPaidOrder
+  const appLimit = isFreeUser ? 5 : Infinity
+  const canCreateMore = apps.length < appLimit
 
   return (
     <div>
@@ -34,15 +46,47 @@ export default function MyApps() {
           <p className="mt-2 text-gray-600">
             Manage and track all your app conversions in one place
           </p>
+          {isFreeUser && (
+            <p className="mt-1 text-sm text-amber-600 flex items-center gap-1">
+              <AlertTriangle className="w-4 h-4" />
+              Free plan: {apps.length}/5 apps used
+            </p>
+          )}
         </div>
-        <Link
-          to="/apps/create"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-200 hover:shadow-xl font-medium self-start sm:self-auto"
-        >
-          <Plus className="w-5 h-5" />
-          Create New App
-        </Link>
+        {canCreateMore ? (
+          <Link
+            to="/apps/create"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-200 hover:shadow-xl font-medium self-start sm:self-auto"
+          >
+            <Plus className="w-5 h-5" />
+            Create New App
+          </Link>
+        ) : (
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl hover:from-amber-600 hover:to-amber-700 transition-all shadow-lg font-medium self-start sm:self-auto"
+          >
+            Upgrade to Premium
+          </Link>
+        )}
       </div>
+
+      {/* Free plan limit banner */}
+      {isFreeUser && apps.length >= 5 && (
+        <div className="mb-6 bg-amber-50 border-2 border-amber-200 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-amber-800">App limit reached</p>
+            <p className="text-sm text-amber-700">
+              Free plan allows maximum 5 apps.{' '}
+              <Link to="/pricing" className="text-primary-600 font-semibold hover:underline">
+                Upgrade to Premium
+              </Link>{' '}
+              to create unlimited apps with no watermark and no trial limit.
+            </p>
+          </div>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="flex items-center justify-center py-32">

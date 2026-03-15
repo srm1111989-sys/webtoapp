@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Check, X } from 'lucide-react'
+import { Check, X, TrendingDown, Shield, Zap, IndianRupee, DollarSign } from 'lucide-react'
 import { plansApi } from '@/api/orders'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 import { useSEO } from '@/hooks/useSEO'
+import { trackViewPricing } from '@/utils/gtag'
 import { clsx } from 'clsx'
 
 const featureLabels: Record<string, string> = {
@@ -59,8 +60,8 @@ const featureLabels: Record<string, string> = {
 const ANDROID_FALLBACK = [
   {
     id: '1', name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0,
-    billing_type: 'one_time', max_apps: 1, sort_order: 1, is_active: true, platform: 'android',
-    description: 'Try with basic features',
+    billing_type: 'one_time', max_apps: 5, sort_order: 1, is_active: true, platform: 'android',
+    description: 'Build up to 5 apps with watermark & 15-day trial',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, file_upload: false, location_services: false, camera_access: false, onboarding_screen: false, app_shortcut: false, secondary_navigation: false, social_login: false, in_app_update: false, background_location: false, facebook_app_events: false, in_app_purchases: false, in_app_review: false, background_service: false, native_contacts: false, appsflyer: false, custom_media_player: false, offer_card: false, intercom: false, dynamic_app_icon: false, bluetooth_connectivity: false, download_file_manager: false, floating_action_menu: false, revenue_cat: false, native_datastore: false, passcode_lock: false, app_auto_launch: false, advanced_bottom_navigation: false, firebase_notification: false, tap_to_pay: false, aab_output: false, pwa: false, priority_support: false },
   },
   {
@@ -74,8 +75,8 @@ const ANDROID_FALLBACK = [
 const DESKTOP_FALLBACK = [
   {
     id: '4', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0,
-    billing_type: 'one_time', max_apps: 1, sort_order: 4, is_active: true, platform: 'desktop',
-    description: '15-day free trial',
+    billing_type: 'one_time', max_apps: 5, sort_order: 4, is_active: true, platform: 'desktop',
+    description: 'Build up to 5 apps with watermark & 15-day trial',
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: false, custom_window_size: false, auto_updater: false, native_notifications: false, kiosk_mode: false },
   },
   {
@@ -109,6 +110,7 @@ export default function Pricing() {
     title: 'Pricing - Simple One-Time Plans',
     description: 'Convert your website to an Android or Windows app. Simple one-time pricing, no subscriptions. Android from $0, Desktop from $0.',
   })
+  trackViewPricing()
   const { data: plans } = useQuery({
     queryKey: ['plans'],
     queryFn: () => plansApi.list().then(r => r.data),
@@ -121,32 +123,78 @@ export default function Pricing() {
     ? (plans as any[]).filter((p) => p.platform === 'desktop')
     : DESKTOP_FALLBACK
 
+  const androidFreePlan = androidPlans.find((p: any) => p.price_inr === 0)
+  const androidPaidPlan = androidPlans.find((p: any) => p.price_inr > 0)
+  const desktopFreePlan = desktopPlans.find((p: any) => p.price_inr === 0)
+  const desktopPaidPlan = desktopPlans.find((p: any) => p.price_inr > 0)
+
   return (
     <div>
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">Simple, One-Time Pricing</h1>
-          <p className="text-primary-100 text-base sm:text-lg">No subscriptions. No monthly fees. Pay once for the plan you need.</p>
+          <p className="text-primary-100 text-base sm:text-lg">Start free, upgrade when you're ready. No subscriptions.</p>
         </div>
       </section>
 
-      {/* All Plans */}
+      {/* Android Plans */}
       <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Choose Your Plan</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
-          {/* Android Paid Plan */}
-          {androidPlans.filter((p: any) => Object.keys(p.features).length > 0 && p.price_inr > 0).map((plan: any) => (
-            <div
-              key={plan.slug}
-              className="border border-primary-500 ring-2 ring-primary-500 relative rounded-xl p-4 sm:p-6 flex flex-col bg-white"
-            >
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                🔥 Most Popular
-              </span>
-              <h3 className="text-xl font-bold mb-1">Android App</h3>
-              <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Android App Plans</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
+          {/* Android Free Plan */}
+          {androidFreePlan && (
+            <div className="border-2 border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col bg-white">
+              <h3 className="text-xl font-bold mb-1">Free Plan</h3>
+              <p className="text-gray-500 text-sm mb-4">Try before you buy - build up to 5 apps</p>
               <div className="mb-4">
-                <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
+                <span className="text-3xl font-bold">Free</span>
+                <span className="text-gray-500 text-sm ml-1">forever</span>
+              </div>
+              <Link
+                to="/register"
+                className="block text-center py-2 rounded-lg font-medium mb-6 bg-gray-100 text-gray-800 hover:bg-gray-200"
+              >
+                Get Started Free
+              </Link>
+              <ul className="space-y-2 flex-1">
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Build up to <strong>5 apps</strong></span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Basic features (icon, splash, colors)</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-amber-600">
+                  <X className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>WebToApp watermark shown</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-amber-600">
+                  <X className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>15-day trial (app shows upgrade screen after)</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <X className="w-4 h-4 text-gray-300 shrink-0" />
+                  <span className="text-gray-400">No keystore download</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <X className="w-4 h-4 text-gray-300 shrink-0" />
+                  <span className="text-gray-400">No advanced features</span>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {/* Android Paid Plan */}
+          {androidPaidPlan && (
+            <div className="border border-primary-500 ring-2 ring-primary-500 relative rounded-xl p-4 sm:p-6 flex flex-col bg-white">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                Recommended
+              </span>
+              <h3 className="text-xl font-bold mb-1">Premium Plan</h3>
+              <p className="text-gray-500 text-sm mb-4">{androidPaidPlan.description}</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold">{formatPlanPrice(androidPaidPlan.price_inr, androidPaidPlan.price_usd)}</span>
                 <span className="text-green-700 text-sm font-semibold"> one-time</span>
               </div>
               <Link
@@ -156,36 +204,100 @@ export default function Pricing() {
                 Get Started
               </Link>
               <ul className="space-y-2 flex-1">
-                {Object.entries(featureLabels).map(([key, label]) => {
-                  const enabled = (plan.features as Record<string, boolean>)[key]
-                  return (
-                  <li key={key} className="flex items-center gap-2 text-sm">
-                    {enabled ? (
-                      <Check className="w-4 h-4 text-green-500 shrink-0" />
-                    ) : (
-                      <X className="w-4 h-4 text-gray-300 shrink-0" />
-                    )}
-                    <span className={enabled ? '' : 'text-gray-400'}>{label}</span>
-                  </li>
-                  )
-                })}
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span><strong>10 builds/month</strong> per website</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>No watermark</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>No trial limit - works forever</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Keystore download</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>All 50+ features</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Priority support</span>
+                </li>
+              </ul>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-xs text-gray-500 font-medium mb-2">All features included:</p>
+                <div className="grid grid-cols-2 gap-1">
+                  {Object.entries(featureLabels).map(([key, label]) => {
+                    const enabled = (androidPaidPlan.features as Record<string, boolean>)[key]
+                    return enabled ? (
+                      <span key={key} className="text-xs text-gray-600 flex items-center gap-1">
+                        <Check className="w-3 h-3 text-green-500 shrink-0" />
+                        {label}
+                      </span>
+                    ) : null
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Desktop Plans */}
+      <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4 bg-gray-50">
+        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Desktop App Plans</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
+          {/* Desktop Free Plan */}
+          {desktopFreePlan && (
+            <div className="border-2 border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col bg-white">
+              <h3 className="text-xl font-bold mb-1">Free Plan</h3>
+              <p className="text-gray-500 text-sm mb-4">15-day free trial with basic features</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold">Free</span>
+                <span className="text-gray-500 text-sm ml-1">15-day trial</span>
+              </div>
+              <Link
+                to="/register"
+                className="block text-center py-2 rounded-lg font-medium mb-6 bg-gray-100 text-gray-800 hover:bg-gray-200"
+              >
+                Start Free Trial
+              </Link>
+              <ul className="space-y-2 flex-1">
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Build up to <strong>5 apps</strong></span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Basic customization</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-amber-600">
+                  <X className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>WebToApp watermark</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-amber-600">
+                  <X className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span>15-day trial (shows upgrade screen after)</span>
+                </li>
               </ul>
             </div>
-          ))}
+          )}
 
           {/* Desktop Paid Plan */}
-          {desktopPlans.filter((p: any) => p.price_inr > 0).map((plan: any) => (
-            <div
-              key={plan.slug}
-              className="border border-primary-500 ring-2 ring-primary-500 relative rounded-xl p-4 sm:p-6 flex flex-col bg-white"
-            >
+          {desktopPaidPlan && (
+            <div className="border border-primary-500 ring-2 ring-primary-500 relative rounded-xl p-4 sm:p-6 flex flex-col bg-white">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-600 text-white text-xs px-3 py-1 rounded-full font-medium">
-                💻 Best Value
+                Best Value
               </span>
-              <h3 className="text-xl font-bold mb-1">Desktop App</h3>
-              <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
+              <h3 className="text-xl font-bold mb-1">Premium Plan</h3>
+              <p className="text-gray-500 text-sm mb-4">{desktopPaidPlan.description}</p>
               <div className="mb-4">
-                <span className="text-3xl font-bold">{formatPlanPrice(plan.price_inr, plan.price_usd)}</span>
+                <span className="text-3xl font-bold">{formatPlanPrice(desktopPaidPlan.price_inr, desktopPaidPlan.price_usd)}</span>
                 <span className="text-green-700 text-sm font-semibold"> one-time</span>
               </div>
               <Link
@@ -195,22 +307,162 @@ export default function Pricing() {
                 Get Started
               </Link>
               <ul className="space-y-2 flex-1">
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span><strong>10 builds/month</strong> per website</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>No watermark</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>No trial limit - works forever</span>
+                </li>
                 {Object.entries(desktopFeatureLabels).map(([key, label]) => {
-                  const enabled = (plan.features as Record<string, boolean>)[key]
-                  return (
-                  <li key={key} className="flex items-center gap-2 text-sm">
-                    {enabled ? (
+                  const enabled = (desktopPaidPlan.features as Record<string, boolean>)[key]
+                  if (key === 'watermark' || key === 'trial_days') return null
+                  return enabled ? (
+                    <li key={key} className="flex items-center gap-2 text-sm">
                       <Check className="w-4 h-4 text-green-500 shrink-0" />
-                    ) : (
-                      <X className="w-4 h-4 text-gray-300 shrink-0" />
-                    )}
-                    <span className={enabled ? '' : 'text-gray-400'}>{label}</span>
-                  </li>
-                  )
+                      <span>{label}</span>
+                    </li>
+                  ) : null
                 })}
               </ul>
             </div>
-          ))}
+          )}
+        </div>
+      </section>
+
+      {/* Price Comparison with Industry */}
+      <section className="py-10 sm:py-20 max-w-7xl mx-auto px-4">
+        <div className="text-center mb-10 sm:mb-14">
+          <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+            <TrendingDown className="w-4 h-4" />
+            Save up to 95%
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">How We Compare</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Most web-to-app services charge recurring fees or expensive one-time prices.
+            See how much you save with WebToApp.
+          </p>
+        </div>
+
+        {/* Comparison Table */}
+        <div className="max-w-4xl mx-auto overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="text-left py-4 px-4 sm:px-6 text-sm font-semibold text-gray-500 border-b-2 border-gray-100">Feature</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service A</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service B</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service C</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold border-b-2 border-primary-200 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(getUserCurrency() === 'INR' ? [
+                { feature: 'Android App Price', a: '₹8,000/yr', b: '₹15,000', c: '₹25,000+', us: '₹2,499', highlight: true },
+                { feature: 'Desktop App Price', a: '₹12,000/yr', b: '₹20,000', c: '₹30,000+', us: '₹1,999', highlight: true },
+                { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', highlight: false },
+                { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', highlight: false },
+                { feature: 'Push Notifications', a: 'Extra ₹2,000/yr', b: 'Included', c: 'Extra', us: 'Included', highlight: false },
+                { feature: 'AdMob Integration', a: 'Extra ₹1,500', b: 'Not Available', c: 'Extra', us: 'Included', highlight: false },
+                { feature: 'Custom Navigation', a: 'Premium Only', b: 'Limited', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'QR Scanner', a: 'Not Available', b: 'Extra', c: 'Not Available', us: 'Included', highlight: false },
+                { feature: 'Biometric Auth', a: 'Not Available', b: 'Not Available', c: 'Extra ₹5,000', us: 'Included', highlight: false },
+                { feature: 'Firebase Integration', a: 'Extra', b: 'Extra ₹3,000', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', highlight: false },
+                { feature: 'Source Code / Keystore', a: 'Not Available', b: 'Extra ₹5,000', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'Play Store Bundle (AAB)', a: 'Extra', b: 'Included', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'Builds Per Month', a: '1', b: '3', c: '5', us: '10', highlight: false },
+                { feature: 'Priority Support', a: 'Extra', b: 'Email Only', c: 'Included', us: 'Included', highlight: false },
+              ] : [
+                { feature: 'Android App Price', a: '$99/yr', b: '$199', c: '$499+', us: '$29.99', highlight: true },
+                { feature: 'Desktop App Price', a: '$149/yr', b: '$249', c: '$599+', us: '$23.99', highlight: true },
+                { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', highlight: false },
+                { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', highlight: false },
+                { feature: 'Push Notifications', a: 'Extra $25/yr', b: 'Included', c: 'Extra', us: 'Included', highlight: false },
+                { feature: 'AdMob Integration', a: 'Extra $19', b: 'Not Available', c: 'Extra', us: 'Included', highlight: false },
+                { feature: 'Custom Navigation', a: 'Premium Only', b: 'Limited', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'QR Scanner', a: 'Not Available', b: 'Extra', c: 'Not Available', us: 'Included', highlight: false },
+                { feature: 'Biometric Auth', a: 'Not Available', b: 'Not Available', c: 'Extra $59', us: 'Included', highlight: false },
+                { feature: 'Firebase Integration', a: 'Extra', b: 'Extra $39', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', highlight: false },
+                { feature: 'Source Code / Keystore', a: 'Not Available', b: 'Extra $49', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'Play Store Bundle (AAB)', a: 'Extra', b: 'Included', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'Builds Per Month', a: '1', b: '3', c: '5', us: '10', highlight: false },
+                { feature: 'Priority Support', a: 'Extra', b: 'Email Only', c: 'Included', us: 'Included', highlight: false },
+              ]).map((row, idx) => (
+                <tr key={idx} className={row.highlight ? 'bg-gray-50' : ''}>
+                  <td className="py-3 px-4 sm:px-6 text-sm font-medium text-gray-900 border-b border-gray-100">
+                    {row.feature}
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 text-sm text-gray-500 text-center border-b border-gray-100">
+                    {row.a}
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 text-sm text-gray-500 text-center border-b border-gray-100">
+                    {row.b}
+                  </td>
+                  <td className="py-3 px-4 sm:px-6 text-sm text-gray-500 text-center border-b border-gray-100">
+                    {row.c}
+                  </td>
+                  <td className={`py-3 px-4 sm:px-6 text-sm text-center border-b border-primary-100 bg-primary-50 ${
+                    row.highlight ? 'font-bold text-primary-700 text-base' : 'font-semibold text-primary-600'
+                  }`}>
+                    {row.us}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Savings Highlight Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mt-10 sm:mt-14">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-5 sm:p-6 text-center">
+            <div className="inline-flex p-3 rounded-xl bg-green-100 mb-3">
+              {getUserCurrency() === 'INR'
+                ? <IndianRupee className="w-6 h-6 text-green-600" />
+                : <DollarSign className="w-6 h-6 text-green-600" />
+              }
+            </div>
+            <p className="text-2xl sm:text-3xl font-bold text-green-700">
+              {getUserCurrency() === 'INR' ? 'Up to ₹22,500' : 'Up to $470'}
+            </p>
+            <p className="text-sm text-green-600 mt-1 font-medium">Saved vs competitors</p>
+            <p className="text-xs text-gray-500 mt-2">Compared to average market price for similar features</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5 sm:p-6 text-center">
+            <div className="inline-flex p-3 rounded-xl bg-blue-100 mb-3">
+              <Shield className="w-6 h-6 text-blue-600" />
+            </div>
+            <p className="text-2xl sm:text-3xl font-bold text-blue-700">No Recurring Fees</p>
+            <p className="text-sm text-blue-600 mt-1 font-medium">One-time payment</p>
+            <p className="text-xs text-gray-500 mt-2">Others charge monthly or yearly subscriptions that add up fast</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-purple-50 to-violet-50 border-2 border-purple-200 rounded-2xl p-5 sm:p-6 text-center">
+            <div className="inline-flex p-3 rounded-xl bg-purple-100 mb-3">
+              <Zap className="w-6 h-6 text-purple-600" />
+            </div>
+            <p className="text-2xl sm:text-3xl font-bold text-purple-700">50+ Features</p>
+            <p className="text-sm text-purple-600 mt-1 font-medium">All included in one price</p>
+            <p className="text-xs text-gray-500 mt-2">Others charge extra for push notifications, ads, biometric &amp; more</p>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-10 sm:mt-14">
+          <p className="text-gray-600 mb-5">Start with our free plan. No credit card required.</p>
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-200 hover:shadow-xl font-semibold text-base"
+          >
+            Get Started Free
+          </Link>
         </div>
       </section>
     </div>

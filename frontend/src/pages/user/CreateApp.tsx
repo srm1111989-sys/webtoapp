@@ -66,6 +66,7 @@ import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
 import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
 import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
+import { trackPurchase, trackBeginCheckout, trackFreeAppBuild, trackAppCreated } from '@/utils/gtag'
 import type { Plan, NavigationItem } from '@/types'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 
@@ -412,6 +413,7 @@ function Step0BasicInfo() {
         packageName: res.data.package_name || '',
         description: res.data.description || '',
       })
+      trackAppCreated(res.data.name, wizard.selectedPlatforms[0] || 'android')
       wizard.setStep(1)
       toast.success('App created successfully')
     },
@@ -1221,10 +1223,15 @@ function Step4PlanReview() {
 
       // Free plan
       if (plan && plan.price_inr === 0 && plan.price_usd === 0) {
+        trackFreeAppBuild(wizard.name || 'App')
         toast.success('App submitted successfully!')
         navigate(`/orders/${order.id}`)
         return
       }
+
+      // Track begin_checkout event
+      const priceUsd = order.currency === 'USD' ? order.amount / 100 : order.amount / 100
+      trackBeginCheckout(priceUsd, order.currency)
 
       // Use real gateway flow (test or live keys are selected by backend)
       if (currency === 'INR' && paymentMode?.gateways?.razorpay) {
@@ -1247,6 +1254,12 @@ function Step4PlanReview() {
       } else if (paymentMode?.gateways?.stripe) {
         try {
           const stripeRes = await paymentsApi.createStripeCheckout(order.id)
+          // Store order info for conversion tracking on success page
+          sessionStorage.setItem('pending_conversion', JSON.stringify({
+            value: order.amount / 100,
+            currency: order.currency,
+            orderId: order.id,
+          }))
           window.location.href = stripeRes.data.checkout_url
         } catch {
           toast.error('Stripe payment initialization failed.')
@@ -1286,6 +1299,8 @@ function Step4PlanReview() {
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
           })
+          // Track purchase conversion for Google Ads
+          trackPurchase(data.amount / 100, data.currency, data.order_id)
           toast.success('Payment successful!')
           navigate(`/orders/${orderId}`)
         } catch {
@@ -1394,8 +1409,8 @@ function Step4PlanReview() {
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any) && (p.price_inr > 0 || p.price_usd > 0)).map((plan) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any)).map((plan) => {
               const isSelected = selectedPlan === plan.id
               const missing = getMissingFeatures(plan)
               const hasMissing = missing.length > 0
@@ -1421,17 +1436,34 @@ function Step4PlanReview() {
                       Best Match
                     </span>
                   )}
-                  <h3 className="font-semibold text-gray-900">{plan.name}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {plan.price_inr === 0 ? 'Free Plan' : 'Premium Plan'}
+                  </h3>
                   <div className="mt-2">
-                    <span className="text-2xl font-bold text-gray-900">
-                      {formatPlanPrice(plan.price_inr, plan.price_usd)}
-                    </span>
-                    {(getUserCurrency() === 'INR' ? plan.price_inr : plan.price_usd) > 0 ? (
-                      <span className="text-sm font-semibold text-green-700 ml-1">one-time</span>
-                    ) : null}
+                    {plan.price_inr === 0 ? (
+                      <span className="text-2xl font-bold text-gray-900">Free</span>
+                    ) : (
+                      <>
+                        <span className="text-2xl font-bold text-gray-900">
+                          {formatPlanPrice(plan.price_inr, plan.price_usd)}
+                        </span>
+                        <span className="text-sm font-semibold text-green-700 ml-1">one-time</span>
+                      </>
+                    )}
                   </div>
                   {plan.description && (
                     <p className="text-sm text-gray-600 mt-3">{plan.description}</p>
+                  )}
+
+                  {/* Free plan warnings */}
+                  {plan.price_inr === 0 && (
+                    <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md p-2 space-y-1">
+                      <p className="text-xs text-amber-700 flex items-center gap-1">
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                        Watermark &amp; 15-day trial
+                      </p>
+                      <p className="text-xs text-amber-600">App will show "Trial Expired" after 15 days. Max 5 apps.</p>
+                    </div>
                   )}
 
                   {/* Missing features warning */}
@@ -1452,33 +1484,49 @@ function Step4PlanReview() {
                   )}
 
                   <ul className="mt-4 space-y-1.5 text-xs text-gray-600 max-h-64 overflow-y-auto">
-                    <li className="flex items-center gap-2 font-medium text-sm">
-                      <Check className="w-4 h-4 text-green-500 shrink-0" />
-                      Up to {plan.max_apps} app{plan.max_apps !== 1 ? 's' : ''}
-                    </li>
-                    <li className="flex items-center gap-2 font-medium text-sm">
-                      {plan.price_inr === 0 ? (
-                        <>
-                          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-                          <span className="text-amber-600">WebToApp branding</span>
-                        </>
-                      ) : (
-                        <>
+                    {plan.price_inr === 0 ? (
+                      <>
+                        <li className="flex items-center gap-2 font-medium text-sm">
                           <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          No branding / watermark
-                        </>
-                      )}
-                    </li>
-                    {Object.entries(plan.features).map(([key, value]) => (
-                      <li key={key} className={`flex items-center gap-2 ${value ? '' : 'text-gray-400'}`}>
-                        {value ? (
-                          <Check className="w-3.5 h-3.5 text-green-500 shrink-0" />
-                        ) : (
-                          <X className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                        )}
-                        <span className="truncate">{key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</span>
-                      </li>
-                    ))}
+                          Build up to 5 apps
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-sm">
+                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                          Basic features (icon, splash, colors)
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-sm text-amber-600">
+                          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+                          WebToApp watermark
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-sm text-amber-600">
+                          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+                          15-day trial limit
+                        </li>
+                      </>
+                    ) : (
+                      <>
+                        <li className="flex items-center gap-2 font-medium text-sm">
+                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                          10 builds/month per website
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-sm">
+                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                          No watermark
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-sm">
+                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                          No trial limit - works forever
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-sm">
+                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                          Keystore download
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-sm">
+                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                          All 50+ features
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </button>
               )

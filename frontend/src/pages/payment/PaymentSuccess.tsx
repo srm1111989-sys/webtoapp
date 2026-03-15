@@ -1,9 +1,23 @@
+import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CheckCircle2, ArrowRight } from 'lucide-react'
+import { trackPurchase } from '@/utils/gtag'
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams()
   const orderId = searchParams.get('order_id')
+
+  // Fire Google Ads purchase conversion (Stripe flow)
+  useEffect(() => {
+    const pending = sessionStorage.getItem('pending_conversion')
+    if (pending) {
+      try {
+        const { value, currency, orderId: storedOrderId } = JSON.parse(pending)
+        trackPurchase(value, currency, orderId || storedOrderId)
+      } catch { /* ignore parse errors */ }
+      sessionStorage.removeItem('pending_conversion')
+    }
+  }, [])
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">

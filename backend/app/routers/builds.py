@@ -84,17 +84,17 @@ async def trigger_build_endpoint(
     # Build limits
     is_free = order.amount == 0
     if is_free:
-        # Free plans: max 10 builds total per user (across all free orders)
+        # Free plans: max 5 builds total per user (across all free orders)
         free_build_count_result = await db.execute(
             select(func.count(Build.id))
             .join(Order, Build.order_id == Order.id)
             .where(Order.user_id == user.id, Order.amount == 0)
         )
         free_build_count = free_build_count_result.scalar() or 0
-        if free_build_count >= 10:
+        if free_build_count >= 5:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Free build limit reached (10 builds per account). Upgrade to a paid plan for more builds.",
+                detail="Free plan build limit reached (5 builds per account). Upgrade to a paid plan for more builds.",
             )
     else:
         # Paid plans: 10 builds per 30 rolling days per order

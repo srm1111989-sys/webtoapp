@@ -15,11 +15,11 @@ PLANS = [
     {
         "name": "Android Free",
         "slug": "android-free",
-        "description": "Try with basic features",
+        "description": "Build up to 5 apps with watermark & 15-day trial",
         "price_inr": 0,
         "price_usd": 0,
         "billing_type": "one_time",
-        "max_apps": 1,
+        "max_apps": 5,
         "platform": "android",
         "sort_order": 1,
         "features": {
@@ -139,11 +139,11 @@ PLANS = [
     {
         "name": "Desktop Free",
         "slug": "desktop-free",
-        "description": "15-day free trial",
+        "description": "Build up to 5 apps with watermark & 15-day trial",
         "price_inr": 0,
         "price_usd": 0,
         "billing_type": "one_time",
-        "max_apps": 1,
+        "max_apps": 5,
         "platform": "desktop",
         "sort_order": 3,
         "features": {
