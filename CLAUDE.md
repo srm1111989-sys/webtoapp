@@ -47,51 +47,133 @@ NOTE: Only run this once per day (shared across all 3 projects).
 - Run after deploying any new pages/blog posts to ensure Google crawls them quickly
 - NOTE: Only run once per day (shared across all 3 projects)
 
-### 4. Search Console Check (5 min)
-- Run: `cd C:/Projects/Projects-2026/play-console-cli && python search-console-check.py --site "sc-domain:websitetoapp.app"`
-- Track clicks, impressions, CTR, avg position trends
-- Current: 12 clicks, 1797 impressions, avg position 49.2 (needs major improvement)
+### 4. Keyword Rankings Check (5 min)
+- Run: `cd C:/Projects/Projects-2026/play-console-cli && python search_console_keywords.py`
+- Track position changes for money keywords
+- Current: 4 clicks, 1505 impressions, 237 keywords tracked (all page 5+)
 
-### 5. Content Creation (30 min) - Rotate Daily
+### 5. Daily SEO Growth Command (10 min)
+Run this master prompt daily:
+```
+Act as a senior SEO strategist for SaaS tools.
+I run websitetoapp.app (convert website to Android app platform).
 
-#### Monday: Blog Article
-Write and deploy 1 SEO blog post targeting keywords below.
-- 1500-2000 words, include FAQ schema
-- Internal link to homepage, pricing, and other blog posts
+Run DAILY SEO GROWTH ANALYSIS:
+1. Identify 10 low-competition long-tail keywords for website-to-app conversion
+2. Identify competitor pages ranking for these keywords
+3. Suggest 2 landing pages I should create today
+4. Suggest internal links between existing pages
+5. Suggest 3 backlink opportunities (forums, dev communities, blogs)
+6. Suggest title + meta description improvements for CTR
+7. Suggest one comparison article idea
+Return output structured and actionable.
+```
+
+### 6. Content Creation - Rotate Daily
+
+#### Monday: Programmatic SEO Pages (PRIORITY)
+Generate 10-20 landing pages from templates:
+- "Convert [Platform] Website to App" (WordPress, Shopify, Wix, etc.)
+- "Convert [Industry] Website to App" (restaurants, schools, gyms, etc.)
+- Deploy batch, update sitemap
+
+#### Tuesday: Blog Article
+Write 1 SEO blog post (1500-2000 words):
+- Target long-tail keywords from keyword rankings
+- FAQ schema, internal links to homepage/pricing/convert pages
 - Deploy to production
 
-#### Tuesday: Programmatic SEO Pages
-Create 5-10 landing pages from templates:
-- "Convert [Platform] Website to App" (WordPress, Shopify, Wix, Squarespace, etc.)
-- "Convert [Type] Website to Android App" (ecommerce, blog, portfolio, etc.)
-- "Website to App Converter for [Industry]" (restaurants, churches, gyms, etc.)
-- Deploy batch to production
+#### Wednesday: Backlink & Community Content
+Write 1 helpful community post for Reddit/dev.to/Medium:
+- Educational for web developers wanting to convert sites to apps
+- Mention websitetoapp.app naturally
+- Post on: r/webdev, r/androiddev, r/nocode, r/SideProject, dev.to, IndieHackers
 
-#### Wednesday: Backlink Outreach
-Post on 2-3 platforms:
-- Reddit: r/webdev, r/androiddev, r/nocode, r/SideProject
-- Product Hunt / Indie Hackers
-- Dev.to, Medium, Hashnode articles
-- Answer questions on Quora about converting websites to apps
-- LinkedIn posts about mobile app development
-
-#### Thursday: Existing Content + Competitor Analysis
-- Optimize existing pages with high impressions but low CTR
-- Research competitor pages (appmaker.xyz, webviewgold.com, median.co)
-- Create comparison pages: "WebsiteToApp vs [Competitor]"
+#### Thursday: Comparison Pages + CTR Optimization
+- Create "WebsiteToApp vs [Competitor]" pages
+- Run `search_console_keywords.py`, fix CTR on high-impression pages
+- Improve titles (add "Free", "No Code", "5 Minutes", year)
+- Improve meta descriptions with clear CTAs
 
 #### Friday: Technical SEO
-- Check Core Web Vitals
-- Update sitemap.xml
-- Fix broken links
-- Verify all new pages are indexed (Google Search Console URL inspection)
-- Check mobile responsiveness
-- Optimize images (WebP, lazy loading)
+- Check Core Web Vitals, page speed
+- Update sitemap.xml with all new pages
+- Verify new pages indexed in Search Console
+- Fix broken links, check mobile responsiveness
+- Internal linking audit
 
 #### Weekend: Review & Plan
-- Review weekly Search Console data
-- Identify keyword movements
-- Plan next week's content calendar
+- Review weekly data with `search_console_keywords.py`
+- Identify keyword movements and new opportunities
+- Plan next week's content
+
+---
+
+## Weekly SEO Routines
+
+### Competitor Analysis (Tuesday)
+```
+Act as an SEO competitor research expert.
+Analyze competitors ranking for "convert website to app".
+Tasks:
+1. Identify top 10 websites ranking for this keyword
+2. Extract keywords they rank for
+3. Identify their highest traffic pages
+4. Identify content patterns used in ranking pages
+5. Suggest 20 SEO keywords websitetoapp.app should target
+6. Classify keywords as: Easy / Medium / Hard
+```
+
+### Backlink Analysis (Thursday)
+```
+Act as an SEO backlink strategist.
+Analyze backlink profiles of websites ranking for "website to app converter".
+Identify: common backlink sources, developer communities, blogs reviewing app builders, directories listing SaaS tools.
+Suggest 20 backlink opportunities for websitetoapp.app with outreach ideas.
+```
+
+### Programmatic SEO Expansion (Saturday)
+```
+Act as a programmatic SEO strategist.
+Generate 100 landing page ideas for websitetoapp.app targeting:
+- convert [platform] website to app
+- convert website to app for [industry]
+- [platform] to android app converter
+Return: Keyword, URL slug, search intent, estimated difficulty.
+```
+
+### Content Gap Analysis (Sunday)
+```
+Act as an SEO content strategist.
+Compare websitetoapp.app with competitors (appmaker.xyz, webviewgold.com, median.co, gonative.io).
+Identify content gaps: missing pages, tutorials, comparison pages.
+Suggest 30 pages competitors rank for but websitetoapp.app does not.
+```
+
+## Monthly SEO Routines
+
+### Technical SEO Audit
+```
+Act as a technical SEO auditor.
+Analyze SEO health of websitetoapp.app.
+Check: page speed, indexing issues, sitemap structure, internal linking,
+schema markup, page depth, duplicate content.
+Return prioritized fixes.
+```
+
+---
+
+## SEO Routine Summary
+| Frequency | Task | Time |
+|-----------|------|------|
+| Daily | Keyword rankings check (`search_console_keywords.py`) | 5 min |
+| Daily | Master SEO growth command | 10 min |
+| Daily | Create pages (programmatic/blog/comparison) | 30 min |
+| Daily | Community engagement (rotate platforms) | 20 min |
+| Weekly | Competitor keyword + backlink analysis | 30 min |
+| Weekly | Programmatic SEO expansion (100 page ideas) | 15 min |
+| Weekly | Content gap analysis | 15 min |
+| Monthly | Technical SEO audit | 30 min |
 
 ---
 
@@ -247,10 +329,36 @@ Generate pages for: WebViewGold, AppMaker, Median.co, GoNative, AppsGeyser, Appy
 
 ---
 
+## Latest Keyword Rankings (March 16, 2026)
+237 keywords tracked | 4 clicks | 1,505 impressions | 28-day period
+
+### Best Positioned Keywords
+| Keyword | Position | Impressions |
+|---------|----------|-------------|
+| webtoapp.cloud admob | 1.0 | 1 |
+| websitetoapp | 2.8 | 8 |
+| webtoapp cloud | 5.7 | 3 |
+| webintoapp admob integration | 7.7 | 3 |
+| webtoapp apk | 8.4 | 7 |
+| webtoapp free | 9.0 | 1 |
+
+### High-Volume Keywords (all page 5-10, need improvement)
+| Keyword | Position | Impressions |
+|---------|----------|-------------|
+| website to app converter | 61.7 | 64 |
+| convert website to app | 59.6 | 60 |
+| website to app | 58.0 | 55 |
+| turn website into app | 68.0 | 46 |
+| webtoapp | 16.7 | 46 |
+| convert website into app | 70.4 | 41 |
+| convert website to android app | 62.3 | 37 |
+| web to app | 49.3 | 35 |
+| convert web to app android | 36.9 | 34 |
+
 ## Current Status (as of March 2026)
-- 12 clicks / 1,797 impressions / 0.67% CTR / position 49.2
+- 4 clicks / 1,505 impressions / 0.27% CTR / avg position ~55
 - 6 real users registered in March
 - 1 pending order ($2,999 unpaid)
-- Best keyword opportunity: "webtoapp apk" at position 8.4
-- Blog posts generating impressions but need more content
+- Best keyword opportunity: "webtoapp" at position 16.7 (46 imp) - push to top 5
+- All money keywords stuck on page 5-10 - needs massive content + backlink push
 - Programmatic SEO NOT yet implemented - huge opportunity
