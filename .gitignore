@@ -58,3 +58,4 @@ backend/webtoapp.db
 deploy.tar.gz
 frontend-dist.tar.gz
 *.tar.gz
+claude_session1/
