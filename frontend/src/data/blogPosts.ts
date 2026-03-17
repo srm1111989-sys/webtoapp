@@ -6702,7 +6702,7 @@ That's it. No Android Studio, no Java/Kotlin knowledge, no coding skills require
 1. Visit [WebsiteToApp.app](https://websitetoapp.app)
 2. Create a free account (no credit card required)
 3. Click **"Create New App"**
-4. Enter your website URL (e.g., `https://yourbusiness.com`)
+4. Enter your website URL (e.g., \`https://yourbusiness.com\`)
 5. Click **"Next"**
 
 WebsiteToApp automatically detects your website's favicon, title, and brand colors to pre-configure your app settings.
@@ -6721,7 +6721,7 @@ WebsiteToApp automatically detects your website's favicon, title, and brand colo
 
 **App Name:**
 - Enter your app name (max 30 characters)
-- Choose a package name (e.g., `com.yourbusiness.app`)
+- Choose a package name (e.g., \`com.yourbusiness.app\`)
 
 **Color Scheme:**
 - Primary color (toolbar, buttons)
