@@ -129,7 +129,7 @@ const testimonials = [
 
 const ANDROID_PLANS = [
   {
-    name: 'Paid', slug: 'android-paid', price_inr: 249900, price_usd: 2999,
+    name: 'Paid', slug: 'android-paid', price_inr: 2900, price_usd: 2900,
     description: 'All features, one-time payment',
     highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days'],
   },
@@ -137,7 +137,7 @@ const ANDROID_PLANS = [
 
 const DESKTOP_PLANS = [
   {
-    name: 'Paid', slug: 'desktop-paid', price_inr: 199900, price_usd: 2399,
+    name: 'Paid', slug: 'desktop-paid', price_inr: 2400, price_usd: 2400,
     description: 'Full desktop app, one-time',
     highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '10 Builds / 30 Days'],
   },
@@ -272,7 +272,7 @@ export default function Landing() {
                 {/* MRP - Strikethrough */}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">₹4,999</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">$59</span>
                 </div>
 
                 {/* Actual Price - Large and Bold */}
@@ -285,7 +285,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  You Save ₹2,500
+                  You Save $30
                 </div>
               </div>
 
@@ -327,7 +327,7 @@ export default function Landing() {
                 {/* MRP - Strikethrough */}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">₹3,999</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">$49</span>
                 </div>
 
                 {/* Actual Price - Large and Bold */}
@@ -340,7 +340,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  You Save ₹2,000
+                  You Save $25
                 </div>
               </div>
 
@@ -406,7 +406,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
               <p className="text-gray-600 mb-4">
-                Pay once, own forever. Android: ₹2,500 / $30. Desktop: ₹1,000 / $12.
+                Pay once, own forever. Android: $29. Desktop: $24. No subscriptions.
                 <span className="font-semibold text-green-600"> 80% cheaper than competitors!</span>
               </p>
               <Link to="/pricing" className="text-green-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
@@ -549,15 +549,15 @@ export default function Landing() {
               </thead>
               <tbody>
                 {(getUserCurrency() === 'INR' ? [
-                  { feature: 'Android App', a: '₹8,000/yr', b: '₹15,000', c: '₹25,000+', us: '₹2,499', bold: true },
-                  { feature: 'Desktop App', a: '₹12,000/yr', b: '₹20,000', c: '₹30,000+', us: '₹1,999', bold: true },
+                  { feature: 'Android App', a: '$99/yr', b: '$149', c: '$299+', us: '$29', bold: true },
+                  { feature: 'Desktop App', a: '$149/yr', b: '$199', c: '$399+', us: '$24', bold: true },
                   { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', bold: false },
                   { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', bold: false },
                   { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', bold: false },
-                  { feature: 'Push Notifications', a: 'Extra ₹2,000/yr', b: 'Included', c: 'Extra', us: 'Included', bold: false },
-                  { feature: 'AdMob / Monetization', a: 'Extra ₹1,500', b: 'N/A', c: 'Extra', us: 'Included', bold: false },
-                  { feature: 'Biometric Auth', a: 'N/A', b: 'N/A', c: 'Extra ₹5,000', us: 'Included', bold: false },
-                  { feature: 'Keystore / Source', a: 'N/A', b: 'Extra ₹5,000', c: 'Included', us: 'Included', bold: false },
+                  { feature: 'Push Notifications', a: 'Extra $25/yr', b: 'Included', c: 'Extra', us: 'Included', bold: false },
+                  { feature: 'AdMob / Monetization', a: 'Extra $19', b: 'N/A', c: 'Extra', us: 'Included', bold: false },
+                  { feature: 'Biometric Auth', a: 'N/A', b: 'N/A', c: 'Extra $59', us: 'Included', bold: false },
+                  { feature: 'Keystore / Source', a: 'N/A', b: 'Extra $59', c: 'Included', us: 'Included', bold: false },
                   { feature: 'Builds / Month', a: '1', b: '3', c: '5', us: '10', bold: false },
                 ] : [
                   { feature: 'Android App', a: '$99/yr', b: '$199', c: '$499+', us: '$29.99', bold: true },
@@ -595,7 +595,7 @@ export default function Landing() {
                 }
               </div>
               <p className="text-xl sm:text-2xl font-bold text-green-700">
-                {getUserCurrency() === 'INR' ? 'Save ₹22,500+' : 'Save $470+'}
+                Save $270+
               </p>
               <p className="text-xs text-green-600 mt-1 font-medium">vs market average</p>
             </div>

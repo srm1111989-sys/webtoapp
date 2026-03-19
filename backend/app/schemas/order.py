@@ -6,8 +6,8 @@ from pydantic import BaseModel
 class OrderCreate(BaseModel):
     app_config_id: uuid.UUID
     plan_id: uuid.UUID
-    currency: str = "INR"
-    payment_gateway: str = "razorpay"  # razorpay, stripe, test
+    currency: str = "USD"
+    payment_gateway: str = "stripe"  # stripe, razorpay, test
 
 
 class OrderResponse(BaseModel):

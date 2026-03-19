@@ -15,7 +15,7 @@ class Payment(Base):
     gateway_payment_id: Mapped[str | None] = mapped_column(String(255))
     gateway_signature: Mapped[str | None] = mapped_column(String(500))
     amount: Mapped[int] = mapped_column(Integer, nullable=False)
-    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="INR")
+    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="USD")
     status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, captured, failed, refunded
     refund_id: Mapped[str | None] = mapped_column(String(255))
     refund_reason: Mapped[str | None] = mapped_column(Text)

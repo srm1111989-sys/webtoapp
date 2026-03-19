@@ -9,19 +9,7 @@ export function formatCurrency(amount: number, currency: string): string {
 let _detectedCurrency: 'INR' | 'USD' | null = null
 
 export function getUserCurrency(): 'INR' | 'USD' {
-  if (_detectedCurrency) return _detectedCurrency
-  try {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''
-    const lang = navigator.language || ''
-    if (tz.startsWith('Asia/Kolkata') || tz.startsWith('Asia/Calcutta') || lang === 'hi' || lang.startsWith('hi-') || lang === 'en-IN') {
-      _detectedCurrency = 'INR'
-    } else {
-      _detectedCurrency = 'USD'
-    }
-  } catch {
-    _detectedCurrency = 'USD'
-  }
-  return _detectedCurrency
+  return 'USD'
 }
 
 export function formatPlanPrice(priceInr: number, priceUsd: number): string {

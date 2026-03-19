@@ -15,7 +15,7 @@ class Order(Base):
     plan_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("plans.id"), nullable=False)
     order_number: Mapped[str] = mapped_column(String(50), unique=True, nullable=False, index=True)
     amount: Mapped[int] = mapped_column(Integer, nullable=False)  # in smallest unit (paise/cents)
-    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="INR")
+    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="USD")
     status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, paid, failed, refunded
     payment_gateway: Mapped[str | None] = mapped_column(String(20))  # razorpay, stripe, test
     gateway_order_id: Mapped[str | None] = mapped_column(String(255))

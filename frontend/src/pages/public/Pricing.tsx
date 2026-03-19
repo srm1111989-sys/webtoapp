@@ -362,25 +362,9 @@ export default function Pricing() {
               </tr>
             </thead>
             <tbody>
-              {(getUserCurrency() === 'INR' ? [
-                { feature: 'Android App Price', a: '₹8,000/yr', b: '₹15,000', c: '₹25,000+', us: '₹2,499', highlight: true },
-                { feature: 'Desktop App Price', a: '₹12,000/yr', b: '₹20,000', c: '₹30,000+', us: '₹1,999', highlight: true },
-                { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', highlight: false },
-                { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', highlight: false },
-                { feature: 'Push Notifications', a: 'Extra ₹2,000/yr', b: 'Included', c: 'Extra', us: 'Included', highlight: false },
-                { feature: 'AdMob Integration', a: 'Extra ₹1,500', b: 'Not Available', c: 'Extra', us: 'Included', highlight: false },
-                { feature: 'Custom Navigation', a: 'Premium Only', b: 'Limited', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'QR Scanner', a: 'Not Available', b: 'Extra', c: 'Not Available', us: 'Included', highlight: false },
-                { feature: 'Biometric Auth', a: 'Not Available', b: 'Not Available', c: 'Extra ₹5,000', us: 'Included', highlight: false },
-                { feature: 'Firebase Integration', a: 'Extra', b: 'Extra ₹3,000', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', highlight: false },
-                { feature: 'Source Code / Keystore', a: 'Not Available', b: 'Extra ₹5,000', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'Play Store Bundle (AAB)', a: 'Extra', b: 'Included', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'Builds Per Month', a: '1', b: '3', c: '5', us: '10', highlight: false },
-                { feature: 'Priority Support', a: 'Extra', b: 'Email Only', c: 'Included', us: 'Included', highlight: false },
-              ] : [
-                { feature: 'Android App Price', a: '$99/yr', b: '$199', c: '$499+', us: '$29.99', highlight: true },
-                { feature: 'Desktop App Price', a: '$149/yr', b: '$249', c: '$599+', us: '$23.99', highlight: true },
+              {[
+                { feature: 'Android App Price', a: '$99/yr', b: '$149', c: '$299+', us: '$29', highlight: true },
+                { feature: 'Desktop App Price', a: '$149/yr', b: '$199', c: '$399+', us: '$24', highlight: true },
                 { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', highlight: false },
                 { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', highlight: false },
                 { feature: 'Push Notifications', a: 'Extra $25/yr', b: 'Included', c: 'Extra', us: 'Included', highlight: false },
@@ -394,7 +378,7 @@ export default function Pricing() {
                 { feature: 'Play Store Bundle (AAB)', a: 'Extra', b: 'Included', c: 'Included', us: 'Included', highlight: false },
                 { feature: 'Builds Per Month', a: '1', b: '3', c: '5', us: '10', highlight: false },
                 { feature: 'Priority Support', a: 'Extra', b: 'Email Only', c: 'Included', us: 'Included', highlight: false },
-              ]).map((row, idx) => (
+              ].map((row, idx) => (
                 <tr key={idx} className={row.highlight ? 'bg-gray-50' : ''}>
                   <td className="py-3 px-4 sm:px-6 text-sm font-medium text-gray-900 border-b border-gray-100">
                     {row.feature}
@@ -429,7 +413,7 @@ export default function Pricing() {
               }
             </div>
             <p className="text-2xl sm:text-3xl font-bold text-green-700">
-              {getUserCurrency() === 'INR' ? 'Up to ₹22,500' : 'Up to $470'}
+Up to $270
             </p>
             <p className="text-sm text-green-600 mt-1 font-medium">Saved vs competitors</p>
             <p className="text-xs text-gray-500 mt-2">Compared to average market price for similar features</p>
