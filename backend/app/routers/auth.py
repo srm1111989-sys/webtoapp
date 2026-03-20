@@ -59,6 +59,9 @@ async def login(request: Request, data: LoginRequest, db: AsyncSession = Depends
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is deactivated")
 
+    if not user.is_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email before logging in. Check your inbox for a verification link.")
+
     token_data = {"sub": str(user.id), "email": user.email}
     return TokenResponse(
         access_token=create_access_token(token_data),
@@ -98,6 +101,20 @@ async def verify_email(token: str, db: AsyncSession = Depends(get_db)):
     user.is_verified = True
     user.verification_token = None
     return {"message": "Email verified successfully"}
+
+
+@router.post("/resend-verification", response_model=MessageResponse)
+@limiter.limit("3/minute")
+async def resend_verification(request: Request, data: ForgotPasswordRequest, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).where(User.email == data.email))
+    user = result.scalar_one_or_none()
+
+    if user and not user.is_verified:
+        verification_token = secrets.token_urlsafe(32)
+        user.verification_token = verification_token
+        send_verification_email(data.email, verification_token)
+
+    return {"message": "If an unverified account with that email exists, a verification link has been sent."}
 
 
 @router.post("/forgot-password", response_model=MessageResponse)
