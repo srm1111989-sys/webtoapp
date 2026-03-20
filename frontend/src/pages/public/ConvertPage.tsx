@@ -5,7 +5,7 @@ import { ArrowRight, CheckCircle, HelpCircle, Zap, Shield, Smartphone } from 'lu
 
 export default function ConvertPage() {
   const { slug: rawSlug } = useParams<{ slug: string }>()
-  const cleanSlug = rawSlug?.replace(/-to-app$/, '') || ''
+  const cleanSlug = rawSlug?.replace(/-(to-app|to-android-app)$/, '') || ''
   const platform = platforms.find((p) => p.slug === cleanSlug)
 
   useSEO({

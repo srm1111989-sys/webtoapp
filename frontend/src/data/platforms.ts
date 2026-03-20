@@ -818,5 +818,369 @@ export const platforms: Platform[] = [
         answer: 'All platforms! WordPress, Ghost, custom CMS, static sites — any news website can be converted. If it works in a browser, it works in the app.'
       }
     ]
+  },
+  {
+    slug: 'lovable',
+    name: 'Lovable',
+    displayName: 'Lovable',
+    description: 'Convert your Lovable AI-generated web app to a native Android app',
+    targetKeyword: 'convert lovable app to android',
+    monthlySearches: 320,
+    features: [
+      'Full Lovable web app compatibility',
+      'React/Vite app support',
+      'Supabase backend integration preserved',
+      'Authentication flows maintained',
+      'Real-time database features work',
+      'Responsive UI auto-adapted for mobile',
+      'API integrations preserved',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Ship your Lovable app to Google Play Store',
+      'No need to rebuild in React Native or Flutter',
+      'Convert in minutes, not weeks',
+      'Push notifications to engage users',
+      'Access native device features (camera, GPS)',
+      'Monetize with in-app ads via AdMob'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert a Lovable app to an Android app?',
+        answer: 'Yes! Lovable generates React web apps that work perfectly with WebsiteToApp. Deploy your Lovable app to any hosting (Vercel, Netlify, etc.), then enter the URL in WebsiteToApp to get an Android APK in minutes.'
+      },
+      {
+        question: 'Will Supabase authentication work in the app?',
+        answer: 'Yes! Supabase auth, database, and storage all work seamlessly since the app loads your deployed web app. OAuth providers (Google, GitHub) also work via in-app browser.'
+      },
+      {
+        question: 'Do I need to modify my Lovable code?',
+        answer: 'No modifications needed. Deploy your Lovable app as-is, enter the URL, and convert. All React components, routing, and API calls work in the native container.'
+      },
+      {
+        question: 'How long does the conversion take?',
+        answer: 'About 10 minutes from start to APK download. Compare that to weeks of rewriting your Lovable app in React Native or Flutter.'
+      },
+      {
+        question: 'Can I publish the converted app on Google Play?',
+        answer: 'Yes! You get a signed AAB file ready for Google Play Store submission. We also provide step-by-step guidance for the Play Store listing process.'
+      }
+    ]
+  },
+  {
+    slug: 'bolt',
+    name: 'Bolt.new',
+    displayName: 'Bolt.new',
+    description: 'Convert your Bolt.new AI-generated web app to a native Android app',
+    targetKeyword: 'convert bolt.new app to android',
+    monthlySearches: 260,
+    features: [
+      'Full Bolt.new app compatibility',
+      'React/Next.js app support',
+      'Server-side rendering preserved',
+      'API routes and backend logic work',
+      'Third-party integrations maintained',
+      'Responsive design auto-adapted',
+      'WebSocket connections supported',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Ship your Bolt.new prototype to app stores',
+      'Perfect for MVP validation on mobile',
+      'No code rewrite required',
+      'Push notifications to retain users',
+      'Monetize your AI-built app with ads',
+      'Stand out with a real app store presence'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert a Bolt.new app to Android?',
+        answer: 'Yes! Deploy your Bolt.new app to any hosting provider, then use WebsiteToApp to wrap it in a native Android container. The entire process takes about 10 minutes.'
+      },
+      {
+        question: 'Will my Bolt.new app\'s backend work?',
+        answer: 'Yes! Since your backend runs on the server, all API calls, database connections, and server logic work exactly as they do in the browser.'
+      },
+      {
+        question: 'Is this good for MVP testing?',
+        answer: 'Absolutely! Build your MVP with Bolt.new AI, convert to Android with WebsiteToApp, and test with real users on Google Play — all in a single day.'
+      },
+      {
+        question: 'How much does it cost?',
+        answer: 'Start free to test your converted app, or get the full version for $35 one-time payment including AAB file for Google Play, push notifications, and AdMob support.'
+      }
+    ]
+  },
+  {
+    slug: 'v0',
+    name: 'v0.dev',
+    displayName: 'v0.dev',
+    description: 'Convert your v0.dev AI-generated UI to a native Android app',
+    targetKeyword: 'convert v0.dev app to android',
+    monthlySearches: 210,
+    features: [
+      'Full v0.dev component compatibility',
+      'Next.js and React support',
+      'Tailwind CSS styling preserved',
+      'shadcn/ui components work perfectly',
+      'Server components supported',
+      'API routes maintained',
+      'Vercel deployment integration',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Turn v0.dev prototypes into real mobile apps',
+      'Ship AI-designed UI to Google Play',
+      'No Flutter or React Native rewrite needed',
+      'Beautiful Tailwind UI on mobile',
+      'Push notifications for user engagement',
+      'Fastest path from AI design to app store'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert a v0.dev app to an Android app?',
+        answer: 'Yes! Deploy your v0.dev project to Vercel or any host, then use WebsiteToApp to convert it to an Android APK. Your shadcn/ui components and Tailwind styles render perfectly in the app.'
+      },
+      {
+        question: 'Will Next.js features work in the app?',
+        answer: 'Yes! Server-side rendering, API routes, middleware, and all Next.js features work because the app loads your deployed web application as-is.'
+      },
+      {
+        question: 'Do shadcn/ui components render correctly?',
+        answer: 'Yes! All shadcn/ui components including dialogs, sheets, dropdowns, and forms render perfectly in the native container with full touch support.'
+      },
+      {
+        question: 'How fast is the conversion?',
+        answer: 'About 10 minutes. Design with v0.dev AI, deploy to Vercel, convert with WebsiteToApp — you can go from AI prompt to app store in under an hour.'
+      }
+    ]
+  },
+  {
+    slug: 'bubble',
+    name: 'Bubble',
+    displayName: 'Bubble',
+    description: 'Convert your Bubble no-code web app to a native Android app',
+    targetKeyword: 'convert bubble app to android',
+    monthlySearches: 880,
+    features: [
+      'Full Bubble app compatibility',
+      'Bubble database and workflows preserved',
+      'User authentication maintained',
+      'Responsive design auto-adapted',
+      'Plugin functionality supported',
+      'Stripe and payment integrations work',
+      'API connector calls preserved',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Ship your Bubble app to Google Play Store',
+      'No need to rebuild in native code',
+      'Keep all Bubble workflows and logic',
+      'Push notifications to engage users',
+      'Better mobile performance than Bubble mobile',
+      'Monetize with in-app ads'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert my Bubble app to an Android app?',
+        answer: 'Yes! Your Bubble app runs on Bubble\'s servers and is accessed via URL. Simply enter your Bubble app URL in WebsiteToApp and convert it to a native Android app in minutes.'
+      },
+      {
+        question: 'Will Bubble workflows work in the app?',
+        answer: 'Yes! All Bubble workflows, database operations, and backend logic work perfectly since they run on Bubble\'s servers. The app simply provides a native mobile container.'
+      },
+      {
+        question: 'Does Bubble user authentication work?',
+        answer: 'Yes! Bubble\'s built-in authentication, including email/password and OAuth providers, works seamlessly in the converted app.'
+      },
+      {
+        question: 'Will Stripe payments work?',
+        answer: 'Yes! Stripe and all other payment integrations configured in your Bubble app work in the mobile app, including subscriptions and one-time payments.'
+      },
+      {
+        question: 'How does this compare to Bubble\'s native app option?',
+        answer: 'WebsiteToApp is faster and cheaper. You get an APK/AAB file in minutes for a one-time fee, versus Bubble\'s premium plans for native mobile. Plus you get push notifications and AdMob support.'
+      }
+    ]
+  },
+  {
+    slug: 'replit',
+    name: 'Replit',
+    displayName: 'Replit',
+    description: 'Convert your Replit web app to a native Android app',
+    targetKeyword: 'convert replit app to android',
+    monthlySearches: 390,
+    features: [
+      'Full Replit deployment compatibility',
+      'Node.js, Python, and any backend support',
+      'Database integrations preserved',
+      'WebSocket real-time features work',
+      'Authentication flows maintained',
+      'File upload and storage features',
+      'Third-party API integrations',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Ship your Replit project to Google Play',
+      'Perfect for hackathon projects going mobile',
+      'No native development skills required',
+      'Push notifications for user engagement',
+      'Monetize your side project with ads',
+      'Fastest path from code to app store'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert a Replit app to an Android app?',
+        answer: 'Yes! Deploy your Replit project (it gets a replit.app URL), then use WebsiteToApp to convert it to a native Android APK. Works with any Replit web project.'
+      },
+      {
+        question: 'Will my Replit backend work?',
+        answer: 'Yes! Your backend code runs on Replit\'s servers. All API endpoints, database queries, and server-side logic work exactly as they do in the browser.'
+      },
+      {
+        question: 'Which Replit languages are supported?',
+        answer: 'Any language that produces a web app — Node.js, Python (Flask/Django), Ruby, Go, Java, and more. If your Replit project has a web interface, it can be converted.'
+      },
+      {
+        question: 'Is this good for hackathon projects?',
+        answer: 'Yes! Build on Replit, convert to Android with WebsiteToApp, and demo a real mobile app — all within a hackathon timeline. Takes about 10 minutes to convert.'
+      }
+    ]
+  },
+  {
+    slug: 'streamlit',
+    name: 'Streamlit',
+    displayName: 'Streamlit',
+    description: 'Convert your Streamlit data app to a native Android app',
+    targetKeyword: 'convert streamlit app to android',
+    monthlySearches: 480,
+    features: [
+      'Full Streamlit app compatibility',
+      'Interactive widgets and controls',
+      'Data visualization charts preserved',
+      'File upload and download features',
+      'Streamlit authentication support',
+      'Custom components work',
+      'Real-time data updates',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Share your Streamlit dashboard as a mobile app',
+      'Data science apps accessible on the go',
+      'No mobile development required',
+      'Push notifications for data alerts',
+      'Stakeholders access dashboards anywhere',
+      'Professional app store presence for your tool'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert a Streamlit app to an Android app?',
+        answer: 'Yes! Deploy your Streamlit app to Streamlit Cloud, Heroku, or any host, then enter the URL in WebsiteToApp to convert it to an Android APK. All widgets and charts work in the app.'
+      },
+      {
+        question: 'Will Streamlit charts and plots work?',
+        answer: 'Yes! Plotly, Altair, Matplotlib, and all Streamlit-supported chart libraries render correctly in the app with full interactivity (zoom, hover, pan).'
+      },
+      {
+        question: 'Do file uploads work in the app?',
+        answer: 'Yes! Streamlit\'s file_uploader widget works in the app. Users can upload files from their phone storage or camera for processing by your Streamlit backend.'
+      },
+      {
+        question: 'Can I use this for client dashboards?',
+        answer: 'Absolutely! Convert your Streamlit dashboard to an app, publish on Google Play, and give clients a professional mobile experience instead of sharing a URL.'
+      },
+      {
+        question: 'Will Streamlit authentication work?',
+        answer: 'Yes! Both Streamlit\'s built-in authentication and custom auth solutions (like streamlit-authenticator) work in the converted app.'
+      }
+    ]
+  },
+  {
+    slug: 'glide',
+    name: 'Glide',
+    displayName: 'Glide',
+    description: 'Convert your Glide app to a native Android app for Google Play Store',
+    targetKeyword: 'convert glide app to android',
+    monthlySearches: 320,
+    features: [
+      'Full Glide app compatibility',
+      'Google Sheets data source preserved',
+      'Glide Tables integration',
+      'User authentication maintained',
+      'Form submissions work',
+      'Image and file handling',
+      'Computed columns preserved',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Publish your Glide app on Google Play',
+      'Native Android experience for users',
+      'Push notifications for engagement',
+      'No Glide Pro plan required for app store',
+      'Better performance than Glide PWA',
+      'Monetize with in-app ads'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert a Glide app to an Android app?',
+        answer: 'Yes! Glide apps are web-based and accessible via URL. Enter your Glide app URL in WebsiteToApp and convert it to a native Android APK for Google Play Store distribution.'
+      },
+      {
+        question: 'Will my Glide data (Google Sheets) still sync?',
+        answer: 'Yes! Your data source (Google Sheets or Glide Tables) continues to sync in real-time since Glide handles all data on their servers. Changes appear instantly in the app.'
+      },
+      {
+        question: 'Do Glide actions and automations work?',
+        answer: 'Yes! All Glide actions, computed columns, relations, and automations work perfectly in the converted app since they run on Glide\'s backend.'
+      },
+      {
+        question: 'How is this different from Glide\'s own app store publishing?',
+        answer: 'Glide requires a Business plan ($60+/month) for app store publishing. With WebsiteToApp, you can convert any Glide app to Android for a one-time $35 fee.'
+      }
+    ]
+  },
+  {
+    slug: 'flutterflow',
+    name: 'FlutterFlow',
+    displayName: 'FlutterFlow',
+    description: 'Convert your FlutterFlow web app to a native Android app',
+    targetKeyword: 'convert flutterflow app to android',
+    monthlySearches: 390,
+    features: [
+      'FlutterFlow web app compatibility',
+      'Firebase backend integration preserved',
+      'User authentication maintained',
+      'Firestore database sync',
+      'Stripe payment integration',
+      'Custom actions and API calls work',
+      'Responsive layout preserved',
+      'Push notifications support'
+    ],
+    benefits: [
+      'Faster alternative to FlutterFlow native export',
+      'No Flutter SDK setup required',
+      'Push notifications without Firebase Cloud Messaging setup',
+      'AdMob monetization built-in',
+      'Quick APK for testing before full Flutter build',
+      'Ship to Google Play in minutes'
+    ],
+    faqs: [
+      {
+        question: 'Why convert FlutterFlow web app instead of exporting Flutter code?',
+        answer: 'FlutterFlow can export Flutter code, but it requires Flutter SDK setup, Android Studio, and build configuration. WebsiteToApp lets you convert the web version instantly for quick testing or if you want a simpler deployment process.'
+      },
+      {
+        question: 'Will Firebase features work in the app?',
+        answer: 'Yes! Firebase Auth, Firestore, Storage, and all Firebase services work because they\'re accessed through your FlutterFlow web app which runs as normal in the native container.'
+      },
+      {
+        question: 'Is this a replacement for FlutterFlow\'s native build?',
+        answer: 'It\'s a faster alternative. For quick MVPs, testing, or simple apps, WebsiteToApp conversion is much faster. For complex apps requiring deep native integration, FlutterFlow\'s native export may be better.'
+      },
+      {
+        question: 'Do Stripe payments work?',
+        answer: 'Yes! Stripe checkout and all payment flows configured in your FlutterFlow app work in the converted Android app.'
+      }
+    ]
   }
 ]
