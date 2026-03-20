@@ -242,6 +242,23 @@ Content: Platform-specific conversion guide + CTA to converter tool
 
 Generate pages for: WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, Joomla, Drupal, Magento, PrestaShop, BigCommerce, Ghost, Hugo, Jekyll, Next.js, Gatsby, React, Angular, Vue.js, Laravel, Django, Flask, Rails
 
+### Template 4: AI/No-Code App Builder to Android (HIGH PRIORITY - captures builder traffic)
+URL: /convert/[builder]-to-android-app
+Title: "Convert [Builder] App to Android APK | WebsiteToApp"
+Content: Step-by-step guide showing how to take a [builder] web app and convert it to a native Android APK using WebsiteToApp. Include screenshots, builder-specific tips, and CTA.
+
+Generate pages for: Lovable, Bolt.new, v0.dev, Cursor, Replit, Bubble, Glide, Adalo, FlutterFlow, Softr, Retool, Streamlit, Gradio, Vercel, Netlify, Railway, Render, Supabase, Firebase, Appsmith, Tooljet, Budibase, Webflow, Framer, Carrd
+
+**Priority pages (create first):**
+- /convert/lovable-to-android-app ("Convert Lovable App to Android")
+- /convert/bolt-to-android-app ("Convert Bolt.new App to Android")
+- /convert/v0-to-android-app ("Convert v0.dev App to Android")
+- /convert/bubble-to-android-app ("Convert Bubble App to Android")
+- /convert/replit-to-android-app ("Convert Replit App to Android")
+- /convert/streamlit-to-android-app ("Convert Streamlit App to Android")
+- /convert/glide-to-android-app ("Convert Glide App to Android")
+- /convert/flutterflow-to-android-app ("Convert FlutterFlow App to Android")
+
 ### Template 2: Industry Converter
 URL: /convert/[industry]-website-to-app
 Title: "Convert Your [Industry] Website to a Mobile App | WebsiteToApp"
