@@ -153,8 +153,9 @@ const faqs = [
 
 export default function Landing() {
   useSEO({
-    title: 'WebToApp - Convert Any Website Into Android APK & Windows Apps Free',
-    description: 'WebToApp converts any website into professional Android APK, AAB, and Windows .exe apps in minutes. No coding required. Free plan available, one-time payment.',
+    title: 'Website to App Converter — Convert Any Website to Android APK Free',
+    description: 'Convert any website into a native Android APK or Windows .exe app in minutes. No coding required. Push notifications, AdMob, biometric auth included. Free plan available.',
+    canonical: 'https://websitetoapp.app/',
   })
   const { accessToken } = useAuthStore()
   const isLoggedIn = !!accessToken
