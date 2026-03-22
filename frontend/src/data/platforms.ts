@@ -1140,6 +1140,199 @@ export const platforms: Platform[] = [
     ]
   },
   {
+    slug: 'django',
+    name: 'Django',
+    displayName: 'Django',
+    description: 'Convert your Django web application to a native Android app',
+    targetKeyword: 'convert django app to android',
+    monthlySearches: 720,
+    features: ['Full Django app compatibility', 'Django REST Framework support', 'Session authentication preserved', 'Admin panel accessible', 'Static files and media served', 'Template-based views work', 'Database-driven content syncs', 'Push notifications support'],
+    benefits: ['Ship your Django project to Google Play', 'No need to build a separate API + mobile app', 'All Django features work as-is', 'Push notifications for user engagement', 'Faster than building React Native frontend', 'Monetize with in-app ads'],
+    faqs: [
+      { question: 'Can I convert a Django app to Android?', answer: 'Yes! Deploy your Django app to any host (Heroku, Railway, DigitalOcean), then use WebsiteToApp to wrap it in a native Android container. All views, forms, and features work.' },
+      { question: 'Will Django authentication work?', answer: 'Yes! Django session auth, token auth, and OAuth all work in the app. Users can log in and maintain their session just like in a browser.' },
+      { question: 'Does the Django admin panel work?', answer: 'Yes! The admin panel is accessible in the app. You can manage your Django admin from your phone.' }
+    ]
+  },
+  {
+    slug: 'laravel',
+    name: 'Laravel',
+    displayName: 'Laravel',
+    description: 'Convert your Laravel web application to a native Android app',
+    targetKeyword: 'convert laravel app to android',
+    monthlySearches: 880,
+    features: ['Full Laravel app compatibility', 'Blade templates render perfectly', 'Laravel Auth preserved', 'Livewire components work', 'Inertia.js support', 'File uploads and storage', 'Payment integrations maintained', 'Push notifications support'],
+    benefits: ['Ship your Laravel app to Google Play', 'Livewire and Inertia.js work seamlessly', 'No API rewrite needed', 'Push notifications built-in', 'Monetize with AdMob ads', 'Faster than building a Flutter app'],
+    faqs: [
+      { question: 'Can I convert a Laravel app to Android?', answer: 'Yes! Deploy your Laravel app and enter the URL in WebsiteToApp. Blade templates, Livewire, and Inertia.js all render perfectly in the native container.' },
+      { question: 'Will Laravel Livewire work?', answer: 'Yes! Livewire components work perfectly since they communicate with your Laravel server via AJAX, which works in the WebView container.' },
+      { question: 'Does Stripe/payment work?', answer: 'Yes! Laravel Cashier, Stripe, PayPal, and all payment integrations work in the app.' }
+    ]
+  },
+  {
+    slug: 'nextjs',
+    name: 'Next.js',
+    displayName: 'Next.js',
+    description: 'Convert your Next.js web application to a native Android app',
+    targetKeyword: 'convert nextjs app to android',
+    monthlySearches: 590,
+    features: ['Full Next.js compatibility', 'Server-side rendering preserved', 'API routes work', 'App Router and Pages Router support', 'Server Actions work', 'Image optimization maintained', 'Authentication (NextAuth) preserved', 'Push notifications support'],
+    benefits: ['Ship your Next.js app to Google Play', 'SSR performance on mobile', 'No React Native migration needed', 'All Vercel features work', 'Push notifications for engagement', 'Fastest path from web to mobile'],
+    faqs: [
+      { question: 'Can I convert a Next.js app to Android?', answer: 'Yes! Deploy to Vercel or any host, enter the URL in WebsiteToApp, and get an Android APK in minutes. SSR, API routes, and all Next.js features work.' },
+      { question: 'Will NextAuth work?', answer: 'Yes! NextAuth.js authentication including OAuth providers (Google, GitHub) works seamlessly in the app.' },
+      { question: 'Do Server Components work?', answer: 'Yes! React Server Components render on your server and are sent as HTML to the app, just like in a browser.' }
+    ]
+  },
+  {
+    slug: 'angular',
+    name: 'Angular',
+    displayName: 'Angular',
+    description: 'Convert your Angular web application to a native Android app',
+    targetKeyword: 'convert angular app to android',
+    monthlySearches: 720,
+    features: ['Full Angular compatibility', 'Angular Material components work', 'RxJS observables preserved', 'Lazy loading modules supported', 'Angular forms and validation', 'HTTP interceptors work', 'Router navigation preserved', 'Push notifications support'],
+    benefits: ['Ship your Angular app to Google Play', 'No Ionic or NativeScript migration', 'All Angular features work as-is', 'Push notifications built-in', 'Angular Material looks great on mobile', 'Monetize with AdMob'],
+    faqs: [
+      { question: 'Can I convert an Angular app to Android?', answer: 'Yes! Build and deploy your Angular app, enter the URL in WebsiteToApp, and convert to a native Android APK. All components and routing work perfectly.' },
+      { question: 'Is this better than Ionic?', answer: 'For simple apps, WebsiteToApp is faster (minutes vs hours). For apps needing native device APIs (camera, Bluetooth), Ionic/Capacitor gives more control.' },
+      { question: 'Will Angular Material components work?', answer: 'Yes! All Angular Material components render correctly with full touch support in the native container.' }
+    ]
+  },
+  {
+    slug: 'vue',
+    name: 'Vue.js',
+    displayName: 'Vue.js',
+    description: 'Convert your Vue.js web application to a native Android app',
+    targetKeyword: 'convert vue app to android',
+    monthlySearches: 480,
+    features: ['Full Vue.js compatibility', 'Vuetify and Quasar support', 'Vue Router preserved', 'Pinia/Vuex state management', 'Nuxt.js SSR support', 'Composition API works', 'Third-party plugins maintained', 'Push notifications support'],
+    benefits: ['Ship your Vue.js app to Google Play', 'No Quasar or Capacitor setup needed', 'Works with Nuxt.js SSR apps', 'Push notifications for engagement', 'All Vue plugins work as-is', 'Monetize with in-app ads'],
+    faqs: [
+      { question: 'Can I convert a Vue.js app to Android?', answer: 'Yes! Deploy your Vue.js or Nuxt.js app, enter the URL, and convert to Android in minutes. All components and routing work perfectly.' },
+      { question: 'Will Vuetify/Quasar components work?', answer: 'Yes! Vuetify, Quasar, and all Vue UI frameworks render correctly with touch support in the native container.' },
+      { question: 'Does Nuxt.js SSR work?', answer: 'Yes! Nuxt.js server-side rendering works perfectly since the app loads your deployed web application.' }
+    ]
+  },
+  {
+    slug: 'notion',
+    name: 'Notion',
+    displayName: 'Notion',
+    description: 'Convert your Notion page or site to a native Android app',
+    targetKeyword: 'convert notion to app',
+    monthlySearches: 1300,
+    features: ['Notion pages render perfectly', 'Database views supported', 'Embedded content works', 'Notion forms accessible', 'Super.so and Notaku compatibility', 'Real-time content updates', 'Image and file galleries', 'Push notifications support'],
+    benefits: ['Turn your Notion site into a branded app', 'No coding or design skills needed', 'Content updates instantly from Notion', 'Push notifications to engage readers', 'Professional app store presence', 'Monetize knowledge bases with ads'],
+    faqs: [
+      { question: 'Can I convert a Notion page to an Android app?', answer: 'Yes! Use a Notion-to-website tool like Super.so or Notaku to give your Notion page a custom domain, then convert that URL to an Android app with WebsiteToApp.' },
+      { question: 'Will Notion databases work in the app?', answer: 'Yes! Gallery, table, board, and list views all render correctly in the app with full interactivity.' },
+      { question: 'Can I update content from Notion?', answer: 'Yes! Edit your Notion page and changes appear in the app instantly. No app update or rebuild required.' }
+    ]
+  },
+  {
+    slug: 'airtable',
+    name: 'Airtable',
+    displayName: 'Airtable',
+    description: 'Convert your Airtable interface or portal to a native Android app',
+    targetKeyword: 'convert airtable to app',
+    monthlySearches: 720,
+    features: ['Airtable Interface Designer support', 'Shared views accessible', 'Form views work', 'Gallery and grid views', 'Filtering and sorting preserved', 'Automations run on backend', 'File attachments accessible', 'Push notifications support'],
+    benefits: ['Turn Airtable into a branded mobile app', 'Field workers access data on the go', 'Push notifications for new records', 'No Stacker or Softr subscription needed', 'Professional app for clients', 'Offline-capable with caching'],
+    faqs: [
+      { question: 'Can I convert an Airtable base to an app?', answer: 'Yes! Share your Airtable view or use Interface Designer to create a portal, then convert that URL to an Android app with WebsiteToApp.' },
+      { question: 'Will Airtable forms work?', answer: 'Yes! Airtable form views work in the app. Users can submit data, upload files, and select options just like on the web.' },
+      { question: 'Can field workers use this offline?', answer: 'Previously loaded data is cached for offline viewing. New submissions sync when connectivity returns.' }
+    ]
+  },
+  {
+    slug: 'google-sites',
+    name: 'Google Sites',
+    displayName: 'Google Sites',
+    description: 'Convert your Google Sites website to a native Android app',
+    targetKeyword: 'convert google sites to app',
+    monthlySearches: 1600,
+    features: ['Full Google Sites compatibility', 'Embedded Google Docs/Sheets work', 'Google Forms integration', 'Google Calendar embeds', 'YouTube video embeds', 'Navigation preserved', 'Multi-page sites supported', 'Push notifications support'],
+    benefits: ['Turn your Google Site into a real app', 'Students and staff get a native app', 'Perfect for school and organization apps', 'Push notifications for announcements', 'No coding required at all', 'Free Google Sites + affordable app conversion'],
+    faqs: [
+      { question: 'Can I convert a Google Sites page to an app?', answer: 'Yes! Enter your Google Sites URL in WebsiteToApp and convert to Android APK in minutes. All embedded Google services (Docs, Sheets, Forms, Calendar) work in the app.' },
+      { question: 'Is this good for schools?', answer: 'Yes! Many schools use Google Sites for portals. Convert it to an app so students and parents can access schedules, announcements, and resources from their phones.' },
+      { question: 'Will Google Forms work?', answer: 'Yes! Embedded Google Forms work perfectly in the app for surveys, quizzes, and data collection.' }
+    ]
+  },
+  {
+    slug: 'carrd',
+    name: 'Carrd',
+    displayName: 'Carrd',
+    description: 'Convert your Carrd one-page site to a native Android app',
+    targetKeyword: 'convert carrd to app',
+    monthlySearches: 390,
+    features: ['Full Carrd site compatibility', 'Forms and contact widgets work', 'Stripe payment buttons supported', 'Animations preserved', 'Custom domains supported', 'Responsive layout maintained', 'Embedded widgets work', 'Push notifications support'],
+    benefits: ['Turn your Carrd landing page into an app', 'Perfect for personal brands and portfolios', 'Push notifications for updates', 'App store presence for your brand', 'No coding skills needed', 'Most affordable path to an app'],
+    faqs: [
+      { question: 'Can I convert a Carrd site to an app?', answer: 'Yes! Enter your Carrd site URL and convert to an Android app in minutes. All Carrd features including forms, payments, and animations work in the app.' },
+      { question: 'Will my Carrd forms work?', answer: 'Yes! Contact forms, newsletter signup forms, and all Carrd form widgets work perfectly in the app.' }
+    ]
+  },
+  {
+    slug: 'framer',
+    name: 'Framer',
+    displayName: 'Framer',
+    description: 'Convert your Framer website to a native Android app',
+    targetKeyword: 'convert framer site to app',
+    monthlySearches: 480,
+    features: ['Full Framer site compatibility', 'Animations and interactions preserved', 'CMS content dynamic loading', 'Forms and integrations work', 'Custom code components supported', 'Responsive breakpoints maintained', 'SEO-optimized content preserved', 'Push notifications support'],
+    benefits: ['Ship your beautiful Framer site as an app', 'Animations look stunning on mobile', 'CMS updates appear instantly in app', 'Push notifications for new content', 'No development skills required', 'App store presence for your brand'],
+    faqs: [
+      { question: 'Can I convert a Framer website to an app?', answer: 'Yes! Framer sites are fast, responsive web apps. Enter your Framer URL in WebsiteToApp and get an Android APK with all animations and interactions preserved.' },
+      { question: 'Will Framer animations work?', answer: 'Yes! Framer motion animations, scroll effects, and hover interactions all work in the app. The native container renders them smoothly.' }
+    ]
+  },
+  {
+    slug: 'shopify-store',
+    name: 'Shopify Store',
+    displayName: 'Shopify Store',
+    description: 'Convert your Shopify store to a mobile shopping app for Android',
+    targetKeyword: 'shopify store to app',
+    monthlySearches: 2400,
+    features: ['Full Shopify store compatibility', 'Product catalog and search', 'Cart and checkout work perfectly', 'Shopify Payments supported', 'Customer accounts maintained', 'Discount codes and promotions', 'Order tracking accessible', 'Push notifications for sales'],
+    benefits: ['3x higher conversion rates vs mobile web', 'Push notifications recover abandoned carts', 'Customers shop with one tap from home screen', 'Increase repeat purchases by 40%', 'Stand out from competitors', 'Monetize with push notification promotions'],
+    faqs: [
+      { question: 'How do I convert my Shopify store to an app?', answer: 'Enter your Shopify store URL (yourstore.myshopify.com or custom domain) in WebsiteToApp. Customize the app, build, and get your APK/AAB for Google Play. Takes 10 minutes.' },
+      { question: 'Will Shopify Payments work?', answer: 'Yes! Shopify Payments, Shop Pay, PayPal, Apple Pay, Google Pay, and all payment methods work in the app.' },
+      { question: 'Can I send abandoned cart notifications?', answer: 'Yes! Push notifications let you remind customers about abandoned carts, announce flash sales, and promote new products.' },
+      { question: 'How much does a Shopify app cost?', answer: 'WebsiteToApp costs $35 one-time (not monthly). Compare that to custom Shopify mobile apps that cost $5,000-$50,000.' }
+    ]
+  },
+  {
+    slug: 'woocommerce',
+    name: 'WooCommerce',
+    displayName: 'WooCommerce',
+    description: 'Convert your WooCommerce store to a mobile shopping app for Android',
+    targetKeyword: 'woocommerce to app',
+    monthlySearches: 1900,
+    features: ['Full WooCommerce compatibility', 'Product pages and galleries', 'Variable products and attributes', 'Cart and checkout flow', 'All payment gateways supported', 'Customer login and order history', 'Coupon codes and discounts', 'Push notifications support'],
+    benefits: ['Boost WooCommerce sales with a mobile app', 'Push notifications for promotions', '3x higher mobile conversion rate', 'Customers shop offline with cached products', 'Build customer loyalty with app exclusives', 'No WooCommerce plugin subscription needed'],
+    faqs: [
+      { question: 'Can I convert WooCommerce to an Android app?', answer: 'Yes! Enter your WooCommerce store URL in WebsiteToApp and convert in minutes. All products, cart, checkout, and payment gateways work in the app.' },
+      { question: 'Will WooCommerce plugins work?', answer: 'Yes! All WooCommerce plugins that add frontend features (product sliders, wishlists, live chat) work in the app since they render in the browser.' },
+      { question: 'Does it work with all payment gateways?', answer: 'Yes! Stripe, PayPal, Razorpay, Square, and any WooCommerce payment gateway works in the converted app.' }
+    ]
+  },
+  {
+    slug: 'magento',
+    name: 'Magento',
+    displayName: 'Magento',
+    description: 'Convert your Magento ecommerce store to a native Android app',
+    targetKeyword: 'magento to app',
+    monthlySearches: 590,
+    features: ['Full Magento 2 compatibility', 'Product catalog and layered navigation', 'Customer accounts and wishlists', 'Multi-store support', 'All payment methods work', 'Configurable and bundle products', 'Order tracking and returns', 'Push notifications support'],
+    benefits: ['Mobile app for your Magento store', 'Push notifications drive repeat purchases', 'Better mobile UX than Magento responsive', 'No PWA Studio setup required', 'Fraction of the cost of Magento mobile apps', 'Ship to Google Play in minutes'],
+    faqs: [
+      { question: 'Can I convert Magento to an Android app?', answer: 'Yes! Enter your Magento store URL and convert to Android in minutes. All products, categories, checkout, and customer features work.' },
+      { question: 'Is this cheaper than Magento PWA Studio?', answer: 'Much cheaper. PWA Studio requires significant development effort. WebsiteToApp converts your existing Magento site for a one-time $35 fee.' }
+    ]
+  },
+  {
     slug: 'flutterflow',
     name: 'FlutterFlow',
     displayName: 'FlutterFlow',
