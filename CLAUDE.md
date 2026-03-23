@@ -6,6 +6,21 @@
 
 ---
 
+## Keyword Click Tracking (Updated March 23, 2026)
+| Keyword | Clicks | Impressions | Position | CTR | Action |
+|---------|--------|-------------|----------|-----|--------|
+| web to app free converter | 3 | 3 | 41.3 | 100% | Optimize for "free converter" |
+| websitetoapp (brand) | 2 | 11 | 4.5 | 18.2% | Brand growing |
+| convert website to app | 1 | 101 | 54.4 | 1.0% | BIGGEST OPPORTUNITY - pos 54 to page 1 |
+| website to app | 1 | 99 | 49.1 | 1.0% | Same as above |
+| web to app converter | 1 | 38 | 64.1 | 2.6% | |
+| website to apk | 1 | 25 | 63.4 | 4.0% | Create /website-to-apk page |
+| website to app free | 1 | 20 | 53.4 | 5.0% | |
+| webtoapp apk | 1 | 7 | 8.4 | 14.3% | |
+| free web to app converter | 1 | 8 | 78.5 | 12.5% | |
+| url to app | 1 | 4 | 54.8 | 25.0% | |
+**Total: 13 clicks, 1038 impressions, 100 keywords**
+
 ## Daily Tasks (Run Every Day)
 
 ### 1. Health Check (5 min)
@@ -19,9 +34,9 @@
 - Check support@websitetoapp.app inbox (Zoho Mail, IMAP: imappro.zoho.in, password: ChrSW0vsxTKN)
 
 ### 2. Community Engagement - 3-5 Answers Daily (20 min)
-All scripts in `C:/Projects/Projects-2026/play-console-cli/`, use Edge browser via CDP.
-Start Edge first: `msedge.exe --remote-debugging-port=9222 --user-data-dir="C:/Projects/Projects-2026/play-console-cli/edge-profile"`
-Must be logged into each platform in that Edge window.
+All scripts in `~/Desktop/Projects/play-console-cli/`, use Firefox with persistent profile.
+Launch browser: `python3 ~/Desktop/Projects/play-console-cli/browser_launch.py`
+Must be logged into each platform in the browser window.
 NOTE: Only run this once per day (shared across all 3 projects).
 
 #### Rotate platforms daily:
