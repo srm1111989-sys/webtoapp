@@ -5,9 +5,9 @@ SERVER_IP="157.90.228.171"
 SERVER_USER="root"
 REMOTE_DIR="/root/webtoapp"
 
-echo "🚀 Creating deployment archive..."
+echo "Deploying WebToApp (scp method)..."
 
-# Create tar archive excluding unnecessary files
+echo "[1/4] Creating archive..."
 tar czf deploy.tar.gz \
   --exclude='node_modules' \
   --exclude='venv' \
@@ -23,34 +23,27 @@ tar czf deploy.tar.gz \
   --exclude='deploy.tar.gz' \
   .
 
-echo "📤 Uploading to server..."
+echo "[2/4] Uploading and deploying..."
 scp deploy.tar.gz ${SERVER_USER}@${SERVER_IP}:${REMOTE_DIR}/
 
-echo "🔧 Deploying on server..."
 ssh ${SERVER_USER}@${SERVER_IP} << 'ENDSSH'
 cd /root/webtoapp
-echo "📦 Extracting files..."
 tar xzf deploy.tar.gz
 rm deploy.tar.gz
 
-echo "⏹️  Stopping containers..."
-docker-compose down || true
-
-echo "🏗️  Building and starting containers..."
 docker-compose build --no-cache frontend backend
 docker-compose up -d
 
-echo "⏳ Waiting for services..."
 sleep 15
-
-echo "📊 Container status:"
 docker-compose ps
-
-echo "✅ Deployment complete!"
 ENDSSH
 
 rm deploy.tar.gz
-echo ""
-echo "✅ Deployment completed successfully!"
-echo "📍 Frontend: http://157.90.228.171:3000"
-echo "📍 Backend: http://157.90.228.171:8000"
+
+echo "[3/4] Cleaning up Docker..."
+ssh ${SERVER_USER}@${SERVER_IP} "docker image prune -f && docker builder prune -f --keep-storage=1GB 2>/dev/null" > /dev/null 2>&1
+
+echo "[4/4] Disk usage:"
+ssh ${SERVER_USER}@${SERVER_IP} "df -h / | tail -1"
+
+echo "Deployed! https://websitetoapp.app"
