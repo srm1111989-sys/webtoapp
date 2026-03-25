@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Website to App Converter",
+  "short_name": "WebToApp",
+  "version": "1.0.1",
+  "description": "Analyze any website's mobile-readiness and convert it to an Android app. Check viewport, responsiveness, and app compatibility.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

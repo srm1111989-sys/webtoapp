@@ -1,0 +1,189 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 360px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.container { padding: 18px; }
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.logo { width: 32px; height: 32px; border-radius: 8px; }
+.header h1 { font-size: 16px; font-weight: 600; color: #f1f5f9; }
+
+.current-site {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.current-site .label {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.current-site .url {
+  display: block;
+  font-size: 13px;
+  color: #60a5fa;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 11px 16px;
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-convert {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-top: 12px;
+}
+
+.btn-convert:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.hidden { display: none !important; }
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid #334155;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Analysis */
+.analysis {
+  margin: 14px 0;
+  padding: 14px;
+  background: #1e293b;
+  border-radius: 10px;
+  border: 1px solid #334155;
+}
+
+.score-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.score-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  border: 3px solid;
+  flex-shrink: 0;
+}
+
+.score-circle.good { border-color: #10b981; color: #10b981; background: rgba(16,185,129,0.1); }
+.score-circle.ok { border-color: #eab308; color: #eab308; background: rgba(234,179,8,0.1); }
+.score-circle.bad { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.1); }
+
+.score-text { display: flex; flex-direction: column; }
+.score-label { font-size: 14px; font-weight: 600; color: #f1f5f9; }
+.score-desc { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+.checks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 6px 8px;
+  background: #0f172a;
+  border-radius: 6px;
+}
+
+.check-icon { flex-shrink: 0; width: 16px; height: 16px; }
+.check-pass { color: #10b981; }
+.check-fail { color: #ef4444; }
+.check-warn { color: #eab308; }
+.check-text { color: #cbd5e1; }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid #1e293b;
+  font-size: 11px;
+}
+
+.footer a { color: #60a5fa; text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+.separator { color: #475569; }
+.free-tag { color: #10b981; font-weight: 500; }
