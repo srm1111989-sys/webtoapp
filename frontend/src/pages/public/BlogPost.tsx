@@ -142,6 +142,23 @@ export default function BlogPost() {
         </section>
       )}
 
+      {/* Related Tools */}
+      <section className="py-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Related Tools</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <a href="https://indexflow.net" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+              <p className="font-medium text-gray-900">IndexFlow</p>
+              <p className="text-sm text-gray-500 mt-1">Check if your app landing pages are indexed by Google</p>
+            </a>
+            <a href="https://eudyamaadhaar.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+              <p className="font-medium text-gray-900">eUdyamAadhaar</p>
+              <p className="text-sm text-gray-500 mt-1">MSME registration for Indian small businesses</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 bg-primary-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">

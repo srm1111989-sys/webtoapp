@@ -176,6 +176,30 @@ export default function ConvertPage() {
         </div>
       </section>
 
+      {/* Related Tools */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Tools</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a href="https://indexflow.net" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+              <p className="font-medium text-gray-900">IndexFlow</p>
+              <p className="text-sm text-gray-500 mt-1">Check if your app landing pages are indexed by Google</p>
+            </a>
+            <a href="https://eudyamaadhaar.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+              <p className="font-medium text-gray-900">eUdyamAadhaar</p>
+              <p className="text-sm text-gray-500 mt-1">MSME registration for Indian small businesses</p>
+            </a>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link to="/blog" className="text-sm text-blue-600 hover:underline">Read our blog</Link>
+            <span className="text-gray-300">|</span>
+            <Link to="/pricing" className="text-sm text-blue-600 hover:underline">View pricing</Link>
+            <span className="text-gray-300">|</span>
+            <Link to="/features" className="text-sm text-blue-600 hover:underline">All features</Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 bg-primary-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
