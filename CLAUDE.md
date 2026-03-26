@@ -23,6 +23,12 @@
 
 ## Daily Tasks (Run Every Day)
 
+### Engagement Rules (LinkedIn + X/Twitter)
+- NEVER comment on competitor posts or announcements
+- Never engage on competitor's followers' posts directly
+- Only engage on neutral/question posts where product is a natural answer
+- Skip: job postings, self-promo, product launches, service ads, India-based posts
+
 ### Internal Links & Cross-Site Links (Daily — 10 min)
 - Check all blog posts have 3+ internal links to other pages
 - Fix broken internal links
