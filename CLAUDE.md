@@ -23,6 +23,13 @@
 
 ## Daily Tasks (Run Every Day)
 
+### Internal Links & Cross-Site Links (Daily — 10 min)
+- Check all blog posts have 3+ internal links to other pages
+- Fix broken internal links
+- Add cross-site links: link to eudyamaadhaar.com ("apps for Indian businesses") and indexflow.net ("get indexed faster")
+- Each blog post: link to homepage, pricing, 2+ related posts
+- Cross-site: 1-2 contextual mentions per post (never footer links)
+
 ### 1. Health Check (5 min)
 - Check server status: `ssh root@157.90.228.171 "docker ps | grep webtoapp"`
 - Check for server errors: `ssh root@157.90.228.171 "docker logs --since 24h webtoapp-backend-1 2>&1 | grep -iE 'error|exception|fatal' | tail -20"`
