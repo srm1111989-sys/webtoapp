@@ -23,6 +23,11 @@
 
 ## Daily Tasks (Run Every Day)
 
+### Post on LinkedIn Company Page (Daily — 5 min)
+Post 1 text post per day on company page. Rotate: tips, product feature, question, data, value post.
+Topics: App conversion tips, no-code guides, platform tutorials
+Script: `cd ~/Desktop/Projects/play-console-cli && python3 linkedin_upload_videos.py`
+
 ### Engagement Rules (LinkedIn + X/Twitter)
 - NEVER comment on competitor posts or announcements
 - Never engage on competitor's followers' posts directly
