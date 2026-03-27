@@ -6,6 +6,22 @@
 ## YouTube: https://www.youtube.com/channel/UCmUnpj4ZqXU2DFQTWRYw18g (WebsiteToApp)
 ## Account: srm1111989@gmail.com
 
+## Free Tools (Build 1 per week)
+Each tool = free landing page targeting long-tail keywords + drives WebToApp signups.
+
+| # | Tool | URL | Status | Target Keyword |
+|---|------|-----|--------|----------------|
+| 1 | Website Responsiveness Checker | /tools/responsive-checker | TODO | responsive design checker |
+| 2 | PWA Readiness Checker | /tools/pwa-checker | TODO | pwa checker online |
+| 3 | App Icon Generator | /tools/icon-generator | TODO | app icon generator from website |
+| 4 | Manifest.json Generator | /tools/manifest-generator | TODO | web app manifest generator |
+| 5 | Website to APK Converter (free) | /tools/website-to-apk | TODO | website to apk converter |
+| 6 | Mobile Preview Tool | /tools/mobile-preview | TODO | mobile website preview |
+| 7 | Website Performance Checker | /tools/performance-checker | TODO | website performance test |
+| 8 | SSL Certificate Checker | /tools/ssl-checker | TODO | ssl certificate checker |
+
+**Schedule**: Build 1 tool per week after IndexFlow tools are started.
+
 ### YouTube Daily Task
 ```bash
 # Upload script (when WebToApp shorts are ready)
