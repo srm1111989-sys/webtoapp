@@ -5,6 +5,22 @@
 ## Stack: FastAPI + React + PostgreSQL
 ## YouTube: https://www.youtube.com/channel/UCmUnpj4ZqXU2DFQTWRYw18g (WebsiteToApp)
 ## Account: srm1111989@gmail.com
+
+### YouTube Daily Task
+```bash
+# Upload script (when WebToApp shorts are ready)
+cd ~/Desktop/Projects/play-console-cli && python3 youtube_upload_shorts.py --channel webtoapp
+```
+- **Strategy:** 1 long-form tutorial/week (screen recordings of app conversion)
+- **Content:** "Convert website to app" demos, platform tutorials, before/after
+- **Token:** `youtube_token.pickle` (shared, auto-refreshes)
+
+**YouTube Feedback Loop:**
+| Phase | When | What |
+|-------|------|------|
+| Phase 1 | After IndexFlow shorts done | Record + upload long-form tutorials |
+| Phase 2 | After 7 videos | Build analytics, check what works |
+| Phase 3 | After 14 videos | AI generates new content from winners |
 ## Repos:
 - **GitLab (primary):** gitlab.com/mokashiswapnil11/webtoapp — `git push origin main` (pipeline quota FULL)
 - **GitHub (fallback):** github.com/mokashiswapnil/webtoapp — `git push github main`
