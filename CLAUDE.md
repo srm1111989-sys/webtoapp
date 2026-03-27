@@ -3,6 +3,11 @@
 ## Site: https://websitetoapp.app
 ## Server: 157.90.228.171 (Docker)
 ## Stack: FastAPI + React + PostgreSQL
+## Repos:
+- **GitLab (primary):** gitlab.com/mokashiswapnil11/webtoapp — `git push origin main` (pipeline quota FULL)
+- **GitHub (fallback):** github.com/mokashiswapnil/webtoapp — `git push github main`
+- **SSH key for GitHub:** ~/.ssh/id_ed25519_github (configured in ~/.ssh/config)
+- **Push to both:** `git push origin main && git push github main`
 
 ---
 
