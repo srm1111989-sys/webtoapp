@@ -11,6 +11,7 @@ from app.models.build import Build
 from app.models.order import Order
 from app.models.app_config import AppConfig
 from app.services.gitlab_service import GitLabService
+from app.services.github_service import GitHubService
 from app.config import get_settings
 
 settings = get_settings()
@@ -151,18 +152,40 @@ async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "
     db.add(build)
     await db.flush()
 
-    # Trigger GitLab pipeline
-    gitlab = GitLabService(platform=platform)
+    # Try GitLab first, fallback to GitHub if quota exceeded
+    build_provider = "gitlab"
     try:
+        gitlab = GitLabService(platform=platform)
         pipeline = gitlab.trigger_pipeline(variables)
         build.pipeline_id = pipeline.get("id")
         build.status = "building"
         build.started_at = datetime.now(timezone.utc)
-        logger.info(f"Pipeline {build.pipeline_id} triggered for order {order_id} (platform={platform})")
-    except Exception as e:
-        build.status = "failed"
-        build.error_message = str(e)
-        logger.error(f"Failed to trigger pipeline for order {order_id}: {e}")
+        logger.info(f"GitLab pipeline {build.pipeline_id} triggered for order {order_id} (platform={platform})")
+    except Exception as gitlab_error:
+        gitlab_err_str = str(gitlab_error).lower()
+        is_quota = "quota" in gitlab_err_str or "429" in gitlab_err_str or "minutes" in gitlab_err_str or "exceeded" in gitlab_err_str
+
+        if is_quota and settings.github_token and settings.github_repo:
+            # Fallback to GitHub Actions
+            logger.warning(f"GitLab quota exceeded, falling back to GitHub Actions for order {order_id}")
+            try:
+                github = GitHubService(platform=platform)
+                pipeline = github.trigger_pipeline(variables)
+                build.pipeline_id = pipeline.get("id")
+                build.status = "building"
+                build.started_at = datetime.now(timezone.utc)
+                build_provider = "github"
+                logger.info(f"GitHub workflow {build.pipeline_id} triggered for order {order_id} (platform={platform})")
+            except Exception as github_error:
+                build.status = "failed"
+                build.error_message = f"GitLab: {gitlab_error} | GitHub fallback: {github_error}"
+                logger.error(f"Both GitLab and GitHub failed for order {order_id}: GitLab={gitlab_error}, GitHub={github_error}")
+        else:
+            build.status = "failed"
+            build.error_message = str(gitlab_error)
+            logger.error(f"Failed to trigger pipeline for order {order_id}: {gitlab_error}")
+
+    build.variables = {**variables, "_build_provider": build_provider}
 
     await db.flush()
     await db.refresh(build)

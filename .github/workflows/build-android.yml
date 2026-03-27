@@ -1,0 +1,172 @@
+name: Build Android APK/AAB
+
+on:
+  workflow_dispatch:
+    inputs:
+      APP_NAME:
+        required: true
+      APP_URL:
+        required: true
+      APP_HOST:
+        required: true
+      PRIMARY_COLOR:
+        default: "#2563EB"
+      SECONDARY_COLOR:
+        default: "#1E40AF"
+      STATUS_BAR_COLOR:
+        default: "#1E3A5F"
+      PACKAGE_NAME:
+        default: "com.webtoapp.app"
+      ORDER_ID:
+        required: true
+      ICON_URL:
+        default: ""
+      SPLASH_URL:
+        default: ""
+      FEATURES_JSON:
+        default: "{}"
+      NAVIGATION_ITEMS:
+        default: "[]"
+      FIREBASE_ENABLED:
+        default: "false"
+      FIREBASE_CONFIG:
+        default: ""
+      ADMOB_ENABLED:
+        default: "false"
+      ADMOB_CONFIG:
+        default: ""
+      TRIAL_DAYS:
+        default: "0"
+      PURCHASE_URL:
+        default: ""
+      BUILD_AAB:
+        default: "false"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-template
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Configure app
+        run: |
+          # Write config.json
+          if [ -n "${{ inputs.FEATURES_JSON }}" ]; then
+            cat > app/src/main/assets/config.json << HEREDOC
+          {
+            "app_name": "${{ inputs.APP_NAME }}",
+            "app_url": "${{ inputs.APP_URL }}",
+            "app_host": "${{ inputs.APP_HOST }}",
+            "primary_color": "${{ inputs.PRIMARY_COLOR }}",
+            "secondary_color": "${{ inputs.SECONDARY_COLOR }}",
+            "status_bar_color": "${{ inputs.STATUS_BAR_COLOR }}",
+            "features": ${{ inputs.FEATURES_JSON }},
+            "navigation_items": ${{ inputs.NAVIGATION_ITEMS }}
+          }
+          HEREDOC
+          fi
+
+      - name: Generate keystore
+        run: |
+          KS_PASS=$(openssl rand -base64 18)
+          keytool -genkeypair \
+            -alias upload-key \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -keystore keystore.jks \
+            -storepass "$KS_PASS" -keypass "$KS_PASS" \
+            -dname "CN=${{ inputs.APP_NAME }}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
+          echo "KEYSTORE_PASSWORD=$KS_PASS" >> $GITHUB_ENV
+          echo "KEY_ALIAS=upload-key" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=$KS_PASS" >> $GITHUB_ENV
+          echo "KEYSTORE_PATH=$PWD/keystore.jks" >> $GITHUB_ENV
+
+      - name: Process icon
+        run: |
+          sudo apt-get install -y -qq imagemagick
+          if [ -n "${{ inputs.ICON_URL }}" ]; then
+            wget -q "${{ inputs.ICON_URL }}" -O /tmp/icon.png
+          else
+            convert -size 512x512 xc:"${{ inputs.PRIMARY_COLOR }}" -fill white -gravity center -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
+          fi
+          for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
+            dir=$(echo $size_dir | cut -d: -f1)
+            size=$(echo $size_dir | cut -d: -f2)
+            mkdir -p "app/src/main/res/mipmap-${dir}"
+            convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher.png"
+            convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
+          done
+
+      - name: Process splash screen
+        if: inputs.SPLASH_URL != ''
+        run: |
+          wget -q "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
+          if [ -s /tmp/splash_raw ]; then
+            convert /tmp/splash_raw PNG:app/src/main/res/drawable/splash_image.png || true
+          fi
+
+      - name: Build APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease \
+            -PAPP_NAME="${{ inputs.APP_NAME }}" \
+            -PAPP_URL="${{ inputs.APP_URL }}" \
+            -PAPP_HOST="${{ inputs.APP_HOST }}" \
+            -PAPP_PACKAGE_NAME="${{ inputs.PACKAGE_NAME }}" \
+            -PPRIMARY_COLOR="${{ inputs.PRIMARY_COLOR }}" \
+            -PSECONDARY_COLOR="${{ inputs.SECONDARY_COLOR }}" \
+            -PSTATUS_BAR_COLOR="${{ inputs.STATUS_BAR_COLOR }}" \
+            -PFIREBASE_ENABLED="${{ inputs.FIREBASE_ENABLED }}" \
+            -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}"
+
+      - name: Build AAB
+        if: inputs.BUILD_AAB == 'true'
+        run: |
+          ./gradlew bundleRelease \
+            -PAPP_NAME="${{ inputs.APP_NAME }}" \
+            -PAPP_URL="${{ inputs.APP_URL }}" \
+            -PAPP_HOST="${{ inputs.APP_HOST }}" \
+            -PAPP_PACKAGE_NAME="${{ inputs.PACKAGE_NAME }}" \
+            -PPRIMARY_COLOR="${{ inputs.PRIMARY_COLOR }}" \
+            -PSECONDARY_COLOR="${{ inputs.SECONDARY_COLOR }}" \
+            -PSTATUS_BAR_COLOR="${{ inputs.STATUS_BAR_COLOR }}" \
+            -PFIREBASE_ENABLED="${{ inputs.FIREBASE_ENABLED }}" \
+            -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: android-template/app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload AAB
+        if: inputs.BUILD_AAB == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab
+          path: android-template/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Upload Keystore
+        uses: actions/upload-artifact@v4
+        with:
+          name: keystore
+          path: android-template/keystore.jks
+
+      - name: Notify webhook
+        if: always()
+        run: |
+          if [ -n "${{ secrets.WEBHOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.WEBHOOK_URL }}" \
+              -H "Content-Type: application/json" \
+              -H "X-Github-Token: ${{ secrets.WEBHOOK_TOKEN }}" \
+              -d '{"object_kind":"pipeline","object_attributes":{"id":${{ github.run_id }},"status":"${{ job.status }}"},"project":{"id":0}}'
+          fi

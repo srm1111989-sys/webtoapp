@@ -56,6 +56,10 @@ class Settings(BaseSettings):
     gitlab_android_project_id: str = ""
     gitlab_desktop_project_id: str = ""
 
+    # GitHub fallback (when GitLab CI quota exceeded)
+    github_token: str = ""
+    github_repo: str = "mokashiswapnil/webtoapp"
+
     # S3/R2
     s3_endpoint: str = ""
     s3_access_key: str = ""

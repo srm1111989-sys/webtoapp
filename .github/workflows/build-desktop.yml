@@ -1,0 +1,103 @@
+name: Build Desktop EXE
+
+on:
+  workflow_dispatch:
+    inputs:
+      APP_NAME:
+        required: true
+      APP_URL:
+        required: true
+      ORDER_ID:
+        required: true
+      PRIMARY_COLOR:
+        default: "#2563EB"
+      WINDOW_WIDTH:
+        default: "1280"
+      WINDOW_HEIGHT:
+        default: "800"
+      MIN_WIDTH:
+        default: "800"
+      MIN_HEIGHT:
+        default: "600"
+      SHOW_TITLE_BAR:
+        default: "true"
+      SHOW_MENU_BAR:
+        default: "false"
+      ENABLE_SYSTEM_TRAY:
+        default: "false"
+      START_MAXIMIZED:
+        default: "false"
+      START_FULLSCREEN:
+        default: "false"
+      ICON_URL:
+        default: ""
+      SHOW_WATERMARK:
+        default: "false"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop-template
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Configure app
+        shell: bash
+        run: |
+          cat > src/config.json << EOFCONFIG
+          {
+            "app_name": "${{ inputs.APP_NAME }}",
+            "app_url": "${{ inputs.APP_URL }}",
+            "order_id": "${{ inputs.ORDER_ID }}",
+            "primary_color": "${{ inputs.PRIMARY_COLOR }}",
+            "show_watermark": ${{ inputs.SHOW_WATERMARK }},
+            "desktop": {
+              "window_width": ${{ inputs.WINDOW_WIDTH }},
+              "window_height": ${{ inputs.WINDOW_HEIGHT }},
+              "min_width": ${{ inputs.MIN_WIDTH }},
+              "min_height": ${{ inputs.MIN_HEIGHT }},
+              "show_title_bar": ${{ inputs.SHOW_TITLE_BAR }},
+              "show_menu_bar": ${{ inputs.SHOW_MENU_BAR }},
+              "enable_system_tray": ${{ inputs.ENABLE_SYSTEM_TRAY }},
+              "start_maximized": ${{ inputs.START_MAXIMIZED }},
+              "start_fullscreen": ${{ inputs.START_FULLSCREEN }}
+            }
+          }
+          EOFCONFIG
+
+      - name: Process icon
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.ICON_URL }}" ]; then
+            curl -L -o assets/icon.png "${{ inputs.ICON_URL }}"
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Windows EXE
+        run: npm run build:win
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-exe
+          path: desktop-template/dist/*.exe
+
+      - name: Notify webhook
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${{ secrets.WEBHOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.WEBHOOK_URL }}" \
+              -H "Content-Type: application/json" \
+              -d '{"object_kind":"pipeline","object_attributes":{"id":${{ github.run_id }},"status":"${{ job.status }}"},"project":{"id":0}}'
+          fi
