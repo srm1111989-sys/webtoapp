@@ -1375,5 +1375,149 @@ export const platforms: Platform[] = [
         answer: 'Yes! Stripe checkout and all payment flows configured in your FlutterFlow app work in the converted Android app.'
       }
     ]
+  },
+  {
+    slug: 'website-to-desktop-app',
+    name: 'Desktop App',
+    displayName: 'Desktop App',
+    description: 'Convert your website into a Windows desktop application (.exe) with system tray, auto-updates, and offline support',
+    targetKeyword: 'convert website to desktop app',
+    monthlySearches: 1900,
+    features: [
+      'Windows .exe installer generation',
+      'System tray integration',
+      'Auto-update support',
+      'Offline mode with local caching',
+      'Custom window size and title',
+      'Keyboard shortcuts support',
+      'Native file system access',
+      'Multi-monitor support'
+    ],
+    benefits: [
+      'Desktop presence without Electron development',
+      'One-click install for users — no browser needed',
+      'Runs on startup option',
+      'Faster than browser — dedicated window',
+      'Works offline with cached content',
+      'Professional .exe installer with your branding'
+    ],
+    faqs: [
+      {
+        question: 'Can I convert any website to a desktop app?',
+        answer: 'Yes, any website with a URL can be converted to a Windows desktop app. The app wraps your website in a native window with full desktop features like system tray, auto-updates, and offline support.'
+      },
+      {
+        question: 'What format is the desktop app?',
+        answer: 'The desktop app is generated as a Windows .exe installer. Users can download and install it like any other Windows application. It appears in the Start menu and can be pinned to the taskbar.'
+      },
+      {
+        question: 'Does the desktop app work offline?',
+        answer: 'Yes, the desktop app includes offline caching. Pages visited while online are cached and available offline. You can also configure which pages to pre-cache for full offline support.'
+      },
+      {
+        question: 'Can I customize the desktop app window?',
+        answer: 'Yes, you can set custom window size, title, icon, and whether it shows in the system tray. You can also enable always-on-top mode and configure keyboard shortcuts.'
+      },
+      {
+        question: 'Is it different from Electron?',
+        answer: 'Similar concept but much simpler. You don\'t need to write any code. Just enter your URL, customize settings, and get a .exe installer. No Node.js, no coding, no Electron setup required.'
+      }
+    ]
+  },
+  {
+    slug: 'website-to-windows-app',
+    name: 'Windows App',
+    displayName: 'Windows App',
+    description: 'Turn your website into a native Windows application with .exe installer, taskbar icon, and auto-updates',
+    targetKeyword: 'convert website to windows app',
+    monthlySearches: 1300,
+    features: [
+      'Native Windows .exe application',
+      'Taskbar and Start menu integration',
+      'Custom app icon and branding',
+      'Auto-update mechanism',
+      'System tray with notifications',
+      'Full-screen and windowed modes',
+      'Keyboard shortcut support',
+      'Windows 10 and 11 compatible'
+    ],
+    benefits: [
+      'Professional Windows application without coding',
+      'Users install once — always accessible from desktop',
+      'Faster loading than opening in browser',
+      'Brand presence on user\'s desktop',
+      'Push notification support via system tray',
+      'No browser tab competition — dedicated window'
+    ],
+    faqs: [
+      {
+        question: 'How do I convert my website to a Windows app?',
+        answer: 'Enter your website URL on WebsiteToApp, choose "Windows Desktop" as the target platform, customize the app icon and window settings, then download your .exe installer. The entire process takes under 5 minutes.'
+      },
+      {
+        question: 'What Windows versions are supported?',
+        answer: 'The generated Windows app works on Windows 10 and Windows 11 (64-bit). It uses modern web technologies to render your website in a native window.'
+      },
+      {
+        question: 'Can I distribute the Windows app to my users?',
+        answer: 'Yes, you get a standalone .exe installer that you can distribute via your website, email, or any file sharing service. Users double-click to install — no admin rights required for per-user installation.'
+      },
+      {
+        question: 'Does it support auto-updates?',
+        answer: 'Yes, the Windows app checks for updates automatically. When you update your website, the desktop app reflects changes on next launch or via background update check.'
+      },
+      {
+        question: 'Can I convert to both Android and Windows?',
+        answer: 'Yes! WebsiteToApp supports both Android APK and Windows .exe generation from the same website URL. Build once, deploy on both platforms.'
+      }
+    ]
+  },
+  {
+    slug: 'website-to-exe',
+    name: 'EXE Converter',
+    displayName: 'EXE File',
+    description: 'Convert any website to a downloadable .exe file for Windows. No coding, no Electron setup required',
+    targetKeyword: 'website to exe converter',
+    monthlySearches: 2400,
+    features: [
+      'One-click .exe generation',
+      'Custom icon and splash screen',
+      'Offline mode support',
+      'Auto-update built-in',
+      'System tray integration',
+      'Custom window dimensions',
+      'JavaScript injection support',
+      'No coding required'
+    ],
+    benefits: [
+      'Distribute your web app as a downloadable program',
+      'Users don\'t need to open a browser',
+      'Professional installer with your branding',
+      'Works offline after first visit',
+      'Appears in Windows Start menu and taskbar',
+      'Much simpler than building with Electron from scratch'
+    ],
+    faqs: [
+      {
+        question: 'How do I convert my website to an .exe file?',
+        answer: 'Simply enter your website URL on WebsiteToApp, select Windows Desktop as the platform, customize your app name and icon, and download the .exe installer. No coding or technical knowledge needed.'
+      },
+      {
+        question: 'Is this the same as Electron?',
+        answer: 'The concept is similar — wrapping a web app in a native window. But unlike Electron, you don\'t need to write any code, set up Node.js, or configure build tools. WebsiteToApp handles everything automatically.'
+      },
+      {
+        question: 'What\'s the file size of the generated .exe?',
+        answer: 'The generated .exe is typically 50-80MB, which includes the web rendering engine. This is comparable to other web-based desktop apps like Slack, Discord, or VS Code.'
+      },
+      {
+        question: 'Can I convert a web app (SaaS) to .exe?',
+        answer: 'Yes, SaaS applications, dashboards, admin panels, and any web-based tool can be converted. Login flows, API calls, and all web functionality work exactly as in the browser.'
+      },
+      {
+        question: 'Is the .exe safe for users to install?',
+        answer: 'Yes, the .exe is clean and safe. You can optionally code-sign it with your own certificate to remove Windows SmartScreen warnings. The app only loads content from your specified URL.'
+      }
+    ]
   }
 ]
