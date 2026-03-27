@@ -3,6 +3,8 @@
 ## Site: https://websitetoapp.app
 ## Server: 157.90.228.171 (Docker)
 ## Stack: FastAPI + React + PostgreSQL
+## YouTube: https://www.youtube.com/channel/UCmUnpj4ZqXU2DFQTWRYw18g (WebsiteToApp)
+## Account: srm1111989@gmail.com
 ## Repos:
 - **GitLab (primary):** gitlab.com/mokashiswapnil11/webtoapp — `git push origin main` (pipeline quota FULL)
 - **GitHub (fallback):** github.com/mokashiswapnil/webtoapp — `git push github main`
