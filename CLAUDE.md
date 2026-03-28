@@ -62,6 +62,9 @@ cd ~/Desktop/Projects/play-console-cli && python3 youtube_upload_shorts.py --cha
 
 ## Daily Tasks (Run Every Day)
 
+**Run tasks in background where possible.** Launch health checks, keywords, sitemaps in parallel. Don't wait — check results after.
+
+
 ### Post on LinkedIn Company Page (Daily — 5 min)
 Post 1 text post per day on company page. Rotate: tips, product feature, question, data, value post.
 Topics: App conversion tips, no-code guides, platform tutorials
