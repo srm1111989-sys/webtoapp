@@ -65,6 +65,14 @@ cd ~/Desktop/Projects/play-console-cli && python3 youtube_upload_shorts.py --cha
 **SEO CONTENT IS #1 PRIORITY — do it BEFORE social engagement.**
 
 ### PRIORITY ORDER:
+
+### 0. Daily SEO Growth Analysis (RUN FIRST — 5 min)
+```bash
+cd ~/Desktop/Projects/play-console-cli && python3 daily_seo_growth.py
+```
+Outputs: 3 keywords + 1 page to create + 1 CTR fix + 2 internal links.
+**Do what it says BEFORE engagement. This is the #1 most skipped task — NEVER skip it.**
+
 1. **Automated checks** (5 min) — health, keywords, GA4, sitemaps (parallel)
 2. **SEO CONTENT** (30 min) — MOST IMPORTANT, never skip:
    - Mon: Programmatic SEO pages (new /convert/ pages)
