@@ -62,6 +62,22 @@ cd ~/Desktop/Projects/play-console-cli && python3 youtube_upload_shorts.py --cha
 
 ## Daily Tasks (Run Every Day)
 
+**SEO CONTENT IS #1 PRIORITY — do it BEFORE social engagement.**
+
+### PRIORITY ORDER:
+1. **Automated checks** (5 min) — health, keywords, GA4, sitemaps (parallel)
+2. **SEO CONTENT** (30 min) — MOST IMPORTANT, never skip:
+   - Mon: Programmatic SEO pages (new /convert/ pages)
+   - Tue: Blog post (conversion guide, 1500+ words)
+   - Wed: Web 2.0 article (Dev.to/Medium with backlink)
+   - Thu: Build 1 free tool (/tools/responsive-checker etc.)
+   - Fri: Fix CTR on high-impression keywords
+   - Sat: Competitor analysis
+   - Sun: Content gap + plan
+3. **YouTube** (5 min) — upload tutorial/short
+4. **LinkedIn** (15 min) — post + engagement (background)
+
+
 **Run tasks in background where possible.** Launch health checks, keywords, sitemaps in parallel. Don't wait — check results after.
 
 
