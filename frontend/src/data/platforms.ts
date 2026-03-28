@@ -1519,5 +1519,53 @@ export const platforms: Platform[] = [
         answer: 'Yes, the .exe is clean and safe. You can optionally code-sign it with your own certificate to remove Windows SmartScreen warnings. The app only loads content from your specified URL.'
       }
     ]
+  },
+  {
+    slug: 'no-code-website-app-converter',
+    name: 'No-Code App Converter',
+    displayName: 'No-Code App',
+    description: 'Convert any website into a mobile app without coding. Enter your URL, customize, and download APK in minutes.',
+    targetKeyword: 'no code website to mobile app converter',
+    monthlySearches: 1600,
+    features: [
+      'Zero coding required — just paste your URL',
+      'Works with any website or web app',
+      'Custom app icon and splash screen',
+      'Push notifications built-in',
+      'Offline mode support',
+      'Play Store ready (APK + AAB formats)',
+      'AdMob integration for monetization',
+      'Works with WordPress, Shopify, Wix, React, and more'
+    ],
+    benefits: [
+      'Launch your app in minutes, not months',
+      'No developers needed — save thousands in development costs',
+      'Your website becomes a native app experience',
+      'Push notifications bring users back 3x more often',
+      'App icon on users home screen = brand presence',
+      'Play Store listing increases discoverability'
+    ],
+    faqs: [
+      {
+        question: 'Can I really convert my website to an app without coding?',
+        answer: 'Yes! WebsiteToApp wraps your website in a native Android container with push notifications, offline mode, and Play Store publishing. Just enter your URL and customize.'
+      },
+      {
+        question: 'Which websites work with the converter?',
+        answer: 'Any website with a URL works — WordPress, Shopify, Wix, Squarespace, React, HTML, or any custom site. If it loads in a browser, it can become an app.'
+      },
+      {
+        question: 'How long does it take to get my app?',
+        answer: 'Under 5 minutes. Enter your URL, upload your icon, configure features, and download your APK. No waiting for developers or app builders.'
+      },
+      {
+        question: 'Can I publish the app to Google Play Store?',
+        answer: 'Yes! The converter generates both APK (for direct install) and AAB (for Play Store publishing). Your app is ready for Google Play submission.'
+      },
+      {
+        question: 'Is there a free plan?',
+        answer: 'Yes — the free plan includes 1 app build with basic features. Premium plans start at $9.99 for additional features like push notifications and custom splash screens.'
+      }
+    ]
   }
 ]
