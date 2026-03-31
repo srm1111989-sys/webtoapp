@@ -1521,6 +1521,67 @@ export const platforms: Platform[] = [
     ]
   },
   {
+    slug: 'small-business-to-app',
+    name: 'Small Business',
+    displayName: 'Small Business Website',
+    description: 'Convert your small business website to a professional mobile app with no coding. Reach customers on their phones, send push notifications, and grow your business with a dedicated app.',
+    icon: '/icons/business.svg',
+    targetKeyword: 'small business app builder no code',
+    monthlySearches: 1300,
+    features: [
+      'Works with any website builder (Wix, WordPress, Squarespace, GoDaddy)',
+      'Online booking and appointment scheduling preserved',
+      'Contact forms and click-to-call functionality',
+      'Google Maps and directions integration',
+      'Business hours and service information display',
+      'Customer reviews and testimonials section',
+      'Social media links and sharing',
+      'Photo gallery for products and services'
+    ],
+    benefits: [
+      'Push notifications bring customers back 3x more often',
+      'App icon on customer phones = constant brand visibility',
+      'Faster than mobile website — better customer experience',
+      'Compete with big brands that have dedicated apps',
+      'No coding skills or developers needed',
+      'One-time cost — no monthly app builder subscriptions'
+    ],
+    faqs: [
+      {
+        question: 'How do I convert my small business website to a mobile app?',
+        answer: 'Visit WebsiteToApp.app, enter your business website URL, customize the app icon, colors, and features, then build. You get an APK file for Android in about 10 minutes. No coding or technical skills required — if you can copy and paste a URL, you can build an app.'
+      },
+      {
+        question: 'Do I need a special website to create an app?',
+        answer: 'No. Any website works — WordPress, Wix, Squarespace, GoDaddy, Shopify, or even a basic HTML site. As long as your website loads in a browser, it can be converted to a mobile app. Your site should be mobile-responsive for the best app experience.'
+      },
+      {
+        question: 'How much does it cost to build a small business app?',
+        answer: 'WebsiteToApp starts free for basic features. The full version costs $35 one-time — no monthly fees. Compare that to custom app development ($10,000-$50,000) or monthly app builders ($50-$300/month). It is the most affordable way for small businesses to get a mobile app.'
+      },
+      {
+        question: 'Can I send push notifications to my customers?',
+        answer: 'Yes! Push notifications are included. Send promotions, appointment reminders, new product announcements, or special offers directly to your customers phones. Businesses using push notifications see 3-10x more repeat visits compared to email marketing.'
+      },
+      {
+        question: 'Will my online booking system work in the app?',
+        answer: 'Yes. Booking systems like Calendly, Acuity, Square Appointments, Booksy, and any web-based scheduling tool work perfectly in the app. Customers can book appointments directly from the app on their phone.'
+      },
+      {
+        question: 'Can I publish the app on Google Play Store?',
+        answer: 'Yes! WebsiteToApp generates both APK (for direct sharing) and AAB (for Google Play Store) files. You need a Google Play Developer account ($25 one-time fee from Google) to publish. We provide step-by-step instructions for the submission process.'
+      },
+      {
+        question: 'What types of small businesses benefit most from an app?',
+        answer: 'Restaurants, salons, gyms, dental clinics, law firms, real estate agencies, retail stores, cleaning services, tutoring centers, and any local service business. Basically, any business that wants repeat customers benefits from having an app on their customers phones.'
+      },
+      {
+        question: 'How do I update the app content?',
+        answer: 'You do not need to update the app itself. The app loads your live website, so when you update your website (new products, changed hours, blog posts), those changes appear in the app instantly. No rebuilding or republishing required.'
+      }
+    ]
+  },
+  {
     slug: 'no-code-website-app-converter',
     name: 'No-Code App Converter',
     displayName: 'No-Code App',
