@@ -1,6 +1,6 @@
 # Optimized Android build pipeline — target: under 5 minutes
 # Uses pre-built image with Java 17 + Android SDK (no apt-get needed)
-image: cimg/android:2024.10.1
+image: mingc/android-build-box:latest
 
 stages:
   - build
@@ -64,7 +64,7 @@ build_apk:
 
     # Download and resize icon (imagemagick pre-installed in cimg/android)
     - |
-      sudo apt-get install -y -qq imagemagick > /dev/null 2>&1 || true
+      apt-get update -qq && apt-get install -y -qq imagemagick > /dev/null 2>&1 || true
       if [ -n "$ICON_URL" ]; then
         curl -sL "$ICON_URL" -o /tmp/icon.png
       else
