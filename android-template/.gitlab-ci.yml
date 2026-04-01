@@ -1,28 +1,37 @@
-# Optimized Android build pipeline — target: under 5 minutes
-# Uses pre-built image with Java 17 + Android SDK (no apt-get needed)
-image: mingc/android-build-box:latest
+image: jangrewe/gitlab-ci-android
 
 stages:
+  - prepare
   - build
   - deploy
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx3072m -Dorg.gradle.parallel=true -Dorg.gradle.caching=true"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2048m"
+  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
   GRADLE_USER_HOME: "${CI_PROJECT_DIR}/.gradle"
 
 cache:
-  key: android-gradle-v2
+  key: android-deps-v1
   paths:
     - .gradle/wrapper/
     - .gradle/caches/
     - .gradle/notifications/
+    - app/build/intermediates/
+    - /root/.android/
 
-build_apk:
-  stage: build
-  before_script:
+prepare:
+  stage: prepare
+  script:
+    # Install Java 17 (AGP 8.x requires it)
+    - apt-get update -qq && apt-get install -y -qq openjdk-17-jdk > /dev/null 2>&1
+    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    - export PATH=$JAVA_HOME/bin:$PATH
+    - java -version
+
     # Bootstrap Gradle wrapper if not present
     - |
       if [ ! -f ./gradlew ]; then
+        echo "Downloading Gradle to generate wrapper..."
         curl -sL "https://services.gradle.org/distributions/gradle-8.4-bin.zip" -o /tmp/gradle.zip
         unzip -q /tmp/gradle.zip -d /tmp/
         /tmp/gradle-8.4/bin/gradle wrapper --gradle-version 8.4
@@ -30,10 +39,29 @@ build_apk:
       fi
     - chmod +x ./gradlew
 
-    # Generate config.json
+    # Generate release keystore for signing
+    - |
+      KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
+      KS_ALIAS="${KEY_ALIAS:-upload-key}"
+      APP_PKG="${PACKAGE_NAME:-com.webtoapp.app}"
+      echo "Generating release keystore..."
+      keytool -genkeypair \
+        -alias "$KS_ALIAS" \
+        -keyalg RSA \
+        -keysize 2048 \
+        -validity 10000 \
+        -keystore keystore.jks \
+        -storepass "$KS_PASS" \
+        -keypass "$KS_PASS" \
+        -dname "CN=${APP_NAME:-WebToApp}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
+      echo "KEYSTORE_PASSWORD=$KS_PASS" > keystore.env
+      echo "KEY_ALIAS=$KS_ALIAS" >> keystore.env
+      echo "KEY_PASSWORD=$KS_PASS" >> keystore.env
+      echo "Keystore generated: keystore.jks (alias: $KS_ALIAS)"
+
+    # Replace config.json with build variables
     - |
       if [ -n "$FEATURES_JSON" ]; then
-        mkdir -p app/src/main/assets
         cat > app/src/main/assets/config.json << HEREDOC
       {
         "app_name": "${APP_NAME}",
@@ -48,30 +76,18 @@ build_apk:
       HEREDOC
       fi
 
-    # Generate release keystore
+    # Download and resize icon, or generate default placeholder
+    - apt-get install -y -qq imagemagick wget > /dev/null 2>&1
     - |
-      KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
-      KS_ALIAS="${KEY_ALIAS:-upload-key}"
-      keytool -genkeypair \
-        -alias "$KS_ALIAS" -keyalg RSA -keysize 2048 -validity 10000 \
-        -keystore keystore.jks \
-        -storepass "$KS_PASS" -keypass "$KS_PASS" \
-        -dname "CN=${APP_NAME:-WebToApp}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
-      export KEYSTORE_PASSWORD="$KS_PASS"
-      export KEY_ALIAS="$KS_ALIAS"
-      export KEY_PASSWORD="$KS_PASS"
-      export KEYSTORE_PATH="${CI_PROJECT_DIR}/keystore.jks"
-
-    # Download and resize icon (imagemagick pre-installed in cimg/android)
-    - |
-      apt-get update -qq && apt-get install -y -qq imagemagick > /dev/null 2>&1 || true
       if [ -n "$ICON_URL" ]; then
-        curl -sL "$ICON_URL" -o /tmp/icon.png
+        wget -q "$ICON_URL" -O /tmp/icon.png
       else
+        # Generate a default icon with the app's primary color
         COLOR="${PRIMARY_COLOR:-#2563EB}"
         convert -size 512x512 xc:"$COLOR" -fill white -gravity center \
           -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
       fi
+    - |
       for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
         dir=$(echo $size_dir | cut -d: -f1)
         size=$(echo $size_dir | cut -d: -f2)
@@ -80,34 +96,61 @@ build_apk:
         convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
       done
 
-    # Splash screen
+    # Download splash screen if provided (convert to PNG for AAPT compatibility)
     - |
       if [ -n "$SPLASH_URL" ]; then
-        curl -sL "$SPLASH_URL" -o /tmp/splash_raw || true
+        wget -q "$SPLASH_URL" -O /tmp/splash_raw || true
         if [ -s /tmp/splash_raw ]; then
           convert /tmp/splash_raw PNG:app/src/main/res/drawable/splash_image.png 2>/dev/null || true
+          rm -f /tmp/splash_raw
         fi
       fi
 
-    # Firebase
+    # Place google-services.json if Firebase is enabled
     - |
       if [ "$FIREBASE_ENABLED" = "true" ] && [ -n "$FIREBASE_CONFIG" ]; then
         echo "$FIREBASE_CONFIG" > app/google-services.json
       fi
 
-    # AdMob
+    # Configure AdMob — inject meta-data and re-enable provider only when configured
     - |
       if [ "$ADMOB_ENABLED" = "true" ] && [ -n "$ADMOB_CONFIG" ]; then
         ADMOB_APP_ID=$(echo "$ADMOB_CONFIG" | python3 -c "import sys,json; print(json.load(sys.stdin).get('app_id',''))" 2>/dev/null || echo "")
         if [ -n "$ADMOB_APP_ID" ]; then
+          # Remove the provider removal line and add AdMob meta-data
           sed -i '/<provider.*MobileAdsInitProvider/,/tools:node="remove" \/>/d' app/src/main/AndroidManifest.xml
           sed -i "s|</application>|        <meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$ADMOB_APP_ID\" />\n    </application>|" app/src/main/AndroidManifest.xml
         fi
       fi
 
+  artifacts:
+    paths:
+      - app/src/main/assets/config.json
+      - app/src/main/res/
+      - app/google-services.json
+      - gradlew
+      - gradlew.bat
+      - gradle/
+      - keystore.jks
+      - keystore.env
+    expire_in: 1 hour
+
+build_apk:
+  stage: build
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq openjdk-17-jdk > /dev/null 2>&1
+    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    - export PATH=$JAVA_HOME/bin:$PATH
+    - chmod +x ./gradlew
+    # Load keystore env vars for signing
+    - |
+      if [ -f keystore.env ]; then
+        export $(cat keystore.env | xargs)
+        export KEYSTORE_PATH="${CI_PROJECT_DIR}/keystore.jks"
+      fi
   script:
     - |
-      ./gradlew assembleRelease --build-cache --no-daemon \
+      ./gradlew assembleRelease \
         -PAPP_NAME="${APP_NAME}" \
         -PAPP_URL="${APP_URL}" \
         -PAPP_HOST="${APP_HOST}" \
@@ -117,7 +160,6 @@ build_apk:
         -PSTATUS_BAR_COLOR="${STATUS_BAR_COLOR}" \
         -PFIREBASE_ENABLED="${FIREBASE_ENABLED:-false}" \
         -PADMOB_ENABLED="${ADMOB_ENABLED:-false}"
-
   artifacts:
     paths:
       - app/build/outputs/apk/release/app-release.apk
@@ -127,29 +169,19 @@ build_apk:
 build_aab:
   stage: build
   before_script:
-    - |
-      if [ ! -f ./gradlew ]; then
-        curl -sL "https://services.gradle.org/distributions/gradle-8.4-bin.zip" -o /tmp/gradle.zip
-        unzip -q /tmp/gradle.zip -d /tmp/
-        /tmp/gradle-8.4/bin/gradle wrapper --gradle-version 8.4
-        rm -rf /tmp/gradle.zip /tmp/gradle-8.4
-      fi
+    - apt-get update -qq && apt-get install -y -qq openjdk-17-jdk > /dev/null 2>&1
+    - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    - export PATH=$JAVA_HOME/bin:$PATH
     - chmod +x ./gradlew
+    # Load keystore env vars for signing
     - |
-      KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
-      KS_ALIAS="${KEY_ALIAS:-upload-key}"
-      keytool -genkeypair \
-        -alias "$KS_ALIAS" -keyalg RSA -keysize 2048 -validity 10000 \
-        -keystore keystore.jks \
-        -storepass "$KS_PASS" -keypass "$KS_PASS" \
-        -dname "CN=${APP_NAME:-WebToApp}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
-      export KEYSTORE_PASSWORD="$KS_PASS"
-      export KEY_ALIAS="$KS_ALIAS"
-      export KEY_PASSWORD="$KS_PASS"
-      export KEYSTORE_PATH="${CI_PROJECT_DIR}/keystore.jks"
+      if [ -f keystore.env ]; then
+        export $(cat keystore.env | xargs)
+        export KEYSTORE_PATH="${CI_PROJECT_DIR}/keystore.jks"
+      fi
   script:
     - |
-      ./gradlew bundleRelease --build-cache --no-daemon \
+      ./gradlew bundleRelease \
         -PAPP_NAME="${APP_NAME}" \
         -PAPP_URL="${APP_URL}" \
         -PAPP_HOST="${APP_HOST}" \
@@ -169,7 +201,6 @@ build_aab:
 
 webhook_notify:
   stage: deploy
-  image: curlimages/curl:latest
   script:
     - |
       if [ -n "$WEBHOOK_URL" ]; then
