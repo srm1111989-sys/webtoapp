@@ -303,6 +303,28 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         except Exception as e:
             logger.error(f"Failed to download artifacts for pipeline {pipeline_id}: {e}")
 
+        # Send build completion email
+        try:
+            from app.utils.email import send_build_complete_email
+            result = await db.execute(select(Order).where(Order.id == build.order_id))
+            order = result.scalar_one_or_none()
+            if order:
+                from app.models.user import User
+                from app.models.app_config import AppConfig as AC
+                user_result = await db.execute(select(User).where(User.id == order.user_id))
+                user = user_result.scalar_one_or_none()
+                app_result = await db.execute(select(AC).where(AC.id == order.app_config_id))
+                app = app_result.scalar_one_or_none()
+                if user and app:
+                    download_url = build.apk_url or build.exe_url or f"{settings.app_url}/apps"
+                    if download_url.startswith("http://localhost"):
+                        download_url = download_url.replace("http://localhost:8000", settings.app_url)
+                    platform_name = "Desktop" if build.platform == "desktop" else "Android"
+                    send_build_complete_email(user.email, app.name, order.order_number, download_url, platform_name)
+                    logger.info(f"Build complete email sent to {user.email} for {app.name}")
+        except Exception as e:
+            logger.warning(f"Failed to send build complete email: {e}")
+
     elif pipeline_status == "failed":
         build.status = "failed"
         build.progress = 0
@@ -327,6 +349,24 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         # Save log to persistent file
         _save_build_log(str(build.id), full_log)
         logger.info(f"Build {build.id} failed — log saved ({len(full_log)} chars)")
+
+        # Send build failure email
+        try:
+            from app.utils.email import send_build_failed_email
+            result = await db.execute(select(Order).where(Order.id == build.order_id))
+            order = result.scalar_one_or_none()
+            if order:
+                from app.models.user import User
+                from app.models.app_config import AppConfig as AC
+                user_result = await db.execute(select(User).where(User.id == order.user_id))
+                user = user_result.scalar_one_or_none()
+                app_result = await db.execute(select(AC).where(AC.id == order.app_config_id))
+                app = app_result.scalar_one_or_none()
+                if user and app:
+                    send_build_failed_email(user.email, app.name, order.order_number, build.error_message or "")
+                    logger.info(f"Build failure email sent to {user.email} for {app.name}")
+        except Exception as e:
+            logger.warning(f"Failed to send build failure email: {e}")
 
     elif pipeline_status == "running":
         build.status = "building"

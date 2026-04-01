@@ -90,6 +90,80 @@ def send_order_confirmation_email(
     return send_email(to, f"Order Confirmed: {order_number} - {settings.app_name}", html)
 
 
+def send_build_complete_email(
+    to: str,
+    app_name: str,
+    order_number: str,
+    download_url: str,
+    platform: str = "Android",
+) -> bool:
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #059669; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">Your App Is Ready!</h1>
+      </div>
+      <div style="padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+        <p style="font-size: 16px; color: #111827;">Great news! Your {platform} app has been built successfully.</p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">App Name</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: 600; font-size: 14px;">{app_name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Order</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: 600; font-size: 14px;">{order_number}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Platform</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: 600; font-size: 14px;">{platform} APK</td>
+          </tr>
+        </table>
+        <div style="text-align: center; margin: 24px 0;">
+          <a href="{download_url}" style="background: #059669; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">Download APK</a>
+        </div>
+        <p style="font-size: 14px; color: #6b7280;">You can also download your app from your <a href="{settings.app_url}/apps" style="color: #4f46e5;">dashboard</a>.</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+        <p style="font-size: 13px; color: #6b7280;"><strong>Next steps:</strong></p>
+        <ul style="font-size: 13px; color: #6b7280; padding-left: 20px;">
+          <li>Install the APK on your Android device to test</li>
+          <li>Upload to Google Play Store using the AAB format (available in your dashboard)</li>
+          <li>Share with your users!</li>
+        </ul>
+        <p style="font-size: 12px; color: #9ca3af; text-align: center; margin-top: 20px;">Questions? Reply to this email or contact support@websitetoapp.app</p>
+      </div>
+    </div>
+    """
+    return send_email(to, f"Your app \"{app_name}\" is ready to download!", html)
+
+
+def send_build_failed_email(
+    to: str,
+    app_name: str,
+    order_number: str,
+    error_message: str = "",
+) -> bool:
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #dc2626; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">Build Failed</h1>
+      </div>
+      <div style="padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+        <p style="font-size: 16px; color: #111827;">Unfortunately, the build for <strong>{app_name}</strong> failed.</p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Order</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: 600; font-size: 14px;">{order_number}</td>
+          </tr>
+        </table>
+        {f'<p style="font-size: 14px; color: #dc2626; background: #fef2f2; padding: 12px; border-radius: 6px;">{error_message}</p>' if error_message else ''}
+        <p style="font-size: 14px; color: #6b7280;">Our team has been notified and will look into it. You can also try rebuilding from your <a href="{settings.app_url}/apps" style="color: #4f46e5;">dashboard</a>.</p>
+        <p style="font-size: 12px; color: #9ca3af; text-align: center; margin-top: 20px;">Need help? Reply to this email or contact support@websitetoapp.app</p>
+      </div>
+    </div>
+    """
+    return send_email(to, f"Build failed for \"{app_name}\" - {settings.app_name}", html)
+
+
 def send_reset_email(to: str, token: str) -> bool:
     link = f"{settings.app_url}/auth/reset-password?token={token}"
     html = f"""
