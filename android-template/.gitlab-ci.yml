@@ -79,13 +79,24 @@ prepare:
     # Download and resize icon, or generate default placeholder
     - apt-get install -y -qq imagemagick wget > /dev/null 2>&1
     - |
+      ICON_OK=false
       if [ -n "$ICON_URL" ]; then
-        wget -q "$ICON_URL" -O /tmp/icon.png
-      else
+        wget -q --timeout=10 "$ICON_URL" -O /tmp/icon_raw 2>/dev/null && [ -s /tmp/icon_raw ] && ICON_OK=true
+        if [ "$ICON_OK" = "true" ]; then
+          # Validate it's actually an image
+          file /tmp/icon_raw | grep -qi "image" && cp /tmp/icon_raw /tmp/icon.png || ICON_OK=false
+        fi
+        if [ "$ICON_OK" = "false" ]; then
+          echo "WARNING: Icon URL invalid or unreachable ($ICON_URL) — using default icon"
+          rm -f /tmp/icon_raw
+        fi
+      fi
+      if [ "$ICON_OK" = "false" ]; then
         # Generate a default icon with the app's primary color
         COLOR="${PRIMARY_COLOR:-#2563EB}"
+        LETTER=$(echo "${APP_NAME:-W}" | head -c 1 | tr '[:lower:]' '[:upper:]')
         convert -size 512x512 xc:"$COLOR" -fill white -gravity center \
-          -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
+          -pointsize 200 -annotate +0+0 "$LETTER" /tmp/icon.png
       fi
     - |
       for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do

@@ -2,6 +2,7 @@ import os
 import uuid
 import json
 import logging
+import httpx
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -53,7 +54,24 @@ async def _fetch_pipeline_logs(gitlab: GitLabService, pipeline_id: int) -> str:
         return f"[Failed to fetch pipeline logs: {e}]"
 
 
-def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str = "android") -> dict:
+async def _validate_image_url(url: str) -> bool:
+    """Check if an image URL is reachable and returns a valid image."""
+    if not url or not url.startswith("http"):
+        return False
+    try:
+        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
+            resp = await client.head(url)
+            if resp.status_code != 200:
+                return False
+            content_type = resp.headers.get("content-type", "")
+            if content_type and not any(t in content_type for t in ["image/", "application/octet-stream"]):
+                return False
+            return True
+    except Exception:
+        return False
+
+
+async def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str = "android") -> dict:
     """Convert app config to GitLab CI pipeline variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
 
@@ -77,9 +95,17 @@ def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str 
     }
 
     if app_config.icon_url:
-        variables["ICON_URL"] = app_config.icon_url
+        icon_valid = await _validate_image_url(app_config.icon_url)
+        if icon_valid:
+            variables["ICON_URL"] = app_config.icon_url
+        else:
+            logger.warning(f"Invalid icon URL for {app_config.name}: {app_config.icon_url} — will use default icon")
     if app_config.splash_url:
-        variables["SPLASH_URL"] = app_config.splash_url
+        splash_valid = await _validate_image_url(app_config.splash_url)
+        if splash_valid:
+            variables["SPLASH_URL"] = app_config.splash_url
+        else:
+            logger.warning(f"Invalid splash URL for {app_config.name}: {app_config.splash_url} — skipping")
 
     # Feature flags
     features = dict(app_config.features or {})
@@ -140,7 +166,7 @@ async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "
     if not app_config:
         raise ValueError(f"App config for order {order_id} not found")
 
-    variables = build_pipeline_variables(app_config, order, platform)
+    variables = await build_pipeline_variables(app_config, order, platform)
 
     build = Build(
         order_id=order.id,
