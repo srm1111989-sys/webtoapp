@@ -71,6 +71,23 @@ async def _validate_image_url(url: str) -> bool:
         return False
 
 
+def _sanitize_package_name(raw: str) -> str:
+    """Ensure Android package name is valid: lowercase, no leading digits per segment."""
+    import re
+    # Replace invalid chars with underscore
+    name = re.sub(r'[^a-zA-Z0-9._]', '_', raw.lower())
+    # Each segment between dots must not start with a digit
+    parts = name.split('.')
+    sanitized = []
+    for part in parts:
+        if not part:
+            continue
+        if part[0].isdigit():
+            part = 'app' + part  # Prefix digit-starting segments with 'app'
+        sanitized.append(part)
+    return '.'.join(sanitized) if sanitized else 'com.webtoapp.app'
+
+
 async def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str = "android") -> dict:
     """Convert app config to GitLab CI pipeline variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
@@ -91,7 +108,7 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
         "NAVIGATION_TYPE": app_config.navigation_type,
         "ORDER_ID": str(order.id),
         "PLATFORM": platform,
-        "PACKAGE_NAME": app_config.package_name or f"com.webtoapp.{domain.replace('.', '_').replace('-', '_')}",
+        "PACKAGE_NAME": _sanitize_package_name(app_config.package_name or f"com.webtoapp.{domain.replace('.', '_').replace('-', '_')}"),
     }
 
     if app_config.icon_url:
