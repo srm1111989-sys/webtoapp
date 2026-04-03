@@ -1,7 +1,13 @@
+import re
 import uuid
 from datetime import datetime
 from typing import Any
-from pydantic import BaseModel, Field, HttpUrl
+from urllib.parse import urlparse
+from pydantic import BaseModel, Field, HttpUrl, field_validator
+
+
+HEX_COLOR_RE = re.compile(r'^#[0-9a-fA-F]{6}$')
+PACKAGE_NAME_RE = re.compile(r'^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$')
 
 
 class AppConfigCreate(BaseModel):
@@ -12,6 +18,51 @@ class AppConfigCreate(BaseModel):
     primary_color: str = "#2563EB"
     secondary_color: str = "#1E40AF"
     status_bar_color: str = "#1E3A5F"
+
+    @field_validator('name')
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError('App name cannot be empty')
+        if len(v) > 255:
+            raise ValueError('App name must be 255 characters or less')
+        return v
+
+    @field_validator('url')
+    @classmethod
+    def validate_url(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError('Website URL is required')
+        parsed = urlparse(v)
+        if parsed.scheme not in ('http', 'https'):
+            if not v.startswith(('http://', 'https://')):
+                v = 'https://' + v
+                parsed = urlparse(v)
+        if not parsed.netloc or '.' not in parsed.netloc:
+            raise ValueError('Please enter a valid website URL (e.g., https://example.com)')
+        return v
+
+    @field_validator('package_name')
+    @classmethod
+    def validate_package_name(cls, v: str | None) -> str | None:
+        if v is None or v.strip() == '':
+            return None
+        v = v.strip().lower()
+        if not PACKAGE_NAME_RE.match(v):
+            raise ValueError(
+                'Invalid package name. Must be like "com.example.app" — '
+                'each segment must start with a letter and contain only letters, digits, or underscores.'
+            )
+        return v
+
+    @field_validator('primary_color', 'secondary_color', 'status_bar_color')
+    @classmethod
+    def validate_color(cls, v: str) -> str:
+        if not HEX_COLOR_RE.match(v):
+            raise ValueError(f'Invalid color "{v}". Must be a hex color like #2563EB')
+        return v
     navigation_type: str = "none"
     navigation_items: Any = None
     features: dict = {}
@@ -38,6 +89,50 @@ class AppConfigUpdate(BaseModel):
     selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
+
+    @field_validator('name')
+    @classmethod
+    def validate_name(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        v = v.strip()
+        if not v:
+            raise ValueError('App name cannot be empty')
+        return v
+
+    @field_validator('url')
+    @classmethod
+    def validate_url(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        v = v.strip()
+        parsed = urlparse(v)
+        if parsed.scheme not in ('http', 'https'):
+            if not v.startswith(('http://', 'https://')):
+                v = 'https://' + v
+                parsed = urlparse(v)
+        if not parsed.netloc or '.' not in parsed.netloc:
+            raise ValueError('Please enter a valid website URL')
+        return v
+
+    @field_validator('package_name')
+    @classmethod
+    def validate_package_name(cls, v: str | None) -> str | None:
+        if v is None or v.strip() == '':
+            return None
+        v = v.strip().lower()
+        if not PACKAGE_NAME_RE.match(v):
+            raise ValueError('Invalid package name format')
+        return v
+
+    @field_validator('primary_color', 'secondary_color', 'status_bar_color')
+    @classmethod
+    def validate_color(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not HEX_COLOR_RE.match(v):
+            raise ValueError(f'Invalid color "{v}". Must be hex like #2563EB')
+        return v
 
 
 class AppConfigResponse(BaseModel):
