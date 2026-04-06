@@ -241,7 +241,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     private void setupWatermarkBanner(LinearLayout root) {
         TextView watermark = new TextView(this);
-        watermark.setText("Powered by WebToApp");
+        watermark.setText("Made with websitetoapp.app");
         watermark.setTextColor(Color.parseColor("#6B7280"));
         watermark.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
         watermark.setBackgroundColor(Color.parseColor("#F3F4F6"));
@@ -251,7 +251,14 @@ public class WebViewActivity extends AppCompatActivity {
         watermark.setPadding(0, pad, 0, pad);
         watermark.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://websitetoapp.app"));
-            startActivity(intent);
+            intent.setPackage("com.android.chrome");
+            try {
+                startActivity(intent);
+            } catch (Exception e) {
+                // Chrome not installed, fall back to default browser
+                intent.setPackage(null);
+                startActivity(intent);
+            }
         });
         root.addView(watermark, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
