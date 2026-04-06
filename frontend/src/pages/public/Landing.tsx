@@ -7,7 +7,7 @@ import {
   Bell, Fingerprint, QrCode, WifiOff, Navigation, Camera, MapPin, Upload,
   Code, Palette, Share2, RefreshCw, LogOut, Cookie, Database, Settings,
   Video, Volume2, Vibrate, Battery, Info, BarChart, AlertCircle, Languages,
-  Download, RotateCw, Maximize, TrendingDown, IndianRupee, DollarSign, Play, ExternalLink
+  Download, RotateCw, Maximize, TrendingDown, IndianRupee, DollarSign
 } from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
 
@@ -516,45 +516,6 @@ export default function Landing() {
                 )}
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Watch Demo Video */}
-      <section className="py-12 sm:py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">Watch How It Works</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-              See how easy it is to convert your website into a fully functional Android or Desktop app in just a few minutes.
-            </p>
-          </div>
-
-          {/* Video Embed Area */}
-          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl aspect-video flex items-center justify-center">
-            {/* Placeholder content - replace with iframe when video is ready */}
-            <div className="text-center px-6">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-primary-600/90 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg hover:bg-primary-500 transition-colors cursor-pointer">
-                <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1" />
-              </div>
-              <p className="text-white text-xl sm:text-2xl font-semibold mb-2">Demo Video Coming Soon</p>
-              <p className="text-gray-400 text-sm sm:text-base mb-6 max-w-md mx-auto">
-                We are preparing a step-by-step walkthrough showing the full app conversion process.
-              </p>
-              <a
-                href="https://www.youtube.com/channel/UCmUnpj4ZqXU2DFQTWRYw18g"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" />
-                  <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="white" />
-                </svg>
-                Visit Our YouTube Channel
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
           </div>
         </div>
       </section>
