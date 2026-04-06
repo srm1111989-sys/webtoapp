@@ -74,6 +74,11 @@ Outputs: 3 keywords + 1 page to create + 1 CTR fix + 2 internal links.
 **Do what it says BEFORE engagement. This is the #1 most skipped task — NEVER skip it.**
 
 1. **Automated checks** (5 min) — health, keywords, GA4, sitemaps (parallel)
+1a. **Track indexed pages daily** (5 min) — Pull indexed pages from GSC, store locally, compare with previous day:
+   ```bash
+   cd ~/Desktop/Projects/play-console-cli && python3 track_indexed_pages.py
+   ```
+   - Saves to `indexed_pages/YYYY-MM-DD.json` — shows new indexed, deindexed, submission gaps
 2. **SEO CONTENT** (30 min) — MOST IMPORTANT, never skip:
    - Mon: Programmatic SEO pages (new /convert/ pages)
    - Tue: Blog post (conversion guide, 1500+ words)
@@ -116,6 +121,28 @@ Script: `cd ~/Desktop/Projects/play-console-cli && python3 linkedin_upload_video
   ssh root@157.90.228.171 "docker exec webtoapp-db-1 psql -U webtoapp -d webtoapp -c \"SELECT order_number, amount, currency, status, payment_gateway, created_at FROM orders ORDER BY created_at DESC LIMIT 5;\""
   ```
 - Check support@websitetoapp.app inbox (Zoho Mail, IMAP: imappro.zoho.in, password: ChrSW0vsxTKN)
+
+### 1b. Check Builds — Stuck or Failed (5 min, DAILY)
+Check for builds stuck in `building` or `pending` for >30 min, or failed builds. Fix immediately.
+```bash
+ssh root@157.90.228.171 "
+echo '=== Stuck Builds (building >30min) ==='
+docker exec webtoapp-db-1 psql -U webtoapp -d webtoapp -c \"SELECT b.id, b.status, b.progress, b.error_message, b.created_at, b.variables->>'APP_NAME' as app_name, u.email FROM builds b JOIN orders o ON b.order_id=o.id JOIN users u ON o.user_id=u.id WHERE b.status IN ('building','pending') AND b.created_at < NOW() - INTERVAL '30 minutes' ORDER BY b.created_at DESC LIMIT 10;\"
+echo '=== Failed Builds (last 24h) ==='
+docker exec webtoapp-db-1 psql -U webtoapp -d webtoapp -c \"SELECT b.id, b.status, b.error_message, b.created_at, b.variables->>'APP_NAME' as app_name, u.email FROM builds b JOIN orders o ON b.order_id=o.id JOIN users u ON o.user_id=u.id WHERE b.status='failed' AND b.created_at > NOW() - INTERVAL '24 hours' ORDER BY b.created_at DESC LIMIT 10;\"
+echo '=== Celery Worker Health ==='
+docker logs webtoapp-celery-worker-1 --since 1h 2>&1 | grep -i 'error\|connected\|ready' | tail -5
+"
+```
+
+**If stuck build found:**
+1. Check GitLab pipeline status: `curl -s --header 'PRIVATE-TOKEN: glpat-G063...' 'https://gitlab.com/api/v4/projects/77087514/pipelines/<PIPELINE_ID>'`
+2. If pipeline succeeded: download artifacts, save APK, update DB to `completed`
+3. If pipeline failed: update DB to `failed` with error message
+4. If pipeline still running: wait
+5. Send user email after fixing
+
+**If celery worker has DB errors:** `docker restart webtoapp-celery-worker-1`
 
 ### 2. Community Engagement - 3-5 Answers Daily (20 min)
 All scripts in `~/Desktop/Projects/play-console-cli/`, use Firefox with persistent profile.
