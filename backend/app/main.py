@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from pathlib import Path
@@ -57,4 +58,57 @@ app.mount("/api/artifacts", StaticFiles(directory=str(artifacts_dir)), name="art
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok"}
+    checks = {}
+    healthy = True
+
+    # DB
+    try:
+        from app.database import async_session
+        async with async_session() as db:
+            await db.execute(text("SELECT 1"))
+        checks["database"] = "ok"
+    except Exception as e:
+        checks["database"] = f"fail: {str(e)[:80]}"
+        healthy = False
+
+    # Redis
+    try:
+        import redis
+        r = redis.Redis(host="redis", port=6379, socket_timeout=2)
+        r.ping()
+        checks["redis"] = "ok"
+    except Exception as e:
+        checks["redis"] = f"fail: {str(e)[:80]}"
+        healthy = False
+
+    # Stuck builds
+    try:
+        from app.database import async_session
+        async with async_session() as db:
+            result = await db.execute(text(
+                "SELECT count(*) FROM builds WHERE status IN ('building','pending') "
+                "AND created_at < NOW() - INTERVAL '30 minutes'"
+            ))
+            stuck = result.scalar()
+            checks["stuck_builds"] = str(stuck)
+            if stuck > 0:
+                healthy = False
+    except:
+        checks["stuck_builds"] = "unknown"
+
+    # Disk
+    try:
+        import shutil
+        total, used, free = shutil.disk_usage("/")
+        pct = int(used / total * 100)
+        checks["disk"] = f"{pct}%"
+        if pct > 85:
+            healthy = False
+    except:
+        checks["disk"] = "unknown"
+
+    return {
+        "status": "healthy" if healthy else "degraded",
+        "service": "webtoapp",
+        "checks": checks,
+    }
