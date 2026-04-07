@@ -1,0 +1,58 @@
+# WebsiteToApp - Convert Any Website to Android App
+
+> WebsiteToApp.app converts any website into a native Android APK in minutes. No coding required.
+
+## What WebsiteToApp Does
+- **Website to APK Converter**: Enter your website URL, get a ready-to-publish Android APK
+- **No Coding Required**: Works with any website — WordPress, Shopify, Wix, React, HTML
+- **Native Features**: Push notifications, biometric auth, offline mode, file upload, QR scanner
+- **Play Store Ready**: Generates signed AAB/APK ready for Google Play Store submission
+- **Customizable**: Custom app icon, splash screen, colors, navigation menu
+- **Fast Build**: APK generated in under 5 minutes
+
+## Supported Platforms
+Convert websites built with: WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, Next.js, Vue.js, Angular, HTML, PHP, Laravel, Django, Flask, Bubble, Glide, FlutterFlow, Lovable, Bolt.new, v0.dev, Streamlit
+
+## Features
+- WebView with JavaScript bridge
+- Push notifications (Firebase)
+- Biometric authentication (fingerprint/face)
+- File upload & download
+- Camera & QR code scanner
+- GPS/location services
+- Custom user agent
+- Screenshot prevention
+- Offline mode (cache)
+- AdMob integration
+- Bottom navigation menu
+- Pull-to-refresh
+- External link handling
+
+## Key Pages
+- Homepage: https://websitetoapp.app
+- Pricing: https://websitetoapp.app/pricing
+- Documentation: https://websitetoapp.app/docs
+- Showcase: https://websitetoapp.app/showcase
+- Tutorials: https://websitetoapp.app/tutorials
+
+## Platform Conversion Guides
+- WordPress to App: https://websitetoapp.app/convert/wordpress-to-app
+- Shopify to App: https://websitetoapp.app/convert/shopify-to-app
+- Wix to App: https://websitetoapp.app/convert/wix-to-app
+- React to App: https://websitetoapp.app/convert/react-website-to-app
+- Bubble to App: https://websitetoapp.app/convert/bubble-to-app
+- Lovable to App: https://websitetoapp.app/convert/lovable-to-app
+
+## Blog Posts
+- Convert Website to Android App 2026: https://websitetoapp.app/blog/convert-website-to-android-app-2026
+- Convert Website to App Guide: https://websitetoapp.app/blog/convert-website-to-app-guide-2026
+- Website to APK Converter Guide: https://websitetoapp.app/blog/website-to-apk-converter-guide-2026
+- Biometric Authentication in Apps: https://websitetoapp.app/blog/biometric-authentication-mobile-apps
+
+## Pricing
+- Free: 5 builds with watermark + 30-day trial
+- Premium: One-time payment, no watermark, unlimited builds
+
+## Contact
+- Website: https://websitetoapp.app
+- Support: support@websitetoapp.app
