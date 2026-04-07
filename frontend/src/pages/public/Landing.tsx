@@ -153,7 +153,7 @@ const faqs = [
 
 export default function Landing() {
   useSEO({
-    title: 'Website to App Converter — Convert Any Website to Android APK Free',
+    title: 'Convert Website to App in 5 Minutes [No Coding] | WebToApp',
     description: 'Convert any website into a native Android APK or Windows .exe app in minutes. No coding required. Push notifications, AdMob, biometric auth included. Free plan available.',
     canonical: 'https://websitetoapp.app/',
   })
