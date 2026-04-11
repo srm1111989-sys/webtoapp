@@ -46,7 +46,7 @@ def poll_stuck_builds():
 
 async def _poll_stuck_builds():
     from sqlalchemy import select
-    from app.database import async_session
+    from app.database import celery_async_session as async_session
     from app.models.build import Build
     from app.services.build_service import handle_build_webhook
     from app.services.gitlab_service import GitLabService
@@ -135,7 +135,7 @@ async def _poll_stuck_builds():
 
 async def _expire_subscriptions():
     from sqlalchemy import select, update
-    from app.database import async_session
+    from app.database import celery_async_session as async_session
     from app.models.subscription import Subscription
 
     grace_cutoff = datetime.now(timezone.utc) - timedelta(days=3)
