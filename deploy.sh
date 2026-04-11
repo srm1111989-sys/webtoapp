@@ -1,55 +1,29 @@
 #!/bin/bash
 set -e
+cd /opt/webtoapp
 
-SERVER_IP="157.90.228.171"
-SERVER_USER="root"
-REMOTE_DIR="/root/webtoapp"
+echo "=== WebToApp Deploy ==="
 
-echo "Deploying WebToApp to production server..."
+echo "[1/5] Pulling latest..."
+git pull origin main
 
-echo "[1/5] Checking dependencies..."
-grep -q "razorpay==1.4.2" backend/requirements.txt || echo "razorpay==1.4.2" >> backend/requirements.txt
+echo "[2/5] Building ALL services (no cache for code changes)..."
+docker compose -f docker-compose.prod.yml build backend celery-worker celery-beat frontend
 
-echo "[2/5] Syncing files to server..."
-rsync -avz --delete \
-  --exclude 'node_modules' \
-  --exclude 'venv' \
-  --exclude '__pycache__' \
-  --exclude '*.pyc' \
-  --exclude '.git' \
-  --exclude 'claude_session1' \
-  --exclude 'frontend/test-results' \
-  --exclude 'frontend/.vite' \
-  --exclude 'frontend/dist' \
-  --exclude 'backend/*.db' \
-  --exclude 'backend/logs' \
-  --exclude 'celerybeat-schedule' \
-  ./ ${SERVER_USER}@${SERVER_IP}:${REMOTE_DIR}/
+echo "[3/5] Restarting services..."
+docker compose -f docker-compose.prod.yml up -d --force-recreate backend celery-worker celery-beat frontend
 
-echo "[3/5] Building and deploying on server..."
-ssh ${SERVER_USER}@${SERVER_IP} << 'ENDSSH'
-cd /root/webtoapp
+echo "[4/5] Cleaning old images..."
+docker image prune -f --filter "dangling=true" > /dev/null 2>&1 || true
 
-if [ -d .git ]; then
-  git pull || true
-fi
+echo "[5/5] Verifying..."
+sleep 5
+for svc in webtoapp-backend-1 webtoapp-frontend-1 webtoapp-celery-worker-1 webtoapp-celery-beat-1 webtoapp-db-1 webtoapp-redis-1; do
+  STATUS=$(docker ps --filter name=$svc --format "{{.Status}}" | head -1)
+  echo "  $svc: $STATUS"
+done
 
-echo "Building containers..."
-docker-compose build --no-cache backend
-docker-compose up -d
+HEALTH=$(curl -s http://127.0.0.1:8000/api/health 2>/dev/null | python3 -c "import sys,json;print(json.load(sys.stdin).get('status','?'))" 2>/dev/null || echo "fail")
+echo "  API Health: $HEALTH"
 
-echo "Waiting for services..."
-sleep 10
-
-echo "Container status:"
-docker-compose ps
-ENDSSH
-
-echo "[4/5] Cleaning up Docker on server..."
-ssh ${SERVER_USER}@${SERVER_IP} "docker image prune -f && docker builder prune -f --keep-storage=1GB 2>/dev/null && docker volume prune -f 2>/dev/null" > /dev/null 2>&1
-
-echo "[5/5] Disk usage:"
-ssh ${SERVER_USER}@${SERVER_IP} "df -h / | tail -1"
-
-echo ""
-echo "Deployed! https://websitetoapp.app"
+echo "=== Deploy complete ==="
