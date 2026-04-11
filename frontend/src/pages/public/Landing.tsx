@@ -682,6 +682,17 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
+      {/* Guide CTA */}
+      <section className="py-10 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Not sure which method is right for you?</h2>
+          <p className="text-gray-600 mb-4">Read our complete guide comparing all 5 methods to convert your website to an app.</p>
+          <Link to="/blog/convert-website-to-app-guide-2026" className="text-primary-600 font-semibold hover:underline text-lg">
+            📖 Read: How to Convert Any Website to a Mobile App (2026 Guide) →
+          </Link>
+        </div>
+      </section>
+
       <section className="py-12 sm:py-20 bg-primary-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Convert Your Website?</h2>

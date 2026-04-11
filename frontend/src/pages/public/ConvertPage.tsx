@@ -190,6 +190,11 @@ export default function ConvertPage() {
               <p className="text-sm text-gray-500 mt-1">MSME registration for Indian small businesses</p>
             </a>
           </div>
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <Link to="/blog/convert-website-to-app-guide-2026" className="font-medium text-blue-700 hover:underline">
+              📖 Read our Complete Guide: How to Convert Any Website to a Mobile App (2026)
+            </Link>
+          </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link to="/blog" className="text-sm text-blue-600 hover:underline">Read our blog</Link>
             <span className="text-gray-300">|</span>
