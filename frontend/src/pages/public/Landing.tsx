@@ -153,8 +153,8 @@ const faqs = [
 
 export default function Landing() {
   useSEO({
-    title: 'Convert Website to App in 5 Minutes [No Coding] | WebToApp',
-    description: 'Convert any website into a native Android APK or Windows .exe app in minutes. No coding required. Push notifications, AdMob, biometric auth included. Free plan available.',
+    title: 'Convert Website to App in 60 Minutes | Free APK Download | No Coding Required',
+    description: 'Turn your website into Android APK & Windows .exe app instantly. No coding needed. 40+ features: push notifications, offline mode, AdMob monetization. Download free or pay $29. Build in 60 minutes!',
     canonical: 'https://websitetoapp.app/',
   })
   const { accessToken } = useAuthStore()

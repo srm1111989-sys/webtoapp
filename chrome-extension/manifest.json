@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Website to App Converter",
+  "name": "Website to App Converter - Mobile Readiness Analyzer",
   "short_name": "WebToApp",
-  "version": "1.0.1",
-  "description": "Analyze any website's mobile-readiness and convert it to an Android app. Check viewport, responsiveness, and app compatibility.",
+  "version": "1.2.0",
+  "description": "Analyze any website's mobile-readiness score. Checks viewport, HTTPS, responsiveness, PWA, service worker.",
+  "homepage_url": "https://websitetoapp.app",
   "permissions": ["activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",

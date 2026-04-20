@@ -19,37 +19,40 @@ SCREENSHOT2 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screensh
 
 CWS_URL = "https://chrome.google.com/webstore/devconsole"
 
-DESCRIPTION = """Convert any website into an Android app with one click. No coding required.
+DESCRIPTION = """Mobile Readiness Analyzer — Check if any website is ready for app conversion.
+
+This extension analyzes the current website and gives it a mobile-readiness score based on 8 technical checks. It helps developers and business owners understand how well a website would work as a mobile app.
 
 HOW IT WORKS:
 1. Browse to any website
 2. Click the WebToApp extension icon
-3. Hit "Convert to Android App"
-4. Get your APK in minutes
+3. Click "Analyze for App Conversion" to get your readiness score
+4. View detailed results: viewport, HTTPS, responsive design, PWA, service worker, favicon, images
+5. If the score is good, click the link to visit WebsiteToApp.app to start the conversion process
 
-FEATURES:
-- One-click conversion from any website
-- Custom app icon and splash screen
-- Push notifications support
-- Offline mode
-- Play Store ready (AAB format)
-- No coding or technical skills needed
-- Free plan available
+WHAT IT CHECKS (8-point analysis):
+- HTTPS enabled (secure connection)
+- Mobile viewport meta tag present
+- Responsive design detected
+- Favicon available (used as app icon)
+- Web App Manifest found
+- Service Worker registered (offline support)
+- Images loading correctly
+- No mixed content issues
 
-PERFECT FOR:
-- Small business owners who want a mobile app
-- Bloggers and content creators
-- E-commerce store owners
-- Freelancers building apps for clients
-- Anyone who wants their website as an app
+Each check shows a pass/fail indicator with a final percentage score.
 
-The extension detects the current website URL and opens WebsiteToApp.app with your URL pre-filled. Your app is built in the cloud and ready to download as APK or publish to Google Play Store.
+USEFUL FOR:
+- Web developers checking mobile readiness before app conversion
+- Business owners evaluating if their website is app-ready
+- Freelancers assessing client websites for mobile app projects
+- QA testers validating mobile compatibility
 
-Free plan includes 1 app build. Premium plans start at $9.99 for additional features.
+The extension only reads the current page's HTML to perform analysis. No data is collected or transmitted. Results are displayed locally in the popup.
 
-Visit https://websitetoapp.app for more information."""
+Visit https://websitetoapp.app for website to app conversion service."""
 
-PRIVACY_POLICY = "https://websitetoapp.app/privacy"
+PRIVACY_POLICY = "https://websitetoapp.app/privacy-policy"
 
 
 async def run():
