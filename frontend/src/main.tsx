@@ -18,6 +18,10 @@ const queryClient = new QueryClient({
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
+// Hide pre-rendered SEO content once React takes over
+const seoPrerender = document.getElementById('seo-prerender')
+if (seoPrerender) seoPrerender.style.display = 'none'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={googleClientId}>

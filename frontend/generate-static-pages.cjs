@@ -90,15 +90,63 @@ for (const p of platforms) {
     .replace(/<meta property="twitter:url"[^>]*>/, `<meta property="twitter:url" content="${canonical}" />`);
 
   // Add canonical link + pre-rendered content for Googlebot (before <div id="root">)
+  // Visible to bots, hidden visually after JS hydration via CSS class
   const seoContent = `
     <link rel="canonical" href="${canonical}" />
     <!--seo-prerender-->
-    <div id="seo-prerender" style="position:absolute;left:-9999px">
-      <h1>Convert ${p.name} Website to Android App</h1>
-      <p>${desc} No coding required. Get your app ready for Google Play in minutes.</p>
-      <p>WebToApp converts any ${p.name} website into a native Android app (APK) with push notifications, offline mode, and custom branding.</p>
-      <a href="https://websitetoapp.app/register">Convert Your ${p.name} Site Now</a>
+    <div id="seo-prerender" class="seo-static-content">
+      <h1>Convert ${p.name} Website to Android App — No Coding Required</h1>
+      <p>${desc} Turn your ${p.name} site into a fully functional Android app in minutes — no coding, no SDK, no app store experience needed.</p>
+
+      <h2>How to Convert ${p.name} to App in 3 Steps</h2>
+      <ol>
+        <li><strong>Enter your ${p.name} URL</strong> — paste your website address into WebToApp.</li>
+        <li><strong>Customize your app</strong> — set your app name, icon, splash screen, and enable features like push notifications and offline mode.</li>
+        <li><strong>Build and download</strong> — get your APK or AAB file ready to publish on Google Play Store.</li>
+      </ol>
+
+      <h2>${p.name} App Features</h2>
+      <ul>
+        <li>Push notifications to re-engage your ${p.name} visitors</li>
+        <li>Offline mode — content accessible without internet</li>
+        <li>Custom app icon and splash screen matching your ${p.name} brand</li>
+        <li>Full ${p.name} functionality preserved — forms, payments, login, all working</li>
+        <li>AdMob integration to monetize your ${p.name} app</li>
+        <li>Google Play Store ready AAB file with one click</li>
+        <li>Hardware back button support on Android</li>
+        <li>Custom loading screen and progress bar</li>
+      </ul>
+
+      <h2>Why Convert Your ${p.name} Site to a Mobile App?</h2>
+      <p>Mobile apps get 3x more engagement than mobile websites. Your ${p.name} visitors who install your app are far more likely to return and convert. Push notifications alone can recover 20-30% of lost visitors.</p>
+      <ul>
+        <li>Google Play Store presence builds credibility</li>
+        <li>Push notifications keep users coming back</li>
+        <li>Faster load time than ${p.name} mobile site</li>
+        <li>Offline access increases session length</li>
+        <li>Native Android feel increases trust</li>
+        <li>One APK works on all Android devices</li>
+      </ul>
+
+      <h2>Frequently Asked Questions</h2>
+      <h3>How long does it take to convert ${p.name} to an Android app?</h3>
+      <p>The conversion takes approximately 10-15 minutes from start to finish. You enter your ${p.name} URL, customize your app settings, and WebToApp builds the APK automatically. No waiting, no queue.</p>
+
+      <h3>Do I need coding skills to convert ${p.name} to app?</h3>
+      <p>No coding required. WebToApp handles all the technical work. You only need your ${p.name} website URL and a few minutes to set up your app name, icon, and features.</p>
+
+      <h3>Will my ${p.name} website work properly in the app?</h3>
+      <p>Yes. All ${p.name} features work in the app — your existing theme, plugins, forms, login, and checkout all function as expected. WebToApp wraps your site in a native Android shell without modifying any code.</p>
+
+      <h3>Can I publish the app on Google Play Store?</h3>
+      <p>Yes. WebToApp generates an AAB (Android App Bundle) file that meets Google Play Store requirements. You can publish directly to Google Play using your developer account.</p>
+
+      <h3>How much does it cost?</h3>
+      <p>WebToApp offers a free plan for basic conversion. Premium plans start at $35 one-time payment and include push notifications, offline mode, AdMob monetization, and Google Play AAB file.</p>
+
+      <p><a href="https://websitetoapp.app/register">Start converting your ${p.name} site for free →</a></p>
     </div>
+    <style>#seo-prerender.seo-static-content{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}#seo-prerender h1{font-size:2em;margin-bottom:16px}#seo-prerender h2{font-size:1.4em;margin-top:24px;margin-bottom:12px}#seo-prerender ul,#seo-prerender ol{padding-left:20px;margin-bottom:16px}#seo-prerender li{margin-bottom:8px;line-height:1.6}#seo-prerender p{line-height:1.7;margin-bottom:12px}</style>
     <!--/seo-prerender-->`;
 
   html = html.replace('<div id="root">', seoContent + '\n    <div id="root">');
