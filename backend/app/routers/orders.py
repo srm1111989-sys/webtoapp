@@ -8,6 +8,7 @@ from app.models.user import User
 from app.models.order import Order
 from app.models.plan import Plan
 from app.models.app_config import AppConfig
+from app.models.promo_code import PromoCode
 from app.schemas.order import OrderCreate, OrderResponse, OrderDetailResponse, OrderListResponse
 from app.dependencies import get_current_user
 from app.utils.email import send_order_confirmation_email
@@ -39,6 +40,30 @@ async def create_order(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plan not found")
 
     amount = plan.price_inr if data.currency == "INR" else plan.price_usd
+
+    # Apply promo code if provided
+    promo_applied = None
+    if data.promo_code and amount > 0:
+        from datetime import datetime, timezone
+        from sqlalchemy import func as sqlfunc
+        promo_result = await db.execute(
+            select(PromoCode).where(
+                sqlfunc.upper(PromoCode.code) == data.promo_code.upper().strip(),
+                PromoCode.is_active == True,
+            )
+        )
+        promo = promo_result.scalar_one_or_none()
+        if promo:
+            valid = True
+            if promo.expires_at and promo.expires_at < datetime.now(timezone.utc):
+                valid = False
+            if promo.max_uses > 0 and promo.current_uses >= promo.max_uses:
+                valid = False
+            if valid:
+                discount = int(amount * promo.discount_percent / 100)
+                amount = max(0, amount - discount)
+                promo.current_uses += 1
+                promo_applied = promo.code.upper()
 
     order = Order(
         user_id=user.id,

@@ -1202,8 +1202,33 @@ function Step4PlanReview() {
   })
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(wizard.selectedPlanId)
+  const [promoCode, setPromoCode] = useState('')
+  const [promoApplied, setPromoApplied] = useState<{ code: string; discount_percent: number; discounted_price_usd: number } | null>(null)
+  const [promoError, setPromoError] = useState('')
+  const [promoLoading, setPromoLoading] = useState(false)
 
   const currency = getUserCurrency()
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return
+    const plan = (plans as Plan[])?.find((p) => p.id === selectedPlan)
+    const priceUsd = plan?.price_usd ?? 0
+    setPromoLoading(true)
+    setPromoError('')
+    setPromoApplied(null)
+    try {
+      const res = await fetch(`/api/promo/${promoCode.trim()}?plan_price_usd=${priceUsd}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.detail || 'Invalid code')
+      setPromoApplied(data)
+    } catch (e: any) {
+      setPromoError(e.message || 'Invalid promo code')
+    } finally {
+      setPromoLoading(false)
+    }
+  }
 
   const createOrder = useMutation({
     mutationFn: async (): Promise<{ data: any; plan: Plan | undefined }> => {
@@ -1215,6 +1240,7 @@ function Step4PlanReview() {
         app_config_id: wizard.appId,
         plan_id: selectedPlan,
         currency: userCurrency,
+        promo_code: promoApplied?.code || undefined,
       })
       return { data: res.data, plan }
     },
@@ -1641,6 +1667,35 @@ function Step4PlanReview() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Promo Code */}
+      <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <p className="text-sm font-medium text-gray-700 mb-2">Have a promo code?</p>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={promoCode}
+            onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(null); setPromoError('') }}
+            placeholder="Enter code (e.g. FOUNDER9)"
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            disabled={!!promoApplied}
+          />
+          <button
+            type="button"
+            onClick={promoApplied ? () => { setPromoApplied(null); setPromoCode('') } : handleApplyPromo}
+            disabled={promoLoading || (!promoCode.trim() && !promoApplied)}
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 transition-colors"
+          >
+            {promoLoading ? '...' : promoApplied ? 'Remove' : 'Apply'}
+          </button>
+        </div>
+        {promoError && <p className="text-red-500 text-xs mt-1">{promoError}</p>}
+        {promoApplied && (
+          <p className="text-green-600 text-xs mt-1 font-medium">
+            ✅ {promoApplied.discount_percent}% off applied! New price: ${(promoApplied.discounted_price_usd / 100).toFixed(2)}
+          </p>
+        )}
       </div>
 
       {/* Navigation */}

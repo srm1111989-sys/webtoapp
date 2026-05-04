@@ -8,6 +8,7 @@ class OrderCreate(BaseModel):
     plan_id: uuid.UUID
     currency: str = "USD"
     payment_gateway: str = "stripe"  # stripe, razorpay, test
+    promo_code: str | None = None
 
 
 class OrderResponse(BaseModel):
