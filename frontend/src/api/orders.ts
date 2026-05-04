@@ -2,7 +2,7 @@ import client from './client'
 import type { Order, Build, Subscription, SubscriptionDetail, SubscriptionCreateResponse } from '@/types'
 
 export const ordersApi = {
-  create: (data: { app_config_id: string; plan_id: string; currency?: string; payment_gateway?: string }) =>
+  create: (data: { app_config_id: string; plan_id: string; currency?: string; payment_gateway?: string; promo_code?: string }) =>
     client.post<Order>('/api/orders/', data),
 
   list: (page = 1, per_page = 20) =>
