@@ -4,8 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.database import get_db
 from app.models.promo_code import PromoCode
-from app.dependencies import get_current_user
-from app.models.user import User
 
 router = APIRouter(prefix="/api/promo", tags=["promo"])
 
@@ -14,7 +12,6 @@ router = APIRouter(prefix="/api/promo", tags=["promo"])
 async def validate_promo_code(
     code: str,
     plan_price_usd: int = 0,  # original price in cents
-    user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
