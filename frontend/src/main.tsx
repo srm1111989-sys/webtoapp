@@ -18,6 +18,19 @@ const queryClient = new QueryClient({
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
+// Capture browser console errors and send to backend for logging
+function sendClientError(payload: object) {
+  try {
+    navigator.sendBeacon('/api/client-errors', JSON.stringify(payload))
+  } catch (_) {}
+}
+window.onerror = (message, source, line, col, error) => {
+  sendClientError({ type: 'js_error', message: String(message), source, line, col, stack: error?.stack, url: location.href, userAgent: navigator.userAgent })
+}
+window.addEventListener('unhandledrejection', (e) => {
+  sendClientError({ type: 'unhandled_promise', message: String(e.reason), stack: e.reason?.stack, url: location.href, userAgent: navigator.userAgent })
+})
+
 // Hide pre-rendered SEO content once React takes over
 const seoPrerender = document.getElementById('seo-prerender')
 if (seoPrerender) seoPrerender.style.display = 'none'
