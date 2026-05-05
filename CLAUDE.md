@@ -6,6 +6,69 @@
 ## YouTube: https://www.youtube.com/channel/UCmUnpj4ZqXU2DFQTWRYw18g (WebsiteToApp)
 ## Account: srm1111989@gmail.com
 
+---
+
+## SEO Sprint Plan (Updated May 2026)
+
+### Keyword Status (May 5, 2026)
+| Keyword | Position | Clicks | Impressions | Status |
+|---------|----------|--------|-------------|--------|
+| websitetoapp (brand) | 2.3 | 2 | 21 | ✅ Brand owned |
+| webtoapp apk | 9.8 | 2 | 15 | 🟡 Blog post created |
+| webintoapp (competitor) | 8.0 | 1 | 2 | 🟡 Alternative page created |
+| appilix website to app | 9.0 | 0 | 2 | 🔴 Need /appilix-alternative |
+| best website to app converter | 8.7 | 0 | 20 | 🔴 Cannibalised — 7 posts competing |
+| best free website to apk | 10.2 | 0 | 5 | 🔴 Need pillar page |
+| webtoapp | 15.8 | 8 | 56 | 🟡 Most clicks, page 2 |
+**GA: 25 users/7d — 13 register, 12 login views (users reaching funnel)**
+
+### ✅ DONE (Week 1–2, May 2026)
+- [x] `/blog/webtoapp-apk-download-guide` — targets "webtoapp apk" (pos 9.8, 13.3% CTR)
+- [x] `/blog/webintoapp-alternative-websitetoapp` — captures WebIntoApp competitor brand (pos 8, 50% CTR)
+
+### 🔴 Week 3–4 (Do Next)
+- [ ] **`/blog/appilix-alternative`** — "appilix website to app" pos 9. Same format as webintoapp comparison. **HIGH IMPACT.**
+- [ ] **Deepen WordPress /convert/ page** — `/convert/wordpress-to-app` needs 1000+ words (step-by-step guide, screenshots description, FAQs). "convert wordpress site to android app" = 5K/mo searches.
+- [ ] **Deepen Shopify /convert/ page** — same, 1000+ words. "convert shopify to app" = 3K/mo.
+- [ ] **Deepen Wix /convert/ page** — "convert wix to app" = 2K/mo.
+- [ ] **Create pillar page `/best-website-to-app-converter`** — 3000+ words, comparison table of 10 tools. All "best converter" posts add internal link to this. Stops cannibalisation.
+
+### 🟡 Month 2 (June 2026)
+- [ ] `/free-website-to-apk` dedicated tool landing page — "website to apk free" pos ~12
+- [ ] Product Hunt launch — coordinate, get 500+ upvotes. DA90+ backlink + TechCrunch/IH coverage.
+- [ ] `/blog/appsgeyser-alternative` — capture AppGeyser competitor brand traffic
+- [ ] `/blog/gonative-alternative` — GoNative pos ~15
+- [ ] Deepen 5 more /convert/ pages (Squarespace, Webflow, Bubble, Glide, FlutterFlow)
+
+### 🟢 Month 3 (July 2026)
+- [ ] AppSumo listing — DA80+, small business audience who want apps
+- [ ] Dev.to article: "I built a tool that converts any website to Android APK in 5 minutes" — DA80+
+- [ ] AlternativeTo.net — list as WebViewGold, GoNative, Median.co alternative
+- [ ] YouTube tutorials — "Convert WordPress to Android app" (video ranks in Google)
+- [ ] IndieHackers post — "How I built a no-code app converter" DA70+
+- [ ] Use-case pages: `/convert/restaurant-website-to-app`, `/convert/ecommerce-website-to-app`
+
+### KPI Targets
+| Period | Clicks/28d | Signups/week |
+|--------|-----------|-------------|
+| Now | ~15 | ~3 |
+| Month 1 | 40–60 | 8–12 |
+| Month 3 | 80–120 | 20–30 |
+
+### Cannibalisation Fix Plan
+**Problem:** 7+ posts competing for "best website to app converter" — Google splits authority.
+**Fix:** Create `/best-website-to-app-converter` pillar (3000+ words). Update all "best" blog posts to add: `"For a complete comparison, see our [Best Website to App Converters guide](/best-website-to-app-converter)."` — funnels authority to one page.
+
+### Backlink Priority
+1. Product Hunt launch — DA90+, 500–2000 votes = massive trust signal
+2. AppSumo listing — DA80+
+3. Dev.to article — DA80+
+4. AlternativeTo.net — DA70+
+5. IndieHackers post — DA70+
+6. YouTube tutorials — Google indexes video descriptions
+
+---
+
 ## Free Tools (Build 1 per week)
 Each tool = free landing page targeting long-tail keywords + drives WebToApp signups.
 
