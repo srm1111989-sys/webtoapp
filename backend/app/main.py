@@ -9,6 +9,7 @@ from app.config import get_settings
 from app.middleware.logging import RequestLoggingMiddleware
 from app.rate_limit import limiter
 from app.routers import auth, users, apps, orders, payments, builds, webhooks, admin, plans, blog, seo, promo, client_errors
+from app.utils.email import send_admin_payment_notification as _admin_notify
 
 settings = get_settings()
 

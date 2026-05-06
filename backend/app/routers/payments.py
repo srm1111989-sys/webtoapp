@@ -18,7 +18,7 @@ from app.dependencies import get_current_user
 from app.config import get_settings
 from app.services.build_service import trigger_build
 from app.rate_limit import limiter
-from app.utils.email import send_order_confirmation_email
+from app.utils.email import send_order_confirmation_email, send_admin_payment_notification
 
 settings = get_settings()
 router = APIRouter(prefix="/api/payments", tags=["payments"])
@@ -178,12 +178,21 @@ async def verify_razorpay_payment(
     # Trigger build
     await trigger_build(order.id, db)
 
-    # Send order confirmation email
+    # Send emails
     app_name = order.app_config.name if order.app_config else "App"
     plan_name = order.plan.name if order.plan else "Plan"
     send_order_confirmation_email(
         to=user.email,
         order_number=order.order_number,
+        app_name=app_name,
+        plan_name=plan_name,
+        amount=order.amount,
+        currency=order.currency,
+        order_id=str(order.id),
+    )
+    send_admin_payment_notification(
+        order_number=order.order_number,
+        customer_email=user.email,
         app_name=app_name,
         plan_name=plan_name,
         amount=order.amount,
@@ -273,12 +282,21 @@ async def test_payment(
 
     await trigger_build(order.id, db)
 
-    # Send order confirmation email
+    # Send emails
     app_name = order.app_config.name if order.app_config else "App"
     plan_name = order.plan.name if order.plan else "Plan"
     send_order_confirmation_email(
         to=user.email,
         order_number=order.order_number,
+        app_name=app_name,
+        plan_name=plan_name,
+        amount=order.amount,
+        currency=order.currency,
+        order_id=str(order.id),
+    )
+    send_admin_payment_notification(
+        order_number=order.order_number,
+        customer_email=user.email,
         app_name=app_name,
         plan_name=plan_name,
         amount=order.amount,

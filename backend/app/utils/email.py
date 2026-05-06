@@ -90,6 +90,61 @@ def send_order_confirmation_email(
     return send_email(to, f"Order Confirmed: {order_number} - {settings.app_name}", html)
 
 
+ADMIN_NOTIFY_EMAIL = "mokashiswapnil11@gmail.com"
+
+
+def send_admin_payment_notification(
+    order_number: str,
+    customer_email: str,
+    app_name: str,
+    plan_name: str,
+    amount: int,
+    currency: str,
+    order_id: str,
+) -> bool:
+    """Notify admin (mokashiswapnil11@gmail.com) on every new paid order."""
+    if amount == 0:
+        return True  # Skip free plan notifications
+    if currency == "INR":
+        amount_display = f"₹{amount / 100:,.0f}"
+    else:
+        amount_display = f"${amount / 100:,.2f}"
+
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;
+                border: 2px solid #16a34a; border-radius: 8px; overflow: hidden;">
+      <div style="background: #16a34a; padding: 16px 24px; display: flex; align-items: center;">
+        <h2 style="color: white; margin: 0; font-size: 20px;">💰 New Payment — WebToApp</h2>
+      </div>
+      <div style="padding: 20px 24px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tr><td style="color: #6b7280; padding: 6px 0;">Order</td>
+              <td style="font-weight: 700; text-align: right;">{order_number}</td></tr>
+          <tr><td style="color: #6b7280; padding: 6px 0;">Customer</td>
+              <td style="text-align: right;">{customer_email}</td></tr>
+          <tr><td style="color: #6b7280; padding: 6px 0;">App</td>
+              <td style="text-align: right;">{app_name}</td></tr>
+          <tr><td style="color: #6b7280; padding: 6px 0;">Plan</td>
+              <td style="text-align: right;">{plan_name}</td></tr>
+          <tr style="border-top: 2px solid #16a34a;">
+            <td style="padding: 10px 0; font-size: 18px; font-weight: 700; color: #16a34a;">Amount</td>
+            <td style="text-align: right; font-size: 18px; font-weight: 700; color: #16a34a;">{amount_display}</td>
+          </tr>
+        </table>
+        <p style="margin: 16px 0 0; font-size: 13px; color: #6b7280;">
+          Order ID: {order_id} &nbsp;|&nbsp;
+          <a href="https://websitetoapp.app/admin/orders" style="color: #4f46e5;">View in Admin</a>
+        </p>
+      </div>
+    </div>
+    """
+    return send_email(
+        ADMIN_NOTIFY_EMAIL,
+        f"💰 New WebToApp Payment: {amount_display} — {order_number}",
+        html,
+    )
+
+
 def send_build_complete_email(
     to: str,
     app_name: str,
