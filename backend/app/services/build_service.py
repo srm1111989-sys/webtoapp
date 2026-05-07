@@ -112,15 +112,18 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     }
 
     if app_config.icon_url:
-        icon_valid = await _validate_image_url(app_config.icon_url)
+        # Replace localhost with public app_url — GitLab CI can't reach localhost
+        icon_url = app_config.icon_url.replace("http://localhost:8000", settings.app_url)
+        icon_valid = await _validate_image_url(icon_url)
         if icon_valid:
-            variables["ICON_URL"] = app_config.icon_url
+            variables["ICON_URL"] = icon_url
         else:
-            logger.warning(f"Invalid icon URL for {app_config.name}: {app_config.icon_url} — will use default icon")
+            logger.warning(f"Invalid icon URL for {app_config.name}: {icon_url} — will use default icon")
     if app_config.splash_url:
-        splash_valid = await _validate_image_url(app_config.splash_url)
+        splash_url = app_config.splash_url.replace("http://localhost:8000", settings.app_url)
+        splash_valid = await _validate_image_url(splash_url)
         if splash_valid:
-            variables["SPLASH_URL"] = app_config.splash_url
+            variables["SPLASH_URL"] = splash_url
         else:
             logger.warning(f"Invalid splash URL for {app_config.name}: {app_config.splash_url} — skipping")
 
