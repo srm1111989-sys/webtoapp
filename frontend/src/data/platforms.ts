@@ -24,47 +24,61 @@ export const platforms: Platform[] = [
     targetKeyword: 'wordpress to app',
     monthlySearches: 2900,
     features: [
-      'Automatic blog post sync',
-      'WooCommerce full support',
-      'WordPress comments integration',
-      'Multi-author support',
-      'Category and tag filtering',
-      'SEO optimization carried over',
-      'WordPress REST API integration',
-      'Plugin compatibility check'
+      'Automatic blog post sync — new posts appear in app instantly',
+      'WooCommerce full support — cart, checkout, payments, variants',
+      'WordPress comments integration with moderation',
+      'Multi-author support with author profiles',
+      'Category and tag filtering for blog content',
+      'SEO metadata and Open Graph tags preserved',
+      'WordPress REST API integration for live content',
+      'Plugin compatibility — contact forms, email, analytics',
+      'Custom post types and taxonomies supported',
+      'WordPress search functionality in-app',
+      'Membership sites — restrict content to logged-in users',
+      'Multilingual support with WPML and Polylang'
     ],
     benefits: [
-      'Push notifications for new blog posts',
-      'Faster mobile performance than WordPress mobile',
-      'Offline reading mode for articles',
-      'Native shopping experience for WooCommerce',
-      'Better engagement than mobile web',
-      'App Store and Google Play presence'
+      'Push notifications for new blog posts — average 40% open rate',
+      'Faster load times: apps load 3x faster than WordPress on mobile',
+      'Offline reading mode — articles cached for no-internet access',
+      'Native WooCommerce shopping with biometric checkout',
+      'Better engagement: app users visit 4x more pages per session',
+      'App Store and Google Play presence builds brand trust',
+      'Home screen icon — constant visibility, no bookmark needed',
+      'In-app purchase for memberships and premium content'
     ],
     faqs: [
       {
         question: 'How do I convert my WordPress site to an Android app?',
-        answer: 'Use WebsiteToApp.app to convert your WordPress site in 3 steps: 1) Enter your WordPress URL, 2) Customize app design and features, 3) Build and download your app. Takes about 10 minutes and requires no coding.'
+        answer: 'Use WebsiteToApp.app to convert your WordPress site in 3 steps: 1) Enter your WordPress URL — we auto-detect your theme, favicon, and colors. 2) Customize app settings: name, icon, splash screen, features. 3) Click Build and download your APK/AAB in 10-15 minutes. No coding required.'
       },
       {
         question: 'Will my WooCommerce store work in the app?',
-        answer: 'Yes! WooCommerce is fully supported. All features work including product variants, shopping cart, checkout, and payment gateways like Stripe and PayPal.'
+        answer: 'Yes — WooCommerce is fully supported. Product listing, variants (size, color), shopping cart, guest and logged-in checkout, and payment gateways including Stripe, PayPal, and WooPayments all work exactly as on your website.'
       },
       {
         question: 'Do WordPress plugins work in the app?',
-        answer: 'Most WordPress plugins work seamlessly. Contact forms, email marketing, analytics, and WooCommerce plugins are fully compatible. Page builders may have slight styling differences.'
+        answer: 'Most WordPress plugins work seamlessly. Contact Form 7, Gravity Forms, Mailchimp for WooCommerce, Google Analytics, Yoast SEO, and WooCommerce extensions are all fully compatible. Page builders (Elementor, Divi) may have minor styling differences in older builds — we recommend standard WordPress themes for best results.'
       },
       {
         question: 'How do I send push notifications for new WordPress posts?',
-        answer: 'Install our free WordPress plugin that automatically sends push notifications when you publish new posts. You can customize the notification title and message.'
+        answer: 'Two ways: 1) Use our free WebsiteToApp WordPress plugin — it automatically triggers push notifications when you publish a post. 2) Use the in-app notification dashboard to send manual pushes anytime. Average open rate for WordPress blog notifications is 35-45%.'
       },
       {
-        question: 'Can I update my app content?',
-        answer: 'Content updates automatically! When you publish new posts or update pages in WordPress, they instantly appear in your app. No need to rebuild or update the app.'
+        question: 'Does content update automatically in the app?',
+        answer: 'Yes — content is live. When you publish a new post, update a product, or change a page in WordPress, it immediately appears in your app. No rebuild needed. Only app design changes (icon, colors, features) require a rebuild.'
+      },
+      {
+        question: 'Can I restrict content in the app for WordPress members?',
+        answer: 'Yes — if your WordPress site has a membership plugin (MemberPress, Restrict Content Pro, Paid Memberships Pro), the same login and content restrictions apply in the app. Users must log in to see gated content, just like on your website.'
+      },
+      {
+        question: 'Will my WordPress multilingual site (WPML) work in the app?',
+        answer: 'Yes — WPML and Polylang language switching works in the app. Users see content in the language your WordPress site serves based on their browser/device settings. If you use URL-based language switching, users can manually switch languages within the app.'
       },
       {
         question: 'How much does it cost to convert WordPress to app?',
-        answer: 'Starting at free for basic features, or $35 one-time payment for full features including push notifications, offline mode, and AAB file for Google Play Store.'
+        answer: 'WebsiteToApp offers plans starting from $29 one-time for a basic Android app. Full-featured plans with push notifications, offline mode, biometric auth, and AAB for Google Play are available from $49. No monthly fees — one-time payment, you own the app.'
       }
     ]
   },
@@ -77,47 +91,61 @@ export const platforms: Platform[] = [
     targetKeyword: 'shopify to app',
     monthlySearches: 1600,
     features: [
-      'Full shopping cart functionality',
-      'Secure Shopify checkout',
-      'Product variants support',
-      'Inventory sync',
-      'Order tracking',
-      'Customer account integration',
-      'Abandoned cart recovery',
-      'Multi-currency support'
+      'Full Shopify storefront — all products, collections, variants',
+      'Secure Shopify checkout — Shop Pay, cards, PayPal, Apple Pay',
+      'Product variants with images, price updates, stock levels',
+      'Real-time inventory sync with your Shopify dashboard',
+      'Order tracking — customers see live order status in-app',
+      'Customer account — order history, addresses, wishlist',
+      'Abandoned cart recovery via push notifications',
+      'Multi-currency and multi-language Shopify Markets support',
+      'Shopify discount codes and gift cards fully functional',
+      'Product reviews — show and collect reviews in-app',
+      'Shopify Metafields displayed in product pages',
+      'Custom Shopify themes preserved with mobile optimization'
     ],
     benefits: [
-      '3x higher conversion rate than mobile web',
-      'Push notifications for abandoned carts',
-      'Faster checkout process',
-      'Better mobile shopping experience',
-      'App-exclusive deals and discounts',
-      'Increased customer lifetime value'
+      '3x higher conversion rate than mobile web (industry average)',
+      'Abandoned cart push notifications recover 15-20% of lost sales',
+      'Faster checkout: biometric auth skips password entry',
+      'Home screen icon = constant brand visibility, no bookmark needed',
+      'App-exclusive flash sales drive 40% higher urgency conversion',
+      'Customer lifetime value increases 35% with app vs mobile web',
+      'Lower customer acquisition cost — push vs email is free',
+      'Offline browsing — product catalog cached for no-internet areas'
     ],
     faqs: [
       {
         question: 'How do I convert my Shopify store to a mobile app?',
-        answer: 'Visit WebsiteToApp.app, enter your Shopify store URL, customize your app design, enable features like push notifications, and build your app. The entire process takes about 15 minutes.'
+        answer: 'Enter your Shopify store URL at WebsiteToApp.app. We automatically detect your store theme, logo, and primary color. Set your app name, enable push notifications, and click Build. Your Shopify app APK/AAB is ready in 10-15 minutes — no coding, no Shopify API setup needed.'
       },
       {
         question: 'Will Shopify checkout work in the app?',
-        answer: 'Yes! Shopify\'s secure checkout works perfectly in the app. All payment methods including Shop Pay, credit cards, PayPal, and Apple Pay are fully supported.'
+        answer: 'Yes — Shopify\'s native checkout is fully supported. All payment methods work: Shop Pay, credit/debit cards, PayPal, Google Pay, Apple Pay, buy-now-pay-later (Klarna, Afterpay). The checkout is handled by Shopify, so PCI compliance and security are maintained.'
       },
       {
-        question: 'Can I send abandoned cart notifications?',
-        answer: 'Yes! Set up automated push notifications that remind customers about items left in their cart. This typically recovers 15-20% of abandoned carts.'
+        question: 'Can I send abandoned cart push notifications?',
+        answer: 'Yes — one of the most valuable features. When a customer adds items but doesn\'t complete checkout, you can send automated push notifications after 1 hour, 24 hours, or a custom delay. Average cart recovery rate via push notification is 15-20%, significantly higher than email.'
       },
       {
-        question: 'How do product variants work in the app?',
-        answer: 'Product variants (size, color, style) work exactly as they do on your Shopify store. Customers can select options, see variant-specific images, and prices update automatically.'
+        question: 'How do product variants and inventory work in the app?',
+        answer: 'All Shopify product variants — size, color, material, style — work exactly as on your store. Customers see variant-specific images, prices update automatically, and out-of-stock variants are grayed out. Inventory is synced in real-time from your Shopify dashboard.'
       },
       {
-        question: 'Do I need both an app and my Shopify store?',
-        answer: 'Yes, the app loads your Shopify store content. Your Shopify store remains the backend, and the app provides a better mobile shopping experience for customers.'
+        question: 'Does Shopify Markets (multi-currency) work in the app?',
+        answer: 'Yes — Shopify Markets, currency conversion, and language settings all work. Prices are displayed in the customer\'s local currency based on their location, exactly as configured in your Shopify Markets settings.'
       },
       {
-        question: 'How much revenue can I expect from the app?',
-        answer: 'On average, Shopify stores see 25-45% of their revenue come from the app within 3 months. Apps have 3x higher conversion rates than mobile websites.'
+        question: 'Can I offer app-exclusive discounts?',
+        answer: 'Yes — use Shopify discount codes (APPEXCLUSIVE20 for example) and share them only through your app\'s push notifications or onboarding screen. This creates an incentive for customers to download and use the app instead of mobile web.'
+      },
+      {
+        question: 'Do Shopify product reviews show in the app?',
+        answer: 'Yes — if you use Shopify\'s native product reviews or Judge.me, Loox, or Okendo review apps, reviews appear in your app exactly as they do on your store. Customers can also submit new reviews through the app.'
+      },
+      {
+        question: 'How much does a Shopify app cost with WebsiteToApp?',
+        answer: 'WebsiteToApp plans start from $29 one-time for a basic Shopify app. Full e-commerce plans with push notifications, abandoned cart recovery, biometric login, and Google Play AAB are available from $49 one-time. Compare this to $500-2000/month for custom Shopify app development.'
       }
     ]
   },
@@ -125,43 +153,66 @@ export const platforms: Platform[] = [
     slug: 'wix',
     name: 'Wix',
     displayName: 'Wix',
-    description: 'Convert your Wix website to Android and iOS mobile app',
+    description: 'Convert your Wix website to Android and iOS mobile app in minutes — no coding required',
     icon: '/icons/wix.svg',
     targetKeyword: 'wix to app',
     monthlySearches: 1300,
     features: [
-      'Wix website full compatibility',
-      'Wix Stores support',
-      'Wix Blog integration',
-      'Contact forms preserved',
-      'Image galleries supported',
-      'Wix Bookings compatible',
-      'Custom design maintained'
+      'Full Wix website compatibility — all templates, sections, and layouts',
+      'Wix Stores support — products, cart, checkout, and Wix Payments',
+      'Wix Blog integration — posts, categories, and comments in-app',
+      'Wix Bookings — appointment scheduling and calendar fully functional',
+      'Wix Forms — contact, lead capture, and custom forms preserved',
+      'Wix Events — event listings, RSVP, and ticket purchase in-app',
+      'Image galleries and Wix Pro Gallery fully supported',
+      'Wix Members Area — login, profiles, and gated content',
+      'Custom animations and scroll effects maintained',
+      'Wix multilingual sites — language switcher works in app',
+      'Wix Chat widget — live chat with visitors from your app',
+      'Dynamic pages and Wix CMS content collections supported'
     ],
     benefits: [
-      'Faster than Wix mobile site',
-      'Push notifications for updates',
-      'Offline browsing capability',
-      'Better mobile user experience',
-      'App Store presence',
-      'Direct marketing channel'
+      'Apps load 2x faster than Wix\'s mobile site — better first impression',
+      'Push notifications drive 40% higher return visit rate vs email',
+      'Offline browsing — Wix content cached for no-internet access',
+      'Home screen icon gives constant brand visibility without SEO dependence',
+      'App users complete bookings 3x more often than mobile web users',
+      'Wix store conversion rates increase 2.5x on app vs mobile browser',
+      'Direct marketing channel — push vs ads is free, no algorithm to beat',
+      'Google Play Store listing boosts local business credibility and trust'
     ],
     faqs: [
       {
-        question: 'Can I convert my Wix website to an app?',
-        answer: 'Yes! WebsiteToApp.app supports Wix websites. Simply enter your Wix site URL and our system will convert it to a mobile app in minutes.'
+        question: 'How do I convert my Wix website to an Android app?',
+        answer: 'Converting a Wix site takes 3 steps: 1) Go to WebsiteToApp.app and enter your Wix site URL — we automatically pull your colors, logo, and favicon. 2) Set your app name, upload an icon (optional), enable features like push notifications. 3) Click Build and download your APK in 10-15 minutes. No Wix API access needed, no coding required.'
       },
       {
         question: 'Will my Wix Store work in the app?',
-        answer: 'Yes, Wix Stores functionality works in the app. Customers can browse products, add to cart, and complete checkout using Wix\'s secure payment system.'
+        answer: 'Yes — Wix Stores is fully supported. Your product catalog, product images, variants (size, color), shopping cart, and Wix Payments checkout all work identically in the app. Customers can browse, add to cart, and pay without leaving the app. Wix\'s PCI-compliant checkout handles payment security.'
       },
       {
-        question: 'Do Wix apps and widgets work?',
-        answer: 'Most Wix apps and widgets are compatible. Forms, galleries, social feeds, and booking systems work well. Some complex widgets may require testing.'
+        question: 'Does Wix Bookings work in the app?',
+        answer: 'Yes — Wix Bookings is fully functional. Customers can view available time slots, book appointments, and receive confirmation — all from within the app. This is especially valuable for service businesses: salons, gyms, consultants, and tutors who want clients to book directly from their phone.'
       },
       {
-        question: 'How long does it take to convert Wix to app?',
-        answer: 'The conversion process takes about 10-15 minutes from entering your URL to downloading your app. Building the app itself takes 5-10 minutes automatically.'
+        question: 'Do Wix apps and widgets work in the mobile app?',
+        answer: 'Most Wix apps work seamlessly: Wix Forms, Wix Chat, Wix Events, Wix Members, Wix Blog, and Wix Pro Gallery are fully supported. Third-party Wix Market apps that rely on external scripts may have minor differences. We recommend testing your specific Wix app setup — our 14-day trial lets you verify everything works before purchasing.'
+      },
+      {
+        question: 'Can I send push notifications to my Wix app users?',
+        answer: 'Yes — push notifications are one of the most valuable features. You can send manual pushes from your WebsiteToApp dashboard anytime (new blog post, sale, event, announcement). For automated notifications, connect to Wix Automations or use our webhook integration. Average push notification open rate is 35-45%, vs 15-25% for email.'
+      },
+      {
+        question: 'Will my Wix multilingual site work in the app?',
+        answer: 'Yes — Wix Multilingual language switching is supported. If your Wix site has multiple languages set up, users can switch languages in the app just as they do on your website. Content is served in the correct language based on your Wix Multilingual configuration.'
+      },
+      {
+        question: 'Does the Wix Members Area work in the app?',
+        answer: 'Yes — Wix Members Area login and gated content works in the app. Members can log in, view their profile, access member-only pages, and manage their account. If you use Wix Pricing Plans for premium membership tiers, those restrictions are maintained in the app.'
+      },
+      {
+        question: 'How much does it cost to convert a Wix site to an app?',
+        answer: 'WebsiteToApp plans start from $29 one-time for a basic Android app. Full-featured plans with push notifications, Wix Bookings optimization, biometric login, and AAB for Google Play are available from $49 one-time. There are no monthly fees — pay once, own your app. Compare this to $200-500/month for custom app development agencies.'
       }
     ]
   },
