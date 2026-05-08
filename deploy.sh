@@ -7,6 +7,13 @@ echo "=== WebToApp Deploy ==="
 echo "[1/5] Pulling latest..."
 git pull origin main
 
+# Restore prod env from git copy — protects against backend/.env corruption
+# during deploys. backend/.env.production is the committed source of truth.
+if [ -f backend/.env.production ]; then
+  cp backend/.env.production backend/.env
+  echo "  Restored backend/.env from git (.env.production)"
+fi
+
 echo "[2/5] Building ALL services (no cache for code changes)..."
 docker compose -f docker-compose.prod.yml build backend celery-worker celery-beat frontend
 
