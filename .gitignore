@@ -1,7 +1,6 @@
-# Environment
+# Environment (.env.production is COMMITTED for prod recovery; .env is local dev only)
 .env
 .env.local
-.env.production
 
 # Python
 __pycache__/
