@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import FloatingSupportButton from '@/components/FloatingSupportButton'
 import PublicLayout from '@/components/layout/PublicLayout'
 import AuthLayout from '@/components/layout/AuthLayout'
 import UserLayout from '@/components/layout/UserLayout'
@@ -44,6 +45,8 @@ import AdminSettings from '@/pages/admin/AdminSettings'
 
 export default function App() {
   return (
+    <>
+    <FloatingSupportButton />
     <Routes>
       {/* Public routes */}
       <Route element={<PublicLayout />}>
@@ -99,5 +102,6 @@ export default function App() {
         </Route>
       </Route>
     </Routes>
+    </>
   )
 }
