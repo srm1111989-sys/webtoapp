@@ -545,17 +545,8 @@ function Step0BasicInfo() {
         {errors.url && <p className="text-red-600 text-sm mt-2 font-medium">{errors.url.message}</p>}
       </div>
 
-      <div>
-        <label className="block text-base font-semibold text-gray-900 mb-2">
-          Package Name <span className="text-sm font-normal text-gray-500">(Optional)</span>
-        </label>
-        <input
-          {...register('package_name')}
-          className={inputClass}
-          placeholder="com.example.myapp (auto-generated if empty)"
-        />
-        <p className="text-sm text-gray-500 mt-2">Leave empty to auto-generate</p>
-      </div>
+      {/* Package Name field hidden — auto-generated server-side from app name */}
+      <input type="hidden" {...register('package_name')} />
 
       <div>
         <label className="block text-base font-semibold text-gray-900 mb-2">
@@ -1607,10 +1598,6 @@ function Step4PlanReview() {
             <div>
               <span className="text-gray-500">Plan</span>
               <p className="font-medium text-gray-900">{currentPlan?.name || 'Not selected'}</p>
-            </div>
-            <div>
-              <span className="text-gray-500">Package Name</span>
-              <p className="font-medium text-gray-900">{wizard.packageName || 'Auto-generated'}</p>
             </div>
           </div>
 
