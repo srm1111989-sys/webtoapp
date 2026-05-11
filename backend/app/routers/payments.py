@@ -1,3 +1,4 @@
+import socket
 import uuid
 import hmac
 import hashlib
@@ -23,6 +24,37 @@ from app.utils.email import send_order_confirmation_email, send_admin_payment_no
 settings = get_settings()
 router = APIRouter(prefix="/api/payments", tags=["payments"])
 
+# Production server hostnames — when running on these, treat as live regardless of env vars
+_PROD_HOSTNAMES = ("websitetoapp", "webtoapp-prod", "157.90.228.171")
+# Local/dev hostnames (Mac laptops, localhost) — when running here, treat as dev
+_DEV_HOSTNAME_MARKERS = ("macbook", ".local", "localhost")
+
+
+def _is_dev_environment() -> bool:
+    """Detect if running in development/staging.
+
+    Order of precedence:
+      1. settings.environment if explicitly set to a known value
+      2. host hostname / FQDN (matches against PROD/DEV markers)
+      3. default = False (production) — safer; misconfig collects real money
+         instead of silently losing it.
+    """
+    env = (settings.environment or "").strip().lower()
+    if env in ("production", "prod", "live"):
+        return False
+    if env in ("development", "dev", "staging", "test"):
+        return True
+
+    h = socket.gethostname().lower()
+    fqdn = socket.getfqdn().lower()
+    for marker in _PROD_HOSTNAMES:
+        if marker in h or marker in fqdn:
+            return False
+    for marker in _DEV_HOSTNAME_MARKERS:
+        if marker in h or marker in fqdn:
+            return True
+    return False
+
 
 async def _is_test_mode(db: AsyncSession, user: User | None = None) -> bool:
     """Check if payment test mode is enabled globally or for this user."""
@@ -39,8 +71,9 @@ async def _is_test_mode(db: AsyncSession, user: User | None = None) -> bool:
         if user.email and ("e2etest+" in user.email or "e2e-full+" in user.email):
             return True
 
-    # Check global test mode
-    if settings.environment in ("development", "staging"):
+    # Hostname/env-based dev detection (replaces the prior env-var-only check
+    # which silently flipped prod to test mode when ENVIRONMENT=development was set on the live host)
+    if _is_dev_environment():
         return True
     result = await db.execute(
         select(Setting).where(Setting.key == "payment_test_mode")
