@@ -545,21 +545,9 @@ function Step0BasicInfo() {
         {errors.url && <p className="text-red-600 text-sm mt-2 font-medium">{errors.url.message}</p>}
       </div>
 
-      {/* Package Name field hidden — auto-generated server-side from app name */}
+      {/* Package Name and Description hidden — both optional and auto/empty by default */}
       <input type="hidden" {...register('package_name')} />
-
-      <div>
-        <label className="block text-base font-semibold text-gray-900 mb-2">
-          Description <span className="text-sm font-normal text-gray-500">(Optional)</span>
-        </label>
-        <textarea
-          {...register('description')}
-          rows={4}
-          className={`${inputClass} resize-none`}
-          placeholder="Tell us what makes your app special..."
-        />
-        {errors.description && <p className="text-red-600 text-sm mt-2 font-medium">{errors.description.message}</p>}
-      </div>
+      <input type="hidden" {...register('description')} />
 
       <div className="flex justify-end pt-6 border-t-2 border-gray-100">
         <button
