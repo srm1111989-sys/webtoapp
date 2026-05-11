@@ -15,7 +15,7 @@ PLANS = [
     {
         "name": "Android Free",
         "slug": "android-free",
-        "description": "Build up to 5 apps with watermark & 15-day trial",
+        "description": "Build up to 5 apps with watermark & 7-day trial",
         "price_inr": 0,
         "price_usd": 0,
         "billing_type": "one_time",
@@ -78,8 +78,8 @@ PLANS = [
         "name": "Android Paid",
         "slug": "android-paid",
         "description": "All features, one-time payment",
-        "price_inr": 2900,     # $29 in cents (USD only)
-        "price_usd": 2900,     # $29 in cents
+        "price_inr": 1000,     # $10 in cents (USD only)
+        "price_usd": 1000,     # $10 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "android",
@@ -139,7 +139,7 @@ PLANS = [
     {
         "name": "Desktop Free",
         "slug": "desktop-free",
-        "description": "Build up to 5 apps with watermark & 15-day trial",
+        "description": "Build up to 5 apps with watermark & 7-day trial",
         "price_inr": 0,
         "price_usd": 0,
         "billing_type": "one_time",
@@ -152,7 +152,7 @@ PLANS = [
             "custom_colors": True,
             "fullscreen": True,
             "watermark": True,
-            "trial_days": 15,
+            "trial_days": 7,
             "system_tray": False,
             "custom_window_size": False,
             "auto_updater": False,
@@ -166,8 +166,8 @@ PLANS = [
         "name": "Desktop Paid",
         "slug": "desktop-paid",
         "description": "Full desktop app, one-time",
-        "price_inr": 2400,     # $24 in cents (USD only)
-        "price_usd": 2400,     # $24 in cents
+        "price_inr": 1000,     # $10 in cents (USD only)
+        "price_usd": 1000,     # $10 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "desktop",

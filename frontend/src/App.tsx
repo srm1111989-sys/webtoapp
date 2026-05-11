@@ -23,6 +23,7 @@ import Login from '@/pages/auth/Login'
 import Register from '@/pages/auth/Register'
 import ForgotPassword from '@/pages/auth/ForgotPassword'
 import ResetPassword from '@/pages/auth/ResetPassword'
+import VerifyEmail from '@/pages/auth/VerifyEmail'
 
 // User pages
 import Dashboard from '@/pages/user/Dashboard'
@@ -68,6 +69,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/auth/reset-password" element={<ResetPassword />} />
+        <Route path="/auth/verify" element={<VerifyEmail />} />
       </Route>
 
       {/* User routes (protected) */}

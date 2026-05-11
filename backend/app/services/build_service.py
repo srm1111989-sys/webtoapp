@@ -92,10 +92,10 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     """Convert app config to GitLab CI pipeline variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
 
-    # Determine watermark and trial: free plans (amount=0) get watermark + 15-day trial
+    # Determine watermark and trial: free plans (amount=0) get watermark + 7-day trial
     is_free = order.amount == 0
     show_watermark = is_free
-    trial_days = 15 if is_free else 0
+    trial_days = 7 if is_free else 0
     purchase_url = f"{settings.app_url}/pricing" if is_free else ""
 
     variables = {

@@ -130,36 +130,34 @@ const STEP_LABELS = ['Basic Info', 'Visuals', 'Features', 'Advanced', 'Plan & Re
 
 function StepIndicator({ currentStep }: { currentStep: number }) {
   return (
-    <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-4 sm:p-6 mb-8 sm:mb-12 border-2 border-gray-100 shadow-sm">
-      <div className="flex items-center justify-between overflow-x-auto pb-2">
+    <div className="mb-6">
+      <div className="flex items-center">
         {STEP_LABELS.map((label, idx) => (
-          <div key={label} className="flex items-center flex-1 min-w-0">
-            <div className="flex flex-col items-center w-full">
+          <div key={label} className="flex items-center flex-1 min-w-0 last:flex-none">
+            <div className="flex flex-col items-center">
               <div
-                className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full sm:rounded-2xl flex items-center justify-center text-sm sm:text-lg font-bold border-3 transition-all transform ${
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium border transition-colors ${
                   idx < currentStep
-                    ? 'bg-gradient-to-br from-green-500 to-green-600 border-green-600 text-white shadow-lg scale-110'
+                    ? 'bg-primary-600 border-primary-600 text-white'
                     : idx === currentStep
-                      ? 'border-primary-600 text-primary-600 bg-gradient-to-br from-primary-50 to-primary-100 shadow-lg ring-4 ring-primary-200 scale-110'
+                      ? 'border-primary-600 text-primary-600 bg-white'
                       : 'border-gray-300 text-gray-400 bg-white'
                 }`}
               >
-                {idx < currentStep ? <Check className="w-5 h-5 sm:w-7 sm:h-7 font-bold" /> : idx + 1}
+                {idx < currentStep ? <Check className="w-3.5 h-3.5" /> : idx + 1}
               </div>
               <span
-                className={`mt-2 sm:mt-3 text-xs sm:text-sm font-semibold text-center hidden sm:block whitespace-nowrap ${
-                  idx <= currentStep ? 'text-primary-600' : 'text-gray-400'
+                className={`mt-1.5 text-xs font-medium text-center hidden sm:block whitespace-nowrap ${
+                  idx === currentStep ? 'text-gray-900' : idx < currentStep ? 'text-gray-600' : 'text-gray-400'
                 }`}
               >
                 {label}
               </span>
             </div>
             {idx < STEP_LABELS.length - 1 && (
-              <div className="flex-1 mx-2 sm:mx-4">
+              <div className="flex-1 mx-2 sm:mx-3 -mt-4 sm:mt-0">
                 <div
-                  className={`h-1 sm:h-1.5 rounded-full transition-all ${
-                    idx < currentStep ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gray-300'
-                  }`}
+                  className={`h-px ${idx < currentStep ? 'bg-primary-600' : 'bg-gray-200'}`}
                 />
               </div>
             )}
@@ -359,15 +357,15 @@ export default function CreateApp() {
   const setStep = (s: number) => wizard.setStep(s)
 
   return (
-    <div className="max-w-5xl mx-auto py-6 sm:py-10 px-3 sm:px-4">
-      <div className="mb-8 sm:mb-12">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">Create Your App</h1>
-        <p className="text-base sm:text-lg text-gray-600">Convert your website into a professional mobile app in just 5 simple steps</p>
+    <div className="max-w-5xl mx-auto py-5 sm:py-6 px-3 sm:px-4">
+      <div className="mb-5">
+        <h1 className="text-lg font-semibold text-gray-900">Create your app</h1>
+        <p className="text-sm text-gray-500 mt-0.5">Convert your website into a mobile app in 5 steps</p>
       </div>
 
       <StepIndicator currentStep={step} />
 
-      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border-2 border-gray-100 p-5 sm:p-8 lg:p-10">
+      <div className="bg-white rounded-lg border border-gray-200 p-5 sm:p-6">
         {step === 0 && <Step0BasicInfo />}
         {step === 1 && <Step1Visuals />}
         {step === 2 && <Step2Features />}
@@ -464,61 +462,36 @@ function Step0BasicInfo() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {/* Platform Selector */}
       <div>
-        <label className="block text-base font-semibold text-gray-900 mb-3">Choose Your Platform *</label>
-        <p className="text-sm text-gray-600 mb-5">Select Android or Desktop to create your app</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <button
-            type="button"
-            onClick={() => selectPlatform('android')}
-            className={`group relative flex flex-col items-center gap-4 p-6 sm:p-8 rounded-2xl border-3 text-center transition-all transform hover:scale-105 ${
-              wizard.selectedPlatforms.includes('android')
-                ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-primary-100 shadow-xl ring-4 ring-primary-200'
-                : 'border-gray-300 hover:border-primary-300 bg-white shadow-lg hover:shadow-xl'
-            }`}
-          >
-            {wizard.selectedPlatforms.includes('android') && (
-              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
-                Selected ✓
-              </div>
-            )}
-            <div className={`p-4 rounded-2xl transition-all ${
-              wizard.selectedPlatforms.includes('android')
-                ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-600 group-hover:bg-primary-100 group-hover:text-primary-600'
-            }`}>
-              <Smartphone className="w-12 h-12" />
-            </div>
-            <div>
-              <span className="text-lg font-bold text-gray-900 block mb-1">Android App</span>
-              <p className="text-sm text-gray-600">APK & AAB for Play Store</p>
-            </div>
-          </button>
-          <button
-            type="button"
-            onClick={() => selectPlatform('desktop')}
-            className={`group relative flex flex-col items-center gap-4 p-6 sm:p-8 rounded-2xl border-3 text-center transition-all transform hover:scale-105 ${
-              wizard.selectedPlatforms.includes('desktop')
-                ? 'border-primary-500 bg-gradient-to-br from-primary-50 to-primary-100 shadow-xl ring-4 ring-primary-200'
-                : 'border-gray-300 hover:border-primary-300 bg-white shadow-lg hover:shadow-xl'
-            }`}
-          >
-            {wizard.selectedPlatforms.includes('desktop') && (
-              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
-                Selected ✓
-              </div>
-            )}
-            <div className={`p-4 rounded-2xl transition-all ${
-              wizard.selectedPlatforms.includes('desktop')
-                ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-600 group-hover:bg-primary-100 group-hover:text-primary-600'
-            }`}>
-              <Monitor className="w-12 h-12" />
-            </div>
-            <div>
-              <span className="text-lg font-bold text-gray-900 block mb-1">Desktop App</span>
-              <p className="text-sm text-gray-600">Windows EXE installer</p>
-            </div>
-          </button>
+        <label className="block text-sm font-medium text-gray-900 mb-1">Platform *</label>
+        <p className="text-xs text-gray-500 mb-3">Choose where your app will run</p>
+        <div className="grid grid-cols-2 gap-3">
+          {([
+            { key: 'android' as Platform, icon: Smartphone, title: 'Android', subtitle: 'APK & AAB' },
+            { key: 'desktop' as Platform, icon: Monitor, title: 'Desktop', subtitle: 'Windows EXE' },
+          ]).map(({ key, icon: Icon, title, subtitle }) => {
+            const selected = wizard.selectedPlatforms.includes(key)
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => selectPlatform(key)}
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-md border text-left transition-colors ${
+                  selected
+                    ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-600'
+                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                }`}
+              >
+                <div className={`p-2 rounded-md ${selected ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-600'}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900">{title}</div>
+                  <div className="text-xs text-gray-500">{subtitle}</div>
+                </div>
+                {selected && <Check className="w-4 h-4 text-primary-600 shrink-0" />}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -1399,16 +1372,6 @@ function Step4PlanReview() {
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Choose a Plan</h2>
         <p className="text-sm text-gray-500 mb-4">Select a plan that fits your needs.</p>
 
-        {/* Feature-based recommendation */}
-        {selectedGatedFeatures.length > 0 && minimumPlan && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
-            <p className="text-sm text-blue-800">
-              Based on your selected features ({selectedGatedFeatures.map((f) => f.label).join(', ')}),
-              you need at least the <strong>{minimumPlan.name}</strong> plan.
-            </p>
-          </div>
-        )}
-
         {plansLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
@@ -1460,79 +1423,44 @@ function Step4PlanReview() {
                     <p className="text-sm text-gray-600 mt-3">{plan.description}</p>
                   )}
 
-                  {/* Free plan warnings */}
-                  {plan.price_inr === 0 && (
-                    <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md p-2 space-y-1">
-                      <p className="text-xs text-amber-700 flex items-center gap-1">
-                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                        Watermark &amp; 15-day trial
-                      </p>
-                      <p className="text-xs text-amber-600">App will show "Trial Expired" after 15 days. Max 5 apps.</p>
-                    </div>
-                  )}
+                  {/* Free plan: just the trial note. No missing-features dump. */}
+                  {plan.price_inr === 0 ? (
+                    <p className="mt-3 text-xs text-gray-500">7-day trial</p>
+                  ) : (
+                    <>
+                      {/* Missing features warning (paid plans only) */}
+                      {hasMissing && (
+                        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md p-2">
+                          <div className="flex items-center gap-1 text-amber-700 text-xs font-medium mb-1">
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                            Missing features you selected:
+                          </div>
+                          <ul className="space-y-0.5">
+                            {missing.map((f) => (
+                              <li key={f.wizardKey} className="flex items-center gap-1 text-xs text-amber-600">
+                                <X className="w-3 h-3" /> {f.label}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-                  {/* Missing features warning */}
-                  {hasMissing && (
-                    <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md p-2">
-                      <div className="flex items-center gap-1 text-amber-700 text-xs font-medium mb-1">
-                        <AlertTriangle className="w-3.5 h-3.5" />
-                        Missing features you selected:
-                      </div>
-                      <ul className="space-y-0.5">
-                        {missing.map((f) => (
-                          <li key={f.wizardKey} className="flex items-center gap-1 text-xs text-amber-600">
-                            <X className="w-3 h-3" /> {f.label}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <ul className="mt-4 space-y-1.5 text-xs text-gray-600 max-h-64 overflow-y-auto">
-                    {plan.price_inr === 0 ? (
-                      <>
-                        <li className="flex items-center gap-2 font-medium text-sm">
+                      <ul className="mt-4 space-y-1.5 text-xs text-gray-600">
+                        <li className="flex items-center gap-2 text-sm">
                           <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          Build up to 5 apps
+                          No watermark, no trial limit
                         </li>
-                        <li className="flex items-center gap-2 font-medium text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          Basic features (icon, splash, colors)
-                        </li>
-                        <li className="flex items-center gap-2 font-medium text-sm text-amber-600">
-                          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-                          WebToApp watermark
-                        </li>
-                        <li className="flex items-center gap-2 font-medium text-sm text-amber-600">
-                          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-                          15-day trial limit
-                        </li>
-                      </>
-                    ) : (
-                      <>
-                        <li className="flex items-center gap-2 font-medium text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          10 builds/month per website
-                        </li>
-                        <li className="flex items-center gap-2 font-medium text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          No watermark
-                        </li>
-                        <li className="flex items-center gap-2 font-medium text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          No trial limit - works forever
-                        </li>
-                        <li className="flex items-center gap-2 font-medium text-sm">
+                        <li className="flex items-center gap-2 text-sm">
                           <Check className="w-4 h-4 text-green-500 shrink-0" />
                           Keystore download
                         </li>
-                        <li className="flex items-center gap-2 font-medium text-sm">
+                        <li className="flex items-center gap-2 text-sm">
                           <Check className="w-4 h-4 text-green-500 shrink-0" />
                           All 50+ features
                         </li>
-                      </>
-                    )}
-                  </ul>
+                      </ul>
+                    </>
+                  )}
                 </button>
               )
             })}
@@ -1674,11 +1602,11 @@ function Step4PlanReview() {
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between pt-4">
+      <div className="relative flex items-center justify-center pt-4">
         <button
           type="button"
           onClick={() => wizard.setStep(3)}
-          className="flex items-center gap-2 text-gray-600 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          className="absolute left-0 flex items-center gap-2 text-gray-600 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
@@ -1687,14 +1615,20 @@ function Step4PlanReview() {
           onClick={() => createOrder.mutate()}
           disabled={!selectedPlan || createOrder.isPending}
           className={`flex items-center gap-2 text-white px-8 py-2.5 rounded-lg font-medium disabled:opacity-50 transition-colors ${
-            paymentMode?.test_mode
-              ? 'bg-amber-600 hover:bg-amber-700'
-              : 'bg-green-600 hover:bg-green-700'
+            currentPlan?.price_inr === 0
+              ? 'bg-primary-600 hover:bg-primary-700'
+              : paymentMode?.test_mode
+                ? 'bg-amber-600 hover:bg-amber-700'
+                : 'bg-green-600 hover:bg-green-700'
           }`}
         >
           {createOrder.isPending ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" /> Processing...
+            </>
+          ) : currentPlan?.price_inr === 0 ? (
+            <>
+              <Smartphone className="w-4 h-4" /> Build Free APK
             </>
           ) : paymentMode?.test_mode ? (
             <>

@@ -296,25 +296,15 @@ export default function OrderDetail() {
                   {build.status === 'building' && (
                     <span className="text-sm text-blue-600 font-medium flex items-center gap-1.5">
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Building... {build.progress || 0}%
+                      Building
                     </span>
                   )}
                 </div>
 
-                {/* Progress bar for building status */}
                 {build.status === 'building' && (
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
-                      <span>Build Progress</span>
-                      <span className="font-medium">{build.progress || 0}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
-                        style={{ width: `${build.progress || 0}%` }}
-                      />
-                    </div>
-                  </div>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Hang tight — this usually takes a few minutes. We'll email you when it's ready.
+                  </p>
                 )}
 
                 {/* Download buttons on success */}

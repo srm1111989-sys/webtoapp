@@ -17,6 +17,12 @@ export const authApi = {
   resetPassword: (token: string, password: string) =>
     client.post<{ message: string }>('/api/auth/reset-password', { token, password }),
 
+  verifyEmail: (token: string) =>
+    client.get<{ message: string }>('/api/auth/verify', { params: { token } }),
+
+  resendVerification: (email: string) =>
+    client.post<{ message: string }>('/api/auth/resend-verification', { email }),
+
   googleLogin: (credential: string) =>
     client.post<TokenResponse>('/api/auth/google', { credential }),
 
