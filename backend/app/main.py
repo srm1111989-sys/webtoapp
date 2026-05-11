@@ -5,6 +5,7 @@ from sqlalchemy import text
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from pathlib import Path
+from starlette.responses import FileResponse
 from app.config import get_settings
 from app.middleware.logging import RequestLoggingMiddleware
 from app.rate_limit import limiter
@@ -54,10 +55,36 @@ app.include_router(client_errors.router)
 app.include_router(support.router)
 
 
-# Serve local artifacts when S3 is not configured
+# Serve local artifacts when S3 is not configured.
+# Subclassed StaticFiles sets correct MIME + Content-Disposition: attachment
+# so browsers download .apk/.aab/.exe/.ipa instead of inline-rendering as text/plain.
+class ArtifactStaticFiles(StaticFiles):
+    _MIME_BY_EXT = {
+        ".apk": "application/vnd.android.package-archive",
+        ".aab": "application/octet-stream",
+        ".exe": "application/vnd.microsoft.portable-executable",
+        ".ipa": "application/octet-stream",
+        ".dmg": "application/x-apple-diskimage",
+        ".zip": "application/zip",
+    }
+
+    def file_response(self, full_path, stat_result, scope, status_code=200):
+        ext = Path(full_path).suffix.lower()
+        media_type = self._MIME_BY_EXT.get(ext)
+        if media_type:
+            return FileResponse(
+                full_path,
+                media_type=media_type,
+                stat_result=stat_result,
+                filename=Path(full_path).name,
+                status_code=status_code,
+            )
+        return super().file_response(full_path, stat_result, scope, status_code)
+
+
 artifacts_dir = Path("/app/storage/artifacts")
 artifacts_dir.mkdir(parents=True, exist_ok=True)
-app.mount("/api/artifacts", StaticFiles(directory=str(artifacts_dir)), name="artifacts")
+app.mount("/api/artifacts", ArtifactStaticFiles(directory=str(artifacts_dir)), name="artifacts")
 
 
 @app.get("/api/health")

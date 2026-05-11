@@ -1,4 +1,5 @@
 import os
+import socket
 import uuid
 import boto3
 from pathlib import Path
@@ -8,6 +9,28 @@ from app.config import get_settings
 settings = get_settings()
 
 LOCAL_STORAGE_DIR = Path("/app/storage/artifacts")
+
+# Prod hostnames — when running here, derive a public URL even if api_url is misconfigured
+_PROD_HOSTNAMES = ("websitetoapp", "webtoapp-prod", "157.90.228.171")
+_PROD_PUBLIC_BASE = "https://websitetoapp.app"
+
+
+def _artifact_base_url() -> str:
+    """Public base URL for artifact downloads.
+
+    Order of preference:
+      1. settings.api_url, if it looks public (not localhost / 127.0.0.1)
+      2. derived prod URL when host matches known production hostnames
+      3. fallback to settings.api_url verbatim (dev)
+    """
+    api = (settings.api_url or "").rstrip("/")
+    if api and "localhost" not in api and "127.0.0.1" not in api:
+        return api
+    h = socket.gethostname().lower()
+    fqdn = socket.getfqdn().lower()
+    if any(p in h or p in fqdn for p in _PROD_HOSTNAMES):
+        return _PROD_PUBLIC_BASE
+    return api or "http://localhost:8000"
 
 
 def get_s3_client():
@@ -46,7 +69,7 @@ async def upload_file(file_bytes: bytes, folder: str, filename: str, content_typ
     local_path.mkdir(parents=True, exist_ok=True)
     file_path = local_path / unique_name
     file_path.write_bytes(file_bytes)
-    return f"{settings.api_url}/api/artifacts/{key}"
+    return f"{_artifact_base_url()}/api/artifacts/{key}"
 
 
 async def delete_file(url: str) -> bool:

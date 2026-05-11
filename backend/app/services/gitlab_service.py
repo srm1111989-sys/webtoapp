@@ -1,4 +1,7 @@
+import fnmatch
+import io
 import logging
+import zipfile
 import httpx
 from app.config import get_settings
 from app.utils.storage import upload_file
@@ -71,28 +74,58 @@ class GitLabService:
             return response.text
 
     async def download_artifact(self, pipeline_id: int, artifact_path: str, folder: str) -> str | None:
-        """Download artifact from a pipeline job and upload to storage."""
+        """Download artifact from a pipeline job and upload to storage.
+
+        Supports two modes:
+          - literal path: 'app/build/outputs/apk/release/app-release.apk' — direct fetch
+          - glob path:    'dist/*.exe' — downloads full job artifacts.zip and extracts first match
+        """
         jobs = self.get_pipeline_jobs(pipeline_id)
-        # Use just the filename for storage
+        is_glob = any(c in artifact_path for c in "*?[")
         filename = artifact_path.rsplit("/", 1)[-1]
 
         for job in jobs:
-            if job.get("artifacts_file"):
-                try:
-                    url = self._api_url(f"/jobs/{job['id']}/artifacts/{artifact_path}")
-                    logger.info(f"Trying artifact download: job={job['id']} ({job.get('name')}), path={artifact_path}")
-                    with httpx.Client(timeout=120) as client:
-                        response = client.get(url, headers=self.headers)
-                        if response.status_code == 200:
-                            logger.info(f"Downloaded {artifact_path} ({len(response.content)} bytes) from job {job['id']}")
-                            stored_url = await upload_file(
-                                response.content, folder, filename, "application/octet-stream"
-                            )
-                            return stored_url
-                        else:
-                            logger.info(f"Artifact {artifact_path} not found in job {job['id']}: HTTP {response.status_code}")
-                except Exception as e:
-                    logger.warning(f"Failed to download {artifact_path} from job {job['id']}: {e}")
+            if not job.get("artifacts_file"):
+                continue
+            try:
+                if is_glob:
+                    # Download full artifacts.zip, extract files matching the glob
+                    zip_url = self._api_url(f"/jobs/{job['id']}/artifacts")
+                    logger.info(f"Downloading job artifacts.zip: job={job['id']} ({job.get('name')}) for glob {artifact_path}")
+                    with httpx.Client(timeout=300) as client:
+                        response = client.get(zip_url, headers=self.headers)
+                    if response.status_code != 200:
+                        logger.info(f"Job {job['id']} artifacts unavailable: HTTP {response.status_code}")
+                        continue
+                    try:
+                        zf = zipfile.ZipFile(io.BytesIO(response.content))
+                    except zipfile.BadZipFile:
+                        logger.warning(f"Job {job['id']} artifacts.zip is not a valid zip")
+                        continue
+                    matches = [n for n in zf.namelist() if fnmatch.fnmatch(n, artifact_path) or fnmatch.fnmatch(n.split("/")[-1], artifact_path.split("/")[-1])]
+                    if not matches:
+                        logger.info(f"No files match {artifact_path} in job {job['id']} ({len(zf.namelist())} entries)")
+                        continue
+                    matched = matches[0]
+                    data = zf.read(matched)
+                    out_filename = matched.rsplit("/", 1)[-1]
+                    logger.info(f"Extracted {matched} ({len(data)} bytes) from job {job['id']}")
+                    return await upload_file(data, folder, out_filename, "application/octet-stream")
+
+                # Literal path
+                url = self._api_url(f"/jobs/{job['id']}/artifacts/{artifact_path}")
+                logger.info(f"Trying artifact download: job={job['id']} ({job.get('name')}), path={artifact_path}")
+                with httpx.Client(timeout=120) as client:
+                    response = client.get(url, headers=self.headers)
+                    if response.status_code == 200:
+                        logger.info(f"Downloaded {artifact_path} ({len(response.content)} bytes) from job {job['id']}")
+                        return await upload_file(
+                            response.content, folder, filename, "application/octet-stream"
+                        )
+                    else:
+                        logger.info(f"Artifact {artifact_path} not found in job {job['id']}: HTTP {response.status_code}")
+            except Exception as e:
+                logger.warning(f"Failed to download {artifact_path} from job {job['id']}: {e}")
 
         logger.warning(f"Artifact {artifact_path} not found in any job for pipeline {pipeline_id}")
         return None
