@@ -747,11 +747,11 @@ function Step2Features() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-gray-900 mb-1">App Features</h2>
-        <p className="text-sm text-gray-500">Toggle features for your mobile app.</p>
+        <p className="text-sm text-gray-600">All <span className="font-semibold text-gray-900">50+ premium features</span> are included with the paid plan. Toggle the ones you need.</p>
       </div>
 
       {hasAndroid && (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {FEATURES.map(({ key, label, description, icon: Icon, helpUrl }) => {
           const enabled = features[key] ?? false
           return (
@@ -759,38 +759,38 @@ function Step2Features() {
               key={key}
               type="button"
               onClick={() => toggleFeature(key)}
-              className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all ${
+              className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
                 enabled
-                  ? 'border-blue-500 bg-blue-50'
+                  ? 'border-primary-600 bg-primary-50/60'
                   : 'border-gray-200 hover:border-gray-300 bg-white'
               }`}
             >
               <div
-                className={`p-2 rounded-lg ${
-                  enabled ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'
+                className={`p-1.5 rounded-md shrink-0 ${
+                  enabled ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-600'
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-900">{label}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-semibold text-gray-900">{label}</span>
                   <div
-                    className={`w-9 h-5 rounded-full transition-colors flex items-center ${
-                      enabled ? 'bg-blue-600 justify-end' : 'bg-gray-300 justify-start'
+                    className={`w-9 h-5 rounded-full transition-colors flex items-center shrink-0 ${
+                      enabled ? 'bg-primary-600 justify-end' : 'bg-gray-300 justify-start'
                     }`}
                   >
                     <div className="w-4 h-4 bg-white rounded-full shadow mx-0.5" />
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+                <p className="text-xs text-gray-600 mt-1 leading-relaxed">{description}</p>
                 {helpUrl && (
                   <a
                     href={helpUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="text-xs text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 mt-1"
+                    className="text-xs text-primary-600 hover:text-primary-700 inline-flex items-center gap-1 mt-1.5 font-medium"
                   >
                     Learn more <ExternalLink className="w-3 h-3" />
                   </a>
@@ -1154,6 +1154,18 @@ function Step4PlanReview() {
   })
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(wizard.selectedPlanId)
+
+  // Default to paid plan once plans load (if none chosen yet).
+  useEffect(() => {
+    if (selectedPlan || !plans) return
+    const platformPlans = (plans as Plan[]).filter((p) => wizard.selectedPlatforms.includes(p.platform as any))
+    const paid = platformPlans.find((p) => p.price_inr > 0)
+    if (paid) {
+      setSelectedPlan(paid.id)
+      wizard.setPlan(paid.id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plans])
   const [promoCode, setPromoCode] = useState('')
   const [promoApplied, setPromoApplied] = useState<{ code: string; discount_percent: number; discounted_price_usd: number } | null>(null)
   const [promoError, setPromoError] = useState('')
@@ -1211,8 +1223,8 @@ function Step4PlanReview() {
       const priceUsd = order.currency === 'USD' ? order.amount / 100 : order.amount / 100
       trackBeginCheckout(priceUsd, order.currency)
 
-      // Use real gateway flow (test or live keys are selected by backend)
-      if (currency === 'INR' && paymentMode?.gateways?.razorpay) {
+      // Prefer Razorpay if configured (supports INR and USD); fall back to Stripe.
+      if (paymentMode?.gateways?.razorpay) {
         try {
           // Call payment proxy instead of backend (routes through stark-enterprises-two.vercel.app)
           const rpRes = await createRazorpayOrder({
@@ -1445,18 +1457,18 @@ function Step4PlanReview() {
                         </div>
                       )}
 
-                      <ul className="mt-4 space-y-1.5 text-xs text-gray-600">
-                        <li className="flex items-center gap-2 text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                      <ul className="mt-4 space-y-1.5 text-sm text-gray-700">
+                        <li className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-green-600 shrink-0" />
                           No watermark, no trial limit
                         </li>
-                        <li className="flex items-center gap-2 text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
+                        <li className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-green-600 shrink-0" />
                           Keystore download
                         </li>
-                        <li className="flex items-center gap-2 text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          All 50+ features
+                        <li className="flex items-center gap-2 font-bold text-gray-900">
+                          <Check className="w-4 h-4 text-green-600 shrink-0" />
+                          All 50+ premium features
                         </li>
                       </ul>
                     </>
@@ -1467,26 +1479,6 @@ function Step4PlanReview() {
           </div>
         )}
       </div>
-
-      {/* Warning: selected plan missing features */}
-      {currentPlan && getMissingFeatures(currentPlan).length > 0 && (
-        <div className="bg-amber-50 border border-amber-300 rounded-xl p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
-          <div>
-            <p className="text-sm font-medium text-amber-800">
-              The {currentPlan.name} plan does not include these features you enabled:
-            </p>
-            <ul className="mt-1 space-y-0.5">
-              {getMissingFeatures(currentPlan).map((f) => (
-                <li key={f.wizardKey} className="text-sm text-amber-700">- {f.label}</li>
-              ))}
-            </ul>
-            <p className="text-xs text-amber-600 mt-2">
-              These features will not work in your app. Upgrade to the {minimumPlan?.name} plan or go back to Step 3 to disable them.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Review Summary */}
       <div>
@@ -1537,10 +1529,14 @@ function Step4PlanReview() {
 
           {enabledFeatures.length > 0 && (
             <div>
-              <span className="text-sm text-gray-500">Enabled Features</span>
-              <div className="flex flex-wrap gap-2 mt-1">
+              <span className="text-sm text-gray-500">Enabled Features ({enabledFeatures.length})</span>
+              <div className="flex flex-wrap gap-1.5 mt-1.5">
                 {enabledFeatures.map((f) => (
-                  <span key={f.key} className="bg-blue-100 text-blue-700 text-xs font-medium px-2.5 py-1 rounded-full">
+                  <span
+                    key={f.key}
+                    className="inline-flex items-center gap-1 bg-white border border-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md"
+                  >
+                    <Check className="w-3 h-3 text-green-600" />
                     {f.label}
                   </span>
                 ))}
