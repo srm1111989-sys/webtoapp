@@ -51,6 +51,111 @@ const platforms = [
   { slug: 'website-to-desktop-app', name: 'Desktop App', desc: 'Convert any website to Windows desktop app (EXE). Run websites as native desktop applications.' },
 ];
 
+// ── Blog posts: parse blogPosts.ts and emit one prerendered HTML per post.
+// Without this, Googlebot sees the homepage HTML at every /blog/<slug> URL,
+// which made all 16 sitemap blog entries duplicates of the homepage and
+// stalled their indexing.
+function loadBlogPosts() {
+  const src = fs.readFileSync(path.join(__dirname, 'src/data/blogPosts.ts'), 'utf-8');
+  const posts = [];
+  // Match each post object by walking from "slug:" forward to the next post or array end.
+  const re = /\{\s*slug:\s*'([^']+)',\s*title:\s*'((?:[^'\\]|\\.)+)',\s*description:\s*'((?:[^'\\]|\\.)+)',[\s\S]*?content:\s*`([\s\S]*?)`\s*,?\s*\}/g;
+  let m;
+  while ((m = re.exec(src)) !== null) {
+    posts.push({
+      slug: m[1],
+      title: m[2].replace(/\\'/g, "'"),
+      description: m[3].replace(/\\'/g, "'"),
+      content: m[4],
+    });
+  }
+  return posts;
+}
+
+// Minimal markdown → HTML for SEO (headings, lists, paragraphs, bold).
+// Not a full parser — we only need readable text Googlebot can index.
+function mdToHtml(md) {
+  const lines = md.split('\n');
+  const out = [];
+  let inList = false;
+  for (let raw of lines) {
+    const line = raw.trim();
+    if (!line) { if (inList) { out.push('</ul>'); inList = false; } continue; }
+    if (/^### /.test(line)) { if (inList) { out.push('</ul>'); inList = false; } out.push(`<h3>${esc(line.replace(/^### /, ''))}</h3>`); }
+    else if (/^## /.test(line)) { if (inList) { out.push('</ul>'); inList = false; } out.push(`<h2>${esc(line.replace(/^## /, ''))}</h2>`); }
+    else if (/^# /.test(line)) { if (inList) { out.push('</ul>'); inList = false; } out.push(`<h2>${esc(line.replace(/^# /, ''))}</h2>`); }
+    else if (/^[-*] /.test(line)) {
+      if (!inList) { out.push('<ul>'); inList = true; }
+      out.push(`<li>${inline(line.replace(/^[-*] /, ''))}</li>`);
+    }
+    else { if (inList) { out.push('</ul>'); inList = false; } out.push(`<p>${inline(line)}</p>`); }
+  }
+  if (inList) out.push('</ul>');
+  return out.join('\n');
+}
+
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function inline(s) {
+  // bold **text**, links [text](url) — escape first then re-allow our own tags
+  return esc(s)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+}
+
+let generated = 0;
+const blogPosts = loadBlogPosts();
+
+for (const post of blogPosts) {
+  const dir = path.join(distDir, 'blog', post.slug);
+  fs.mkdirSync(dir, { recursive: true });
+
+  const title = `${post.title} | WebToApp Blog`;
+  const desc = post.description;
+  const canonical = `https://websitetoapp.app/blog/${post.slug}`;
+
+  let html = template
+    .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
+    .replace(/<meta name="title"[^>]*>/, `<meta name="title" content="${title}" />`)
+    .replace(/<meta name="description"[^>]*>/, `<meta name="description" content="${desc}" />`)
+    .replace(/<meta property="og:title"[^>]*>/, `<meta property="og:title" content="${title}" />`)
+    .replace(/<meta property="og:description"[^>]*>/, `<meta property="og:description" content="${desc}" />`)
+    .replace(/<meta property="og:url"[^>]*>/, `<meta property="og:url" content="${canonical}" />`)
+    .replace(/<meta property="og:type"[^>]*>/, `<meta property="og:type" content="article" />`)
+    .replace(/<meta property="twitter:title"[^>]*>/, `<meta property="twitter:title" content="${title}" />`)
+    .replace(/<meta property="twitter:description"[^>]*>/, `<meta property="twitter:description" content="${desc}" />`)
+    .replace(/<meta property="twitter:url"[^>]*>/, `<meta property="twitter:url" content="${canonical}" />`);
+
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.description,
+    author: { '@type': 'Organization', name: 'WebToApp' },
+    publisher: { '@type': 'Organization', name: 'WebToApp', logo: { '@type': 'ImageObject', url: 'https://websitetoapp.app/logo.png' } },
+    mainEntityOfPage: canonical,
+  };
+
+  const seo = `
+    <link rel="canonical" href="${canonical}" />
+    <script type="application/ld+json">${JSON.stringify(articleSchema)}</script>
+    <!--seo-prerender-->
+    <article id="seo-prerender" class="seo-static-content">
+      <h1>${esc(post.title)}</h1>
+      <p><em>${esc(post.description)}</em></p>
+      ${mdToHtml(post.content)}
+      <p><a href="https://websitetoapp.app/register">Convert your website to an app — start free →</a></p>
+    </article>
+    <style>#seo-prerender.seo-static-content{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}#seo-prerender h1{font-size:2em;margin-bottom:16px}#seo-prerender h2{font-size:1.4em;margin-top:24px;margin-bottom:12px}#seo-prerender h3{font-size:1.15em;margin-top:18px;margin-bottom:8px}#seo-prerender ul,#seo-prerender ol{padding-left:20px;margin-bottom:16px}#seo-prerender li{margin-bottom:8px;line-height:1.6}#seo-prerender p{line-height:1.7;margin-bottom:12px}#seo-prerender a{color:#1366d6}</style>
+    <!--/seo-prerender-->`;
+
+  html = html.replace('<div id="root">', seo + '\n    <div id="root">');
+  fs.writeFileSync(path.join(dir, 'index.html'), html);
+  generated++;
+}
+
 // Static pages (non-convert)
 const staticPages = [
   { path: 'about', title: 'About WebToApp — Website to App Converter', desc: 'Learn about WebToApp, the easiest way to convert any website to an Android app. No coding required.' },
@@ -62,8 +167,6 @@ const staticPages = [
   { path: 'pricing', title: 'Pricing — WebToApp Plans & Pricing', desc: 'WebToApp pricing. Free plan available. Premium plans for custom branding, push notifications, and Play Store publishing.' },
   { path: 'contact', title: 'Contact — WebToApp Support', desc: 'Contact WebToApp support team. Get help with website to app conversion.' },
 ];
-
-let generated = 0;
 
 // Generate /convert/* pages
 for (const p of platforms) {
