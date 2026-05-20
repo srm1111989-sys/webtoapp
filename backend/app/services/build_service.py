@@ -138,10 +138,19 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     variables["TRIAL_DAYS"] = str(trial_days)
     variables["PURCHASE_URL"] = purchase_url
 
-    # Firebase
+    # Firebase — only pass if it's a valid google-services.json (must have project_info + client).
+    # Users sometimes paste the Firebase web SDK config object instead; that format is missing
+    # project_info and causes processReleaseGoogleServices to fail with "Missing project_info object".
     if app_config.firebase_config:
-        variables["FIREBASE_ENABLED"] = "true"
-        variables["FIREBASE_CONFIG"] = json.dumps(app_config.firebase_config)
+        fc = app_config.firebase_config
+        if isinstance(fc, dict) and "project_info" in fc and "client" in fc:
+            variables["FIREBASE_ENABLED"] = "true"
+            variables["FIREBASE_CONFIG"] = json.dumps(fc)
+        else:
+            logger.warning(
+                f"Skipping Firebase for {app_config.name}: firebase_config missing project_info/client "
+                f"(user likely pasted the web SDK snippet instead of google-services.json)"
+            )
 
     # AdMob
     if app_config.admob_config:
