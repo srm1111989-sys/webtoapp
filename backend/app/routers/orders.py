@@ -11,7 +11,10 @@ from app.models.app_config import AppConfig
 from app.models.promo_code import PromoCode
 from app.schemas.order import OrderCreate, OrderResponse, OrderDetailResponse, OrderListResponse
 from app.dependencies import get_current_user
+from app.config import get_settings
 from app.utils.email import send_order_confirmation_email, send_admin_payment_notification
+
+settings = get_settings()
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
@@ -65,6 +68,11 @@ async def create_order(
                 promo.current_uses += 1
                 promo_applied = promo.code.upper()
 
+    # If frontend requested Stripe but it is not configured, fall back to Razorpay
+    gateway = data.payment_gateway
+    if gateway == "stripe" and not (settings.stripe_publishable_key and settings.stripe_secret_key):
+        gateway = "razorpay"
+
     order = Order(
         user_id=user.id,
         app_config_id=data.app_config_id,
@@ -72,7 +80,7 @@ async def create_order(
         order_number=generate_order_number(),
         amount=amount,
         currency=data.currency,
-        payment_gateway=data.payment_gateway,
+        payment_gateway=gateway,
     )
 
     # Free plan: mark as paid immediately

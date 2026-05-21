@@ -7,7 +7,7 @@ class OrderCreate(BaseModel):
     app_config_id: uuid.UUID
     plan_id: uuid.UUID
     currency: str = "USD"
-    payment_gateway: str = "stripe"  # stripe, razorpay, test
+    payment_gateway: str = "razorpay"  # razorpay, stripe, test
     promo_code: str | None = None
 
 
