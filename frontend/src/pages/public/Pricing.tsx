@@ -117,11 +117,11 @@ export default function Pricing() {
   })
 
   const androidPlans = plans && plans.length > 0
-    ? (plans as any[]).filter((p) => p.platform === 'android')
-    : ANDROID_FALLBACK
+    ? (plans as any[]).filter((p) => p.platform === 'android' && p.price_inr > 0)
+    : ANDROID_FALLBACK.filter((p) => p.price_inr > 0)
   const desktopPlans = plans && plans.length > 0
-    ? (plans as any[]).filter((p) => p.platform === 'desktop')
-    : DESKTOP_FALLBACK
+    ? (plans as any[]).filter((p) => p.platform === 'desktop' && p.price_inr > 0)
+    : DESKTOP_FALLBACK.filter((p) => p.price_inr > 0)
 
   const androidFreePlan = androidPlans.find((p: any) => p.price_inr === 0)
   const androidPaidPlan = androidPlans.find((p: any) => p.price_inr > 0)

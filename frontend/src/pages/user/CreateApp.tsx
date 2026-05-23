@@ -1390,7 +1390,7 @@ function Step4PlanReview() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any)).map((plan) => {
+            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any) && p.price_inr > 0).map((plan) => {
               const isSelected = selectedPlan === plan.id
               const missing = getMissingFeatures(plan)
               const hasMissing = missing.length > 0
