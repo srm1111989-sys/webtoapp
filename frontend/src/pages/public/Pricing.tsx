@@ -116,17 +116,17 @@ export default function Pricing() {
     queryFn: () => plansApi.list().then(r => r.data),
   })
 
-  const androidPlans = plans && plans.length > 0
-    ? (plans as any[]).filter((p) => p.platform === 'android' && p.price_inr > 0)
-    : ANDROID_FALLBACK.filter((p) => p.price_inr > 0)
-  const desktopPlans = plans && plans.length > 0
-    ? (plans as any[]).filter((p) => p.platform === 'desktop' && p.price_inr > 0)
-    : DESKTOP_FALLBACK.filter((p) => p.price_inr > 0)
+  const allAndroidPlans = plans && plans.length > 0
+    ? (plans as any[]).filter((p) => p.platform === 'android')
+    : ANDROID_FALLBACK
+  const allDesktopPlans = plans && plans.length > 0
+    ? (plans as any[]).filter((p) => p.platform === 'desktop')
+    : DESKTOP_FALLBACK
 
-  const androidFreePlan = androidPlans.find((p: any) => p.price_inr === 0)
-  const androidPaidPlan = androidPlans.find((p: any) => p.price_inr > 0)
-  const desktopFreePlan = desktopPlans.find((p: any) => p.price_inr === 0)
-  const desktopPaidPlan = desktopPlans.find((p: any) => p.price_inr > 0)
+  const androidFreePlan = allAndroidPlans.find((p: any) => p.price_inr === 0)
+  const androidPaidPlan = allAndroidPlans.find((p: any) => p.price_inr > 0)
+  const desktopFreePlan = allDesktopPlans.find((p: any) => p.price_inr === 0)
+  const desktopPaidPlan = allDesktopPlans.find((p: any) => p.price_inr > 0)
 
   return (
     <div>

@@ -129,7 +129,7 @@ const testimonials = [
 
 const ANDROID_PLANS = [
   {
-    name: 'Paid', slug: 'android-paid', price_inr: 2900, price_usd: 2900,
+    name: 'Paid', slug: 'android-paid', price_inr: 1000, price_usd: 1000,
     description: 'All features, one-time payment',
     highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days'],
   },
@@ -137,7 +137,7 @@ const ANDROID_PLANS = [
 
 const DESKTOP_PLANS = [
   {
-    name: 'Paid', slug: 'desktop-paid', price_inr: 2400, price_usd: 2400,
+    name: 'Paid', slug: 'desktop-paid', price_inr: 1000, price_usd: 1000,
     description: 'Full desktop app, one-time',
     highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '10 Builds / 30 Days'],
   },
@@ -154,7 +154,7 @@ const faqs = [
 export default function Landing() {
   useSEO({
     title: 'Convert Website to App in 60 Minutes | Free APK Download | No Coding Required',
-    description: 'Turn your website into Android APK & Windows .exe app instantly. No coding needed. 40+ features: push notifications, offline mode, AdMob monetization. Download free or pay $29. Build in 60 minutes!',
+    description: 'Turn your website into Android APK & Windows .exe app instantly. No coding needed. 40+ features: push notifications, offline mode, AdMob monetization. Download free or pay $10. Build in 60 minutes!',
     canonical: 'https://websitetoapp.app/',
   })
   const { accessToken } = useAuthStore()
@@ -273,7 +273,7 @@ export default function Landing() {
                 {/* MRP - Strikethrough */}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">$59</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">$20</span>
                 </div>
 
                 {/* Actual Price - Large and Bold */}
@@ -286,7 +286,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  You Save $30
+                  You Save $10
                 </div>
               </div>
 
@@ -328,7 +328,7 @@ export default function Landing() {
                 {/* MRP - Strikethrough */}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">$49</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">$20</span>
                 </div>
 
                 {/* Actual Price - Large and Bold */}
@@ -341,7 +341,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  You Save $25
+                  You Save $10
                 </div>
               </div>
 
@@ -407,8 +407,8 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
               <p className="text-gray-600 mb-4">
-                Pay once, own forever. Android: $29. Desktop: $24. No subscriptions.
-                <span className="font-semibold text-green-600"> 80% cheaper than competitors!</span>
+                Pay once, own forever. Android: $10. Desktop: $10. No subscriptions.
+                <span className="font-semibold text-green-600"> 90% cheaper than competitors!</span>
               </p>
               <Link to="/pricing" className="text-green-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
                 See pricing <ArrowRight className="w-4 h-4" />
@@ -549,20 +549,9 @@ export default function Landing() {
                 </tr>
               </thead>
               <tbody>
-                {(getUserCurrency() === 'INR' ? [
-                  { feature: 'Android App', a: '$99/yr', b: '$149', c: '$299+', us: '$29', bold: true },
-                  { feature: 'Desktop App', a: '$149/yr', b: '$199', c: '$399+', us: '$24', bold: true },
-                  { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', bold: false },
-                  { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', bold: false },
-                  { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', bold: false },
-                  { feature: 'Push Notifications', a: 'Extra $25/yr', b: 'Included', c: 'Extra', us: 'Included', bold: false },
-                  { feature: 'AdMob / Monetization', a: 'Extra $19', b: 'N/A', c: 'Extra', us: 'Included', bold: false },
-                  { feature: 'Biometric Auth', a: 'N/A', b: 'N/A', c: 'Extra $59', us: 'Included', bold: false },
-                  { feature: 'Keystore / Source', a: 'N/A', b: 'Extra $59', c: 'Included', us: 'Included', bold: false },
-                  { feature: 'Builds / Month', a: '1', b: '3', c: '5', us: '10', bold: false },
-                ] : [
-                  { feature: 'Android App', a: '$99/yr', b: '$199', c: '$499+', us: '$29.99', bold: true },
-                  { feature: 'Desktop App', a: '$149/yr', b: '$249', c: '$599+', us: '$23.99', bold: true },
+                {([
+                  { feature: 'Android App', a: '$99/yr', b: '$149', c: '$299+', us: '$10', bold: true },
+                  { feature: 'Desktop App', a: '$149/yr', b: '$199', c: '$399+', us: '$10', bold: true },
                   { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', bold: false },
                   { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', bold: false },
                   { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', bold: false },
