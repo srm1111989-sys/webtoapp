@@ -78,7 +78,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does it cost to convert WordPress to app?',
-        answer: 'WebsiteToApp offers plans starting from $29 one-time for a basic Android app. Full-featured plans with push notifications, offline mode, biometric auth, and AAB for Google Play are available from $49. No monthly fees — one-time payment, you own the app.'
+        answer: 'WebsiteToApp offers a simple $10 one-time plan for Android apps. Full-featured with push notifications, offline mode, biometric auth, and AAB for Google Play — no monthly fees, pay once and own the app.'
       }
     ]
   },
@@ -145,7 +145,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does a Shopify app cost with WebsiteToApp?',
-        answer: 'WebsiteToApp plans start from $29 one-time for a basic Shopify app. Full e-commerce plans with push notifications, abandoned cart recovery, biometric login, and Google Play AAB are available from $49 one-time. Compare this to $500-2000/month for custom Shopify app development.'
+        answer: 'WebsiteToApp offers a simple $10 one-time plan for Shopify apps. Includes push notifications, abandoned cart recovery, biometric login, and Google Play AAB. Compare this to $500-2000/month for custom Shopify app development.'
       }
     ]
   },
@@ -212,7 +212,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does it cost to convert a Wix site to an app?',
-        answer: 'WebsiteToApp plans start from $29 one-time for a basic Android app. Full-featured plans with push notifications, Wix Bookings optimization, biometric login, and AAB for Google Play are available from $49 one-time. There are no monthly fees — pay once, own your app. Compare this to $200-500/month for custom app development agencies.'
+        answer: 'WebsiteToApp offers a simple $10 one-time plan for Wix apps. Full-featured with push notifications, Wix Bookings optimization, biometric login, and AAB for Google Play. No monthly fees — pay once, own your app. Compare this to $200-500/month for custom app development agencies.'
       }
     ]
   },

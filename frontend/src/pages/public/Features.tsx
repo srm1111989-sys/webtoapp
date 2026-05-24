@@ -357,7 +357,7 @@ export default function Features() {
               <div className="text-primary-100">Categories</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3">
-              <div className="font-bold text-2xl">$29</div>
+              <div className="font-bold text-2xl">$10</div>
               <div className="text-primary-100">One-Time Price</div>
             </div>
           </div>
@@ -478,7 +478,7 @@ export default function Features() {
                   </tr>
                   <tr className="bg-primary-50">
                     <td className="px-6 py-4 text-sm font-bold">Price (Android)</td>
-                    <td className="px-6 py-4 text-center"><span className="font-bold text-primary-600">$29</span></td>
+                    <td className="px-6 py-4 text-center"><span className="font-bold text-primary-600">$10</span></td>
                     <td className="px-6 py-4 text-center text-gray-600">$99/year</td>
                     <td className="px-6 py-4 text-center text-gray-600">$149/year</td>
                     <td className="px-6 py-4 text-center text-gray-600">$24</td>
@@ -494,7 +494,7 @@ export default function Features() {
             <p className="text-gray-600 mb-6">Compared to subscription-based competitors with our one-time pricing</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
               <div className="bg-white rounded-xl p-4 border border-green-200">
-                <div className="text-primary-600 font-bold text-3xl">$29</div>
+                <div className="text-primary-600 font-bold text-3xl">$10</div>
                 <div className="text-gray-600 text-sm">WebToApp (One-Time)</div>
               </div>
               <div className="bg-white rounded-xl p-4 border border-gray-200 opacity-75">
@@ -514,7 +514,7 @@ export default function Features() {
       <section className="py-16 sm:py-24 bg-gradient-to-br from-primary-600 to-primary-800 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Ready to Build Your App?</h2>
-          <p className="text-primary-100 text-lg mb-8">Get all 40+ features for just $29. No subscriptions, no hidden fees.</p>
+          <p className="text-primary-100 text-lg mb-8">Get all 40+ features for just $10. No subscriptions, no hidden fees.</p>
           <Link to="/register" className="bg-white text-primary-700 px-8 py-4 rounded-lg font-semibold inline-flex items-center gap-2 hover:bg-gray-100 transition-all text-lg shadow-xl">
             Get Started Now <ArrowRight className="w-5 h-5" />
           </Link>
