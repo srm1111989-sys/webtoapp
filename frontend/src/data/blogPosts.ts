@@ -194,7 +194,7 @@ To add ads:
 - Priority support
 - 15 apps
 
-**One-Time Payment ($35):**
+**One-Time Payment ($10):**
 - Single app
 - All Pro features
 - Lifetime access
@@ -335,7 +335,7 @@ This gives you maximum flexibility—use APK for testing and direct distribution
 
 | Feature | WebsiteToApp | Appy Pie | AppMySite | Andromo | AppsGeyser |
 |---------|--------------|----------|-----------|---------|------------|
-| **Price** | $0-$35 one-time | $20-$60/mo | $19-$79/mo | $24-$72/mo | Free (ads) |
+| **Price** | $0-$10 one-time | $20-$60/mo | $19-$79/mo | $24-$72/mo | Free (ads) |
 | **APK Download** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 | **AAB for Play Store** | ✅ Yes (paid) | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | **Push Notifications** | ✅ FCM | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
@@ -355,7 +355,7 @@ This gives you maximum flexibility—use APK for testing and direct distribution
 ### Winner: WebsiteToApp.app
 
 **Why it's the best:**
-- Most affordable ($9.99/mo or $35 one-time vs competitors' $20-$79/mo)
+- Most affordable ($9.99/mo or $10 one-time vs competitors' $20-$79/mo)
 - Most features (15+ including biometric auth and QR scanner)
 - Fastest build time (5-10 minutes)
 - Both Android + Windows support
@@ -401,7 +401,7 @@ This gives you maximum flexibility—use APK for testing and direct distribution
 
 ### Option 3: Website to App Converter
 
-**Cost:** $0 - $35 one-time (or $9.99-$19.99/month)
+**Cost:** $0 - $10 one-time (or $9.99-$19.99/month)
 **Time:** 10 minutes
 **Maintenance:** Minimal (auto-updates from website changes)
 
@@ -422,8 +422,7 @@ This gives you maximum flexibility—use APK for testing and direct distribution
 After 1 year:
 - **Custom development:** $5,000 + (12 × $500) = $11,000
 - **Freelancer:** $3,000 + (12 × $200) = $5,400
-- **WebsiteToApp.app (monthly):** (12 × $9.99) = $119.88
-- **WebsiteToApp.app (one-time):** $35 (one-time only)
+- **WebsiteToApp.app (one-time):** $10 (one-time only)
 
 **Winner:** Website to app converters offer the best value for most businesses.
 
@@ -762,7 +761,7 @@ No coding knowledge required. If you can use WordPress or Shopify, you can creat
 | Aspect | Website-to-App (WebView) | Fully Native App |
 |--------|-------------------------|-------------------|
 | **Development Time** | 10 minutes | 3-6 months |
-| **Cost** | $0-$35 one-time | $10,000-$50,000 |
+| **Cost** | $0-$10 one-time | $10,000-$50,000 |
 | **Coding Required** | No | Yes (Kotlin/Java) |
 | **Updates** | Instant (update website) | App store review process |
 | **Content Management** | Via your website CMS | Separate backend needed |
@@ -818,7 +817,7 @@ No coding knowledge required. If you can use WordPress or Shopify, you can creat
 - Average order value increased by 18%
 - Customer retention improved by 40%
 
-**Cost:** $35 one-time (WebsiteToApp Business plan)
+**Cost:** $10 one-time (WebsiteToApp Business plan)
 **ROI:** Recovered investment in first week
 
 ### Case Study 2: Fitness Studio (Singapore)
@@ -881,7 +880,7 @@ No coding knowledge required. If you can use WordPress or Shopify, you can creat
 
 **Perfect for:** Small businesses, bloggers, startups
 
-### Option 3: One-Time Payment ($35)
+### Option 3: One-Time Payment ($10)
 
 1. Sign up and choose one-time plan
 2. Create 1 app with all Pro features
@@ -902,13 +901,13 @@ No coding knowledge required. If you can use WordPress or Shopify, you can creat
 
 ## Conclusion
 
-Converting your website to an Android app in 2026 is easier, faster, and more affordable than ever. With tools like **WebsiteToApp.app**, you can have a professional Android app in just 10 minutes for as little as $35 one-time or $9.99/month.
+Converting your website to an Android app in 2026 is easier, faster, and more affordable than ever. With tools like **WebsiteToApp.app**, you can have a professional Android app in just 10 minutes for as little as $10 one-time.
 
 **Key Takeaways:**
 
 ✅ **No coding required** - Anyone can create an Android app
 ✅ **Fast** - 10 minutes vs. months of development
-✅ **Affordable** - $35 one-time vs. $10,000+ custom development
+✅ **Affordable** - $10 one-time vs. $10,000+ custom development
 ✅ **Feature-rich** - Push notifications, offline mode, AdMob, biometric auth
 ✅ **Google Play ready** - AAB files included on paid plans
 ✅ **Updates automatically** - Change website, app updates instantly
@@ -971,7 +970,7 @@ Choose from 15+ features:
 
 ### Step 4: Choose a Plan and Pay
 
-Select from Free, Pro ($9.99/mo), Business ($19.99/mo), or One-Time ($35) plans. Each plan unlocks different features. [View full pricing comparison](/pricing).
+Select from Free, Pro ($9.99/mo), Business ($19.99/mo), or One-Time ($10) plans. Each plan unlocks different features. [View full pricing comparison](/pricing).
 
 ### Step 5: Download Your APK or AAB
 
@@ -1215,7 +1214,7 @@ All from a single website. No code changes needed.
 | Custom native app | $10,000-$50,000 | 3-6 months |
 | React Native / Flutter | $5,000-$30,000 | 2-4 months |
 | PWA from scratch | $2,000-$10,000 | 1-2 months |
-| WebToApp converter | $0-$35 | 10 minutes |
+| WebToApp converter | $0-$10 | 10 minutes |
 
 ## Conclusion
 
@@ -1509,7 +1508,7 @@ Mobile apps convert 3x better than mobile websites. The native experience, faste
 |--------|------|------|-------------|
 | Custom development | $10,000-$50,000 | 3-6 months | $500-$2,000/month |
 | App builder (Appy Pie, etc.) | $30-$100/month | 1-2 weeks | Included |
-| WebToApp converter | $0-$35 one-time or $9.99/mo | 10 minutes | Minimal |
+| WebToApp converter | $0-$10 one-time | 10 minutes | Minimal |
 
 WebToApp is the most affordable option because it uses your existing website. No need to rebuild anything — your website IS the app.
 
@@ -1603,7 +1602,7 @@ WebView apps cover 80-90% of features most apps need. The remaining 10-20% (Blue
 
 1. **Your content is web-based** — Blogs, e-commerce, SaaS dashboards, booking systems
 2. **You already have a website** — No need to rebuild; wrap and enhance
-3. **Budget is limited** — $0-$35 vs. $10,000+
+3. **Budget is limited** — $0-$10 vs. $10,000+
 4. **Speed to market matters** — 10 minutes vs. 3-6 months
 5. **Content updates frequently** — Update the website, app updates automatically
 6. **No hardware integration needed** — No Bluetooth, NFC, or AR requirements
@@ -1834,7 +1833,7 @@ Apps unlock new revenue streams:
 - Ready in 10 minutes
 - Full WooCommerce support
 - Push notifications included
-- One-time payment option ($35)
+- One-time payment option ($10)
 - Both APK and AAB files
 
 **Cons:**
@@ -1856,7 +1855,7 @@ Apps unlock new revenue streams:
 7. **Download APK/AAB**
 8. **Publish to Play Store** (optional)
 
-**Cost:** Free (with watermark) or $9.99/month or $35 one-time
+**Cost:** Free (with watermark) or $9.99/month or $10 one-time
 
 **Time:** 10-15 minutes
 
@@ -2113,7 +2112,7 @@ If you're running a WooCommerce store:
 2. **Select Plan:**
    - **Free:** APK only, watermark
    - **Pro ($9.99/mo):** AAB included, no watermark
-   - **One-time ($35):** Lifetime access, single app
+   - **One-time ($10):** Lifetime access, single app
 
 3. **Build:**
    - Click "Build App"
@@ -2316,7 +2315,7 @@ If you're running a WooCommerce store:
 | Feature | WebsiteToApp | AppPresser | Appy Pie | Custom Dev |
 |---------|--------------|------------|----------|------------|
 | **Time to Launch** | 10 min | 2-3 hours | 30 min | 2-6 months |
-| **Cost** | $35 one-time | $83/month | $60/month | $20,000+ |
+| **Cost** | $10 one-time | $83/month | $60/month | $20,000+ |
 | **Coding Required** | No | Some | No | Yes |
 | **Push Notifications** | Included | Included | Extra cost | Custom |
 | **WooCommerce** | Auto-detected | Deep integration | Basic | Custom |
@@ -2464,7 +2463,7 @@ Pay once, publish unlimited apps for life.
 
 ## Conclusion
 
-Converting your WordPress site to an Android app in 2026 is **easier and more affordable than ever**. With tools like WebsiteToApp, you can have a fully functional app in under 15 minutes for as little as $35 one-time.
+Converting your WordPress site to an Android app in 2026 is **easier and more affordable than ever**. With tools like WebsiteToApp, you can have a fully functional app in under 15 minutes for as little as $10 one-time.
 
 **Key Takeaways:**
 
@@ -2472,7 +2471,7 @@ Converting your WordPress site to an Android app in 2026 is **easier and more af
 ✅ **WooCommerce works great** - Native shopping experience
 ✅ **Push notifications** are a game-changer for traffic
 ✅ **No coding required** - Anyone can do it
-✅ **Affordable** - Starting at free, or $35 one-time
+✅ **Affordable** - Starting at free, or $10 one-time
 
 **Next Steps:**
 
@@ -2612,7 +2611,7 @@ Apps keep customers coming back.
 - ✅ Product variants handled correctly
 - ✅ Shopping cart persists
 - ✅ Push notifications for abandoned carts
-- ✅ One-time payment option ($35)
+- ✅ One-time payment option ($10)
 
 Let's build your Shopify app:
 
@@ -2826,7 +2825,7 @@ The system detects:
 2. **Select plan:**
    - Free: APK with watermark
    - Pro ($9.99/mo): AAB for Play Store
-   - One-time ($35): Single store, lifetime access
+   - One-time ($10): Single store, lifetime access
 3. **Click "Build App"**
 4. Build takes **5-10 minutes** (automated)
 5. Receive email when ready
@@ -3000,7 +2999,7 @@ Questions? Contact us at support@yourstore.com
 - Recovered $3,200 in abandoned carts
 - AdMob revenue: $180/month
 
-**Total ROI:** Paid $35 one-time, earning $5,780/month extra = 16,514% ROI
+**Total ROI:** Paid $10 one-time, earning $5,780/month extra = 16,514% ROI
 
 ### Case Study 2: Fitness Supplements Store
 
@@ -3047,7 +3046,7 @@ Questions? Contact us at support@yourstore.com
 
 **Total Impact:**
 - +$72,000 quarterly revenue
-- App cost: $35 one-time
+- App cost: $10 one-time
 - **ROI: 205,614%**
 
 ## Shopify App Best Practices
@@ -3317,7 +3316,7 @@ Redeem for $10 off your next purchase. Limited time!
 - AdMob integration
 - 15 apps
 
-**One-Time ($35):**
+**One-Time ($10):**
 - Single app
 - All Pro features
 - Lifetime access
@@ -3331,13 +3330,13 @@ Redeem for $10 off your next purchase. Limited time!
 
 **AdMob:** Free (you earn money)
 
-**Total to get started:** $60 ($35 app + $25 Play Store)
+**Total to get started:** $35 ($10 app + $25 Play Store)
 
 ### Competitor Pricing
 
 | Platform | Monthly Cost | Annual Cost | One-Time Option |
 |----------|--------------|-------------|-----------------|
-| WebsiteToApp | $9.99 | $120 | $35 |
+| WebsiteToApp | - | - | $10 |
 | Shopify Mobile App Builder | $99 | $1,188 | No |
 | Tapcart | $200+ | $2,400+ | No |
 | Appy Pie | $60 | $720 | No |
@@ -3353,7 +3352,7 @@ Converting your Shopify store to a mobile app in 2026 is **the smartest investme
 
 ✅ **Apps convert 3x better** than mobile web
 ✅ **Push notifications** recover 15-20% of abandoned carts
-✅ **$35 one-time** gets you a professional app
+✅ **$10 one-time** gets you a professional app
 ✅ **No coding required** - ready in 15 minutes
 ✅ **All Shopify features work** - checkout, payments, variants
 ✅ **ROI is massive** - stores see 10-50x return in 3 months
@@ -3669,7 +3668,7 @@ Yes! Enable AdMob integration to show banner ads, interstitial ads, or rewarded 
 | Hire a developer | $5,000-$50,000 | 2-6 months | Yes |
 | Learn Android development | Free (time cost) | 6-12 months | Yes |
 | WebsiteToApp.app (Free) | $0 | 5 minutes | No |
-| WebsiteToApp.app (Pro) | $9.99/month | 5 minutes | No |
+| WebsiteToApp.app (Pro) | $10 one-time | 5 minutes | No |
 | Other converters | $20-$100/month | 15-30 minutes | No |
 
 ## Conclusion
@@ -3783,7 +3782,7 @@ Paid converters justify their cost with:
 
 ### Popular Paid Options
 
-**1. WebsiteToApp.app (Pro Plan - $9.99/month)**
+**1. WebsiteToApp.app (Pro Plan - $10 one-time)**
 
 - 15+ native features including push notifications, offline mode, and AdMob
 - Both APK and AAB output
@@ -3794,7 +3793,7 @@ Paid converters justify their cost with:
 - Deep linking and QR code scanner
 - Regular updates for new Android versions
 - Priority email support
-- Also offers a one-time $35 payment option
+- One-time $10 payment — no subscription
 
 **2. Traditional App Development ($5,000-$50,000)**
 
@@ -3895,7 +3894,7 @@ When comparing converters, watch for these hidden costs:
 For most website owners in 2026, the sweet spot is a **freemium converter** like WebsiteToApp.app:
 
 1. **Start free** to test your website as an app and validate the concept
-2. **Upgrade to Pro** ($9.99/month or $35 one-time) when you're ready to add push notifications, publish to Google Play, or monetize with ads
+2. **Upgrade to Pro** ($9.99/month or $10 one-time) when you're ready to add push notifications, publish to Google Play, or monetize with ads
 3. **Skip custom development** unless you have highly specific requirements that no converter can meet
 
 This approach lets you launch an app in 5 minutes instead of 5 months, at a fraction of the cost of custom development, while still getting professional features like push notifications and Google Play publishing.
@@ -3995,7 +3994,7 @@ TWA is Google's modern approach that provides a full-screen Chrome experience wi
 
 ### 1. Mobile App Presence Without Development Costs
 
-Traditional mobile app development costs **$15,000-$150,000** and takes 3-6 months. A website to APK converter transforms your existing site into an app in **under 10 minutes** for as little as **$0-$35**.
+Traditional mobile app development costs **$15,000-$150,000** and takes 3-6 months. A website to APK converter transforms your existing site into an app in **under 10 minutes** for as little as **$0-$10**.
 
 ### 2. Direct Access to Users' Home Screens
 
@@ -4050,7 +4049,7 @@ Modern website to APK converters offer:
 
 ### 1. WebsiteToApp.app (Recommended)
 
-**Pricing:** Free plan, Pro $9.99/mo, Business $19.99/mo, One-time $35
+**Pricing:** Free plan, Pro $10 one-time
 
 **Best for:** All types of websites—blogs, e-commerce, news sites, portfolios, business sites
 
@@ -4328,7 +4327,7 @@ Recommendation: Build both—APK for testing, AAB for Play Store publishing.
    - Free: APK only, basic features, watermark
    - Pro: APK + AAB, push notifications, offline mode, no watermark
    - Business: Everything + AdMob, biometric auth
-   - One-time: $35 for single app with Pro features forever
+   - Pro: $10 one-time for unlimited apps with all features
 3. Click **"Build App"**
 4. Automated build pipeline starts:
    - Gradle configuration
@@ -4741,7 +4740,7 @@ Tools:
 
 ## Conclusion
 
-Converting your website to APK in 2026 is easier and more affordable than ever. With tools like **WebsiteToApp.app**, you can create a professional Android app in under 10 minutes for as little as $0-$35.
+Converting your website to APK in 2026 is easier and more affordable than ever. With tools like **WebsiteToApp.app**, you can create a professional Android app in under 10 minutes for as little as $0-$10.
 
 **Key Takeaways:**
 - Website to APK converters wrap your site in native Android code
@@ -4867,7 +4866,7 @@ A WebView app is a native Android/iOS application that embeds a web browser comp
 
 **Development Costs (using WebsiteToApp):**
 - **Free plan:** $0 (with watermark, APK only)
-- **Pro plan:** $9.99/month or $35 one-time
+- **Pro plan:** $9.99/month or $10 one-time
 - **Business plan:** $19.99/month
 - **Custom development:** $500-$3,000
 
@@ -5365,7 +5364,7 @@ Users are tired of downloading large apps. Install friction is a major barrier.
 
 **For Most Small Businesses in 2026:**
 **WebView App** (via WebsiteToApp) is the smartest choice because:
-- Costs $0-$35 to start
+- Costs $0-$10 to start
 - Ready in 10 minutes
 - Includes push notifications and AdMob
 - Provides Play Store presence
@@ -5390,13 +5389,13 @@ Users are tired of downloading large apps. Install friction is a major barrier.
 Start with **WebView App** or **PWA** to validate market fit quickly and cheaply. Once you have traction and revenue, invest in a **Native App** for advanced features and iOS support.
 
 **Real-World Success Path:**
-1. **Month 1:** Launch WebView app via WebsiteToApp ($35 one-time)
+1. **Month 1:** Launch WebView app via WebsiteToApp ($10 one-time)
 2. **Month 1-6:** Gather users, test features, collect feedback
 3. **Month 6:** If 10,000+ installs, upgrade to PWA for better SEO
 4. **Month 12:** If 50,000+ users, invest in native app for iOS + advanced features
 
 **The Bottom Line:**
-- **Fastest & Cheapest:** WebView App (10 minutes, $0-$35)
+- **Fastest & Cheapest:** WebView App (10 minutes, $0-$10)
 - **Best SEO & Web Reach:** PWA (2-6 weeks, $5k-$15k)
 - **Best Performance & Features:** Native App (3-6 months, $30k-$150k)
 
@@ -5433,7 +5432,7 @@ We evaluated each converter using the same WordPress test website, focusing on:
 
 | Tool | Pricing | Push Notifications | AdMob Support | Source Code | iOS Support | Best For |
 |------|---------|-------------------|---------------|-------------|-------------|----------|
-| WebsiteToApp.app | $15-$35 one-time | Yes | Yes | Yes | No (Android) | Budget-conscious businesses |
+| WebsiteToApp.app | $10 one-time | Yes | Yes | Yes | No (Android) | Budget-conscious businesses |
 | Appilix | $69/year | Yes | Limited | No | No | Simple wrappers |
 | WebToApp.design | $605 one-time | Yes | Yes | Yes | Yes | Premium one-time purchase |
 | Appy Pie | $16-$60/mo | Yes | Yes | No | Yes | Non-technical users |
@@ -5509,7 +5508,7 @@ WebToApp.design positions itself as a premium website-to-app converter with both
 - No built-in analytics dashboard
 
 ### Verdict
-WebToApp.design is a solid choice if you need both Android and iOS apps and prefer a one-time payment. But at $605, it is 17x more expensive than WebsiteToApp.app for Android-only needs.
+WebToApp.design is a solid choice if you need both Android and iOS apps and prefer a one-time payment. But at $605, it is 60x more expensive than WebsiteToApp.app for Android-only needs.
 
 ## 4. Appy Pie — Freemium App Builder
 
@@ -5675,7 +5674,7 @@ BuildFire is a capable app builder for businesses that need a feature-rich mobil
 
 | Tool | Year 1 Cost | Year 2 Cost | Year 3 Cost |
 |------|-------------|-------------|-------------|
-| **WebsiteToApp.app** | **$15-$35** | **$0** | **$0** |
+| **WebsiteToApp.app** | **$10** | **$0** | **$0** |
 | WebIntoApp.com | $0-$25 | $0 | $0 |
 | WebViewGold | $49 | $0 | $0 |
 | Appilix | $69 | $138 | $207 |
@@ -5691,7 +5690,7 @@ As you can see, **one-time payment tools** like WebsiteToApp.app, WebViewGold, a
 ## Which Website to App Converter Should You Choose?
 
 ### Best Overall Value: WebsiteToApp.app
-If you want an Android app with AdMob support, push notifications, and source code at the lowest possible price, WebsiteToApp.app is the clear winner at $15-$35 one-time.
+If you want an Android app with AdMob support, push notifications, and source code at the lowest possible price, WebsiteToApp.app is the clear winner at just $10 one-time.
 
 ### Best Free Option: WebIntoApp.com
 For testing or creating a basic app with no budget, WebIntoApp.com's free tier gets the job done, though with limitations.
@@ -5714,13 +5713,13 @@ If you need both Android and iOS with a one-time payment, WebToApp.design covers
 A website-to-app converter is a tool that takes your existing website URL and packages it into a mobile app (Android APK/AAB or iOS IPA). Most converters use WebView technology to display your website inside a native app wrapper, adding features like push notifications, offline support, and app store distribution.
 
 ### Can I convert my website to an app for free?
-Yes. WebIntoApp.com offers a free tier, and WebsiteToApp.app offers a free trial. However, free options typically include branding watermarks and limited features. For a production-quality app, expect to pay at least $15-$49.
+Yes. WebIntoApp.com offers a free tier, and WebsiteToApp.app offers a free trial. However, free options typically include branding watermarks and limited features. For a production-quality app, expect to pay at least $10.
 
 ### Do I need coding skills to use these tools?
 Most tools on this list (WebsiteToApp.app, Appilix, Appy Pie, AppMySite, BuildFire) require zero coding skills. WebViewGold is the exception, as it provides source code that you need to build using Android Studio or Xcode.
 
 ### Which converter supports AdMob ads?
-WebsiteToApp.app, WebViewGold, WebToApp.design, and Appy Pie all support AdMob integration. WebsiteToApp.app is the most affordable option with full AdMob support (banner, interstitial, and rewarded ads) starting at $15.
+WebsiteToApp.app, WebViewGold, WebToApp.design, and Appy Pie all support AdMob integration. WebsiteToApp.app is the most affordable option with full AdMob support (banner, interstitial, and rewarded ads) starting at $10.
 
 ### Should I choose a one-time payment or subscription?
 One-time payment tools (WebsiteToApp.app, WebViewGold, WebToApp.design) are more cost-effective long-term. Subscription tools (Appilix, Appy Pie, BuildFire) may offer more features but cost hundreds or thousands of dollars over time. For most small businesses, a one-time payment tool is the smarter financial choice.
@@ -5778,7 +5777,7 @@ This is the single biggest difference between the two platforms and where Websit
 ### WebsiteToApp.app Pricing
 - **Basic Plan:** $15 one-time — Core app conversion with custom icon and splash screen
 - **Pro Plan:** $25 one-time — Adds push notifications and offline support
-- **Premium Plan:** $35 one-time — Full AdMob integration, source code, and all features
+- **Premium Plan:** $10 one-time — Full AdMob integration, source code, and all features
 
 You pay once and own your app forever. No recurring charges, no annual renewals, no surprise fees.
 
@@ -5791,12 +5790,12 @@ Appilix uses a subscription model, meaning you pay $69 every year to keep your a
 
 | Time Period | WebsiteToApp.app (Premium) | Appilix |
 |-------------|---------------------------|---------|
-| Year 1 | $35 | $69 |
-| Year 2 | $35 (total) | $138 (total) |
-| Year 3 | $35 (total) | $207 (total) |
-| Year 5 | $35 (total) | $345 (total) |
+| Year 1 | $10 | $69 |
+| Year 2 | $10 (total) | $138 (total) |
+| Year 3 | $10 (total) | $207 (total) |
+| Year 5 | $10 (total) | $345 (total) |
 
-After just one year, Appilix costs nearly double. After five years, you would have spent $345 on Appilix versus a one-time $35 on WebsiteToApp.app. That is a savings of $310, which is significant for small businesses and individual developers.
+After just one year, Appilix costs nearly 7x more. After five years, you would have spent $345 on Appilix versus a one-time $10 on WebsiteToApp.app. That is a savings of $335, which is significant for small businesses and individual developers.
 
 **Winner: WebsiteToApp.app** — The one-time pricing model saves you hundreds of dollars over time.
 
@@ -5922,7 +5921,7 @@ Let us walk through a practical example. Suppose you run a cooking blog and want
 4. Set up Firebase for push notifications
 5. Download the APK/AAB and source code
 6. Publish to Google Play Store
-7. **Total cost: $35 one-time**
+7. **Total cost: $10 one-time**
 8. **Monthly ad revenue potential: $50-$500+** depending on traffic
 
 ### With Appilix:
@@ -5941,7 +5940,7 @@ In this scenario, WebsiteToApp.app costs less upfront, provides more ad revenue 
 
 **WebsiteToApp.app is the better choice for most users.** Here is why:
 
-1. **It costs less** — $35 one-time vs $69/year means massive savings over time
+1. **It costs less** — $10 one-time vs $69/year means massive savings over time
 2. **It earns more** — Full AdMob support with all ad formats maximizes revenue
 3. **You own your app** — Source code included means true ownership and independence
 4. **Better features** — More customization, better offline support, and polished output
@@ -5949,12 +5948,12 @@ In this scenario, WebsiteToApp.app costs less upfront, provides more ad revenue 
 
 The only scenario where Appilix makes more sense is if you specifically need OneSignal integration or prefer their particular dashboard interface. For everyone else, WebsiteToApp.app delivers more value at a lower price.
 
-**Ready to convert your website to an Android app?** [Get started with WebsiteToApp.app](https://websitetoapp.app) — plans start at just $15, one-time payment, source code included.
+**Ready to convert your website to an Android app?** [Get started with WebsiteToApp.app](https://websitetoapp.app) — plans start at just $10, one-time payment, source code included.
 
 ## Frequently Asked Questions
 
 ### Is WebsiteToApp.app really a one-time payment?
-Yes. You pay once ($15, $25, or $35 depending on the plan) and own your app forever. There are no recurring fees, no annual renewals, and no hidden charges. You can update and republish your app at any time without additional cost.
+Yes. You pay once ($10) and own your app forever. There are no recurring fees, no annual renewals, and no hidden charges. You can update and republish your app at any time without additional cost.
 
 ### Does Appilix offer a free trial?
 Appilix offers limited free features for testing, but to access the full feature set including push notifications and ad integration, you need the paid annual plan at $69/year.
@@ -6005,7 +6004,7 @@ This fundamental difference shapes everything else about these tools, from prici
 
 | Feature | WebsiteToApp.app | WebViewGold |
 |---------|------------------|-------------|
-| **Pricing** | $15-$35 one-time | $49-$89 per app |
+| **Pricing** | $10 one-time | $49-$89 per app |
 | **Platform Support** | Android only | Android & iOS |
 | **Setup Method** | Online dashboard (no coding) | Android Studio / Xcode required |
 | **Build Time** | 5-10 minutes automated | 30-60 minutes manual |
@@ -6036,7 +6035,7 @@ WebsiteToApp.app uses straightforward one-time pricing:
   - Advanced customization
   - Priority support
 
-- **Premium Plan:** $35 one-time
+- **Premium Plan:** $10 one-time
   - All Professional features
   - Custom splash screens
   - Advanced navigation
@@ -6057,16 +6056,16 @@ WebViewGold uses a per-app, per-platform pricing model:
 - 3 Android apps = $49 × 3 = $147
 - 3 apps for both platforms = $89 × 3 = $267
 
-With WebsiteToApp.app, one $35 purchase lets you build unlimited Android apps.
+With WebsiteToApp.app, one $10 purchase lets you build unlimited Android apps.
 
 ### Cost Comparison for Multiple Apps
 
 | Scenario | WebsiteToApp.app | WebViewGold (Android only) |
 |----------|------------------|---------------------------|
-| 1 Android app | $35 | $49 |
-| 3 Android apps | $35 | $147 |
-| 5 Android apps | $35 | $245 |
-| 10 Android apps | $35 | $490 |
+| 1 Android app | $10 | $49 |
+| 3 Android apps | $10 | $147 |
+| 5 Android apps | $10 | $245 |
+| 10 Android apps | $10 | $490 |
 
 **For agencies or developers building multiple apps, WebsiteToApp.app offers massive savings.**
 
@@ -6312,7 +6311,7 @@ WebsiteToApp.app is the better choice if you:
 1. **Are not a developer** — No coding knowledge required
 2. **Want fast results** — Build apps in minutes, not hours
 3. **Need multiple apps** — Unlimited apps for one price
-4. **Are on a tight budget** — $15-$35 total cost vs $49+ per app
+4. **Are on a tight budget** — $10 total cost vs $49+ per app
 5. **Run an agency** — Build client apps quickly and profitably
 6. **Value simplicity** — Web dashboard beats installing 8GB+ development tools
 7. **Only need Android** — No need to pay for iOS support you won't use
@@ -6365,7 +6364,7 @@ Let's compare both tools in a practical scenario: converting a restaurant websit
 10. Publish to Google Play Store (30 min)
 
 **Total Time:** ~1-2 hours
-**Total Cost:** $35 one-time
+**Total Cost:** $10 one-time
 **Skills Required:** Basic computer skills
 **Ongoing Cost:** $0
 
@@ -6406,7 +6405,7 @@ After extensive testing and real-world use of both platforms, here's our verdict
 1. **Massive time savings** — 10 minutes vs. several hours per app
 2. **No technical skills needed** — Anyone can build professional apps
 3. **Better value for agencies** — Unlimited apps vs. paying per app
-4. **Lower total cost** — $35 vs. $49+ per app
+4. **Lower total cost** — $10 vs. $49+ per app
 5. **Faster to market** — Launch apps in hours, not days
 6. **Source code still included** — You get full ownership and source access
 7. **Easier maintenance** — Rebuild with one click vs. recompiling in Android Studio
@@ -6428,7 +6427,7 @@ For most small businesses, entrepreneurs, bloggers, and agencies, **WebsiteToApp
 
 For experienced developers building complex apps or needing iOS support, **WebViewGold provides the code-level control and cross-platform capabilities** you need.
 
-**Our Recommendation:** Start with WebsiteToApp.app. For $15-$35, you can build unlimited professional Android apps in minutes. If you later discover you need deeper customization, you already have the source code to modify in Android Studio.
+**Our Recommendation:** Start with WebsiteToApp.app. For just $10, you can build unlimited professional Android apps in minutes. If you later discover you need deeper customization, you already have the source code to modify in Android Studio.
 
 **Ready to convert your website to an Android app?** [Get started with WebsiteToApp.app](https://websitetoapp.app) — build your first app in under 10 minutes.
 
@@ -6440,7 +6439,7 @@ Yes, migration is straightforward since both create WebView-based apps. Simply c
 
 ### Does WebsiteToApp.app provide source code like WebViewGold?
 
-Yes! WebsiteToApp.app includes complete Android source code with every plan ($15+). You can download the source code and modify it in Android Studio just like WebViewGold. The difference is you don't need to use Android Studio unless you want to make custom modifications.
+Yes! WebsiteToApp.app includes complete Android source code with every plan ($10 one-time). You can download the source code and modify it in Android Studio just like WebViewGold. The difference is you don't need to use Android Studio unless you want to make custom modifications.
 
 ### Which tool creates smaller APK files?
 
@@ -6448,7 +6447,7 @@ WebViewGold typically generates slightly smaller APKs (6-10 MB) compared to Webs
 
 ### Can I use WebsiteToApp.app for client projects?
 
-Absolutely! Many agencies use WebsiteToApp.app to build apps for clients. With one $35 purchase, you can build unlimited apps for unlimited clients. This makes it extremely cost-effective compared to WebViewGold's per-app pricing.
+Absolutely! Many agencies use WebsiteToApp.app to build apps for clients. With one $10 purchase, you can build unlimited apps for unlimited clients. This makes it extremely cost-effective compared to WebViewGold's per-app pricing.
 
 ### Does WebViewGold work on Windows or do I need a Mac?
 
@@ -6460,7 +6459,7 @@ Both tools support full AdMob integration with all ad formats (banner, interstit
 
 ### What if I need iOS support?
 
-Currently, WebsiteToApp.app only supports Android. If you need iOS apps, WebViewGold is your best option at $89 for both platforms. However, if you're only targeting Android users, WebsiteToApp.app provides better value at $15-$35.
+Currently, WebsiteToApp.app only supports Android. If you need iOS apps, WebViewGold is your best option at $89 for both platforms. However, if you're only targeting Android users, WebsiteToApp.app provides better value at just $10.
 
 ### Can I build Progressive Web Apps (PWA) instead?
 
@@ -6683,7 +6682,7 @@ A Progressive Web App (PWA) is a website that acts like an app when "installed" 
 | **Camera/GPS Access** | ✅ Yes (checkboxes) | ✅ Yes (code required) | ⚠️ Limited |
 | **Deep Linking** | ✅ Yes | ✅ Yes | ⚠️ Limited |
 | **Source Code Access** | ✅ Yes (download) | ✅ Yes (you wrote it) | ✅ Yes (HTML/JS) |
-| **Cost** | 💰 $15-$35 | 🆓 Free (but time-consuming) | 🆓 Free (if you can code) |
+| **Cost** | 💰 $10 | 🆓 Free (but time-consuming) | 🆓 Free (if you can code) |
 | **Best For** | ✅ Non-coders, businesses, agencies | Developers needing custom features | Simple websites, blogs |
 
 **Recommendation:** For 95% of users, **WebsiteToApp.app** is the best choice.
@@ -6795,7 +6794,7 @@ Once your app is built, publishing to Google Play Store is straightforward:
 
 ### How much does it cost to convert a website to an Android app?
 
-Using **WebsiteToApp.app**, it costs $15-$35 for unlimited apps. This includes all features (push notifications, AdMob, offline mode) and source code. Google Play Store publishing has a separate $25 one-time fee.
+Using **WebsiteToApp.app**, it costs just $10 for unlimited apps. This includes all features (push notifications, AdMob, offline mode) and source code. Google Play Store publishing has a separate $25 one-time fee.
 
 ### How long does it take to convert a website to an Android app?
 
@@ -6844,11 +6843,11 @@ Currently, WebsiteToApp.app only supports Android. For iOS apps, you'll need to 
 
 ### Do I get the source code of my app?
 
-Yes! WebsiteToApp.app provides full Android source code with every plan ($15+). You can download the source code and modify it in Android Studio if needed.
+Yes! WebsiteToApp.app provides full Android source code with every plan ($10 one-time). You can download the source code and modify it in Android Studio if needed.
 
 ### Can I build unlimited apps with one purchase?
 
-Yes, with the **Pro Plan ($35)**, you can build unlimited apps for unlimited websites. Perfect for agencies and developers serving multiple clients.
+Yes, with the **Pro Plan ($10)**, you can build unlimited apps for unlimited websites. Perfect for agencies and developers serving multiple clients.
 
 ### What if my website requires login?
 
@@ -7159,7 +7158,7 @@ Paid converters remove all free tier limitations and add **professional features
 ### 1. WebsiteToApp.app ⭐ Best Overall Value
 
 **Pricing:**
-- **Starter:** $9.99/month or $35 one-time
+- **Starter:** $9.99/month or $10 one-time
 - **Pro:** $19.99/month or $99 one-time
 - **Enterprise:** Custom pricing
 
@@ -7183,7 +7182,7 @@ Paid converters remove all free tier limitations and add **professional features
 
 **Best for:** Small businesses, content sites, ecommerce, anyone serious about mobile apps
 
-**Pricing Advantage:** One-time $35 payment is the most affordable among all paid converters
+**Pricing Advantage:** One-time $10 payment is the most affordable among all paid converters
 
 **Rating:** 9.5/10 ⭐ **RECOMMENDED**
 
@@ -7294,13 +7293,13 @@ Let's calculate the **real cost** of each option over one year:
 | **AppsGeyser** | $0 | $0 | ❌ No | ❌ No |
 | **Andromo** | $192 | $192 | ⚠️ Limited | ⚠️ Limited |
 | **AppInstitute** | $480 | $480 | ✅ Yes | ✅ Yes |
-| **WebsiteToApp** | **$35** | **$0** | ✅ Yes | ✅ Yes |
+| **WebsiteToApp** | **$10** | **$0** | ✅ Yes | ✅ Yes |
 | **WebViewGold** | $199 | $0 | ✅ Yes | ✅ Yes |
 | **AppMaker** | $348+ | $348+ | ✅ Yes | ✅ Yes |
 | **Median.co** | $5,940+ | $5,940+ | ✅ Yes | ✅ Yes |
 | **BuildFire** | $1,908+ | $1,908+ | ✅ Yes | ✅ Yes |
 
-**Winner: WebsiteToApp** — $35 one-time payment, full features, no recurring costs.
+**Winner: WebsiteToApp** — $10 one-time payment, full features, no recurring costs.
 
 ## When to Choose Free Converters
 
@@ -7428,11 +7427,11 @@ Free converters seem attractive, but consider these hidden costs:
 
 **Reality:** For serious business use, free converters cost more in lost opportunities than paid converters cost upfront.
 
-## WebsiteToApp vs Free Converters: Why Pay $35?
+## WebsiteToApp vs Free Converters: Why Pay $10?
 
-Here's what the $35 one-time payment gets you:
+Here's what the $10 one-time payment gets you:
 
-| Feature | Free Converters | WebsiteToApp ($35) |
+| Feature | Free Converters | WebsiteToApp ($10) |
 |---------|----------------|-------------------|
 | **Watermark** | ❌ "Made with..." | ✅ None |
 | **Push Notifications** | ❌ No | ✅ Unlimited |
@@ -7446,7 +7445,7 @@ Here's what the $35 one-time payment gets you:
 | **Deep Linking** | ❌ No | ✅ Yes |
 | **QR Scanner** | ❌ No | ✅ Yes |
 | **Custom Navigation** | ❌ No | ✅ Bottom tabs |
-| **Total Cost (Year 1)** | $0 | $35 |
+| **Total Cost (Year 1)** | $0 | $10 |
 | **Total Cost (Year 2+)** | $0 | $0 |
 
 **ROI Calculation:**
@@ -7475,7 +7474,7 @@ Here's what the $35 one-time payment gets you:
 
 ### Case Study 2: Real Estate Agency (WebsiteToApp)
 
-**Platform:** WebsiteToApp ($35 one-time)
+**Platform:** WebsiteToApp ($10 one-time)
 
 **Results:**
 - Published on Play Store in 2 weeks
@@ -7607,7 +7606,7 @@ This is a paid feature in 99% of converters.
 ### Best for Most People: WebsiteToApp ⭐
 
 **Why:**
-- $35 one-time payment (cheapest professional option)
+- $10 one-time payment (cheapest professional option)
 - All essential features (push, AdMob, offline, AAB)
 - No recurring costs
 - Source code included
@@ -7670,7 +7669,7 @@ This is a paid feature in 99% of converters.
 
 Free converters are great for **testing and hobby projects**, but they cost you more in lost opportunities than paid converters cost upfront.
 
-For **any serious business use**, invest in a paid converter. At just **$35 one-time**, tools like WebsiteToApp offer:
+For **any serious business use**, invest in a paid converter. At just **$10 one-time**, tools like WebsiteToApp offer:
 
 ✅ Professional appearance (no watermarks)
 ✅ Push notifications (60%+ engagement boost)
@@ -7683,7 +7682,7 @@ For **any serious business use**, invest in a paid converter. At just **$35 one-
 
 **Stop losing mobile users to competitors. Start building your professional Android app today.**
 
-👉 **[Convert Your Website to Android App Now](https://websitetoapp.app)** — Built in 10 minutes, $35 one-time payment, unlimited rebuilds.
+👉 **[Convert Your Website to Android App Now](https://websitetoapp.app)** — Built in 10 minutes, $10 one-time payment, unlimited rebuilds.
 
 ---
 
@@ -7894,7 +7893,7 @@ Users visiting your site on Chrome for Android will see an "Add to Home Screen" 
 
 ## Free vs. Paid: What You Get and What You Miss
 
-| Feature | Free (WebToApp) | Free (Cordova) | Free (PWA) | Paid (WebToApp $35) |
+| Feature | Free (WebToApp) | Free (Cordova) | Free (PWA) | Paid (WebToApp $10) |
 |---------|----------------|----------------|------------|---------------------|
 | APK Generation | Yes | Yes | N/A | Yes |
 | AAB for Play Store | No | Yes (manual) | No | Yes |
@@ -7951,7 +7950,7 @@ The free route works well for:
 - Customer support
 - Regular updates and compatibility fixes
 
-At **$35 one-time** on [WebsiteToApp.app](https://websitetoapp.app), the paid tier is one of the most affordable options in the market — no subscriptions, no recurring fees, and unlimited app rebuilds.
+At **$10 one-time** on [WebsiteToApp.app](https://websitetoapp.app), the paid tier is one of the most affordable options in the market — no subscriptions, no recurring fees, and unlimited app rebuilds.
 
 ---
 
@@ -8007,7 +8006,7 @@ Converting your website to an Android app for free is absolutely possible in 202
 
 1. **Start with [WebsiteToApp.app](https://websitetoapp.app) free tier** — get a working APK in 10 minutes with zero coding
 2. **Test the app** on your phone and share it with a few users
-3. **Upgrade to paid ($35 one-time)** when you're ready for Play Store publishing, push notifications, and AdMob monetization
+3. **Upgrade to paid ($10 one-time)** when you're ready for Play Store publishing, push notifications, and AdMob monetization
 
 The free-to-paid upgrade path means you have nothing to lose by starting today. Build your free app, validate the concept, and invest in the full version only when you see the value.
 
@@ -8075,7 +8074,7 @@ There are three main approaches, each with different trade-offs. Here's a quick 
 
 | Method | Time | Cost | Coding Needed | Best For |
 |--------|------|------|---------------|----------|
-| WebView Wrapper (WebsiteToApp) | 5 min | Free - $35 | None | Most WordPress sites |
+| WebView Wrapper (WebsiteToApp) | 5 min | Free - $10 | None | Most WordPress sites |
 | PWA + Bubblewrap | 30-60 min | Free | Minimal | Tech-savvy users |
 | Native with Capacitor/Ionic | 2-5 hours | Free (open source) | Moderate | Developers wanting full control |
 
@@ -8312,7 +8311,7 @@ Once your app is built, here's how to get it on Google Play:
 - Make sure your app follows Google Play policies
 - Common rejection reasons: broken links, missing privacy policy, misleading description
 
-**Pro tip:** Use [WebsiteToApp.app](https://websitetoapp.app) for the smoothest path from WordPress to Play Store. The paid plan ($35 one-time) includes AAB generation, push notifications, and all the features you need for a professional Play Store listing.
+**Pro tip:** Use [WebsiteToApp.app](https://websitetoapp.app) for the smoothest path from WordPress to Play Store. The paid plan ($10 one-time) includes AAB generation, push notifications, and all the features you need for a professional Play Store listing.
 
 ## WordPress-Specific Tips for a Great App Experience
 
@@ -8354,7 +8353,7 @@ Deep links let you open specific WordPress pages directly from push notification
 
 ### Is it free to convert a WordPress site to an app?
 
-Yes. [WebsiteToApp.app](https://websitetoapp.app) offers a free plan that lets you build and test your app. The free version includes basic features like custom icon, splash screen, and offline mode. The paid plan ($35 one-time, not a subscription) unlocks push notifications, AdMob, biometric login, and AAB for Play Store publishing.
+Yes. [WebsiteToApp.app](https://websitetoapp.app) offers a free plan that lets you build and test your app. The free version includes basic features like custom icon, splash screen, and offline mode. The paid plan ($10 one-time, not a subscription) unlocks push notifications, AdMob, biometric login, and AAB for Play Store publishing.
 
 ### Do I need to update the app when I update my WordPress site?
 
@@ -8515,7 +8514,7 @@ If you want your app on Google Play Store:
 |--------|------|------|----------------|
 | Custom app development | $10,000 - $50,000+ | 2-6 months | Yes (hire developers) |
 | App builder (monthly) | $50 - $300/month | 1-2 weeks | Some (drag-and-drop) |
-| WebsiteToApp converter | $35 one-time | 10-15 minutes | None |
+| WebsiteToApp converter | $10 one-time | 10-15 minutes | None |
 | PWA (Progressive Web App) | Free - $5,000 | 1-4 weeks | Yes (service workers) |
 | DIY with Capacitor/Ionic | Free (tools) | 2-8 weeks | Yes (JavaScript) |
 
@@ -8530,7 +8529,7 @@ Push notifications for daily specials and promotions. Menu always accessible (ev
 3x higher conversion rates in-app vs mobile web. Abandoned cart push notifications recover 15-20% of lost sales. Faster checkout with saved preferences.
 
 ### Churches and Nonprofits
-Sermon streaming, event calendar, online donations, prayer requests — all accessible from one app icon. Push notifications for service changes and events. Very affordable at $35 one-time.
+Sermon streaming, event calendar, online donations, prayer requests — all accessible from one app icon. Push notifications for service changes and events. Very affordable at $10 one-time.
 
 ### Gyms and Fitness Studios
 Class booking, schedule viewing, membership info — all on members' phones. Push notifications for class reminders reduce no-shows by up to 30%.
@@ -8584,7 +8583,7 @@ Here is what the process looks like for a typical small business:
 7. **0:10** — Click "Build App"
 8. **0:15** — Download APK, install on phone, test
 
-Total time: 15 minutes. Total cost: $35 one-time. Lines of code written: zero.
+Total time: 15 minutes. Total cost: $10 one-time. Lines of code written: zero.
 
 ## Frequently Asked Questions
 
@@ -8594,7 +8593,7 @@ Yes. Website-to-app converters like WebsiteToApp.app handle all the technical wo
 
 ### How much does it cost to turn a website into an app?
 
-WebsiteToApp costs $35 one-time for the full version with push notifications, offline mode, and Play Store-ready AAB file. Compare this to custom development ($10,000-$50,000) or monthly app builders ($50-$300/month). There is also a free plan for basic testing.
+WebsiteToApp costs $10 one-time for the full version with push notifications, offline mode, and Play Store-ready AAB file. Compare this to custom development ($10,000-$50,000) or monthly app builders ($50-$300/month). There is also a free plan for basic testing.
 
 ### Which websites work with no-code app converters?
 
@@ -9228,7 +9227,7 @@ This is where the difference is dramatic.
 
 | Cost Factor | WebView App | Native App |
 |-------------|------------|------------|
-| Development cost | $29–$299 (one-time) | $10,000–$150,000+ |
+| Development cost | $10 (one-time) | $10,000–$150,000+ |
 | Development time | 10–30 minutes | 2–6 months |
 | Developer required | No | Yes (Kotlin + Swift) |
 | Design cost | $0 (uses your website) | $2,000–$10,000 |
@@ -9358,7 +9357,7 @@ How much does it actually cost to turn a website into a mobile app? The answer r
 | Method | Upfront Cost | Monthly Cost | Development Time | Technical Skill |
 |--------|-------------|-------------|-----------------|----------------|
 | PWA (Progressive Web App) | $0 | $0 | 1–4 hours | Low–Medium |
-| WebView Wrapper (e.g., WebToApp) | $29–$299 | $0 | 10–30 minutes | None |
+| WebView Wrapper (e.g., WebToApp) | $0–$10 | $0 | 10–30 minutes | None |
 | Hybrid Framework (Capacitor/Ionic) | $0–$500 | $0–$50 | 2–8 weeks | Medium–High |
 | Native Development | $10,000–$150,000+ | $500–$5,000 | 3–12 months | Expert |
 
@@ -9410,7 +9409,7 @@ Developers who want a quick, free solution and do not need app store distributio
 
 ---
 
-## Method 2: WebView Wrapper — $29 to $299
+## Method 2: WebView Wrapper — $10
 
 ### What It Is
 
@@ -9422,13 +9421,13 @@ This is the fastest and most cost-effective way to get a real app in the Google 
 
 | Item | Cost |
 |------|------|
-| App generation | $29–$299 (one-time) |
+| App generation | $10 (one-time) |
 | Google Play developer account | $25 (one-time) |
 | Apple Developer Program | $99/year (only if publishing to iOS) |
 | Hosting | $0 (uses your existing website) |
 | Maintenance | $0 (update your website, app updates automatically) |
-| **Total (Android only)** | **$54–$324 one-time** |
-| **Total (Android + iOS)** | **$153–$423 first year** |
+| **Total (Android only)** | **$35 one-time** |
+| **Total (Android + iOS)** | **$134 first year** |
 
 ### What You Get
 
@@ -9567,7 +9566,7 @@ Venture-funded startups, enterprise companies, apps where the app IS the product
 
 | Factor | PWA | WebView Wrapper | Hybrid | Native |
 |--------|-----|----------------|--------|--------|
-| Upfront cost | $0 | $29–$299 | $0–$30,000 | $15,000–$150,000+ |
+| Upfront cost | $0 | $0–$10 | $0–$30,000 | $15,000–$150,000+ |
 | Monthly cost | $0 | $0 | $0–$250 | $500–$5,000 |
 | Time to launch | 1–4 hours | 10–30 min | 2–8 weeks | 3–12 months |
 | Play Store listing | No | Yes | Yes | Yes |
@@ -9645,7 +9644,7 @@ We tested and compared 7 of the most popular website-to-app converters to help y
 
 | Tool | Price | Free Plan | Push Notifications | Offline Mode | Custom Code | AAB Support | Ease of Use |
 |------|-------|-----------|-------------------|-------------|-------------|------------|-------------|
-| **WebsiteToApp.app** | $29–$299 | 5 free builds | Yes | Yes | No | Yes | Easiest |
+| **WebsiteToApp.app** | $10 | 5 free builds | Yes | Yes | No | Yes | Easiest |
 | **AppMaker** | $49–$499/yr | Limited | Yes | Basic | Yes | Yes | Easy |
 | **WebViewGold** | $49 one-time | No | Yes | Yes | Yes (source) | Yes | Medium |
 | **GoNative** | $99–$499/mo | No | Yes | Yes | Yes | Yes | Medium |
@@ -9672,9 +9671,7 @@ We tested and compared 7 of the most popular website-to-app converters to help y
 | Plan | Price | What You Get |
 |------|-------|-------------|
 | Free | $0 | 5 builds, basic features |
-| Starter | $29 | 10 builds/month, all features |
-| Pro | $99 | Unlimited builds, priority support |
-| Enterprise | $299 | White-label, custom branding |
+| Pro | $10 | Unlimited builds, all features |
 
 All paid plans are **one-time payments** — no monthly subscriptions.
 
@@ -9696,7 +9693,7 @@ All paid plans are **one-time payments** — no monthly subscriptions.
 ### Pros
 
 - **Easiest to use** — no coding, no technical knowledge needed
-- **Cheapest option** — one-time payment from $29, no subscription
+- **Cheapest option** — $10 one-time payment, no subscription
 - **5 free builds** — try before you pay
 - **Fast builds** — APK/AAB ready in under 10 minutes
 - **All essential features included** — push notifications, offline, biometrics
@@ -9846,7 +9843,7 @@ Note: These are **monthly subscriptions**. Annual billing offers ~20% discount.
 
 ### Verdict
 
-GoNative is solid but dramatically overpriced for most use cases. At $99/month minimum, you are paying $1,188/year for something WebsiteToApp.app does for $29 one-time. Only makes sense for enterprises that need iOS support and custom native plugins.
+GoNative is solid but dramatically overpriced for most use cases. At $99/month minimum, you are paying $1,188/year for something WebsiteToApp.app does for $10 one-time. Only makes sense for enterprises that need iOS support and custom native plugins.
 
 ---
 
@@ -9998,7 +9995,7 @@ This is where pricing models really matter.
 
 | Tool | Year 1 | Year 2 | Year 3 | **3-Year Total** |
 |------|--------|--------|--------|-----------------|
-| **WebsiteToApp.app** | $29 | $0 | $0 | **$29** |
+| **WebsiteToApp.app** | $10 | $0 | $0 | **$10** |
 | AppMaker | $49 | $49 | $49 | $147 |
 | WebViewGold | $49 | $0 | $0 | $49 |
 | GoNative | $1,188 | $1,188 | $1,188 | $3,564 |
@@ -10011,7 +10008,7 @@ WebsiteToApp.app's one-time pricing saves you dramatically over subscription-bas
 ## Our Recommendation
 
 ### For non-technical users who want the easiest, cheapest option:
-**[WebsiteToApp.app](https://websitetoapp.app)** — 5 free builds, one-time payment from $29, all features included, no coding, app ready in minutes.
+**[WebsiteToApp.app](https://websitetoapp.app)** — 5 free builds, one-time payment of $10, all features included, no coding, app ready in minutes.
 
 ### For developers who want source code control:
 **WebViewGold** — $49 one-time, full Android Studio project, maximum customization.
@@ -10168,7 +10165,7 @@ If you're searching for a **WebIntoApp alternative**, you've likely tried or hea
 
 | Feature | WebsiteToApp | WebIntoApp |
 |---------|-------------|-----------|
-| Price | From $29 | Free / $5–$49/month |
+| Price | $10 one-time | Free / $5–$49/month |
 | Push notifications | ✅ Included | ✅ Included |
 | AdMob ads | ✅ Included | ✅ Included |
 | Biometric auth | ✅ Included | ❌ Not available |
@@ -10218,7 +10215,7 @@ Your package name should remain the same to allow users to update seamlessly on 
 
 ## Pricing Comparison
 
-**WebsiteToApp**: One app from $29. Plans available for multiple apps.
+**WebsiteToApp**: $10 one-time. Unlimited apps.
 
 **WebIntoApp Free**: Basic APK, no native features, WebIntoApp branding.
 
@@ -10255,7 +10252,7 @@ If you've been using Appilix or are considering it, this page covers the best Ap
 
 | Feature | WebsiteToApp | Appilix |
 |---------|-------------|---------|
-| **Pricing** | One-time from $29 | $69/year subscription |
+| **Pricing** | $10 one-time | $69/year subscription |
 | **Push notifications** | ✅ All plans | ✅ Paid plans |
 | **AdMob (banner + interstitial)** | ✅ Included | ❌ Extra cost |
 | **Offline mode** | ✅ Included | ❌ Not available |
@@ -10275,13 +10272,13 @@ If you've been using Appilix or are considering it, this page covers the best Ap
 
 Appilix charges $69 per year. Over 3 years that's $207+ just to keep your app running.
 
-WebsiteToApp charges a one-time fee starting at $29. Your app is yours permanently — no renewal, no risk of losing access.
+WebsiteToApp charges a one-time fee of $10. Your app is yours permanently — no renewal, no risk of losing access.
 
 | Years | WebsiteToApp | Appilix |
 |-------|-------------|---------|
-| Year 1 | $29 | $69 |
-| Year 2 | $29 (total) | $138 (total) |
-| Year 3 | $29 (total) | $207 (total) |
+| Year 1 | $10 | $69 |
+| Year 2 | $10 (total) | $138 (total) |
+| Year 3 | $10 (total) | $207 (total) |
 
 ### 2. AdMob Monetization Included
 
@@ -10324,7 +10321,7 @@ Appilix's basic output is APK. AAB export requires extra steps.
 
 ## Pricing Summary
 
-**WebsiteToApp:** One-time payment starting at $29. Full features from $49.
+**WebsiteToApp:** One-time payment of $10. Full features included.
 
 **Appilix:** $69/year. Features vary by plan.
 
