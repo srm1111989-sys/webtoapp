@@ -189,6 +189,10 @@ async def verify_razorpay_payment(
     if not hmac.compare_digest(expected_signature, data.razorpay_signature):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid payment signature")
 
+    # Record gateway_order_id if not already set (Vercel proxy flow)
+    if not order.gateway_order_id:
+        order.gateway_order_id = data.razorpay_order_id
+
     # Record payment
     gateway_label = "razorpay_test" if test_mode else "razorpay"
     payment = Payment(

@@ -65,7 +65,7 @@ import {
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
 import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
-import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
+import { createRazorpayOrder } from '@/api/razorpay-proxy'
 import { trackPurchase, trackBeginCheckout, trackFreeAppBuild, trackAppCreated } from '@/utils/gtag'
 import type { Plan, NavigationItem } from '@/types'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
@@ -1274,27 +1274,18 @@ function Step4PlanReview() {
       order_id: data.razorpay_order_id,
       handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
         try {
-          // Verify via payment proxy first (validates signature)
-          await verifyRazorpayPayment({
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-            test_mode: false // Will be set based on environment
-          })
-
-          // Then notify backend to update order status
+          // Notify backend to verify signature and update order status
           await paymentsApi.verifyRazorpay({
             order_id: data.order_id,
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
           })
-          // Track purchase conversion for Google Ads
           trackPurchase(data.amount / 100, data.currency, data.order_id)
           toast.success('Payment successful!')
           navigate(`/orders/${orderId}`)
         } catch {
-          toast.error('Payment verification failed.')
+          toast.error('Payment verification failed. Please contact support.')
         }
       },
     }
