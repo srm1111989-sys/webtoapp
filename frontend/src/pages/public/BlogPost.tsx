@@ -1,7 +1,95 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { useSEO } from '@/hooks/useSEO'
 import { blogPosts } from '@/data/blogPosts'
-import { Calendar, Clock, ArrowLeft, ArrowRight } from 'lucide-react'
+import { Calendar, Clock, ArrowLeft, ArrowRight, BookOpen, ExternalLink } from 'lucide-react'
+
+interface ClusterLink {
+  label: string
+  href: string
+  type: 'platform' | 'comparison' | 'guide' | 'blog'
+}
+
+function getClusterLinks(slug: string, category: string): ClusterLink[] {
+  const links: ClusterLink[] = []
+
+  // Platform-specific cluster links
+  if (/wordpress|woocommerce/.test(slug)) {
+    links.push({ label: 'Convert WordPress to App', href: '/convert/wordpress-to-app', type: 'platform' })
+    links.push({ label: 'Convert WooCommerce to App', href: '/convert/woocommerce-to-app', type: 'platform' })
+  }
+  if (/shopify/.test(slug)) {
+    links.push({ label: 'Convert Shopify Store to App', href: '/convert/shopify-store-to-app', type: 'platform' })
+    links.push({ label: 'Convert WordPress to App', href: '/convert/wordpress-to-app', type: 'platform' })
+  }
+  if (/react/.test(slug)) {
+    links.push({ label: 'Convert React Website to App', href: '/convert/react-website-to-app', type: 'platform' })
+    links.push({ label: 'Convert Next.js App to Android', href: '/convert/nextjs-to-app', type: 'platform' })
+    links.push({ label: 'Convert Angular to App', href: '/convert/angular-to-app', type: 'platform' })
+  }
+  if (/angular/.test(slug)) {
+    links.push({ label: 'Convert Angular to App', href: '/convert/angular-to-app', type: 'platform' })
+    links.push({ label: 'Convert React Website to App', href: '/convert/react-website-to-app', type: 'platform' })
+  }
+  if (/nextjs|next-js|next\.js/.test(slug)) {
+    links.push({ label: 'Convert Next.js App to Android', href: '/convert/nextjs-to-app', type: 'platform' })
+    links.push({ label: 'Convert React Website to App', href: '/convert/react-website-to-app', type: 'platform' })
+  }
+  if (/push.?notif/.test(slug)) {
+    links.push({ label: 'Push Notifications Guide', href: '/blog/push-notifications-for-mobile-app', type: 'blog' })
+  }
+  if (/admob|monetiz/.test(slug)) {
+    links.push({ label: 'AdMob Monetization Guide', href: '/blog/monetize-app-with-admob-ads', type: 'blog' })
+  }
+  if (/play.?store|publish/.test(slug)) {
+    links.push({ label: 'Play Store Publishing Guide', href: '/blog/publish-app-on-google-play-store', type: 'guide' })
+  }
+  if (/cost|price|pricing|paid|free/.test(slug)) {
+    links.push({ label: 'App Cost Breakdown', href: '/blog/website-to-app-cost-breakdown-2026', type: 'blog' })
+    links.push({ label: 'View Pricing', href: '/pricing', type: 'guide' })
+  }
+  if (/alternative|vs-|comparison/.test(slug) || category === 'Comparison') {
+    links.push({ label: 'vs GoNative', href: '/alternatives/gonative', type: 'comparison' })
+    links.push({ label: 'vs WebIntoApp', href: '/alternatives/webintoapp', type: 'comparison' })
+    links.push({ label: 'vs Median.co', href: '/alternatives/median', type: 'comparison' })
+    links.push({ label: 'vs AppsGeyser', href: '/alternatives/appsgeyser', type: 'comparison' })
+  }
+  if (/pwa|webview|native/.test(slug)) {
+    links.push({ label: 'PWA vs WebView vs Native', href: '/blog/pwa-vs-native-app-vs-webview-app-2026', type: 'blog' })
+    links.push({ label: 'WebView vs Native Performance', href: '/blog/webview-vs-native-app-performance', type: 'blog' })
+  }
+
+  // Always include these core cluster links (deduplicated)
+  const coreLinks: ClusterLink[] = [
+    { label: 'Complete Converter Guide', href: '/blog/website-to-app-converter-complete-guide-2026', type: 'guide' },
+    { label: 'FAQ — 20 Questions Answered', href: '/blog/website-to-app-faq', type: 'guide' },
+    { label: 'Best Converters Compared', href: '/blog/best-website-to-app-converters-2026', type: 'blog' },
+  ]
+  for (const core of coreLinks) {
+    if (!links.some((l) => l.href === core.href)) links.push(core)
+  }
+
+  // Deduplicate and exclude the current page
+  const seen = new Set<string>()
+  return links.filter((l) => {
+    if (seen.has(l.href)) return false
+    seen.add(l.href)
+    return true
+  }).slice(0, 8)
+}
+
+const clusterBadge: Record<ClusterLink['type'], string> = {
+  platform: 'bg-blue-100 text-blue-700',
+  comparison: 'bg-purple-100 text-purple-700',
+  guide: 'bg-green-100 text-green-700',
+  blog: 'bg-gray-100 text-gray-700',
+}
+
+const clusterLabel: Record<ClusterLink['type'], string> = {
+  platform: 'Convert',
+  comparison: 'Compare',
+  guide: 'Guide',
+  blog: 'Article',
+}
 
 const categoryColors: Record<string, string> = {
   Tutorial: 'bg-blue-100 text-blue-800',
@@ -58,9 +146,9 @@ export default function BlogPost() {
   const prevPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null
   const nextPost = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null
 
-  const related = blogPosts
-    .filter((p) => p.category === post.category && p.slug !== post.slug)
-    .slice(0, 3)
+  const sameCat = blogPosts.filter((p) => p.category === post.category && p.slug !== post.slug)
+  const crossCat = blogPosts.filter((p) => p.category !== post.category && p.slug !== post.slug)
+  const related = [...sameCat, ...crossCat].slice(0, 3)
 
   const htmlContent = renderMarkdown(post.content.trim())
 
@@ -142,22 +230,48 @@ export default function BlogPost() {
         </section>
       )}
 
-      {/* Related Tools */}
-      <section className="py-8 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Related Tools</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <a href="https://indexflow.net" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
-              <p className="font-medium text-gray-900">IndexFlow</p>
-              <p className="text-sm text-gray-500 mt-1">Check if your app landing pages are indexed by Google</p>
-            </a>
-            <a href="https://eudyamaadhaar.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
-              <p className="font-medium text-gray-900">eUdyamAadhaar</p>
-              <p className="text-sm text-gray-500 mt-1">MSME registration for Indian small businesses</p>
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* Content Cluster Hub */}
+      {(() => {
+        const clusterLinks = getClusterLinks(post.slug, post.category)
+        return clusterLinks.length > 0 ? (
+          <section className="py-10 bg-gray-50 border-t">
+            <div className="max-w-4xl mx-auto px-4">
+              <div className="flex items-center gap-2 mb-5">
+                <BookOpen className="w-5 h-5 text-primary-600" />
+                <h3 className="text-lg font-semibold text-gray-900">More on This Topic</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {clusterLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="flex items-center justify-between gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-primary-300 hover:shadow-sm transition-all group"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${clusterBadge[link.type]}`}>
+                        {clusterLabel[link.type]}
+                      </span>
+                      <span className="text-sm font-medium text-gray-800 truncate group-hover:text-primary-600 transition-colors">
+                        {link.label}
+                      </span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-400 shrink-0 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all" />
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-5 pt-5 border-t border-gray-200 flex flex-wrap gap-4 text-sm">
+                <a href="https://indexflow.net" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-gray-500 hover:text-blue-600 transition-colors">
+                  <ExternalLink className="w-3.5 h-3.5" /> IndexFlow — Check if your pages are indexed
+                </a>
+                <Link to="/pricing" className="flex items-center gap-1.5 text-gray-500 hover:text-primary-600 transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5" /> View WebToApp Pricing
+                </Link>
+              </div>
+            </div>
+          </section>
+        ) : null
+      })()}
 
       {/* CTA */}
       <section className="py-16 bg-primary-600 text-white text-center">

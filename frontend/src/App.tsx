@@ -17,6 +17,7 @@ import Contact from '@/pages/public/Contact'
 import Blog from '@/pages/public/Blog'
 import BlogPost from '@/pages/public/BlogPost'
 import ConvertPage from '@/pages/public/ConvertPage'
+import ComparisonPage from '@/pages/public/ComparisonPage'
 
 // Auth pages
 import Login from '@/pages/auth/Login'
@@ -61,6 +62,11 @@ export default function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/convert/:slug" element={<ConvertPage />} />
+        {/* Phase 2: Programmatic SEO — /convert-{keyword}-to-app */}
+        <Route path="/convert-:slug" element={<ConvertPage />} />
+        <Route path="/alternatives/:slug" element={<ComparisonPage />} />
+        {/* Phase 4: /vs/ URL alias for comparison pages */}
+        <Route path="/vs/:slug" element={<ComparisonPage />} />
       </Route>
 
       {/* Auth routes */}

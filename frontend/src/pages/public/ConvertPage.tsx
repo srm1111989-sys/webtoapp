@@ -1,11 +1,32 @@
-import { useParams, Link, Navigate } from 'react-router-dom'
+import { useParams, useLocation, Link, Navigate } from 'react-router-dom'
 import { useSEO } from '@/hooks/useSEO'
 import { platforms } from '@/data/platforms'
-import { ArrowRight, CheckCircle, HelpCircle, Zap, Shield, Smartphone } from 'lucide-react'
+import { blogPosts } from '@/data/blogPosts'
+import { ArrowRight, CheckCircle, HelpCircle, Zap, Shield, Smartphone, BookOpen } from 'lucide-react'
+
+function getRelatedArticles(slug: string) {
+  const keywords = slug.split('-').filter((w) => w.length > 3)
+  return blogPosts
+    .filter((p) => keywords.some((kw) => p.slug.includes(kw) || p.title.toLowerCase().includes(kw)))
+    .slice(0, 3)
+}
+
+const SLUG_ALIASES: Record<string, string> = {
+  'wordpress-website': 'wordpress',
+  'angular-website': 'angular',
+  'nextjs-website': 'nextjs',
+  'react-app': 'react-website',
+  'vue-website': 'vue',
+  'shopify-website': 'shopify-store',
+}
 
 export default function ConvertPage() {
   const { slug: rawSlug } = useParams<{ slug: string }>()
-  const cleanSlug = rawSlug?.replace(/-(to-app|to-android-app)$/, '') || ''
+  const location = useLocation()
+  // Handle both /convert/:slug and /convert-:slug URL patterns
+  const effectiveSlug = rawSlug || location.pathname.replace(/^\/convert-/, '')
+  const stripped = effectiveSlug.replace(/-(to-app|to-android-app)$/, '')
+  const cleanSlug = SLUG_ALIASES[stripped] || stripped
   const platform = platforms.find((p) => p.slug === cleanSlug)
 
   useSEO({
@@ -14,7 +35,7 @@ export default function ConvertPage() {
       : 'Convert Website to App',
     description: platform?.description,
     canonical: platform
-      ? `https://websitetoapp.app/convert/${platform.slug}-to-app`
+      ? `https://websitetoapp.app/convert/${cleanSlug}-to-app`
       : undefined,
   })
 
@@ -176,34 +197,42 @@ export default function ConvertPage() {
         </div>
       </section>
 
-      {/* Related Tools */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Tools</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="https://indexflow.net" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
-              <p className="font-medium text-gray-900">IndexFlow</p>
-              <p className="text-sm text-gray-500 mt-1">Check if your app landing pages are indexed by Google</p>
-            </a>
-            <a href="https://eudyamaadhaar.com" target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
-              <p className="font-medium text-gray-900">eUdyamAadhaar</p>
-              <p className="text-sm text-gray-500 mt-1">MSME registration for Indian small businesses</p>
-            </a>
-          </div>
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <Link to="/blog/convert-website-to-app-guide-2026" className="font-medium text-blue-700 hover:underline">
-              📖 Read our Complete Guide: How to Convert Any Website to a Mobile App (2026)
-            </Link>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Link to="/blog" className="text-sm text-blue-600 hover:underline">Read our blog</Link>
-            <span className="text-gray-300">|</span>
-            <Link to="/pricing" className="text-sm text-blue-600 hover:underline">View pricing</Link>
-            <span className="text-gray-300">|</span>
-            <Link to="/features" className="text-sm text-blue-600 hover:underline">All features</Link>
-          </div>
-        </div>
-      </section>
+      {/* Related Articles */}
+      {(() => {
+        const articles = getRelatedArticles(platform.slug)
+        return articles.length > 0 ? (
+          <section className="py-12 bg-gray-50">
+            <div className="max-w-5xl mx-auto px-4">
+              <div className="flex items-center gap-2 mb-6">
+                <BookOpen className="w-5 h-5 text-primary-600" />
+                <h3 className="text-xl font-bold text-gray-900">Related Guides</h3>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4 mb-6">
+                {articles.map((a) => (
+                  <Link key={a.slug} to={`/blog/${a.slug}`} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-primary-300 hover:shadow-md transition-all group">
+                    <p className="text-xs font-medium text-primary-600 mb-2">{a.category} · {a.readTime}</p>
+                    <h4 className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors text-sm leading-snug">{a.title}</h4>
+                  </Link>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                <Link to="/blog" className="hover:text-primary-600">All articles →</Link>
+                <Link to="/pricing" className="hover:text-primary-600">View pricing →</Link>
+                <Link to="/features" className="hover:text-primary-600">All features →</Link>
+                <Link to="/blog/website-to-app-faq" className="hover:text-primary-600">FAQ →</Link>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="py-8 bg-gray-50">
+            <div className="max-w-5xl mx-auto px-4 flex flex-wrap gap-4 text-sm text-gray-500">
+              <Link to="/blog" className="hover:text-primary-600">All articles →</Link>
+              <Link to="/pricing" className="hover:text-primary-600">View pricing →</Link>
+              <Link to="/blog/website-to-app-faq" className="hover:text-primary-600">FAQ →</Link>
+            </div>
+          </section>
+        )
+      })()}
 
       {/* CTA */}
       <section className="py-16 bg-primary-600 text-white text-center">

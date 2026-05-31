@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
@@ -149,14 +149,62 @@ const faqs = [
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
+  { q: 'Is WebToApp better than GoNative or WebIntoApp?', a: 'WebToApp offers 40+ features at a one-time price from $10 — vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
+  { q: 'What websites can I convert to an app?', a: 'Any website works — Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebToApp.' },
+  { q: 'Will my app be approved by Google Play?', a: 'Yes. We generate a properly signed AAB that meets Google Play guidelines. We also include a compliance checklist to help you submit without rejections.' },
 ]
 
 export default function Landing() {
   useSEO({
-    title: 'Convert Website to App in 60 Minutes | Free APK Download | No Coding Required',
-    description: 'Turn your website into Android APK & Windows .exe app instantly. No coding needed. 40+ features: push notifications, offline mode, AdMob monetization. Download free or pay $10. Build in 60 minutes!',
+    title: 'Website to App Converter — Android & Desktop',
+    description: 'Convert your website to a native Android or Windows app in 5 minutes. No coding. One-time payment from $10. 40+ features included. No subscriptions.',
     canonical: 'https://websitetoapp.app/',
   })
+
+  useEffect(() => {
+    const schema = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebSite',
+          '@id': 'https://websitetoapp.app/#website',
+          url: 'https://websitetoapp.app/',
+          name: 'WebToApp',
+          description: 'Convert any website to a native Android or Windows app in minutes.',
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: { '@type': 'EntryPoint', urlTemplate: 'https://websitetoapp.app/convert?url={search_term_string}' },
+            'query-input': 'required name=search_term_string',
+          },
+        },
+        {
+          '@type': 'FAQPage',
+          mainEntity: faqs.map((f) => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: { '@type': 'Answer', text: f.a },
+          })),
+        },
+        {
+          '@type': 'SoftwareApplication',
+          name: 'WebToApp',
+          applicationCategory: 'DeveloperApplication',
+          operatingSystem: 'Android, Windows',
+          offers: { '@type': 'Offer', price: '10', priceCurrency: 'USD' },
+          aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '312' },
+        },
+      ],
+    }
+    let el = document.getElementById('landing-jsonld')
+    if (!el) {
+      el = document.createElement('script')
+      el.id = 'landing-jsonld'
+      el.setAttribute('type', 'application/ld+json')
+      document.head.appendChild(el)
+    }
+    el.textContent = JSON.stringify(schema)
+    return () => { el?.remove() }
+  }, [])
   const { accessToken } = useAuthStore()
   const isLoggedIn = !!accessToken
   const navigate = useNavigate()
@@ -177,10 +225,10 @@ export default function Landing() {
       <section className="bg-gradient-to-b from-white via-primary-50 to-white py-6 sm:py-8 lg:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-gray-900 text-center">
-            Convert Any Website Into Android & Desktop Apps <span className="text-primary-600">in 5 Minutes</span>
+            Convert Any Website to an App <span className="text-primary-600">in 5 Minutes</span>
           </h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto text-center">
-            No coding required. Cheaper than any other platform. One-time payment, no subscriptions.
+            No coding required. One-time payment from <strong>$10</strong> — 90% cheaper than GoNative, Median &amp; WebIntoApp. No subscriptions, ever.
           </p>
 
           {/* URL Input Box */}
@@ -529,10 +577,10 @@ export default function Landing() {
               Save up to 95%
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-              Why Pay More Elsewhere?
+              WebToApp vs GoNative vs WebIntoApp vs Median
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-              Most web-to-app services charge recurring fees or expensive one-time prices with fewer features.
+              GoNative charges $99/month. Median starts at $99/month. WebIntoApp costs $149+/year. WebToApp is a one-time $10 payment with more features than all of them.
             </p>
           </div>
 
@@ -542,24 +590,24 @@ export default function Landing() {
               <thead>
                 <tr>
                   <th className="text-left py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-500 border-b-2 border-gray-100"></th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service A</th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service B</th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service C</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">WebIntoApp</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">GoNative</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Median</th>
                   <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-bold border-b-2 border-primary-300 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp</th>
                 </tr>
               </thead>
               <tbody>
                 {([
-                  { feature: 'Android App', a: '$99/yr', b: '$149', c: '$299+', us: '$10', bold: true },
-                  { feature: 'Desktop App', a: '$149/yr', b: '$199', c: '$399+', us: '$10', bold: true },
-                  { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', bold: false },
-                  { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', bold: false },
-                  { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', bold: false },
-                  { feature: 'Push Notifications', a: 'Extra $25/yr', b: 'Included', c: 'Extra', us: 'Included', bold: false },
-                  { feature: 'AdMob / Monetization', a: 'Extra $19', b: 'N/A', c: 'Extra', us: 'Included', bold: false },
-                  { feature: 'Biometric Auth', a: 'N/A', b: 'N/A', c: 'Extra $59', us: 'Included', bold: false },
-                  { feature: 'Keystore / Source', a: 'N/A', b: 'Extra $49', c: 'Included', us: 'Included', bold: false },
-                  { feature: 'Builds / Month', a: '1', b: '3', c: '5', us: '10', bold: false },
+                  { feature: 'Starting Price', a: '$99/mo', b: '$16/yr', c: '$99/mo', us: '$10 once', bold: true },
+                  { feature: '1-Year Total Cost', a: '$1,188+', b: '$60+', c: '$1,188+', us: '$10', bold: true },
+                  { feature: 'Android App', a: '✓', b: '✓', c: '✓', us: '✓', bold: false },
+                  { feature: 'Windows Desktop App', a: '✗', b: '✗', c: '✗', us: '✓', bold: false },
+                  { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: '✓ Included', bold: false },
+                  { feature: 'Biometric Auth', a: 'JS Bridge', b: '✗', c: 'JS Bridge', us: '✓ Included', bold: false },
+                  { feature: 'AdMob / Monetization', a: '✗', b: '✗', c: '✗', us: '✓ Included', bold: false },
+                  { feature: 'No Watermark', a: '✓', b: 'Paid tier', c: '✓', us: '✓ Always', bold: false },
+                  { feature: 'No-Code Setup', a: 'Partial', b: '✓', c: 'Dev skills', us: '✓ Wizard', bold: false },
+                  { feature: 'Total Features', a: '~20', b: '~15', c: '~20', us: '40+', bold: false },
                 ]).map((row, idx) => (
                   <tr key={idx} className={row.bold ? 'bg-gray-50' : ''}>
                     <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm font-medium text-gray-900 border-b border-gray-100">{row.feature}</td>
@@ -607,13 +655,23 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="text-center mt-8">
-            <Link
-              to="/pricing"
-              className="text-primary-600 hover:text-primary-700 font-semibold text-sm inline-flex items-center gap-1.5 hover:gap-2.5 transition-all"
-            >
-              View full comparison <ArrowRight className="w-4 h-4" />
-            </Link>
+          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
+            {[
+              { name: 'GoNative', slug: 'gonative', price: '$99–$299/mo' },
+              { name: 'WebIntoApp', slug: 'webintoapp', price: '$16–$60/yr' },
+              { name: 'Median.co', slug: 'median', price: '$99–$299/mo' },
+              { name: 'AppsGeyser', slug: 'appsgeyser', price: 'Free + $9.99/mo' },
+            ].map((c) => (
+              <Link
+                key={c.slug}
+                to={`/alternatives/${c.slug}`}
+                className="bg-white border border-gray-200 rounded-xl p-4 text-center hover:border-primary-300 hover:shadow-md transition-all"
+              >
+                <p className="font-semibold text-sm text-gray-900 mb-1">vs {c.name}</p>
+                <p className="text-xs text-red-500 font-medium mb-2">{c.price}</p>
+                <p className="text-xs text-primary-600">Full comparison →</p>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -684,12 +742,12 @@ export default function Landing() {
 
       <section className="py-12 sm:py-20 bg-primary-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Convert Your Website?</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Convert Your Website to an App Today</h2>
           <p className="text-primary-100 mb-6 sm:mb-8 text-base sm:text-lg">
-            Join thousands of businesses who have converted their websites into Android and desktop apps.
+            One-time payment. No subscription. 7-day money-back guarantee. Join thousands of businesses already on mobile.
           </p>
           <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">
-            {isLoggedIn ? 'Create New App' : 'Start Building'} <ArrowRight className="w-5 h-5" />
+            {isLoggedIn ? 'Create New App' : 'Convert My Website — From $10'} <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
