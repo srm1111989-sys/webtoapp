@@ -289,6 +289,7 @@ export default function Landing() {
       <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-14">
+            <p className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-3">Price Comparison with Other Competitors</p>
             <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
               <TrendingDown className="w-4 h-4" />
               Save up to 95%
