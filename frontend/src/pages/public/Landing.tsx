@@ -285,6 +285,114 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Price Comparison */}
+      <section className="py-12 sm:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-14">
+            <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+              <TrendingDown className="w-4 h-4" />
+              Save up to 95%
+            </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+              WebToApp vs GoNative vs WebIntoApp vs Median
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+              GoNative charges $99/month. Median starts at $99/month. WebIntoApp costs $149+/year. WebToApp is a one-time $10 payment with more features than all of them.
+            </p>
+          </div>
+
+          {/* Compact Comparison */}
+          <div className="max-w-4xl mx-auto overflow-x-auto -mx-4 px-4 sm:mx-auto sm:px-0">
+            <table className="w-full border-collapse min-w-[600px]">
+              <thead>
+                <tr>
+                  <th className="text-left py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-500 border-b-2 border-gray-100"></th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">WebIntoApp</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">GoNative</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Median</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-bold border-b-2 border-primary-300 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp</th>
+                </tr>
+              </thead>
+              <tbody>
+                {([
+                  { feature: 'Starting Price', a: '$99/mo', b: '$16/yr', c: '$99/mo', us: '$10 once', bold: true },
+                  { feature: '1-Year Total Cost', a: '$1,188+', b: '$60+', c: '$1,188+', us: '$10', bold: true },
+                  { feature: 'Android App', a: '✓', b: '✓', c: '✓', us: '✓', bold: false },
+                  { feature: 'Windows Desktop App', a: '✗', b: '✗', c: '✗', us: '✓', bold: false },
+                  { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: '✓ Included', bold: false },
+                  { feature: 'Biometric Auth', a: 'JS Bridge', b: '✗', c: 'JS Bridge', us: '✓ Included', bold: false },
+                  { feature: 'AdMob / Monetization', a: '✗', b: '✗', c: '✗', us: '✓ Included', bold: false },
+                  { feature: 'No Watermark', a: '✓', b: 'Paid tier', c: '✓', us: '✓ Always', bold: false },
+                  { feature: 'No-Code Setup', a: 'Partial', b: '✓', c: 'Dev skills', us: '✓ Wizard', bold: false },
+                  { feature: 'Total Features', a: '~20', b: '~15', c: '~20', us: '40+', bold: false },
+                ]).map((row, idx) => (
+                  <tr key={idx} className={row.bold ? 'bg-gray-50' : ''}>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm font-medium text-gray-900 border-b border-gray-100">{row.feature}</td>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.a}</td>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.b}</td>
+                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.c}</td>
+                    <td className={`py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-center border-b border-primary-100 bg-primary-50 ${
+                      row.bold ? 'font-bold text-primary-700 text-sm sm:text-base' : 'font-semibold text-primary-600'
+                    }`}>{row.us}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Savings Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mt-10">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-5 text-center">
+              <div className="inline-flex p-2.5 rounded-xl bg-green-100 mb-3">
+                {getUserCurrency() === 'INR'
+                  ? <IndianRupee className="w-5 h-5 text-green-600" />
+                  : <DollarSign className="w-5 h-5 text-green-600" />
+                }
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-green-700">
+                Save $270+
+              </p>
+              <p className="text-xs text-green-600 mt-1 font-medium">vs market average</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5 text-center">
+              <div className="inline-flex p-2.5 rounded-xl bg-blue-100 mb-3">
+                <Shield className="w-5 h-5 text-blue-600" />
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-blue-700">No Subscriptions</p>
+              <p className="text-xs text-blue-600 mt-1 font-medium">One-time payment only</p>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-50 to-violet-50 border-2 border-purple-200 rounded-2xl p-5 text-center">
+              <div className="inline-flex p-2.5 rounded-xl bg-purple-100 mb-3">
+                <Zap className="w-5 h-5 text-purple-600" />
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-purple-700">50+ Features</p>
+              <p className="text-xs text-purple-600 mt-1 font-medium">All included, no extras</p>
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
+            {[
+              { name: 'GoNative', slug: 'gonative', price: '$99–$299/mo' },
+              { name: 'WebIntoApp', slug: 'webintoapp', price: '$16–$60/yr' },
+              { name: 'Median.co', slug: 'median', price: '$99–$299/mo' },
+              { name: 'AppsGeyser', slug: 'appsgeyser', price: 'Free + $9.99/mo' },
+            ].map((c) => (
+              <Link
+                key={c.slug}
+                to={`/alternatives/${c.slug}`}
+                className="bg-white border border-gray-200 rounded-xl p-4 text-center hover:border-primary-300 hover:shadow-md transition-all"
+              >
+                <p className="font-semibold text-sm text-gray-900 mb-1">vs {c.name}</p>
+                <p className="text-xs text-red-500 font-medium mb-2">{c.price}</p>
+                <p className="text-xs text-primary-600">Full comparison →</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing */}
       <section id="pricing" className="py-6 sm:py-10 bg-white scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -563,114 +671,6 @@ export default function Landing() {
                   <div className="hidden md:block absolute top-6 left-[60%] w-[80%] border-t-2 border-dashed border-gray-300" />
                 )}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Price Comparison */}
-      <section className="py-12 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-14">
-            <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-              <TrendingDown className="w-4 h-4" />
-              Save up to 95%
-            </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-              WebToApp vs GoNative vs WebIntoApp vs Median
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-              GoNative charges $99/month. Median starts at $99/month. WebIntoApp costs $149+/year. WebToApp is a one-time $10 payment with more features than all of them.
-            </p>
-          </div>
-
-          {/* Compact Comparison */}
-          <div className="max-w-4xl mx-auto overflow-x-auto -mx-4 px-4 sm:mx-auto sm:px-0">
-            <table className="w-full border-collapse min-w-[600px]">
-              <thead>
-                <tr>
-                  <th className="text-left py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-500 border-b-2 border-gray-100"></th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">WebIntoApp</th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">GoNative</th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Median</th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-bold border-b-2 border-primary-300 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp</th>
-                </tr>
-              </thead>
-              <tbody>
-                {([
-                  { feature: 'Starting Price', a: '$99/mo', b: '$16/yr', c: '$99/mo', us: '$10 once', bold: true },
-                  { feature: '1-Year Total Cost', a: '$1,188+', b: '$60+', c: '$1,188+', us: '$10', bold: true },
-                  { feature: 'Android App', a: '✓', b: '✓', c: '✓', us: '✓', bold: false },
-                  { feature: 'Windows Desktop App', a: '✗', b: '✗', c: '✗', us: '✓', bold: false },
-                  { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: '✓ Included', bold: false },
-                  { feature: 'Biometric Auth', a: 'JS Bridge', b: '✗', c: 'JS Bridge', us: '✓ Included', bold: false },
-                  { feature: 'AdMob / Monetization', a: '✗', b: '✗', c: '✗', us: '✓ Included', bold: false },
-                  { feature: 'No Watermark', a: '✓', b: 'Paid tier', c: '✓', us: '✓ Always', bold: false },
-                  { feature: 'No-Code Setup', a: 'Partial', b: '✓', c: 'Dev skills', us: '✓ Wizard', bold: false },
-                  { feature: 'Total Features', a: '~20', b: '~15', c: '~20', us: '40+', bold: false },
-                ]).map((row, idx) => (
-                  <tr key={idx} className={row.bold ? 'bg-gray-50' : ''}>
-                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm font-medium text-gray-900 border-b border-gray-100">{row.feature}</td>
-                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.a}</td>
-                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.b}</td>
-                    <td className="py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-gray-500 text-center border-b border-gray-100">{row.c}</td>
-                    <td className={`py-2.5 px-3 sm:px-5 text-xs sm:text-sm text-center border-b border-primary-100 bg-primary-50 ${
-                      row.bold ? 'font-bold text-primary-700 text-sm sm:text-base' : 'font-semibold text-primary-600'
-                    }`}>{row.us}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Savings Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mt-10">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-5 text-center">
-              <div className="inline-flex p-2.5 rounded-xl bg-green-100 mb-3">
-                {getUserCurrency() === 'INR'
-                  ? <IndianRupee className="w-5 h-5 text-green-600" />
-                  : <DollarSign className="w-5 h-5 text-green-600" />
-                }
-              </div>
-              <p className="text-xl sm:text-2xl font-bold text-green-700">
-                Save $270+
-              </p>
-              <p className="text-xs text-green-600 mt-1 font-medium">vs market average</p>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-5 text-center">
-              <div className="inline-flex p-2.5 rounded-xl bg-blue-100 mb-3">
-                <Shield className="w-5 h-5 text-blue-600" />
-              </div>
-              <p className="text-xl sm:text-2xl font-bold text-blue-700">No Subscriptions</p>
-              <p className="text-xs text-blue-600 mt-1 font-medium">One-time payment only</p>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-50 to-violet-50 border-2 border-purple-200 rounded-2xl p-5 text-center">
-              <div className="inline-flex p-2.5 rounded-xl bg-purple-100 mb-3">
-                <Zap className="w-5 h-5 text-purple-600" />
-              </div>
-              <p className="text-xl sm:text-2xl font-bold text-purple-700">50+ Features</p>
-              <p className="text-xs text-purple-600 mt-1 font-medium">All included, no extras</p>
-            </div>
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
-            {[
-              { name: 'GoNative', slug: 'gonative', price: '$99–$299/mo' },
-              { name: 'WebIntoApp', slug: 'webintoapp', price: '$16–$60/yr' },
-              { name: 'Median.co', slug: 'median', price: '$99–$299/mo' },
-              { name: 'AppsGeyser', slug: 'appsgeyser', price: 'Free + $9.99/mo' },
-            ].map((c) => (
-              <Link
-                key={c.slug}
-                to={`/alternatives/${c.slug}`}
-                className="bg-white border border-gray-200 rounded-xl p-4 text-center hover:border-primary-300 hover:shadow-md transition-all"
-              >
-                <p className="font-semibold text-sm text-gray-900 mb-1">vs {c.name}</p>
-                <p className="text-xs text-red-500 font-medium mb-2">{c.price}</p>
-                <p className="text-xs text-primary-600">Full comparison →</p>
-              </Link>
             ))}
           </div>
         </div>
