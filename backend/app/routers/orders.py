@@ -92,28 +92,28 @@ async def create_order(
     await db.flush()
     await db.refresh(order)
 
-    # Send order confirmation email to customer
-    app_name = order.app_config.name if order.app_config else "App"
-    plan_name = order.plan.name if order.plan else "Plan"
-    send_order_confirmation_email(
-        to=user.email,
-        order_number=order.order_number,
-        app_name=app_name,
-        plan_name=plan_name,
-        amount=order.amount,
-        currency=order.currency,
-        order_id=str(order.id),
-    )
-    # Notify admin on every paid order
-    send_admin_payment_notification(
-        order_number=order.order_number,
-        customer_email=user.email,
-        app_name=app_name,
-        plan_name=plan_name,
-        amount=order.amount,
-        currency=order.currency,
-        order_id=str(order.id),
-    )
+    # Only send confirmation email for free plans — paid plans send after payment verified
+    if amount == 0:
+        app_name = order.app_config.name if order.app_config else "App"
+        plan_name = order.plan.name if order.plan else "Plan"
+        send_order_confirmation_email(
+            to=user.email,
+            order_number=order.order_number,
+            app_name=app_name,
+            plan_name=plan_name,
+            amount=order.amount,
+            currency=order.currency,
+            order_id=str(order.id),
+        )
+        send_admin_payment_notification(
+            order_number=order.order_number,
+            customer_email=user.email,
+            app_name=app_name,
+            plan_name=plan_name,
+            amount=order.amount,
+            currency=order.currency,
+            order_id=str(order.id),
+        )
 
     return order
 
