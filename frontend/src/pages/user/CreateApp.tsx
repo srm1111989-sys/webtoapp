@@ -1428,7 +1428,7 @@ function Step4PlanReview() {
 
                   {/* Free plan: just the trial note. No missing-features dump. */}
                   {plan.price_inr === 0 ? (
-                    <p className="mt-3 text-xs text-gray-500">7-day trial</p>
+                    <p className="mt-3 text-xs text-gray-500">3-day trial</p>
                   ) : (
                     <>
                       {/* Missing features warning (paid plans only) */}

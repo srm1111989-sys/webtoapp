@@ -273,7 +273,7 @@ export default function Landing() {
                     {formatPlanPrice(plan.price_inr, plan.price_usd)}
                   </p>
                   <p className="text-[10px] sm:text-xs text-primary-200 mt-0.5">
-                    {plan.price_inr > 0 ? 'one-time' : plan.slug === 'desktop-free' ? '7-day trial' : 'forever free'}
+                    {plan.price_inr > 0 ? 'one-time' : plan.slug === 'desktop-free' ? '3-day trial' : 'forever free'}
                   </p>
                 </div>
               ))}

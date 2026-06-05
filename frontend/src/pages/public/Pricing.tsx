@@ -61,7 +61,7 @@ const ANDROID_FALLBACK = [
   {
     id: '1', name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0,
     billing_type: 'one_time', max_apps: 5, sort_order: 1, is_active: true, platform: 'android',
-    description: 'Build up to 5 apps with watermark & 7-day trial',
+    description: 'Build up to 5 apps with watermark & 3-day trial',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, file_upload: false, location_services: false, camera_access: false, onboarding_screen: false, app_shortcut: false, secondary_navigation: false, social_login: false, in_app_update: false, background_location: false, facebook_app_events: false, in_app_purchases: false, in_app_review: false, background_service: false, native_contacts: false, appsflyer: false, custom_media_player: false, offer_card: false, intercom: false, dynamic_app_icon: false, bluetooth_connectivity: false, download_file_manager: false, floating_action_menu: false, revenue_cat: false, native_datastore: false, passcode_lock: false, app_auto_launch: false, advanced_bottom_navigation: false, firebase_notification: false, tap_to_pay: false, aab_output: false, pwa: false, priority_support: false },
   },
   {
@@ -76,7 +76,7 @@ const DESKTOP_FALLBACK = [
   {
     id: '4', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0,
     billing_type: 'one_time', max_apps: 5, sort_order: 4, is_active: true, platform: 'desktop',
-    description: 'Build up to 5 apps with watermark & 7-day trial',
+    description: 'Build up to 5 apps with watermark & 3-day trial',
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: false, custom_window_size: false, auto_updater: false, native_notifications: false, kiosk_mode: false },
   },
   {
@@ -171,7 +171,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>7-day trial (app shows upgrade screen after)</span>
+                  <span>3-day trial (app shows upgrade screen after)</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <X className="w-4 h-4 text-gray-300 shrink-0" />
@@ -256,10 +256,10 @@ export default function Pricing() {
           {desktopFreePlan && (
             <div className="border-2 border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col bg-white">
               <h3 className="text-xl font-bold mb-1">Free Plan</h3>
-              <p className="text-gray-500 text-sm mb-4">7-day free trial with basic features</p>
+              <p className="text-gray-500 text-sm mb-4">3-day free trial with basic features</p>
               <div className="mb-4">
                 <span className="text-3xl font-bold">Free</span>
-                <span className="text-gray-500 text-sm ml-1">7-day trial</span>
+                <span className="text-gray-500 text-sm ml-1">3-day trial</span>
               </div>
               <Link
                 to="/register"
@@ -282,7 +282,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>7-day trial (shows upgrade screen after)</span>
+                  <span>3-day trial (shows upgrade screen after)</span>
                 </li>
               </ul>
             </div>
@@ -355,29 +355,29 @@ export default function Pricing() {
             <thead>
               <tr>
                 <th className="text-left py-4 px-4 sm:px-6 text-sm font-semibold text-gray-500 border-b-2 border-gray-100">Feature</th>
-                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service A</th>
-                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service B</th>
-                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Service C</th>
-                <th className="py-4 px-4 sm:px-6 text-sm font-semibold border-b-2 border-primary-200 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">GoNative</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">WebIntoApp</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">AppMySite</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold border-b-2 border-primary-200 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp ✓</th>
               </tr>
             </thead>
             <tbody>
               {[
-                { feature: 'Android App Price', a: '$99/yr', b: '$149', c: '$299+', us: '$10', highlight: true },
-                { feature: 'Desktop App Price', a: '$149/yr', b: '$199', c: '$399+', us: '$10', highlight: true },
-                { feature: 'Free Plan', a: 'No', b: 'Limited', c: 'No', us: '5 Free Apps', highlight: false },
-                { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'One-time', c: 'Per project', us: 'One-time', highlight: false },
-                { feature: 'Push Notifications', a: 'Extra $25/yr', b: 'Included', c: 'Extra', us: 'Included', highlight: false },
-                { feature: 'AdMob Integration', a: 'Extra $19', b: 'Not Available', c: 'Extra', us: 'Included', highlight: false },
-                { feature: 'Custom Navigation', a: 'Premium Only', b: 'Limited', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'QR Scanner', a: 'Not Available', b: 'Extra', c: 'Not Available', us: 'Included', highlight: false },
-                { feature: 'Biometric Auth', a: 'Not Available', b: 'Not Available', c: 'Extra $59', us: 'Included', highlight: false },
-                { feature: 'Firebase Integration', a: 'Extra', b: 'Extra $39', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'Total Features', a: '10-15', b: '15-20', c: '20-25', us: '50+', highlight: false },
-                { feature: 'Source Code / Keystore', a: 'Not Available', b: 'Extra $49', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'Play Store Bundle (AAB)', a: 'Extra', b: 'Included', c: 'Included', us: 'Included', highlight: false },
-                { feature: 'Builds Per Month', a: '1', b: '3', c: '5', us: '10', highlight: false },
-                { feature: 'Priority Support', a: 'Extra', b: 'Email Only', c: 'Included', us: 'Included', highlight: false },
+                { feature: 'Android App Price', a: '$99–$299/mo', b: '$16–$60/yr', c: '$39–$99/mo', us: '$10 one-time', highlight: true },
+                { feature: 'Desktop App Price', a: 'Not available', b: 'Not available', c: 'Not available', us: '$10 one-time', highlight: true },
+                { feature: '3-Day Free Trial', a: '✗', b: '✗', c: 'Limited', us: '✓ 5 Free Apps', highlight: false },
+                { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'Annual sub', c: 'Monthly sub', us: 'One-time only', highlight: false },
+                { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'Add-on ($)', us: '✓ Included', highlight: false },
+                { feature: 'AdMob Integration', a: '✗', b: '✗', c: '✗', us: '✓ Included', highlight: false },
+                { feature: 'Windows Desktop App', a: '✗', b: '✗', c: '✗', us: '✓ Included', highlight: false },
+                { feature: 'QR Scanner', a: 'Plugin needed', b: 'Extra', c: '✗', us: '✓ Included', highlight: false },
+                { feature: 'Biometric Auth', a: 'JS Bridge only', b: '✗', c: '✗', us: '✓ No-code', highlight: false },
+                { feature: 'Firebase Integration', a: 'Extra', b: '✗', c: 'Extra', us: '✓ Included', highlight: false },
+                { feature: 'Total Features', a: '~20', b: '~15', c: '~18', us: '50+', highlight: false },
+                { feature: 'Builds Per Month', a: '5–unlimited', b: '3–10', c: '5–20', us: '10 (free) / ∞', highlight: false },
+                { feature: 'Annual Cost (entry)', a: '$1,188+', b: '$16+', c: '$468+', us: '$10', highlight: true },
+                { feature: 'No-code Setup', a: 'Dev skills needed', b: '✓', c: '✓', us: '✓ Wizard', highlight: false },
+                { feature: 'Support', a: 'Email', b: 'Email', c: 'Email', us: '✓ WhatsApp + Email', highlight: false },
               ].map((row, idx) => (
                 <tr key={idx} className={row.highlight ? 'bg-gray-50' : ''}>
                   <td className="py-3 px-4 sm:px-6 text-sm font-medium text-gray-900 border-b border-gray-100">

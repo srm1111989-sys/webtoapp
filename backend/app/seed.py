@@ -15,7 +15,7 @@ PLANS = [
     {
         "name": "Android Free",
         "slug": "android-free",
-        "description": "Build up to 5 apps with watermark & 7-day trial",
+        "description": "Build up to 5 apps with watermark & 3-day trial",
         "price_inr": 0,
         "price_usd": 0,
         "billing_type": "one_time",
@@ -139,7 +139,7 @@ PLANS = [
     {
         "name": "Desktop Free",
         "slug": "desktop-free",
-        "description": "Build up to 5 apps with watermark & 7-day trial",
+        "description": "Build up to 5 apps with watermark & 3-day trial",
         "price_inr": 0,
         "price_usd": 0,
         "billing_type": "one_time",
@@ -152,7 +152,7 @@ PLANS = [
             "custom_colors": True,
             "fullscreen": True,
             "watermark": True,
-            "trial_days": 7,
+            "trial_days": 3,
             "system_tray": False,
             "custom_window_size": False,
             "auto_updater": False,
