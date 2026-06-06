@@ -64,7 +64,7 @@ import {
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
-import { ordersApi, paymentsApi, plansApi } from '@/api/orders'
+import { ordersApi, buildsApi, paymentsApi, plansApi } from '@/api/orders'
 import { createRazorpayOrder } from '@/api/razorpay-proxy'
 import { trackPurchase, trackBeginCheckout, trackFreeAppBuild, trackAppCreated } from '@/utils/gtag'
 import type { Plan, NavigationItem } from '@/types'
@@ -1211,10 +1211,19 @@ function Step4PlanReview() {
     onSuccess: async (result) => {
       const { data: order, plan } = result
 
-      // Free plan
+      // Free plan — auto-trigger build immediately so user sees it in Build Status
       if (plan && plan.price_inr === 0 && plan.price_usd === 0) {
         trackFreeAppBuild(wizard.name || 'App')
-        toast.success('App submitted successfully!')
+        // Determine platform from wizard selection
+        const platform = wizard.selectedPlatforms?.includes('desktop') && !wizard.selectedPlatforms?.includes('android')
+          ? 'desktop'
+          : 'android'
+        try {
+          await buildsApi.trigger(order.id, platform)
+          toast.success('Build started! Check Build Status for progress.')
+        } catch {
+          toast.success('Order created! Click "Build Android" to start your build.')
+        }
         navigate(`/orders/${order.id}`)
         return
       }
