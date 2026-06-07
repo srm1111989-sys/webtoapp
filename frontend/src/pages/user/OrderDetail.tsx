@@ -1,8 +1,11 @@
 import { Link, useParams } from 'react-router-dom'
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ordersApi, buildsApi } from '@/api/orders'
+import { ordersApi, buildsApi, paymentsApi } from '@/api/orders'
+import { createRazorpayOrder } from '@/api/razorpay-proxy'
 import { formatCurrency, formatDate, formatDateTime } from '@/utils/format'
 import type { Build } from '@/types'
+import toast from 'react-hot-toast'
 import {
   ArrowLeft,
   Loader2,
@@ -13,6 +16,7 @@ import {
   RefreshCw,
   XCircle,
   Hammer,
+  CreditCard,
 } from 'lucide-react'
 
 const orderStatusColors: Record<string, string> = {
@@ -39,6 +43,7 @@ const buildStatusIcons: Record<string, React.ReactNode> = {
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>()
   const queryClient = useQueryClient()
+  const [isPaying, setIsPaying] = useState(false)
 
   const {
     data: order,
@@ -70,12 +75,72 @@ export default function OrderDetail() {
     },
   })
 
+  const { data: paymentMode } = useQuery({
+    queryKey: ['payment-mode'],
+    queryFn: () => paymentsApi.getPaymentMode().then((r) => r.data),
+  })
+
   const triggerBuild = useMutation({
     mutationFn: (platform: string = 'android') => buildsApi.trigger(id!, platform),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['builds', id] })
     },
   })
+
+  const handleRazorpay = (
+    data: { razorpay_order_id: string; razorpay_key_id: string; amount: number; currency: string; order_id: string },
+  ) => {
+    const options = {
+      key: data.razorpay_key_id,
+      amount: data.amount,
+      currency: data.currency,
+      order_id: data.razorpay_order_id,
+      handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+        try {
+          await paymentsApi.verifyRazorpay({
+            order_id: data.order_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          })
+          toast.success('Payment successful!')
+          queryClient.invalidateQueries({ queryKey: ['order', id] })
+          queryClient.invalidateQueries({ queryKey: ['orders'] })
+        } catch {
+          toast.error('Payment verification failed. Please contact support.')
+        } finally {
+          setIsPaying(false)
+        }
+      },
+    }
+    const rzp = new (window as any).Razorpay(options)
+    rzp.open()
+  }
+
+  const handlePay = async () => {
+    if (!order) return
+    setIsPaying(true)
+    try {
+      if (paymentMode?.gateways?.razorpay) {
+        const rpRes = await createRazorpayOrder({
+          amount: order.amount,
+          currency: order.currency,
+          receipt: order.order_number,
+          test_mode: paymentMode?.test_mode,
+        })
+        handleRazorpay({ ...rpRes, order_id: order.id })
+      } else if (paymentMode?.gateways?.stripe) {
+        const stripeRes = await paymentsApi.createStripeCheckout(order.id)
+        window.location.href = stripeRes.data.checkout_url
+      } else {
+        toast.error('No payment gateway configured. Contact support.')
+        setIsPaying(false)
+      }
+    } catch {
+      toast.error('Payment initialization failed. Please try again.')
+      setIsPaying(false)
+    }
+  }
 
   const isLoading = orderLoading || buildsLoading
   const isError = orderError || buildsError
@@ -171,6 +236,20 @@ export default function OrderDetail() {
             <Hammer className="w-5 h-5 text-gray-400" />
             Build Status
           </h2>
+          {order.status === 'pending' && order.amount > 0 && (
+            <button
+              onClick={handlePay}
+              disabled={isPaying}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPaying ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <CreditCard className="w-4 h-4" />
+              )}
+              Pay Now
+            </button>
+          )}
           {order.status === 'paid' && (
             <div className="flex items-center gap-2">
               {(!order.selected_platforms || order.selected_platforms.includes('android')) && (
@@ -189,7 +268,7 @@ export default function OrderDetail() {
                   ) : (
                     <RefreshCw className="w-4 h-4" />
                   )}
-                  Build Android
+                  {order.amount === 0 ? 'Build free app' : 'Build Android'}
                 </button>
               )}
               {order.selected_platforms?.includes('desktop') && (
