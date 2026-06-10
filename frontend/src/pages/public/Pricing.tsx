@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Check, X, TrendingDown, Shield, Zap, IndianRupee, DollarSign } from 'lucide-react'
+import { Check, X, TrendingDown, Shield, Zap, IndianRupee, DollarSign, Store } from 'lucide-react'
 import { plansApi } from '@/api/orders'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 import { useSEO } from '@/hooks/useSEO'
@@ -70,6 +70,12 @@ const ANDROID_FALLBACK = [
     description: 'All features, one-time payment',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: true },
   },
+  {
+    id: '3', name: 'Play Store Listing', slug: 'play-store-listing', price_inr: 83000, price_usd: 1000,
+    billing_type: 'one_time', max_apps: 1, sort_order: 3, is_active: true, platform: 'android',
+    description: 'We publish your app to Google Play Store on your behalf',
+    features: { play_store_listing: true },
+  },
 ]
 
 const DESKTOP_FALLBACK = [
@@ -123,8 +129,9 @@ export default function Pricing() {
     ? (plans as any[]).filter((p) => p.platform === 'desktop')
     : DESKTOP_FALLBACK
 
-  const androidFreePlan = allAndroidPlans.find((p: any) => p.price_inr === 0)
-  const androidPaidPlan = allAndroidPlans.find((p: any) => p.price_inr > 0)
+  const androidFreePlan = allAndroidPlans.find((p: any) => p.slug === 'android-free')
+  const androidPaidPlan = allAndroidPlans.find((p: any) => p.slug === 'android-paid')
+  const playStoreListingPlan = allAndroidPlans.find((p: any) => p.slug === 'play-store-listing')
   const desktopFreePlan = allDesktopPlans.find((p: any) => p.price_inr === 0)
   const desktopPaidPlan = allDesktopPlans.find((p: any) => p.price_inr > 0)
 
@@ -247,6 +254,57 @@ export default function Pricing() {
           )}
         </div>
       </section>
+
+      {/* Add-on Services */}
+      {playStoreListingPlan && (
+        <section className="py-8 sm:py-12 max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Add-on Services</h2>
+          <p className="text-gray-500 text-center mb-8 text-sm">Professional services to get your app live on app stores</p>
+          <div className="max-w-sm mx-auto">
+            <div className="border-2 border-indigo-200 rounded-xl p-4 sm:p-6 flex flex-col bg-white">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-xl bg-indigo-100">
+                  <Store className="w-6 h-6 text-indigo-600" />
+                </div>
+                <h3 className="text-xl font-bold">Play Store Listing</h3>
+              </div>
+              <p className="text-gray-500 text-sm mb-4">{playStoreListingPlan.description}</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold">{formatPlanPrice(playStoreListingPlan.price_inr, playStoreListingPlan.price_usd)}</span>
+                <span className="text-green-700 text-sm font-semibold"> one-time</span>
+              </div>
+              <Link
+                to="/register"
+                className="block text-center py-2 rounded-lg font-medium mb-6 bg-indigo-600 text-white hover:bg-indigo-700"
+              >
+                Get Started
+              </Link>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>We create & submit the Play Store listing</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>App title, description & screenshots</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Category, content rating & store details</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>Keystore signing & AAB upload</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-400">
+                  <X className="w-4 h-4 shrink-0" />
+                  <span>Requires Android Premium plan (app build)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Desktop Plans */}
       <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4 bg-gray-50">

@@ -137,6 +137,20 @@ PLANS = [
         },
     },
     {
+        "name": "Play Store Listing",
+        "slug": "play-store-listing",
+        "description": "We publish your app to Google Play Store on your behalf",
+        "price_inr": 83000,    # ₹830 (~$10)
+        "price_usd": 1000,     # $10 in cents
+        "billing_type": "one_time",
+        "max_apps": 1,
+        "platform": "android",
+        "sort_order": 3,
+        "features": {
+            "play_store_listing": True,
+        },
+    },
+    {
         "name": "Desktop Free",
         "slug": "desktop-free",
         "description": "Build up to 5 apps with watermark & 3-day trial",
@@ -145,7 +159,7 @@ PLANS = [
         "billing_type": "one_time",
         "max_apps": 5,
         "platform": "desktop",
-        "sort_order": 3,
+        "sort_order": 4,
         "features": {
             "custom_icon": True,
             "custom_splash": True,
@@ -171,7 +185,7 @@ PLANS = [
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "desktop",
-        "sort_order": 4,
+        "sort_order": 5,
         "features": {
             "custom_icon": True,
             "custom_splash": True,
@@ -232,7 +246,7 @@ async def seed():
                 print(f"Plan created: {plan_data['name']}")
 
         await session.commit()
-        print("Seed completed: 4 plans active, old plans deactivated.")
+        print("Seed completed: 5 plans active, old plans deactivated.")
 
 
 if __name__ == "__main__":
