@@ -84,6 +84,9 @@ async def get_stats(
 
 
 # --- Users Management ---
+GITLAB_ANDROID_URL = "https://gitlab.com/mokashiswapnil11/webtoapp-android-template"
+GITLAB_DESKTOP_URL = "https://gitlab.com/mokashiswapnil11/webtoapp-desktop-template"
+
 @router.get("/users", response_model=UserListResponse)
 async def list_users(
     page: int = Query(1, ge=1),
@@ -92,6 +95,7 @@ async def list_users(
     admin: Admin = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db),
 ):
+    from sqlalchemy import text
     query = select(User)
     count_query = select(func.count()).select_from(User)
 
@@ -104,6 +108,28 @@ async def list_users(
         query.order_by(User.created_at.desc()).offset((page - 1) * per_page).limit(per_page)
     )
     users = result.scalars().all()
+
+    # Fetch latest build per user in one query
+    if users:
+        user_ids = [str(u.id) for u in users]
+        placeholders = ",".join(f"'{uid}'" for uid in user_ids)
+        builds_result = await db.execute(text(f"""
+            SELECT DISTINCT ON (ac.user_id) ac.user_id, b.pipeline_id, b.apk_url, b.platform
+            FROM app_configs ac
+            JOIN orders o ON o.app_config_id = ac.id
+            JOIN builds b ON b.order_id = o.id
+            WHERE ac.user_id IN ({placeholders}) AND b.status = 'success'
+            ORDER BY ac.user_id, b.created_at DESC
+        """))
+        build_map = {str(row.user_id): row for row in builds_result}
+        for u in users:
+            row = build_map.get(str(u.id))
+            if row:
+                u.__dict__['pipeline_id'] = row.pipeline_id
+                u.__dict__['apk_url'] = row.apk_url
+                base = GITLAB_DESKTOP_URL if row.platform == 'desktop' else GITLAB_ANDROID_URL
+                u.__dict__['pipeline_url'] = f"{base}/-/pipelines/{row.pipeline_id}" if row.pipeline_id else None
+
     return UserListResponse(users=users, total=total, page=page, per_page=per_page)
 
 

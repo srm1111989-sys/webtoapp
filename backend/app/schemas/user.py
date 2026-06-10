@@ -14,6 +14,9 @@ class UserResponse(BaseModel):
     created_at: datetime
     app_url: str | None = None
     app_status: str | None = None
+    pipeline_id: int | None = None
+    pipeline_url: str | None = None
+    apk_url: str | None = None
 
     model_config = {"from_attributes": True}
 

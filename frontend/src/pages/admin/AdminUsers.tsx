@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { Search, ChevronLeft, ChevronRight, Loader2, Ban, CheckCircle2, FlaskConical } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, Loader2, Ban, CheckCircle2, FlaskConical, ExternalLink, Download } from 'lucide-react'
 import { adminApi } from '@/api/admin'
 import { formatDate } from '@/utils/format'
 
@@ -158,7 +158,8 @@ export default function AdminUsers() {
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Name</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Email</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Website URL</th>
-                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Build</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Build / Pipeline</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">APK</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Account</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Payment</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Joined</th>
@@ -183,13 +184,29 @@ export default function AdminUsers() {
                         ) : <span className="text-xs text-gray-400">—</span>}
                       </td>
                       <td className="px-6 py-4">
-                        {(user as any).app_status ? (
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            (user as any).app_status === 'completed' ? 'bg-green-100 text-green-700'
-                            : (user as any).app_status === 'building' ? 'bg-blue-100 text-blue-700'
-                            : (user as any).app_status === 'failed' ? 'bg-red-100 text-red-700'
-                            : 'bg-gray-100 text-gray-600'
-                          }`}>{(user as any).app_status}</span>
+                        <div className="flex flex-col gap-1">
+                          {(user as any).app_status ? (
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium w-fit ${
+                              (user as any).app_status === 'completed' ? 'bg-green-100 text-green-700'
+                              : (user as any).app_status === 'building' ? 'bg-blue-100 text-blue-700'
+                              : (user as any).app_status === 'failed' ? 'bg-red-100 text-red-700'
+                              : 'bg-gray-100 text-gray-600'
+                            }`}>{(user as any).app_status}</span>
+                          ) : null}
+                          {(user as any).pipeline_url ? (
+                            <a href={(user as any).pipeline_url} target="_blank" rel="noopener noreferrer"
+                              className="inline-flex items-center gap-0.5 text-xs text-blue-600 hover:text-blue-800">
+                              #{(user as any).pipeline_id} <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          ) : <span className="text-xs text-gray-400">—</span>}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {(user as any).apk_url ? (
+                          <a href={(user as any).apk_url} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800 font-medium">
+                            <Download className="w-3 h-3" /> APK
+                          </a>
                         ) : <span className="text-xs text-gray-400">—</span>}
                       </td>
                       <td className="px-6 py-4">
@@ -239,7 +256,7 @@ export default function AdminUsers() {
                   ))}
                   {data?.users.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="text-center py-12 text-gray-400">
+                      <td colSpan={9} className="text-center py-12 text-gray-400">
                         No users found.
                       </td>
                     </tr>

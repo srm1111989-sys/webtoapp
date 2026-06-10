@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Loader2, X, FileText } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, X, FileText, Download, ExternalLink } from 'lucide-react'
+
+const GITLAB_ANDROID_URL = 'https://gitlab.com/mokashiswapnil11/webtoapp-android-template'
+const GITLAB_DESKTOP_URL = 'https://gitlab.com/mokashiswapnil11/webtoapp-desktop-template'
+
+function pipelineUrl(build: any) {
+  if (!build.pipeline_id) return null
+  const base = build.platform === 'desktop' ? GITLAB_DESKTOP_URL : GITLAB_ANDROID_URL
+  return `${base}/-/pipelines/${build.pipeline_id}`
+}
 import { adminApi } from '@/api/admin'
 import { formatDateTime } from '@/utils/format'
 
@@ -141,7 +150,7 @@ export default function AdminBuilds() {
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Pipeline</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Platform</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Status</th>
-                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Error</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">APK / Error</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Started</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Actions</th>
                   </tr>
@@ -156,7 +165,12 @@ export default function AdminBuilds() {
                         <span className="text-sm font-mono text-gray-600">{build.order_id.slice(0, 8)}...</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-600">{build.pipeline_id ?? '-'}</span>
+                        {pipelineUrl(build) ? (
+                          <a href={pipelineUrl(build)!} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-mono">
+                            #{build.pipeline_id} <ExternalLink className="w-3 h-3" />
+                          </a>
+                        ) : <span className="text-sm text-gray-400">-</span>}
                       </td>
                       <td className="px-6 py-4">
                         <span
@@ -177,7 +191,12 @@ export default function AdminBuilds() {
                         </span>
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        {build.error_message ? (
+                        {build.apk_url ? (
+                          <a href={build.apk_url} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-800 font-medium">
+                            <Download className="w-3.5 h-3.5" /> Download APK
+                          </a>
+                        ) : build.error_message ? (
                           <p className="text-sm text-red-600 truncate" title={build.error_message}>
                             {build.error_message.split('\n')[0]}
                           </p>
