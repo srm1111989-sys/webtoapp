@@ -157,7 +157,9 @@ export default function AdminUsers() {
                   <tr className="border-b bg-gray-50">
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Name</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Email</th>
-                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Status</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Website URL</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Build</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Account</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Payment</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Joined</th>
                     <th className="text-right text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Actions</th>
@@ -171,6 +173,24 @@ export default function AdminUsers() {
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-sm text-gray-600">{user.email}</span>
+                      </td>
+                      <td className="px-6 py-4 max-w-[200px]">
+                        {(user as any).app_url ? (
+                          <a href={(user as any).app_url} target="_blank" rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:underline truncate block" title={(user as any).app_url}>
+                            {(user as any).app_url.replace(/^https?:\/\//, '')}
+                          </a>
+                        ) : <span className="text-xs text-gray-400">—</span>}
+                      </td>
+                      <td className="px-6 py-4">
+                        {(user as any).app_status ? (
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                            (user as any).app_status === 'completed' ? 'bg-green-100 text-green-700'
+                            : (user as any).app_status === 'building' ? 'bg-blue-100 text-blue-700'
+                            : (user as any).app_status === 'failed' ? 'bg-red-100 text-red-700'
+                            : 'bg-gray-100 text-gray-600'
+                          }`}>{(user as any).app_status}</span>
+                        ) : <span className="text-xs text-gray-400">—</span>}
                       </td>
                       <td className="px-6 py-4">
                         <span
@@ -219,7 +239,7 @@ export default function AdminUsers() {
                   ))}
                   {data?.users.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="text-center py-12 text-gray-400">
+                      <td colSpan={8} className="text-center py-12 text-gray-400">
                         No users found.
                       </td>
                     </tr>
