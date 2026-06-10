@@ -300,14 +300,19 @@ export default function Landing() {
               </button>
             </div>
             {/* Publish App CTA — below URL box */}
-            <div className="mt-3 flex items-center justify-center">
-              <span className="text-gray-500 text-sm mr-2">Already have an app?</span>
+            <div className="mt-4 flex items-center justify-center gap-3 bg-indigo-50 border-2 border-indigo-200 rounded-xl px-5 py-3">
+              <div className="p-2 bg-indigo-100 rounded-lg shrink-0">
+                <Store className="w-5 h-5 text-indigo-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-indigo-500 font-medium uppercase tracking-wide">Already have an app?</p>
+                <p className="text-sm font-bold text-indigo-900">Publish Your App on Google Play Store</p>
+              </div>
               <button
                 onClick={() => setShowPublishModal(true)}
-                className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all shadow-md"
+                className="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all shadow-sm whitespace-nowrap"
               >
-                <Store className="w-4 h-4" />
-                Publish Your App on Play Store — $10
+                Get Started — $10
               </button>
             </div>
           </div>
