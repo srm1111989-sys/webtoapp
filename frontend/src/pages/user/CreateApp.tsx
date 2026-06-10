@@ -1437,26 +1437,9 @@ function Step4PlanReview() {
 
                   {/* Free plan: just the trial note. No missing-features dump. */}
                   {plan.price_inr === 0 ? (
-                    <p className="mt-3 text-xs text-gray-500">3-day trial</p>
+                    <p className="mt-3 text-sm font-bold text-amber-600">⏱ 3-day free trial</p>
                   ) : (
                     <>
-                      {/* Missing features warning (paid plans only) */}
-                      {hasMissing && (
-                        <div className="mt-3 bg-amber-50 border border-amber-200 rounded-md p-2">
-                          <div className="flex items-center gap-1 text-amber-700 text-xs font-medium mb-1">
-                            <AlertTriangle className="w-3.5 h-3.5" />
-                            Missing features you selected:
-                          </div>
-                          <ul className="space-y-0.5">
-                            {missing.map((f) => (
-                              <li key={f.wizardKey} className="flex items-center gap-1 text-xs text-amber-600">
-                                <X className="w-3 h-3" /> {f.label}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
                       <ul className="mt-4 space-y-1.5 text-sm text-gray-700">
                         <li className="flex items-center gap-2">
                           <Check className="w-4 h-4 text-green-600 shrink-0" />

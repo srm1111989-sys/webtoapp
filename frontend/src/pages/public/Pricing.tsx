@@ -65,7 +65,7 @@ const ANDROID_FALLBACK = [
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, file_upload: false, location_services: false, camera_access: false, onboarding_screen: false, app_shortcut: false, secondary_navigation: false, social_login: false, in_app_update: false, background_location: false, facebook_app_events: false, in_app_purchases: false, in_app_review: false, background_service: false, native_contacts: false, appsflyer: false, custom_media_player: false, offer_card: false, intercom: false, dynamic_app_icon: false, bluetooth_connectivity: false, download_file_manager: false, floating_action_menu: false, revenue_cat: false, native_datastore: false, passcode_lock: false, app_auto_launch: false, advanced_bottom_navigation: false, firebase_notification: false, tap_to_pay: false, aab_output: false, pwa: false, priority_support: false },
   },
   {
-    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 1000, price_usd: 1000,
+    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 2000, price_usd: 2000,
     billing_type: 'one_time', max_apps: 1, sort_order: 2, is_active: true, platform: 'android',
     description: 'All features, one-time payment',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: true },
@@ -176,9 +176,10 @@ export default function Pricing() {
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>WebToApp watermark shown</span>
                 </li>
-                <li className="flex items-center gap-2 text-sm text-amber-600">
+                <li className="flex items-center gap-2 text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>3-day trial (app shows upgrade screen after)</span>
+                  <span className="text-base font-bold">3-Day Free Trial</span>
+                  <span className="text-xs">(upgrade screen after)</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <X className="w-4 h-4 text-gray-300 shrink-0" />
@@ -234,6 +235,10 @@ export default function Pricing() {
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
                   <span>Priority support</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg px-2 py-1.5 mt-1">
+                  <Check className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <span>Publish App on Google Play Store</span>
                 </li>
               </ul>
               <div className="mt-4 pt-4 border-t border-gray-100">

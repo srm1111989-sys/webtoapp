@@ -7,9 +7,11 @@ import {
   Bell, Fingerprint, QrCode, WifiOff, Navigation, Camera, MapPin, Upload,
   Code, Palette, Share2, RefreshCw, LogOut, Cookie, Database, Settings,
   Video, Volume2, Vibrate, Battery, Info, BarChart, AlertCircle, Languages,
-  Download, RotateCw, Maximize, TrendingDown, IndianRupee, DollarSign
+  Download, RotateCw, Maximize, TrendingDown, IndianRupee, DollarSign,
+  Store, X, Loader2
 } from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
+import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
 
 const features = [
   { icon: Smartphone, title: 'Android Apps', desc: 'Convert your website into a native Android app with full-screen experience and smooth performance.' },
@@ -129,9 +131,9 @@ const testimonials = [
 
 const ANDROID_PLANS = [
   {
-    name: 'Paid', slug: 'android-paid', price_inr: 1000, price_usd: 1000,
+    name: 'Paid', slug: 'android-paid', price_inr: 2000, price_usd: 2000,
     description: 'All features, one-time payment',
-    highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days'],
+    highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days', 'Publish App on Google Play Store'],
   },
 ]
 
@@ -209,6 +211,51 @@ export default function Landing() {
   const isLoggedIn = !!accessToken
   const navigate = useNavigate()
   const [url, setUrl] = useState('')
+  const [showPublishModal, setShowPublishModal] = useState(false)
+  const [publishForm, setPublishForm] = useState({ name: '', email: '', appName: '', websiteUrl: '', notes: '' })
+  const [publishLoading, setPublishLoading] = useState(false)
+  const [publishSuccess, setPublishSuccess] = useState(false)
+
+  const handlePublishPayment = async () => {
+    if (!publishForm.name || !publishForm.email || !publishForm.appName) return
+    setPublishLoading(true)
+    try {
+      const order = await createRazorpayOrder({
+        amount: 1000,
+        currency: 'USD',
+        receipt: `publish_${Date.now()}`,
+        notes: { name: publishForm.name, email: publishForm.email, appName: publishForm.appName, websiteUrl: publishForm.websiteUrl, notes: publishForm.notes, service: 'play-store-publish' },
+      })
+      const options = {
+        key: order.razorpay_key_id,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'WebToApp',
+        description: 'Publish App on Google Play Store',
+        order_id: order.razorpay_order_id,
+        handler: async (response: any) => {
+          try {
+            await verifyRazorpayPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            })
+            setPublishSuccess(true)
+          } catch {
+            alert('Payment verification failed. Please contact support@websitetoapp.app')
+          }
+        },
+        prefill: { name: publishForm.name, email: publishForm.email },
+        theme: { color: '#4f46e5' },
+      }
+      const rzp = new (window as any).Razorpay(options)
+      rzp.open()
+    } catch {
+      alert('Failed to initiate payment. Please try again.')
+    } finally {
+      setPublishLoading(false)
+    }
+  }
 
   const handleGetStarted = () => {
     const target = isLoggedIn ? '/apps/create' : '/register'
@@ -430,7 +477,7 @@ export default function Landing() {
                 {/* MRP - Strikethrough */}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">$20</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">$30</span>
                 </div>
 
                 {/* Actual Price - Large and Bold */}
@@ -451,9 +498,9 @@ export default function Landing() {
                 💎 One-time payment · Lifetime access
               </p>
               <ul className="space-y-2 flex-1 mb-6">
-                {ANDROID_PLANS[0].highlights.map((h) => (
-                  <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
-                    <Check className="w-4 h-4 text-green-500 shrink-0" />
+                {ANDROID_PLANS[0].highlights.map((h, i) => (
+                  <li key={h} className={`flex items-center gap-2 text-sm ${i === ANDROID_PLANS[0].highlights.length - 1 ? 'text-indigo-700 font-semibold bg-indigo-50 rounded-lg px-2 py-1' : 'text-gray-700'}`}>
+                    <Check className={`w-4 h-4 shrink-0 ${i === ANDROID_PLANS[0].highlights.length - 1 ? 'text-indigo-500' : 'text-green-500'}`} />
                     {h}
                   </li>
                 ))}
@@ -522,6 +569,35 @@ export default function Landing() {
             </div>
           </div>
 
+          {/* Publish App on Playstore Card */}
+          <div className="mt-6 max-w-sm mx-auto">
+            <div className="bg-white border-2 border-indigo-400 ring-2 ring-indigo-200 rounded-2xl p-4 sm:p-5 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <Store className="w-6 h-6 text-indigo-600" />
+                <h3 className="text-xl font-bold text-indigo-900">Publish on Play Store</h3>
+              </div>
+              <p className="text-gray-500 text-sm mb-3">Already have an app? We'll publish it for you on Google Play Store.</p>
+              <div className="mb-3 bg-indigo-50 rounded-xl p-3 border border-indigo-200">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-extrabold text-indigo-700">$10</span>
+                  <span className="text-indigo-500 text-sm font-semibold">one-time</span>
+                </div>
+              </div>
+              <ul className="space-y-1.5 mb-5 flex-1">
+                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />We submit your app to Play Store</li>
+                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />App listing, screenshots &amp; description</li>
+                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />AAB upload &amp; release management</li>
+                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />Our team contacts you within 24 hrs</li>
+              </ul>
+              <button
+                onClick={() => setShowPublishModal(true)}
+                className="block w-full text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 shadow-lg"
+              >
+                Get Started — $10
+              </button>
+            </div>
+          </div>
+
           <div className="text-center mt-8">
             <Link to="/pricing" className="text-primary-600 hover:text-primary-700 font-medium text-sm">
               View full feature comparison →
@@ -529,6 +605,109 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Publish on Playstore Modal */}
+      {showPublishModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={(e) => e.target === e.currentTarget && setShowPublishModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+            <button onClick={() => setShowPublishModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+              <X className="w-5 h-5" />
+            </button>
+
+            {publishSuccess ? (
+              <div className="text-center py-4">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Payment Successful!</h3>
+                <p className="text-gray-600 text-sm mb-4">Our team will contact you within 24 hours at <strong>{publishForm.email}</strong>.</p>
+                <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-left">
+                  <p className="text-sm font-semibold text-indigo-900 mb-2">📋 Next Step — Action Required:</p>
+                  <p className="text-sm text-indigo-700">Please add our email to your Google Play Console account with <strong>Release Manager</strong> permissions:</p>
+                  <p className="text-sm font-bold text-indigo-900 mt-2 bg-white rounded-lg px-3 py-2 border border-indigo-200">support@websitetoapp.app</p>
+                  <p className="text-xs text-indigo-600 mt-2">Go to Play Console → Users and permissions → Invite new users → Enter our email → Grant Release Manager access.</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="p-2 bg-indigo-100 rounded-xl"><Store className="w-6 h-6 text-indigo-600" /></div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Publish App on Play Store</h3>
+                    <p className="text-sm text-indigo-600 font-semibold">$10 one-time</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                    <input
+                      type="text"
+                      value={publishForm.name}
+                      onChange={(e) => setPublishForm(f => ({ ...f, name: e.target.value }))}
+                      placeholder="Your name"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                    <input
+                      type="email"
+                      value={publishForm.email}
+                      onChange={(e) => setPublishForm(f => ({ ...f, email: e.target.value }))}
+                      placeholder="your@email.com"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">App Name *</label>
+                    <input
+                      type="text"
+                      value={publishForm.appName}
+                      onChange={(e) => setPublishForm(f => ({ ...f, appName: e.target.value }))}
+                      placeholder="e.g. My Store App"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Website / App URL</label>
+                    <input
+                      type="url"
+                      value={publishForm.websiteUrl}
+                      onChange={(e) => setPublishForm(f => ({ ...f, websiteUrl: e.target.value }))}
+                      placeholder="https://yoursite.com"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
+                    <textarea
+                      value={publishForm.notes}
+                      onChange={(e) => setPublishForm(f => ({ ...f, notes: e.target.value }))}
+                      placeholder="Any special requirements or info about your app..."
+                      rows={2}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
+                  <p className="font-semibold mb-1">📌 Note:</p>
+                  <p>Our team will contact you shortly after payment. You will need to add our email <strong>support@websitetoapp.app</strong> to your Play Console account with <strong>Release Manager</strong> permissions to allow us to publish.</p>
+                </div>
+
+                <button
+                  onClick={handlePublishPayment}
+                  disabled={publishLoading || !publishForm.name || !publishForm.email || !publishForm.appName}
+                  className="mt-4 w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
+                >
+                  {publishLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Store className="w-4 h-4" /> Pay $10 &amp; Submit Request</>}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Why Choose WebToApp */}
       <section className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-gradient-to-b from-white to-gray-50">
