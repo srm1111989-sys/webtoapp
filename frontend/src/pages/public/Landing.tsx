@@ -299,6 +299,17 @@ export default function Landing() {
                 {isLoggedIn ? 'Create App' : 'Convert'} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
+            {/* Publish App CTA — below URL box */}
+            <div className="mt-3 flex items-center justify-center">
+              <span className="text-gray-500 text-sm mr-2">Already have an app?</span>
+              <button
+                onClick={() => setShowPublishModal(true)}
+                className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all shadow-md"
+              >
+                <Store className="w-4 h-4" />
+                Publish Your App on Play Store — $10
+              </button>
+            </div>
           </div>
 
           {/* Inline Pricing - COMMENTED OUT */}
@@ -566,35 +577,6 @@ export default function Landing() {
               >
                 Get Started
               </Link>
-            </div>
-          </div>
-
-          {/* Publish App on Playstore Card */}
-          <div className="mt-6 max-w-sm mx-auto">
-            <div className="bg-white border-2 border-indigo-400 ring-2 ring-indigo-200 rounded-2xl p-4 sm:p-5 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
-              <div className="flex items-center gap-2 mb-2">
-                <Store className="w-6 h-6 text-indigo-600" />
-                <h3 className="text-xl font-bold text-indigo-900">Publish on Play Store</h3>
-              </div>
-              <p className="text-gray-500 text-sm mb-3">Already have an app? We'll publish it for you on Google Play Store.</p>
-              <div className="mb-3 bg-indigo-50 rounded-xl p-3 border border-indigo-200">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-extrabold text-indigo-700">$10</span>
-                  <span className="text-indigo-500 text-sm font-semibold">one-time</span>
-                </div>
-              </div>
-              <ul className="space-y-1.5 mb-5 flex-1">
-                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />We submit your app to Play Store</li>
-                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />App listing, screenshots &amp; description</li>
-                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />AAB upload &amp; release management</li>
-                <li className="flex items-center gap-2 text-sm text-gray-700"><Check className="w-4 h-4 text-green-500 shrink-0" />Our team contacts you within 24 hrs</li>
-              </ul>
-              <button
-                onClick={() => setShowPublishModal(true)}
-                className="block w-full text-center py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 shadow-lg"
-              >
-                Get Started — $10
-              </button>
             </div>
           </div>
 

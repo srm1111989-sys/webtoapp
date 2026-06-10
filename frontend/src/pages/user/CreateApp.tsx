@@ -61,6 +61,7 @@ import {
   PanelBottom,
   BellRing,
   Nfc,
+  Store,
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
@@ -1154,6 +1155,10 @@ function Step4PlanReview() {
   })
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(wizard.selectedPlanId)
+  const [premiumWithPublish, setPremiumWithPublish] = useState(false)
+  const [showPublishModal, setShowPublishModal] = useState(false)
+  const [publishPaidOrderId, setPublishPaidOrderId] = useState<string | null>(null)
+  const [publishForm, setPublishForm] = useState({ name: '', email: '' })
 
   // Default to paid plan once plans load (if none chosen yet).
   useEffect(() => {
@@ -1292,7 +1297,12 @@ function Step4PlanReview() {
           })
           trackPurchase(data.amount / 100, data.currency, data.order_id)
           toast.success('Payment successful!')
-          navigate(`/orders/${orderId}`)
+          if (premiumWithPublish) {
+            setPublishPaidOrderId(orderId)
+            setShowPublishModal(true)
+          } else {
+            navigate(`/orders/${orderId}`)
+          }
         } catch {
           toast.error('Payment verification failed. Please contact support.')
         }
@@ -1391,9 +1401,7 @@ function Step4PlanReview() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any)).map((plan) => {
-              const isSelected = selectedPlan === plan.id
-              const missing = getMissingFeatures(plan)
-              const hasMissing = missing.length > 0
+              const isSelected = selectedPlan === plan.id && !premiumWithPublish
               const isMinimum = minimumPlan?.id === plan.id && selectedGatedFeatures.length > 0
               return (
                 <button
@@ -1401,14 +1409,13 @@ function Step4PlanReview() {
                   type="button"
                   onClick={() => {
                     setSelectedPlan(plan.id)
+                    setPremiumWithPublish(false)
                     wizard.setPlan(plan.id)
                   }}
                   className={`relative flex flex-col rounded-xl border-2 p-5 text-left transition-all ${
                     isSelected
                       ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                      : hasMissing
-                        ? 'border-gray-200 hover:border-gray-300 opacity-75'
-                        : 'border-gray-200 hover:border-gray-300'
+                      : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
                   {isMinimum && (
@@ -1435,30 +1442,79 @@ function Step4PlanReview() {
                     <p className="text-sm text-gray-600 mt-3">{plan.description}</p>
                   )}
 
-                  {/* Free plan: just the trial note. No missing-features dump. */}
                   {plan.price_inr === 0 ? (
                     <p className="mt-3 text-sm font-bold text-amber-600">⏱ 3-day free trial</p>
                   ) : (
-                    <>
-                      <ul className="mt-4 space-y-1.5 text-sm text-gray-700">
-                        <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-green-600 shrink-0" />
-                          No watermark, no trial limit
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-green-600 shrink-0" />
-                          Keystore download
-                        </li>
-                        <li className="flex items-center gap-2 font-bold text-gray-900">
-                          <Check className="w-4 h-4 text-green-600 shrink-0" />
-                          All 50+ premium features
-                        </li>
-                      </ul>
-                    </>
+                    <ul className="mt-4 space-y-1.5 text-sm text-gray-700">
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-600 shrink-0" />
+                        No watermark, no trial limit
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-600 shrink-0" />
+                        Keystore download
+                      </li>
+                      <li className="flex items-center gap-2 font-bold text-gray-900">
+                        <Check className="w-4 h-4 text-green-600 shrink-0" />
+                        All 50+ premium features
+                      </li>
+                    </ul>
                   )}
                 </button>
               )
             })}
+
+            {/* Premium + Publish App on Play Store — hardcoded $20 card */}
+            {wizard.selectedPlatforms.includes('android') && (() => {
+              const paidPlan = (plans as Plan[])?.find(
+                (p) => p.platform === 'android' && p.price_inr > 0
+              )
+              if (!paidPlan) return null
+              const isSelected = premiumWithPublish
+              return (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedPlan(paidPlan.id)
+                    setPremiumWithPublish(true)
+                    wizard.setPlan(paidPlan.id)
+                  }}
+                  className={`relative flex flex-col rounded-xl border-2 p-5 text-left transition-all ${
+                    isSelected
+                      ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200'
+                      : 'border-indigo-200 hover:border-indigo-400'
+                  }`}
+                >
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-semibold px-3 py-0.5 rounded-full whitespace-nowrap">
+                    Best Value
+                  </span>
+                  <h3 className="font-semibold text-indigo-900">Premium + Publish App</h3>
+                  <div className="mt-2">
+                    <span className="text-2xl font-bold text-indigo-700">$20</span>
+                    <span className="text-sm font-semibold text-green-700 ml-1">one-time</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">All features + we publish on Google Play Store</p>
+                  <ul className="mt-4 space-y-1.5 text-sm text-gray-700">
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-600 shrink-0" />
+                      No watermark, no trial limit
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-600 shrink-0" />
+                      Keystore download
+                    </li>
+                    <li className="flex items-center gap-2 font-bold text-gray-900">
+                      <Check className="w-4 h-4 text-green-600 shrink-0" />
+                      All 50+ premium features
+                    </li>
+                    <li className="flex items-center gap-2 font-semibold text-indigo-700 bg-indigo-100 rounded-lg px-2 py-1 mt-1">
+                      <Store className="w-4 h-4 text-indigo-500 shrink-0" />
+                      Publish App on Google Play Store
+                    </li>
+                  </ul>
+                </button>
+              )
+            })()}
           </div>
         )}
       </div>
@@ -1598,7 +1654,9 @@ function Step4PlanReview() {
               ? 'bg-primary-600 hover:bg-primary-700'
               : paymentMode?.test_mode
                 ? 'bg-amber-600 hover:bg-amber-700'
-                : 'bg-green-600 hover:bg-green-700'
+                : premiumWithPublish
+                  ? 'bg-indigo-600 hover:bg-indigo-700'
+                  : 'bg-green-600 hover:bg-green-700'
           }`}
         >
           {createOrder.isPending ? (
@@ -1613,6 +1671,10 @@ function Step4PlanReview() {
             <>
               <FlaskConical className="w-4 h-4" /> Submit (Test Mode)
             </>
+          ) : premiumWithPublish ? (
+            <>
+              <Store className="w-4 h-4" /> Pay & Publish on Play Store
+            </>
           ) : (
             <>
               <Smartphone className="w-4 h-4" /> Submit & Pay
@@ -1620,6 +1682,53 @@ function Step4PlanReview() {
           )}
         </button>
       </div>
+
+      {/* Publish modal — shown after successful Premium+Publish payment */}
+      {showPublishModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+            <div className="text-center mb-5">
+              <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Store className="w-7 h-7 text-indigo-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">App Build Started!</h3>
+              <p className="text-gray-500 text-sm mt-1">Fill in details so our team can publish your app to Google Play Store.</p>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                <input
+                  type="text"
+                  value={publishForm.name}
+                  onChange={(e) => setPublishForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="Full name"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={publishForm.email}
+                  onChange={(e) => setPublishForm(f => ({ ...f, email: e.target.value }))}
+                  placeholder="your@email.com"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
+                <p className="font-semibold mb-1">📌 Action Required:</p>
+                <p>Our team will contact you shortly. Please add <strong>support@websitetoapp.app</strong> to your Google Play Console account with <strong>Release Manager</strong> permissions.</p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate(`/orders/${publishPaidOrderId}`)}
+              className="mt-4 w-full py-3 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-all"
+            >
+              Got it — View My Order
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
