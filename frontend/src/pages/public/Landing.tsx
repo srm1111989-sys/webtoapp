@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
 import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 import {
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
 import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
+import { plansApi } from '@/api/orders'
 
 const features = [
   { icon: Smartphone, title: 'Android Apps', desc: 'Convert your website into a native Android app with full-screen experience and smooth performance.' },
@@ -129,21 +131,10 @@ const testimonials = [
   },
 ]
 
-const ANDROID_PLANS = [
-  {
-    name: 'Paid', slug: 'android-paid', price_inr: 1000, price_usd: 1000,
-    description: 'All features, one-time payment',
-    highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days', 'Publish App on Google Play Store'],
-  },
-]
-
-const DESKTOP_PLANS = [
-  {
-    name: 'Paid', slug: 'desktop-paid', price_inr: 1000, price_usd: 1000,
-    description: 'Full desktop app, one-time',
-    highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '10 Builds / 30 Days'],
-  },
-]
+const ANDROID_FALLBACK = { slug: 'android-paid', price_inr: 1000, price_usd: 1000,
+  highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days', 'Publish App on Google Play Store'] }
+const DESKTOP_FALLBACK = { slug: 'desktop-paid', price_inr: 1000, price_usd: 1000,
+  highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '10 Builds / 30 Days'] }
 
 const faqs = [
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
@@ -210,6 +201,13 @@ export default function Landing() {
   const { accessToken } = useAuthStore()
   const isLoggedIn = !!accessToken
   const navigate = useNavigate()
+
+  const { data: plansData } = useQuery({ queryKey: ['plans'], queryFn: () => plansApi.list().then(r => r.data), staleTime: 5 * 60 * 1000 })
+  const androidPlan = plansData?.find((p: any) => p.slug === 'android-paid') ?? ANDROID_FALLBACK
+  const desktopPlan = plansData?.find((p: any) => p.slug === 'desktop-paid') ?? DESKTOP_FALLBACK
+  const androidHighlights = ANDROID_FALLBACK.highlights
+  const desktopHighlights = DESKTOP_FALLBACK.highlights
+
   const [url, setUrl] = useState('')
   const [showPublishModal, setShowPublishModal] = useState(false)
   const [publishForm, setPublishForm] = useState({ name: '', email: '', appName: '', websiteUrl: '', notes: '' })
@@ -499,7 +497,7 @@ export default function Landing() {
                 {/* Actual Price - Large and Bold */}
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
-                    {formatPlanPrice(ANDROID_PLANS[0].price_inr, ANDROID_PLANS[0].price_usd)}
+                    {formatPlanPrice(androidPlan.price_inr, androidPlan.price_usd)}
                   </span>
                 </div>
 
@@ -514,9 +512,9 @@ export default function Landing() {
                 💎 One-time payment · Lifetime access
               </p>
               <ul className="space-y-2 flex-1 mb-6">
-                {ANDROID_PLANS[0].highlights.map((h, i) => (
-                  <li key={h} className={`flex items-center gap-2 text-sm ${i === ANDROID_PLANS[0].highlights.length - 1 ? 'text-indigo-700 font-semibold bg-indigo-50 rounded-lg px-2 py-1' : 'text-gray-700'}`}>
-                    <Check className={`w-4 h-4 shrink-0 ${i === ANDROID_PLANS[0].highlights.length - 1 ? 'text-indigo-500' : 'text-green-500'}`} />
+                {androidHighlights.map((h, i) => (
+                  <li key={h} className={`flex items-center gap-2 text-sm ${i === androidHighlights.length - 1 ? 'text-indigo-700 font-semibold bg-indigo-50 rounded-lg px-2 py-1' : 'text-gray-700'}`}>
+                    <Check className={`w-4 h-4 shrink-0 ${i === androidHighlights.length - 1 ? 'text-indigo-500' : 'text-green-500'}`} />
                     {h}
                   </li>
                 ))}
@@ -554,7 +552,7 @@ export default function Landing() {
                 {/* Actual Price - Large and Bold */}
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-none">
-                    {formatPlanPrice(DESKTOP_PLANS[0].price_inr, DESKTOP_PLANS[0].price_usd)}
+                    {formatPlanPrice(desktopPlan.price_inr, desktopPlan.price_usd)}
                   </span>
                 </div>
 
@@ -569,7 +567,7 @@ export default function Landing() {
                 💎 One-time payment · Lifetime access
               </p>
               <ul className="space-y-2 flex-1 mb-6">
-                {DESKTOP_PLANS[0].highlights.map((h) => (
+                {desktopHighlights.map((h) => (
                   <li key={h} className="flex items-center gap-2 text-sm text-gray-700">
                     <Check className="w-4 h-4 text-green-500 shrink-0" />
                     {h}
