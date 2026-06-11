@@ -22,6 +22,7 @@ from app.schemas.build import BuildResponse
 from app.schemas.plan import PlanResponse, PlanCreate, PlanUpdate
 from app.dependencies import get_current_admin
 from app.utils.security import verify_password, create_access_token, create_refresh_token, hash_password
+from app.utils.email import send_playstore_announcement
 from app.services.build_service import trigger_build
 from app.rate_limit import limiter
 
@@ -507,3 +508,54 @@ async def get_enhanced_stats(
         "daily_revenue": daily_revenue,
         "daily_builds": daily_builds,
     }
+
+
+@router.post("/send-playstore-announcement", response_model=dict)
+async def send_playstore_announcement_email(
+    _: Admin = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """Send Play Store publishing announcement to all verified users with their recent build info."""
+    # Get all active verified users
+    users_result = await db.execute(
+        select(User).where(User.is_active == True, User.is_verified == True)
+    )
+    users = users_result.scalars().all()
+
+    # Get most recent successful build per user (apk_url + app name via order -> app_config)
+    from app.models.app_config import AppConfig
+    recent_builds_result = await db.execute(
+        select(User.id, AppConfig.name, Build.apk_url).select_from(
+            User.__table__
+            .join(Order.__table__, Order.user_id == User.id)
+            .join(AppConfig.__table__, AppConfig.id == Order.app_config_id)
+            .join(Build.__table__, Build.order_id == Order.id)
+        ).where(
+            Build.status == "success",
+            Build.apk_url.isnot(None),
+        ).distinct(User.id).order_by(User.id, Build.created_at.desc())
+    )
+    build_map: dict[str, tuple[str, str]] = {}
+    for row in recent_builds_result:
+        uid = str(row[0])
+        if uid not in build_map:
+            build_map[uid] = (row[1], row[2])  # (app_name, apk_url)
+
+    sent = 0
+    failed = 0
+    for user in users:
+        uid = str(user.id)
+        app_name, apk_url = build_map.get(uid, (None, None))
+        user_name = user.email.split("@")[0]
+        ok = send_playstore_announcement(
+            to=user.email,
+            user_name=user_name,
+            recent_app_name=app_name,
+            recent_apk_url=apk_url,
+        )
+        if ok:
+            sent += 1
+        else:
+            failed += 1
+
+    return {"sent": sent, "failed": failed, "total": len(users)}

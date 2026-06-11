@@ -18,6 +18,7 @@ import Blog from '@/pages/public/Blog'
 import BlogPost from '@/pages/public/BlogPost'
 import ConvertPage from '@/pages/public/ConvertPage'
 import ComparisonPage from '@/pages/public/ComparisonPage'
+import PlayStorePage from '@/pages/public/PlayStorePage'
 
 // Auth pages
 import Login from '@/pages/auth/Login'
@@ -67,6 +68,7 @@ export default function App() {
         <Route path="/alternatives/:slug" element={<ComparisonPage />} />
         {/* Phase 4: /vs/ URL alias for comparison pages */}
         <Route path="/vs/:slug" element={<ComparisonPage />} />
+        <Route path="/publish-app" element={<PlayStorePage />} />
       </Route>
 
       {/* Auth routes */}

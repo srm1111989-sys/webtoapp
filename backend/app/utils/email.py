@@ -219,6 +219,62 @@ def send_build_failed_email(
     return send_email(to, f"Build failed for \"{app_name}\" - {settings.app_name}", html)
 
 
+def send_playstore_announcement(
+    to: str,
+    user_name: str,
+    recent_app_name: str | None = None,
+    recent_apk_url: str | None = None,
+) -> bool:
+    publish_url = f"{settings.app_url}/publish-app"
+    app_section = ""
+    if recent_app_name and recent_apk_url:
+        app_section = f"""
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px 16px; margin: 16px 0;">
+          <p style="font-size: 13px; color: #166534; font-weight: 600; margin: 0 0 6px;">Your recent build is ready:</p>
+          <p style="font-size: 14px; color: #15803d; margin: 0 0 4px;">App: <strong>{recent_app_name}</strong></p>
+          <p style="font-size: 13px; margin: 0;">
+            <a href="{recent_apk_url}" style="color: #16a34a; font-weight: 600;">Download APK</a>
+          </p>
+        </div>
+        """
+
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 28px 24px; text-align: center; border-radius: 12px 12px 0 0;">
+        <h1 style="color: white; margin: 0 0 6px; font-size: 22px;">New Plan: Assisted Play Store Publishing</h1>
+        <p style="color: #c7d2fe; margin: 0; font-size: 14px;">We publish your Android app for you — just $10</p>
+      </div>
+      <div style="padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+        <p style="font-size: 16px; color: #111827;">Hi {user_name},</p>
+        <p style="font-size: 14px; color: #374151; line-height: 1.6;">
+          We just launched our <strong>Assisted Google Play Store Publishing</strong> service.
+          Skip the confusing Play Console setup — our experts handle your entire app submission for a one-time <strong>$10 flat fee</strong>.
+        </p>
+        {app_section}
+        <div style="background: #f5f3ff; border: 1px solid #e0d9ff; border-radius: 8px; padding: 16px; margin: 16px 0;">
+          <p style="font-size: 13px; color: #5b21b6; font-weight: 600; margin: 0 0 8px;">What's included:</p>
+          <ul style="font-size: 13px; color: #4c1d95; margin: 0; padding-left: 20px; line-height: 1.8;">
+            <li>Full Play Store listing setup (title, description, keywords)</li>
+            <li>Store screenshots & feature graphic</li>
+            <li>App category, content rating & metadata</li>
+            <li>Final review & submission to Google Play</li>
+            <li>Post-publish confirmation</li>
+          </ul>
+        </div>
+        <div style="text-align: center; margin: 24px 0;">
+          <a href="{publish_url}" style="background: #4f46e5; color: white; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
+            Publish My App — $10
+          </a>
+        </div>
+        <p style="font-size: 12px; color: #9ca3af; text-align: center;">One-time payment. No subscription. You keep full ownership.</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+        <p style="font-size: 12px; color: #9ca3af; text-align: center;">Questions? Reply to this email or contact <a href="mailto:support@websitetoapp.app" style="color: #4f46e5;">support@websitetoapp.app</a></p>
+      </div>
+    </div>
+    """
+    return send_email(to, "New: We'll Publish Your App on Google Play Store — $10 Flat", html)
+
+
 def send_reset_email(to: str, token: str) -> bool:
     link = f"{settings.app_url}/auth/reset-password?token={token}"
     html = f"""
