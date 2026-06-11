@@ -19,10 +19,16 @@ export default function Login() {
   const navigate = useNavigate()
   const { setTokens, setUser } = useAuthStore()
   const [loading, setLoading] = useState(false)
+  const [loginError, setLoginError] = useState('')
+  const [showResend, setShowResend] = useState(false)
+  const [resendEmail, setResendEmail] = useState('')
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendSent, setResendSent] = useState(false)
 
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -30,6 +36,8 @@ export default function Login() {
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
+    setLoginError('')
+    setShowResend(false)
     try {
       const tokenRes = await authApi.login(data)
       setTokens(tokenRes.data.access_token, tokenRes.data.refresh_token)
@@ -40,10 +48,27 @@ export default function Login() {
       toast.success('Welcome back!')
       navigate('/dashboard')
     } catch (err: any) {
-      const message = err?.response?.data?.detail || 'Invalid email or password'
-      toast.error(message)
+      const status = err?.response?.status
+      const message = err?.response?.data?.detail || 'Something went wrong. Please try again.'
+      setLoginError(message)
+      if (status === 403 && message.toLowerCase().includes('verify')) {
+        setShowResend(true)
+        setResendEmail(data.email)
+      }
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleResend = async () => {
+    setResendLoading(true)
+    try {
+      await authApi.resendVerification(resendEmail)
+      setResendSent(true)
+    } catch {
+      toast.error('Failed to resend. Please try again.')
+    } finally {
+      setResendLoading(false)
     }
   }
 
@@ -137,6 +162,28 @@ export default function Login() {
             Forgot your password?
           </Link>
         </div>
+
+        {loginError && (
+          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3">
+            <p className="text-sm text-red-700">{loginError}</p>
+            {showResend && (
+              <div className="mt-2">
+                {resendSent ? (
+                  <p className="text-sm text-green-700 font-medium">Verification email sent! Check your inbox.</p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resendLoading}
+                    className="text-sm font-medium text-primary-600 hover:text-primary-500 underline disabled:opacity-50"
+                  >
+                    {resendLoading ? 'Sending...' : 'Resend verification email'}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         <button
           type="submit"
