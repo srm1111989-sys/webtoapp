@@ -104,8 +104,9 @@ async def health():
 
     # Redis
     try:
-        import redis
-        r = redis.Redis(host="redis", port=6379, socket_timeout=2)
+        import redis, os
+        redis_url = os.environ.get("REDIS_URL", "redis://redis:6379/0")
+        r = redis.from_url(redis_url, socket_timeout=2)
         r.ping()
         checks["redis"] = "ok"
     except Exception as e:
