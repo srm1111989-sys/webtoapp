@@ -131,7 +131,7 @@ const testimonials = [
 
 const ANDROID_PLANS = [
   {
-    name: 'Paid', slug: 'android-paid', price_inr: 2000, price_usd: 2000,
+    name: 'Paid', slug: 'android-paid', price_inr: 1000, price_usd: 1000,
     description: 'All features, one-time payment',
     highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days', 'Publish App on Google Play Store'],
   },
@@ -506,7 +506,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  You Save $10
+                  You Save $20
                 </div>
               </div>
 
