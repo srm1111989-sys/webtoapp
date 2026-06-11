@@ -541,9 +541,10 @@ async def send_playstore_announcement_email(
         if uid not in build_map:
             build_map[uid] = (row[1], row[2])  # (app_name, apk_url)
 
+    import time
     sent = 0
     failed = 0
-    for user in users:
+    for i, user in enumerate(users):
         uid = str(user.id)
         app_name, apk_url = build_map.get(uid, (None, None))
         user_name = user.email.split("@")[0]
@@ -557,5 +558,7 @@ async def send_playstore_announcement_email(
             sent += 1
         else:
             failed += 1
+        if (i + 1) % 5 == 0:
+            time.sleep(2)
 
     return {"sent": sent, "failed": failed, "total": len(users)}
