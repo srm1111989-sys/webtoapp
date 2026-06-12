@@ -14,8 +14,11 @@ if [ -f backend/.env.production ]; then
   echo "  Restored backend/.env from git (.env.production)"
 fi
 
+export BUILD_VERSION=$(date +%Y%m%d%H%M)
+echo "Build version: $BUILD_VERSION"
+
 echo "[2/5] Building ALL services (no cache for code changes)..."
-docker compose -f docker-compose.prod.yml build backend celery-worker celery-beat frontend
+BUILD_VERSION=$BUILD_VERSION docker compose -f docker-compose.prod.yml build backend celery-worker celery-beat frontend
 
 echo "[3/5] Restarting services..."
 docker compose -f docker-compose.prod.yml up -d --force-recreate backend celery-worker celery-beat frontend
