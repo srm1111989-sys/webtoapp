@@ -14,7 +14,8 @@ if [ -f backend/.env.production ]; then
   echo "  Restored backend/.env from git (.env.production)"
 fi
 
-export BUILD_VERSION=$(date +%Y%m%d%H%M)
+BUILD_VERSION=$(cat BUILD_VERSION 2>/dev/null | tr -d '[:space:]')
+export BUILD_VERSION=${BUILD_VERSION:-$(date +%Y%m%d%H%M)}
 echo "Build version: $BUILD_VERSION"
 
 echo "[2/5] Building ALL services (no cache for code changes)..."
