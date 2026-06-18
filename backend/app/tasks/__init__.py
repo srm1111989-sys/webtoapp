@@ -91,21 +91,47 @@ async def _poll_stuck_builds():
                         await handle_build_webhook(build.pipeline_id, "success", {}, db)
 
                     elif pipeline_status == "failed":
-                        # Fetch error logs
+                        # Fetch error logs and check for quota exhaustion
                         log_text = ""
+                        is_quota_exceeded = False
                         try:
                             jobs = gitlab.get_pipeline_jobs(build.pipeline_id)
                             failed_jobs = [j for j in jobs if j.get("status") == "failed"]
-                            if failed_jobs:
+                            # Detect ci_quota_exceeded on all jobs
+                            if failed_jobs and all(j.get("failure_reason") == "ci_quota_exceeded" for j in failed_jobs):
+                                is_quota_exceeded = True
+                            elif failed_jobs:
                                 job_log = gitlab.get_job_log(failed_jobs[0]["id"])
                                 log_text = job_log[-500:] if job_log else ""
                         except Exception:
                             pass
 
-                        build.status = "failed"
-                        build.error_message = f"Pipeline failed: {log_text[:200]}" if log_text else "Pipeline failed on GitLab"
-                        build.completed_at = datetime.now(timezone.utc)
-                        logger.warning(f"Build {build.id}: pipeline {build.pipeline_id} failed")
+                        if is_quota_exceeded and settings.github_token and settings.github_repo:
+                            # GitLab quota exceeded — fallback to GitHub Actions
+                            logger.warning(f"Build {build.id}: GitLab quota exceeded, falling back to GitHub Actions")
+                            try:
+                                from app.services.github_service import GitHubService
+                                github = GitHubService(platform=build.platform or "android")
+                                gh_pipeline = github.trigger_pipeline(build.variables or {})
+                                build.pipeline_id = gh_pipeline.get("id")
+                                build.status = "building"
+                                build.started_at = datetime.now(timezone.utc)
+                                build.variables = {**(build.variables or {}), "_build_provider": "github"}
+                                logger.info(f"Build {build.id}: GitHub workflow {build.pipeline_id} triggered as fallback")
+                            except Exception as gh_err:
+                                build.status = "failed"
+                                build.error_message = f"GitLab quota exceeded, GitHub fallback also failed: {gh_err}"
+                                build.completed_at = datetime.now(timezone.utc)
+                                logger.error(f"Build {build.id}: GitHub fallback failed: {gh_err}")
+                        else:
+                            build.status = "failed"
+                            build.error_message = (
+                                "GitLab CI quota exceeded — builds paused until quota resets or GitHub fallback is configured"
+                                if is_quota_exceeded
+                                else (f"Pipeline failed: {log_text[:200]}" if log_text else "Pipeline failed on GitLab")
+                            )
+                            build.completed_at = datetime.now(timezone.utc)
+                            logger.warning(f"Build {build.id}: pipeline {build.pipeline_id} failed (quota={is_quota_exceeded})")
 
                     elif pipeline_status == "canceled":
                         build.status = "failed"
