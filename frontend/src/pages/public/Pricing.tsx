@@ -65,7 +65,7 @@ const ANDROID_FALLBACK = [
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, file_upload: false, location_services: false, camera_access: false, onboarding_screen: false, app_shortcut: false, secondary_navigation: false, social_login: false, in_app_update: false, background_location: false, facebook_app_events: false, in_app_purchases: false, in_app_review: false, background_service: false, native_contacts: false, appsflyer: false, custom_media_player: false, offer_card: false, intercom: false, dynamic_app_icon: false, bluetooth_connectivity: false, download_file_manager: false, floating_action_menu: false, revenue_cat: false, native_datastore: false, passcode_lock: false, app_auto_launch: false, advanced_bottom_navigation: false, firebase_notification: false, tap_to_pay: false, aab_output: false, pwa: false, priority_support: false },
   },
   {
-    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 1000, price_usd: 1000,
+    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 83000, price_usd: 1000,
     billing_type: 'one_time', max_apps: 1, sort_order: 2, is_active: true, platform: 'android',
     description: 'All features, one-time payment',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: true },
@@ -75,6 +75,12 @@ const ANDROID_FALLBACK = [
     billing_type: 'one_time', max_apps: 1, sort_order: 3, is_active: true, platform: 'android',
     description: 'We publish your app to Google Play Store on your behalf',
     features: { play_store_listing: true },
+  },
+  {
+    id: '10', name: 'App + Play Store', slug: 'android-both', price_inr: 166000, price_usd: 2000,
+    billing_type: 'one_time', max_apps: 1, sort_order: 4, is_active: true, platform: 'android',
+    description: 'App build + Play Store Listing bundle',
+    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: true, play_store_listing: true },
   },
 ]
 
@@ -86,7 +92,7 @@ const DESKTOP_FALLBACK = [
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: false, custom_window_size: false, auto_updater: false, native_notifications: false, kiosk_mode: false },
   },
   {
-    id: '5', name: 'Paid', slug: 'desktop-paid', price_inr: 1000, price_usd: 1000,
+    id: '5', name: 'Paid', slug: 'desktop-paid', price_inr: 83000, price_usd: 1000,
     billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop',
     description: 'Full desktop app, one-time',
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: false, trial_days: false, system_tray: true, custom_window_size: true, auto_updater: true, native_notifications: true, kiosk_mode: true, custom_title_bar: true, multi_window: true, tray_menu: true, startup_launch: true },
@@ -131,6 +137,7 @@ export default function Pricing() {
 
   const androidFreePlan = allAndroidPlans.find((p: any) => p.slug === 'android-free')
   const androidPaidPlan = allAndroidPlans.find((p: any) => p.slug === 'android-paid')
+  const androidBothPlan = allAndroidPlans.find((p: any) => p.slug === 'android-both')
   const playStoreListingPlan = allAndroidPlans.find((p: any) => p.slug === 'play-store-listing')
   const desktopFreePlan = allDesktopPlans.find((p: any) => p.price_inr === 0)
   const desktopPaidPlan = allDesktopPlans.find((p: any) => p.price_inr > 0)
@@ -147,7 +154,7 @@ export default function Pricing() {
       {/* Android Plans */}
       <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
         <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Android App Plans</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
           {/* Android Free Plan */}
           {androidFreePlan && (
             <div className="border-2 border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col bg-white">
@@ -236,10 +243,6 @@ export default function Pricing() {
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
                   <span>Priority support</span>
                 </li>
-                <li className="flex items-center gap-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg px-2 py-1.5 mt-1">
-                  <Check className="w-4 h-4 text-indigo-500 shrink-0" />
-                  <span>Publish App on Google Play Store</span>
-                </li>
               </ul>
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-xs text-gray-500 font-medium mb-2">All features included:</p>
@@ -254,6 +257,52 @@ export default function Pricing() {
                     ) : null
                   })}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Android Both Plan */}
+          {androidBothPlan && (
+            <div className="border border-indigo-500 ring-2 ring-indigo-500 relative rounded-xl p-4 sm:p-6 flex flex-col bg-white">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap">
+                App + Publishing
+              </span>
+              <h3 className="text-xl font-bold mb-1">Bundle Plan</h3>
+              <p className="text-gray-500 text-sm mb-4">{androidBothPlan.description}</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold">{formatPlanPrice(androidBothPlan.price_inr, androidBothPlan.price_usd)}</span>
+                <span className="text-green-700 text-sm font-semibold"> one-time</span>
+              </div>
+              <Link
+                to="/register"
+                className="block text-center py-2 rounded-lg font-medium mb-6 bg-indigo-600 text-white hover:bg-indigo-700"
+              >
+                Get Started
+              </Link>
+              <ul className="space-y-2 flex-1">
+                <li className="flex items-center gap-2 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg px-2 py-1.5 mt-1">
+                  <Check className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <span>App Build + Play Store Listing</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span><strong>10 builds/month</strong> per website</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>No watermark</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>No trial limit - works forever</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>All 50+ features included</span>
+                </li>
+              </ul>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-xs text-gray-500 font-medium mb-2">Everything in Premium, plus publishing.</p>
               </div>
             </div>
           )}
