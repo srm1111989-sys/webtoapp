@@ -29,6 +29,8 @@ on:
         default: "[]"
       FIREBASE_ENABLED:
         default: "false"
+      _build_provider:
+        default: "github"
       FIREBASE_CONFIG:
         default: ""
       ADMOB_ENABLED:

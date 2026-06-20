@@ -25,6 +25,8 @@ on:
         default: "false"
       ENABLE_SYSTEM_TRAY:
         default: "false"
+      _build_provider:
+        default: "github"
       START_MAXIMIZED:
         default: "false"
       START_FULLSCREEN:
