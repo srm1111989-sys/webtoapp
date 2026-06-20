@@ -81,20 +81,34 @@ async def trigger_build_endpoint(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paid order not found")
 
+    # Check for active builds
+    active_build_result = await db.execute(
+        select(Build).where(
+            Build.order_id == order_id,
+            Build.platform == platform,
+            Build.status.in_(["pending", "building", "running"])
+        )
+    )
+    if active_build_result.scalar_one_or_none():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A build for this platform is already in progress. Please wait for it to complete."
+        )
+
     # Build limits
     is_free = order.amount == 0
     if is_free:
-        # Free plans: max 5 builds total per user (across all free orders)
+        # Free plans: max 2 builds total per user (across all free orders)
         free_build_count_result = await db.execute(
             select(func.count(Build.id))
             .join(Order, Build.order_id == Order.id)
             .where(Order.user_id == user.id, Order.amount == 0)
         )
         free_build_count = free_build_count_result.scalar() or 0
-        if free_build_count >= 5:
+        if free_build_count >= 2:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Free plan build limit reached (5 builds per account). Upgrade to a paid plan for more builds.",
+                detail="Free plan build limit reached (2 builds per account). Upgrade to a paid plan for more builds.",
             )
     else:
         # Paid plans: 10 builds per 30 rolling days per order
