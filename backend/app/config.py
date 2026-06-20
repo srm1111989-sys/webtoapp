@@ -61,6 +61,11 @@ class Settings(BaseSettings):
     github_repo: str = "pallavimokashi94-sys/webtoapp"
     github_webhook_secret: str = ""
 
+    # GitHub fallback 2 (3rd fallback overall)
+    github_token_2: str = ""
+    github_repo_2: str = "mokashiswapnil/webtoapp"
+    github_webhook_secret_2: str = ""
+
     # S3/R2
     s3_endpoint: str = ""
     s3_access_key: str = ""

@@ -230,7 +230,9 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
         # Download artifacts and save build log
         if build.variables and build.variables.get("_build_provider") == "github":
-            service = GitHubService(platform=build.platform)
+            service = GitHubService(platform=build.platform, account=1)
+        elif build.variables and build.variables.get("_build_provider") == "github2":
+            service = GitHubService(platform=build.platform, account=2)
         else:
             service = GitLabService(platform=build.platform)
 

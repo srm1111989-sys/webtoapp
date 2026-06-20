@@ -10,9 +10,14 @@ logger = logging.getLogger("webtoapp.github")
 class GitHubService:
     """GitHub Actions fallback for when GitLab CI quota is exceeded."""
 
-    def __init__(self, platform: str = "android"):
-        self.token = settings.github_token
-        self.repo = settings.github_repo  # e.g. "mokashiswapnil/webtoapp"
+    def __init__(self, platform: str = "android", account: int = 1):
+        if account == 2:
+            self.token = settings.github_token_2
+            self.repo = settings.github_repo_2
+        else:
+            self.token = settings.github_token
+            self.repo = settings.github_repo  # e.g. "pallavimokashi94-sys/webtoapp"
+            
         self.platform = platform
         if platform == "desktop":
             self.workflow_file = "build-desktop.yml"

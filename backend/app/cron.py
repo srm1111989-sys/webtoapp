@@ -32,7 +32,7 @@ async def process_pending_build():
             
             # Trigger Github pipeline
             try:
-                github = GitHubService(platform=build.platform)
+                github = GitHubService(platform=build.platform, account=1)
                 variables = build.variables.copy() if build.variables else {}
                 variables["_build_provider"] = "github"
                 
@@ -41,14 +41,31 @@ async def process_pending_build():
                 build.pipeline_id = pipeline.get("id")
                 build.variables = variables
                 
-                logger.info(f"GitHub workflow triggered for build {build.id} (platform={build.platform})")
+                logger.info(f"GitHub workflow triggered for build {build.id} (platform={build.platform}, account=1)")
                 
                 await db.commit()
             except Exception as e:
-                build.status = "failed"
-                build.error_message = f"Failed to trigger GitHub pipeline: {str(e)}"
-                logger.error(f"Failed to trigger GitHub pipeline for build {build.id}: {e}")
-                await db.commit()
+                logger.warning(f"Failed to trigger GitHub 1 pipeline for build {build.id}: {e}")
+                
+                # Fallback to GitHub 2
+                try:
+                    github2 = GitHubService(platform=build.platform, account=2)
+                    variables = build.variables.copy() if build.variables else {}
+                    variables["_build_provider"] = "github2"
+                    
+                    pipeline = github2.trigger_pipeline(variables)
+                    
+                    build.pipeline_id = pipeline.get("id")
+                    build.variables = variables
+                    
+                    logger.info(f"GitHub workflow triggered for build {build.id} (platform={build.platform}, account=2)")
+                    
+                    await db.commit()
+                except Exception as e2:
+                    build.status = "failed"
+                    build.error_message = f"Failed to trigger GitHub pipelines: 1={str(e)}, 2={str(e2)}"
+                    logger.error(f"Failed to trigger all GitHub pipelines for build {build.id}")
+                    await db.commit()
                 
     except Exception as e:
         logger.error(f"Error in process_pending_build: {e}")
