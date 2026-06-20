@@ -7,6 +7,7 @@ from sqlalchemy import select, update
 from app.database import async_session
 from app.models.build import Build
 from app.services.github_service import GitHubService
+from app.services.gitlab_service import GitLabService
 
 logger = logging.getLogger("webtoapp.cron")
 
@@ -30,42 +31,59 @@ async def process_pending_build():
             build.started_at = datetime.now(timezone.utc)
             await db.commit()
             
-            # Trigger Github pipeline
+            # 1. Try GitLab (Primary)
             try:
-                github = GitHubService(platform=build.platform, account=1)
+                gitlab = GitLabService(platform=build.platform)
                 variables = build.variables.copy() if build.variables else {}
-                variables["_build_provider"] = "github"
+                variables["_build_provider"] = "gitlab"
                 
-                pipeline = github.trigger_pipeline(variables)
+                pipeline = gitlab.trigger_pipeline(variables)
                 
                 build.pipeline_id = pipeline.get("id")
                 build.variables = variables
                 
-                logger.info(f"GitHub workflow triggered for build {build.id} (platform={build.platform}, account=1)")
-                
+                logger.info(f"GitLab pipeline triggered for build {build.id} (platform={build.platform})")
                 await db.commit()
-            except Exception as e:
-                logger.warning(f"Failed to trigger GitHub 1 pipeline for build {build.id}: {e}")
                 
-                # Fallback to GitHub 2
+            except Exception as e_gl:
+                logger.warning(f"Failed to trigger GitLab pipeline for build {build.id}: {e_gl}")
+                
+                # 2. Fallback to GitHub 1
                 try:
-                    github2 = GitHubService(platform=build.platform, account=2)
+                    github = GitHubService(platform=build.platform, account=1)
                     variables = build.variables.copy() if build.variables else {}
-                    variables["_build_provider"] = "github2"
+                    variables["_build_provider"] = "github"
                     
-                    pipeline = github2.trigger_pipeline(variables)
+                    pipeline = github.trigger_pipeline(variables)
                     
                     build.pipeline_id = pipeline.get("id")
                     build.variables = variables
                     
-                    logger.info(f"GitHub workflow triggered for build {build.id} (platform={build.platform}, account=2)")
+                    logger.info(f"GitHub 1 workflow triggered for build {build.id} (platform={build.platform})")
+                    await db.commit()
                     
-                    await db.commit()
-                except Exception as e2:
-                    build.status = "failed"
-                    build.error_message = f"Failed to trigger GitHub pipelines: 1={str(e)}, 2={str(e2)}"
-                    logger.error(f"Failed to trigger all GitHub pipelines for build {build.id}")
-                    await db.commit()
+                except Exception as e_gh1:
+                    logger.warning(f"Failed to trigger GitHub 1 pipeline for build {build.id}: {e_gh1}")
+                    
+                    # 3. Fallback to GitHub 2
+                    try:
+                        github2 = GitHubService(platform=build.platform, account=2)
+                        variables = build.variables.copy() if build.variables else {}
+                        variables["_build_provider"] = "github2"
+                        
+                        pipeline = github2.trigger_pipeline(variables)
+                        
+                        build.pipeline_id = pipeline.get("id")
+                        build.variables = variables
+                        
+                        logger.info(f"GitHub 2 workflow triggered for build {build.id} (platform={build.platform})")
+                        await db.commit()
+                        
+                    except Exception as e_gh2:
+                        build.status = "failed"
+                        build.error_message = f"All pipelines failed: GL={str(e_gl)}, GH1={str(e_gh1)}, GH2={str(e_gh2)}"
+                        logger.error(f"Failed to trigger any pipeline for build {build.id}")
+                        await db.commit()
                 
     except Exception as e:
         logger.error(f"Error in process_pending_build: {e}")
