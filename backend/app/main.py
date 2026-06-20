@@ -21,8 +21,15 @@ app = FastAPI(
     redoc_url="/api/redoc" if settings.debug else None,
 )
 
+from app.cron import start_scheduler
+
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+@app.on_event("startup")
+async def startup_event():
+    start_scheduler()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -102,16 +109,6 @@ async def health():
         checks["database"] = f"fail: {str(e)[:80]}"
         healthy = False
 
-    # Redis
-    try:
-        import redis, os
-        redis_url = os.environ.get("REDIS_URL", "redis://redis:6379/0")
-        r = redis.from_url(redis_url, socket_timeout=2)
-        r.ping()
-        checks["redis"] = "ok"
-    except Exception as e:
-        checks["redis"] = f"fail: {str(e)[:80]}"
-        healthy = False
 
     # Stuck builds
     try:

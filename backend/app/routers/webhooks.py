@@ -52,6 +52,48 @@ async def gitlab_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     return {"status": "ok"}
 
 
+# ─── GitHub Webhook ──────────────────────────────────────
+
+@router.post("/github")
+async def github_webhook(request: Request, db: AsyncSession = Depends(get_db)):
+    sig = request.headers.get("X-Hub-Signature-256")
+    if not sig and settings.github_webhook_secret:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing signature")
+        
+    payload = await request.body()
+    
+    if settings.github_webhook_secret:
+        mac = hmac.new(settings.github_webhook_secret.encode(), msg=payload, digestmod=hashlib.sha256)
+        expected_sig = "sha256=" + mac.hexdigest()
+        if not hmac.compare_digest(expected_sig, sig):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid signature")
+
+    event = request.headers.get("X-GitHub-Event")
+    
+    if event == "workflow_run":
+        body = json.loads(payload)
+        workflow_run = body.get("workflow_run", {})
+        pipeline_id = workflow_run.get("id")
+        
+        gh_status = workflow_run.get("status")
+        conclusion = workflow_run.get("conclusion")
+        
+        status_map = {
+            "queued": "pending",
+            "in_progress": "running",
+            "completed": "success" if conclusion == "success" else "failed",
+        }
+        
+        pipeline_status = status_map.get(gh_status)
+        if conclusion and gh_status == "completed":
+            pipeline_status = status_map["completed"]
+            
+        if pipeline_id and pipeline_status:
+            await handle_build_webhook(pipeline_id, pipeline_status, body, db)
+
+    return {"status": "ok"}
+
+
 # ─── Stripe Webhook ──────────────────────────────────────
 
 @router.post("/stripe")

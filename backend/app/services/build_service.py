@@ -33,17 +33,17 @@ def _save_build_log(build_id: str, content: str, suffix: str = ""):
         logger.error(f"Failed to save build log {filepath}: {e}")
 
 
-async def _fetch_pipeline_logs(gitlab: GitLabService, pipeline_id: int) -> str:
-    """Fetch all job logs from a GitLab pipeline."""
+async def _fetch_pipeline_logs(service, pipeline_id: int) -> str:
+    """Fetch all job logs from a GitLab/GitHub pipeline."""
     try:
-        jobs = gitlab.get_pipeline_jobs(pipeline_id)
+        jobs = service.get_pipeline_jobs(pipeline_id)
         logs = []
         for job in jobs:
             job_name = job.get("name", "unknown")
             job_status = job.get("status", "unknown")
             logs.append(f"=== Job: {job_name} (status: {job_status}) ===")
             try:
-                job_log = gitlab.get_job_log(job["id"])
+                job_log = service.get_job_log(job["id"])
                 logs.append(job_log)
             except Exception as e:
                 logs.append(f"[Failed to fetch log: {e}]")
@@ -206,44 +206,10 @@ async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "
     )
     db.add(build)
     await db.flush()
-
-    # Try GitLab first, fallback to GitHub if quota exceeded
-    build_provider = "gitlab"
-    try:
-        gitlab = GitLabService(platform=platform)
-        pipeline = gitlab.trigger_pipeline(variables)
-        build.pipeline_id = pipeline.get("id")
-        build.status = "building"
-        build.started_at = datetime.now(timezone.utc)
-        logger.info(f"GitLab pipeline {build.pipeline_id} triggered for order {order_id} (platform={platform})")
-    except Exception as gitlab_error:
-        gitlab_err_str = str(gitlab_error).lower()
-        is_quota = "quota" in gitlab_err_str or "429" in gitlab_err_str or "minutes" in gitlab_err_str or "exceeded" in gitlab_err_str
-
-        if is_quota and settings.github_token and settings.github_repo:
-            # Fallback to GitHub Actions
-            logger.warning(f"GitLab quota exceeded, falling back to GitHub Actions for order {order_id}")
-            try:
-                github = GitHubService(platform=platform)
-                pipeline = github.trigger_pipeline(variables)
-                build.pipeline_id = pipeline.get("id")
-                build.status = "building"
-                build.started_at = datetime.now(timezone.utc)
-                build_provider = "github"
-                logger.info(f"GitHub workflow {build.pipeline_id} triggered for order {order_id} (platform={platform})")
-            except Exception as github_error:
-                build.status = "failed"
-                build.error_message = f"GitLab: {gitlab_error} | GitHub fallback: {github_error}"
-                logger.error(f"Both GitLab and GitHub failed for order {order_id}: GitLab={gitlab_error}, GitHub={github_error}")
-        else:
-            build.status = "failed"
-            build.error_message = str(gitlab_error)
-            logger.error(f"Failed to trigger pipeline for order {order_id}: {gitlab_error}")
-
-    build.variables = {**variables, "_build_provider": build_provider}
-
-    await db.flush()
     await db.refresh(build)
+    
+    logger.info(f"Build {build.id} queued (status=pending) for order {order_id} (platform={platform})")
+    
     return build
 
 
@@ -263,11 +229,15 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.completed_at = now
 
         # Download artifacts and save build log
-        gitlab = GitLabService(platform=build.platform)
+        if build.variables and build.variables.get("_build_provider") == "github":
+            service = GitHubService(platform=build.platform)
+        else:
+            service = GitLabService(platform=build.platform)
 
         # Save success log for reference
         try:
-            full_log = await _fetch_pipeline_logs(gitlab, pipeline_id)
+            full_log = await _fetch_pipeline_logs(service, pipeline_id)
+
             build.log = full_log
             _save_build_log(str(build.id), full_log)
         except Exception as e:
@@ -275,7 +245,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         try:
             if build.platform == "desktop":
                 # Desktop build: download .exe
-                exe_url = await gitlab.download_artifact(
+                exe_url = await service.download_artifact(
                     pipeline_id,
                     "dist/*.exe",
                     f"builds/{build.order_id}",
@@ -284,7 +254,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                     build.exe_url = exe_url
             else:
                 # Android build: download .apk and .aab
-                apk_url = await gitlab.download_artifact(
+                apk_url = await service.download_artifact(
                     pipeline_id,
                     "app/build/outputs/apk/release/app-release.apk",
                     f"builds/{build.order_id}",
@@ -292,7 +262,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 if apk_url:
                     build.apk_url = apk_url
 
-                aab_url = await gitlab.download_artifact(
+                aab_url = await service.download_artifact(
                     pipeline_id,
                     "app/build/outputs/bundle/release/app-release.aab",
                     f"builds/{build.order_id}",
@@ -305,7 +275,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 order = result.scalar_one_or_none()
                 is_free = order and order.amount == 0
                 if not is_free:
-                    keystore_url = await gitlab.download_artifact(
+                    keystore_url = await service.download_artifact(
                         pipeline_id,
                         "keystore.jks",
                         f"builds/{build.order_id}",
@@ -343,8 +313,12 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.completed_at = now
 
         # Fetch pipeline job logs for failure analysis
-        gitlab = GitLabService(platform=build.platform)
-        full_log = await _fetch_pipeline_logs(gitlab, pipeline_id)
+        if build.variables and build.variables.get("_build_provider") == "github":
+            service = GitHubService(platform=build.platform)
+        else:
+            service = GitLabService(platform=build.platform)
+            
+        full_log = await _fetch_pipeline_logs(service, pipeline_id)
         build.log = full_log
 
         # Extract error summary from log

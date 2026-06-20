@@ -59,6 +59,7 @@ class Settings(BaseSettings):
     # GitHub fallback (when GitLab CI quota exceeded)
     github_token: str = ""
     github_repo: str = "mokashiswapnil/webtoapp"
+    github_webhook_secret: str = ""
 
     # S3/R2
     s3_endpoint: str = ""
