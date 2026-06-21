@@ -99,9 +99,54 @@ async def process_pending_build():
         logger.error(f"Error in process_pending_build: {e}")
 
 
+async def sync_active_builds():
+    """Poll the status of currently active ('building') builds and update them if complete."""
+    try:
+        async with async_session() as db:
+            result = await db.execute(
+                select(Build)
+                .where(Build.status == "building")
+            )
+            active_builds = result.scalars().all()
+            if not active_builds:
+                return
+
+            from app.services.build_service import handle_build_webhook
+
+            for build in active_builds:
+                if not build.pipeline_id:
+                    continue
+
+                provider_name = build.variables.get("_build_provider") if build.variables else None
+                if not provider_name:
+                    provider_name = "gitlab"
+
+                try:
+                    if provider_name in ["github1", "github"]:
+                        service = GitHubService(platform=build.platform, account=1)
+                    elif provider_name == "github2":
+                        service = GitHubService(platform=build.platform, account=2)
+                    else:
+                        service = GitLabService(platform=build.platform)
+
+                    pipeline_data = service.get_pipeline(build.pipeline_id)
+                    remote_status = pipeline_data.get("status")
+
+                    if remote_status in ["success", "failed", "canceled"]:
+                        logger.info(f"Sync active builds: Build {build.id} (pipeline {build.pipeline_id}) finished with status {remote_status} on {provider_name}")
+                        await handle_build_webhook(build.pipeline_id, remote_status, pipeline_data, db)
+                        await db.commit()
+                except Exception as e:
+                    logger.warning(f"Failed to sync build {build.id} (pipeline {build.pipeline_id}) via {provider_name}: {e}")
+
+    except Exception as e:
+        logger.error(f"Error in sync_active_builds: {e}")
+
+
 scheduler = AsyncIOScheduler()
 scheduler.add_job(process_pending_build, 'interval', minutes=1)
+scheduler.add_job(sync_active_builds, 'interval', minutes=1)
 
 def start_scheduler():
     scheduler.start()
-    logger.info("Started cron scheduler for pending builds")
+    logger.info("Started cron scheduler for pending builds and active build sync")
