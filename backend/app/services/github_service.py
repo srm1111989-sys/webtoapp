@@ -31,15 +31,33 @@ class GitHubService:
     def _api_url(self, path: str) -> str:
         return f"https://api.github.com/repos/{self.repo}{path}"
 
+    _ALLOWED_INPUTS_ANDROID = {
+        "APP_NAME", "APP_URL", "APP_HOST", "PRIMARY_COLOR", "SECONDARY_COLOR",
+        "STATUS_BAR_COLOR", "PACKAGE_NAME", "ORDER_ID", "ICON_URL", "SPLASH_URL",
+        "FEATURES_JSON", "NAVIGATION_ITEMS", "FIREBASE_ENABLED", "_build_provider",
+        "FIREBASE_CONFIG", "ADMOB_ENABLED", "ADMOB_CONFIG", "TRIAL_DAYS",
+        "PURCHASE_URL", "BUILD_AAB"
+    }
+
+    _ALLOWED_INPUTS_DESKTOP = {
+        "APP_NAME", "APP_URL", "ORDER_ID", "PRIMARY_COLOR", "WINDOW_WIDTH",
+        "WINDOW_HEIGHT", "MIN_WIDTH", "MIN_HEIGHT", "SHOW_TITLE_BAR",
+        "SHOW_MENU_BAR", "ENABLE_SYSTEM_TRAY", "_build_provider", "START_MAXIMIZED",
+        "START_FULLSCREEN", "ICON_URL", "SHOW_WATERMARK"
+    }
+
     def trigger_pipeline(self, variables: dict) -> dict:
         """Trigger a GitHub Actions workflow dispatch with variables as inputs."""
+        allowed_keys = self._ALLOWED_INPUTS_DESKTOP if self.platform == "desktop" else self._ALLOWED_INPUTS_ANDROID
+        filtered_inputs = {k: str(v) for k, v in variables.items() if k in allowed_keys}
+
         with httpx.Client(timeout=30) as client:
             response = client.post(
                 self._api_url(f"/actions/workflows/{self.workflow_file}/dispatches"),
                 headers=self.headers,
                 json={
                     "ref": "main",
-                    "inputs": {k: str(v) for k, v in variables.items()},
+                    "inputs": filtered_inputs,
                 },
             )
             response.raise_for_status()
