@@ -24,6 +24,31 @@ router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
 SUPPORT_EMAIL = "support@websitetoapp.app"
 
+def load_docs_context() -> str:
+    paths_to_try = [
+        os.path.join(os.path.dirname(__file__), "..", "docs"),
+        os.path.join(os.path.dirname(__file__), "..", "..", "docs"),
+        os.path.join(os.getcwd(), "docs"),
+        os.path.join(os.getcwd(), "backend", "app", "docs"),
+        "/app/docs",
+    ]
+    docs_content = ""
+    for docs_dir in paths_to_try:
+        if os.path.exists(docs_dir) and os.path.isdir(docs_dir):
+            found = False
+            for filename in os.listdir(docs_dir):
+                if filename.endswith(".md"):
+                    file_path = os.path.join(docs_dir, filename)
+                    try:
+                        with open(file_path, "r", encoding="utf-8") as f:
+                            docs_content += f"\n\n--- Document: {filename} ---\n{f.read()}"
+                            found = True
+                    except Exception:
+                        pass
+            if found:
+                break
+    return docs_content
+
 optional_security = HTTPBearer(auto_error=False)
 
 # Helper to resolve optional user from token
@@ -137,6 +162,7 @@ async def chat_endpoint(
     try:
         init_google_auth()
 
+        documentation_context = load_docs_context()
         system_instruction = (
             "You are WebToApp AI Assistant, a helpful support copilot for the WebToApp platform. "
             "Help users answer questions about converting websites into Android & iOS apps. "
@@ -149,7 +175,9 @@ async def chat_endpoint(
             "You can also submit support requests for them using 'send_support_email'. "
             "If they ask for user-specific data but are not logged in (user is None), politely ask them to login first.\n\n"
             "Format your answers beautifully using Markdown. Make sure any links you return are clickable using standard markdown: [Link Text](URL). "
-            "Be precise, friendly, and direct."
+            "Be precise, friendly, and direct.\n\n"
+            "Use the following official product documentation to answer the user's questions:\n"
+            f"{documentation_context}"
         )
 
         model = genai.GenerativeModel(
