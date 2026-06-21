@@ -1,25 +1,35 @@
-import { useState, useEffect, type FormEvent } from 'react'
-import { MessageCircle, X, Send, Loader2, CheckCircle, AlertTriangle } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { MessageCircle, X, Send, Loader2, AlertTriangle, Trash2 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 
+interface Message {
+  id: string
+  role: 'user' | 'bot'
+  text: string
+}
+
 export default function FloatingSupportButton() {
-  const { user } = useAuthStore()
+  const { user, accessToken } = useAuthStore()
   const [open, setOpen] = useState(false)
-  const [email, setEmail] = useState('')
-  const [subject, setSubject] = useState('')
-  const [message, setMessage] = useState('')
-  const [sending, setSending] = useState(false)
-  const [done, setDone] = useState(false)
-  const [error, setError] = useState('')
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 'welcome',
+      role: 'bot',
+      text: 'Hello! I am **WebToApp Assistant**, your AI helper. I can answer questions about converting websites into Android & iOS apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
+    }
+  ])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const chatEndRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { if (user?.email) setEmail(user.email) }, [user?.email])
-
+  // Auto-scroll to bottom
   useEffect(() => {
-    if (!done) return
-    const t = setTimeout(() => { setOpen(false); setDone(false); setSubject(''); setMessage('') }, 2500)
-    return () => clearTimeout(t)
-  }, [done])
+    if (open) {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages, loading, open])
 
+  // ESC to close
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
@@ -30,35 +40,89 @@ export default function FloatingSupportButton() {
   // Hide on admin pages
   if (window.location.pathname.startsWith('/admin')) return null
 
-  const submit = async (e: FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    if (!email.trim() || !subject.trim() || !message.trim()) {
-      setError('All fields are required'); return
+    if (!input.trim() || loading) return
+
+    const userQuestion = input.trim()
+    const userMessage: Message = {
+      id: Math.random().toString(),
+      role: 'user',
+      text: userQuestion
     }
-    setSending(true)
+
+    setMessages((prev) => [...prev, userMessage])
+    setInput('')
+    setLoading(true)
+
     try {
-      const res = await fetch('/api/support', {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
+      }
+
+      const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          subject,
-          message,
-          pageUrl: window.location.href,
-          userAgent: navigator.userAgent,
-          userId: user?.id || null,
-          userEmail: user?.email || null,
-        }),
+        headers,
+        body: JSON.stringify({ question: userQuestion }),
       })
+
       const data = await res.json().catch(() => ({}))
-      if (!res.ok) throw new Error(data.detail || data.error || `Failed (${res.status})`)
-      setDone(true)
+      if (!res.ok) throw new Error(data.detail || data.error || `Error (${res.status})`)
+
+      const botMessage: Message = {
+        id: Math.random().toString(),
+        role: 'bot',
+        text: data.answer || 'I received empty content.'
+      }
+      setMessages((prev) => [...prev, botMessage])
     } catch (err: any) {
-      setError(err.message || 'Failed to send. Please email support@websitetoapp.app directly.')
+      console.error(err)
+      const botError: Message = {
+        id: Math.random().toString(),
+        role: 'bot',
+        text: `❌ **Error:** ${err.message || 'Failed to query the AI assistant.'}`
+      }
+      setMessages((prev) => [...prev, botError])
     } finally {
-      setSending(false)
+      setLoading(false)
     }
+  }
+
+  const handleClearChat = () => {
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'bot',
+        text: 'Chat cleared. How else can I help you today?'
+      }
+    ])
+  }
+
+  const parseMarkdown = (text: string) => {
+    if (!text) return ''
+    
+    // Simple HTML escaping to avoid injections
+    let escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+
+    // Bold (**text**)
+    escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+
+    // Markdown Links [text](url) -> custom styling with underline/indigo color
+    escaped = escaped.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener" class="text-indigo-600 hover:text-indigo-800 underline font-medium">$1</a>'
+    )
+
+    // Line breaks
+    escaped = escaped.replace(/\n/g, '<br>')
+    
+    return escaped
   }
 
   return (
@@ -75,68 +139,89 @@ export default function FloatingSupportButton() {
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:justify-end p-0 sm:p-5 bg-black/40" onClick={() => !sending && setOpen(false)}>
-          <div className="w-full sm:w-[420px] max-h-[90vh] bg-white border border-gray-200 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div 
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:justify-end p-0 sm:p-5 bg-black/40" 
+          onClick={() => !loading && setOpen(false)}
+        >
+          <div 
+            className="w-full sm:w-[420px] h-[100vh] sm:h-[550px] max-h-[100vh] sm:max-h-[90vh] bg-white border border-gray-200 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
               <h3 className="font-semibold flex items-center gap-2 text-gray-900">
-                <MessageCircle className="w-5 h-5 text-primary-600" /> Need help?
+                <MessageCircle className="w-5 h-5 text-primary-600" /> WebToApp AI Assistant
               </h3>
-              <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-gray-900" disabled={sending}>
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={handleClearChat} 
+                  title="Clear chat"
+                  className="text-gray-500 hover:text-red-600 p-1 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => setOpen(false)} 
+                  className="text-gray-500 hover:text-gray-900 p-1"
+                  disabled={loading}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
-            {done ? (
-              <div className="p-8 text-center">
-                <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                <p className="font-medium text-gray-900">Message sent</p>
-                <p className="text-sm text-gray-500 mt-1">We'll reply within 24 hours.</p>
-              </div>
-            ) : (
-              <form onSubmit={submit} className="p-4 space-y-3 overflow-y-auto">
-                <div>
-                  <label className="text-xs text-gray-500 block mb-1">Your email</label>
-                  <input
-                    type="email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={sending}
-                    placeholder="you@example.com"
-                    className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:border-primary-500"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 block mb-1">Subject</label>
-                  <input
-                    type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required disabled={sending}
-                    maxLength={200}
-                    placeholder="What's the issue?"
-                    className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:border-primary-500"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 block mb-1">Message</label>
-                  <textarea
-                    value={message} onChange={(e) => setMessage(e.target.value)} required disabled={sending}
-                    maxLength={5000} rows={5}
-                    placeholder="Describe what you're trying to do and what went wrong…"
-                    className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:border-primary-500 resize-none"
-                  />
-                </div>
-                <p className="text-[11px] text-gray-500">
-                  Page: <span className="font-mono">{window.location.pathname}</span>
-                </p>
-                {error && (
-                  <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg p-2">
-                    <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" /><span>{error}</span>
-                  </div>
-                )}
-                <button
-                  type="submit" disabled={sending}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary-600 text-white font-medium text-sm hover:bg-primary-700 disabled:opacity-50"
+            {/* Chat Body */}
+            <div className="flex-grow p-4 space-y-4 overflow-y-auto bg-gray-100">
+              {messages.map((msg) => (
+                <div 
+                  key={msg.id} 
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  {sending ? 'Sending…' : 'Send message'}
+                  <div 
+                    className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
+                      msg.role === 'user' 
+                        ? 'bg-primary-600 text-white rounded-br-none' 
+                        : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none'
+                    }`}
+                    dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.text) }}
+                  />
+                </div>
+              ))}
+              
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-none px-4 py-3 text-sm shadow-sm flex items-center gap-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                </div>
+              )}
+              
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Footer Form */}
+            <div className="p-3 border-t border-gray-200 bg-white">
+              <form onSubmit={handleSend} className="flex gap-2">
+                <input
+                  type="text" 
+                  value={input} 
+                  onChange={(e) => setInput(e.target.value)} 
+                  required 
+                  disabled={loading}
+                  placeholder="Ask a question..."
+                  className="flex-grow px-4 py-2 rounded-full border border-gray-300 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+                />
+                <button
+                  type="submit" 
+                  disabled={loading || !input.trim()}
+                  className="bg-primary-600 hover:bg-primary-700 text-white rounded-full p-2.5 flex items-center justify-center transition-colors disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </button>
               </form>
-            )}
+            </div>
           </div>
         </div>
       )}
