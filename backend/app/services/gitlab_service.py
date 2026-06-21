@@ -130,6 +130,31 @@ class GitLabService:
         logger.warning(f"Artifact {artifact_path} not found in any job for pipeline {pipeline_id}")
         return None
 
+    def has_quota(self) -> bool:
+        """Return True if this GitLab namespace has shared-runner compute minutes remaining."""
+        try:
+            # Get the namespace path from the project
+            with httpx.Client(timeout=10) as client:
+                proj = client.get(self._api_url(""), headers=self.headers)
+                proj.raise_for_status()
+                ns_path = proj.json().get("namespace", {}).get("path", "")
+            if not ns_path:
+                return True
+            with httpx.Client(timeout=10) as client:
+                r = client.get(f"{self.base_url}/api/v4/namespaces/{ns_path}", headers=self.headers)
+                r.raise_for_status()
+                data = r.json()
+            limit = (data.get("shared_runners_minutes_limit") or 0) + (data.get("extra_shared_runners_minutes_limit") or 0)
+            used  = data.get("minutes_last_year") or 0
+            if limit > 0 and used >= limit:
+                logger.info(f"GitLab quota exhausted: {used}/{limit} minutes used for namespace '{ns_path}'")
+                return False
+            logger.info(f"GitLab quota OK: {used}/{limit} minutes used for namespace '{ns_path}'")
+            return True
+        except Exception as e:
+            logger.warning(f"GitLab quota check failed ({e}), assuming available")
+            return True
+
     def cancel_pipeline(self, pipeline_id: int) -> dict:
         """Cancel a running pipeline."""
         with httpx.Client(timeout=30) as client:

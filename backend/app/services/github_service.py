@@ -88,6 +88,33 @@ class GitHubService:
             response.raise_for_status()
             return response.json().get("jobs", [])
 
+    def has_quota(self) -> bool:
+        """Return True if this GitHub account has Actions minutes remaining."""
+        try:
+            username = self.repo.split("/")[0]
+            with httpx.Client(timeout=10) as client:
+                r = client.get(
+                    f"https://api.github.com/users/{username}/settings/billing/actions",
+                    headers=self.headers,
+                )
+            if r.status_code == 404:
+                # Org accounts use a different endpoint — assume available
+                return True
+            if r.status_code != 200:
+                logger.warning(f"GitHub quota check for '{username}' returned {r.status_code}, assuming available")
+                return True
+            data = r.json()
+            used     = data.get("total_minutes_used", 0)
+            included = data.get("included_minutes", 0)
+            if included > 0 and used >= included:
+                logger.info(f"GitHub quota exhausted for '{username}': {used}/{included} minutes used")
+                return False
+            logger.info(f"GitHub quota OK for '{username}': {used}/{included} minutes used")
+            return True
+        except Exception as e:
+            logger.warning(f"GitHub quota check failed ({e}), assuming available")
+            return True
+
     def get_job_log(self, job_id: int) -> str:
         """Get logs for a specific job."""
         with httpx.Client(timeout=30) as client:
