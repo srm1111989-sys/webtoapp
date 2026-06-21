@@ -11,12 +11,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from typing import Optional, List
 
+from fastapi.security import HTTPBearer
 from app.database import get_db
 from app.models.user import User
 from app.models.app_config import AppConfig
 from app.models.build import Build
 from app.models.order import Order
-from app.dependencies import security
 from app.utils.security import decode_token
 from app.utils.email import send_email
 
@@ -24,9 +24,11 @@ router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
 SUPPORT_EMAIL = "support@websitetoapp.app"
 
+optional_security = HTTPBearer(auto_error=False)
+
 # Helper to resolve optional user from token
 async def get_optional_user(
-    credentials: Optional[any] = Depends(security),
+    credentials: Optional[any] = Depends(optional_security),
     db: AsyncSession = Depends(get_db),
 ) -> Optional[User]:
     if not credentials:
