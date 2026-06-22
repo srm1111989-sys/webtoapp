@@ -1,4 +1,5 @@
 import os
+import re
 import uuid
 import json
 import logging
@@ -334,16 +335,23 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         full_log = await _fetch_pipeline_logs(service, pipeline_id)
         build.log = full_log
 
-        # Extract error summary from log
+        # Extract error summary from log, stripping internal CI references
+        _ci_skip = re.compile(
+            r'github\.com|gitlab\.com|gitHub|gitLab|pipeline|workflow|actions/'
+            r'|runner|job\s+#\d+|artifact|token|glpat-|github_pat_',
+            re.IGNORECASE,
+        )
         error_lines = []
         for line in full_log.split("\n"):
             ll = line.lower()
             if any(kw in ll for kw in ["error:", "fatal:", "failure", "exception", "failed"]):
-                error_lines.append(line.strip())
+                cleaned = line.strip()
+                if not _ci_skip.search(cleaned):
+                    error_lines.append(cleaned)
         if error_lines:
-            build.error_message = "\n".join(error_lines[-10:])  # Last 10 error lines
+            build.error_message = "\n".join(error_lines[-10:])
         else:
-            build.error_message = "Pipeline failed. Check build log for details."
+            build.error_message = "Build failed. Please contact support@websitetoapp.app with your order number."
 
         # Save log to persistent file
         _save_build_log(str(build.id), full_log)

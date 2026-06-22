@@ -13,28 +13,42 @@ def send_email(to: str, subject: str, html: str) -> bool:
         subject=subject,
         mail_from=(settings.smtp_from_name, settings.smtp_from_email),
     )
-    response = message.send(
-        to=to,
-        smtp={
-            "host": settings.smtp_host,
-            "port": settings.smtp_port,
-            "user": settings.smtp_user,
-            "password": settings.smtp_password,
-            "tls": True,
-        },
-    )
+    use_starttls = settings.smtp_port == 587
+    smtp_params: dict = {
+        "host": settings.smtp_host,
+        "port": settings.smtp_port,
+        "user": settings.smtp_user,
+        "password": settings.smtp_password,
+    }
+    if use_starttls:
+        smtp_params["starttls"] = True
+    else:
+        smtp_params["tls"] = True
+    response = message.send(to=to, smtp=smtp_params)
     return response.status_code == 250
 
 
 def send_verification_email(to: str, token: str) -> bool:
     link = f"{settings.app_url}/auth/verify?token={token}"
     html = f"""
-    <h2>Verify your email</h2>
-    <p>Click the link below to verify your email address:</p>
-    <a href="{link}">Verify Email</a>
-    <p>This link will expire in 24 hours.</p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #4f46e5; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 22px;">Verify Your Email</h1>
+        <p style="color: #c7d2fe; margin: 8px 0 0; font-size: 14px;">WebToApp — Website to Native App Converter</p>
+      </div>
+      <div style="padding: 28px 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; background: #ffffff;">
+        <p style="font-size: 16px; color: #111827; margin: 0 0 16px;">Thanks for signing up! Please verify your email address to activate your account.</p>
+        <div style="text-align: center; margin: 28px 0;">
+          <a href="{link}" style="background: #4f46e5; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; display: inline-block;">Verify My Email</a>
+        </div>
+        <p style="font-size: 13px; color: #6b7280;">Or copy and paste this link into your browser:</p>
+        <p style="font-size: 12px; color: #4f46e5; word-break: break-all;">{link}</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+        <p style="font-size: 12px; color: #9ca3af; text-align: center;">This link expires in 24 hours. If you didn't create an account, you can safely ignore this email.</p>
+      </div>
+    </div>
     """
-    return send_email(to, f"Verify your email - {settings.app_name}", html)
+    return send_email(to, f"Verify your email — {settings.app_name}", html)
 
 
 def send_order_confirmation_email(
@@ -242,13 +256,13 @@ def send_playstore_announcement(
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 28px 24px; text-align: center; border-radius: 12px 12px 0 0;">
         <h1 style="color: white; margin: 0 0 6px; font-size: 22px;">New Plan: Assisted Play Store Publishing</h1>
-        <p style="color: #c7d2fe; margin: 0; font-size: 14px;">We publish your Android app for you — just $10</p>
+        <p style="color: #c7d2fe; margin: 0; font-size: 14px;">We publish your Android app for you — just $15</p>
       </div>
       <div style="padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
         <p style="font-size: 16px; color: #111827;">Hi {user_name},</p>
         <p style="font-size: 14px; color: #374151; line-height: 1.6;">
           We just launched our <strong>Assisted Google Play Store Publishing</strong> service.
-          Skip the confusing Play Console setup — our experts handle your entire app submission for a one-time <strong>$10 flat fee</strong>.
+          Skip the confusing Play Console setup — our experts handle your entire app submission for a one-time <strong>$15 flat fee</strong>.
         </p>
         {app_section}
         <div style="background: #f5f3ff; border: 1px solid #e0d9ff; border-radius: 8px; padding: 16px; margin: 16px 0;">
@@ -263,7 +277,7 @@ def send_playstore_announcement(
         </div>
         <div style="text-align: center; margin: 24px 0;">
           <a href="{publish_url}" style="background: #4f46e5; color: white; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
-            Publish My App — $10
+            Publish My App — $15
           </a>
         </div>
         <p style="font-size: 12px; color: #9ca3af; text-align: center;">One-time payment. No subscription. You keep full ownership.</p>
@@ -272,15 +286,26 @@ def send_playstore_announcement(
       </div>
     </div>
     """
-    return send_email(to, "New: We'll Publish Your App on Google Play Store — $10 Flat", html)
+    return send_email(to, "New: We'll Publish Your App on Google Play Store — $15 Flat", html)
 
 
 def send_reset_email(to: str, token: str) -> bool:
     link = f"{settings.app_url}/auth/reset-password?token={token}"
     html = f"""
-    <h2>Reset your password</h2>
-    <p>Click the link below to reset your password:</p>
-    <a href="{link}">Reset Password</a>
-    <p>This link will expire in 1 hour.</p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #dc2626; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 22px;">Reset Your Password</h1>
+      </div>
+      <div style="padding: 28px 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+        <p style="font-size: 16px; color: #111827; margin: 0 0 16px;">We received a request to reset your password for your WebToApp account.</p>
+        <div style="text-align: center; margin: 28px 0;">
+          <a href="{link}" style="background: #dc2626; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; display: inline-block;">Reset Password</a>
+        </div>
+        <p style="font-size: 13px; color: #6b7280;">Or copy and paste this link into your browser:</p>
+        <p style="font-size: 12px; color: #dc2626; word-break: break-all;">{link}</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+        <p style="font-size: 12px; color: #9ca3af; text-align: center;">This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email.</p>
+      </div>
+    </div>
     """
-    return send_email(to, f"Reset your password - {settings.app_name}", html)
+    return send_email(to, f"Reset your password — {settings.app_name}", html)
