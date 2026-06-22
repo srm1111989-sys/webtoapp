@@ -179,6 +179,10 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     # Watermark for desktop builds
     variables["SHOW_WATERMARK"] = "true" if show_watermark else "false"
 
+    # Paid users always get AAB (for Play Store) in addition to APK
+    if platform == "android" and not is_free:
+        variables["BUILD_AAB"] = "true"
+
     # Desktop-specific variables
     if platform == "desktop":
         dc = app_config.desktop_config or {}
