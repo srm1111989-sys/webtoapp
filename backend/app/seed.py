@@ -78,8 +78,8 @@ PLANS = [
         "name": "Android Paid",
         "slug": "android-paid",
         "description": "All features, one-time payment",
-        "price_inr": 1000,     # $10 in cents (USD only)
-        "price_usd": 1000,     # $10 in cents
+        "price_inr": 207500,   # ₹2075 (~$25 at ₹83/USD)
+        "price_usd": 2500,     # $25 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "android",
@@ -140,8 +140,8 @@ PLANS = [
         "name": "Play Store Listing",
         "slug": "play-store-listing",
         "description": "We publish your app to Google Play Store on your behalf",
-        "price_inr": 83000,    # ₹830 (~$10)
-        "price_usd": 1000,     # $10 in cents
+        "price_inr": 124500,   # ₹1245 (~$15)
+        "price_usd": 1500,     # $15 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "android",
@@ -180,8 +180,8 @@ PLANS = [
         "name": "Desktop Paid",
         "slug": "desktop-paid",
         "description": "Full desktop app, one-time",
-        "price_inr": 1000,     # $10 in cents (USD only)
-        "price_usd": 1000,     # $10 in cents
+        "price_inr": 207500,   # ₹2075 (~$25 at ₹83/USD)
+        "price_usd": 2500,     # $25 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "desktop",

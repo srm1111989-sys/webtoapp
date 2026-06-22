@@ -13,6 +13,7 @@ import {
   Loader2,
   AlertCircle,
   FlaskConical,
+  Star,
 } from 'lucide-react'
 
 const statusStyles: Record<string, { dot: string; text: string }> = {
@@ -61,6 +62,9 @@ export default function Dashboard() {
     o.builds?.some((b) => b.status === 'success')
   ).length
   const recentOrders = orders.slice(0, 5)
+  const hasPremium = orders.some(
+    (o) => o.status === 'paid' && o.amount > 0
+  )
 
   const isLoading = ordersLoading || appsLoading
   const isError = ordersError || appsError
@@ -76,9 +80,17 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">
-            Welcome back, {user?.full_name ?? 'User'}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold text-gray-900">
+              Welcome back, {user?.full_name ?? 'User'}
+            </h1>
+            {hasPremium && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200">
+                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                Premium Plan
+              </span>
+            )}
+          </div>
           <p className="text-sm text-gray-500 mt-0.5">
             Manage your apps and track your orders
           </p>
