@@ -241,58 +241,60 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.completed_at = now
 
         # Download artifacts and save build log
-        if build.variables and build.variables.get("_build_provider") == "github":
+        provider = (build.variables or {}).get("_build_provider", "gitlab")
+        if provider in ("github", "github1"):
             service = GitHubService(platform=build.platform, account=1)
-        elif build.variables and build.variables.get("_build_provider") == "github2":
+            is_github = True
+        elif provider == "github2":
             service = GitHubService(platform=build.platform, account=2)
+            is_github = True
         else:
             service = GitLabService(platform=build.platform)
+            is_github = False
 
         # Save success log for reference
         try:
             full_log = await _fetch_pipeline_logs(service, pipeline_id)
-
             build.log = full_log
             _save_build_log(str(build.id), full_log)
         except Exception as e:
             logger.warning(f"Could not save success log for build {build.id}: {e}")
+
+        folder = f"builds/{build.order_id}"
         try:
             if build.platform == "desktop":
-                # Desktop build: download .exe
                 exe_url = await service.download_artifact(
                     pipeline_id,
-                    "dist/*.exe",
-                    f"builds/{build.order_id}",
+                    "desktop-exe" if is_github else "dist/*.exe",
+                    folder,
                 )
                 if exe_url:
                     build.exe_url = exe_url
             else:
-                # Android build: download .apk and .aab
                 apk_url = await service.download_artifact(
                     pipeline_id,
-                    "app/build/outputs/apk/release/app-release.apk",
-                    f"builds/{build.order_id}",
+                    "android-apk" if is_github else "app/build/outputs/apk/release/app-release.apk",
+                    folder,
                 )
                 if apk_url:
                     build.apk_url = apk_url
 
                 aab_url = await service.download_artifact(
                     pipeline_id,
-                    "app/build/outputs/bundle/release/app-release.aab",
-                    f"builds/{build.order_id}",
+                    "android-aab" if is_github else "app/build/outputs/bundle/release/app-release.aab",
+                    folder,
                 )
                 if aab_url:
                     build.aab_url = aab_url
 
-                # Download signing keystore (paid plans only)
                 result = await db.execute(select(Order).where(Order.id == build.order_id))
                 order = result.scalar_one_or_none()
                 is_free = order and order.amount == 0
                 if not is_free:
                     keystore_url = await service.download_artifact(
                         pipeline_id,
-                        "keystore.jks",
-                        f"builds/{build.order_id}",
+                        "keystore" if is_github else "keystore.jks",
+                        folder,
                     )
                     if keystore_url:
                         build.keystore_url = keystore_url

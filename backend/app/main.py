@@ -127,6 +127,18 @@ async def health():
     except:
         checks["stuck_builds"] = "unknown"
 
+    # Failed builds (last 24 hours)
+    try:
+        from app.database import async_session
+        async with async_session() as db:
+            result = await db.execute(text(
+                "SELECT count(*) FROM builds WHERE status = 'failed' "
+                "AND created_at > NOW() - INTERVAL '24 hours'"
+            ))
+            checks["failed_builds_24h"] = str(result.scalar())
+    except:
+        checks["failed_builds_24h"] = "unknown"
+
     # Disk
     try:
         import shutil
