@@ -1625,7 +1625,7 @@ function Step4PlanReview() {
                   <h3 className="font-semibold text-indigo-900">Publish App on Play Store</h3>
                 </div>
                 <div className="mt-1">
-                  <span className="text-2xl font-bold text-indigo-700">$10</span>
+                  <span className="text-2xl font-bold text-indigo-700">$15</span>
                   <span className="text-sm font-semibold text-indigo-500 ml-1">one-time</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Already have an app? We'll publish it for you.</p>
@@ -1840,7 +1840,7 @@ function Step4PlanReview() {
                   <div className="p-2 bg-indigo-100 rounded-xl"><Store className="w-6 h-6 text-indigo-600" /></div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Publish App on Play Store</h3>
-                    <p className="text-sm text-indigo-600 font-semibold">$10 one-time</p>
+                    <p className="text-sm text-indigo-600 font-semibold">$15 one-time</p>
                   </div>
                 </div>
                 <div className="space-y-3">
@@ -1874,7 +1874,7 @@ function Step4PlanReview() {
                     if (!publishForm.name || !publishForm.email || !publishForm.appName) return
                     setPublishServiceLoading(true)
                     try {
-                      const order = await createRazorpayOrder({ amount: 1000, currency: 'USD', receipt: `publish_${Date.now()}`, notes: { name: publishForm.name, email: publishForm.email, appName: publishForm.appName, websiteUrl: publishForm.websiteUrl, notes: publishForm.notes, service: 'play-store-publish' } })
+                      const order = await createRazorpayOrder({ amount: 1500, currency: 'USD', receipt: `publish_${Date.now()}`, notes: { name: publishForm.name, email: publishForm.email, appName: publishForm.appName, websiteUrl: publishForm.websiteUrl, notes: publishForm.notes, service: 'play-store-publish' } })
                       const options = {
                         key: order.razorpay_key_id, amount: order.amount, currency: order.currency,
                         name: 'WebToApp', description: 'Publish App on Google Play Store',
@@ -1895,7 +1895,7 @@ function Step4PlanReview() {
                   disabled={publishServiceLoading || !publishForm.name || !publishForm.email || !publishForm.appName}
                   className="mt-4 w-full py-3 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                 >
-                  {publishServiceLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Store className="w-4 h-4" /> Pay $10 &amp; Submit Request</>}
+                  {publishServiceLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Store className="w-4 h-4" /> Pay $15 &amp; Submit Request</>}
                 </button>
               </>
             )}
