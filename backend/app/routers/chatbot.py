@@ -1,6 +1,7 @@
 import os
 import json
 import uuid
+import time
 import google.auth
 from google.oauth2 import service_account
 import google.generativeai as genai
@@ -8,7 +9,7 @@ from google.generativeai.types import FunctionDeclaration, Tool
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, text
 from typing import Optional, List
 
 from fastapi.security import HTTPBearer
@@ -146,6 +147,35 @@ chatbot_tools = Tool(
     ]
 )
 
+# ── Observability & Telemetry database helpers ──
+
+async def ensure_telemetry_table(db: AsyncSession):
+    try:
+        await db.execute(text("""
+            CREATE TABLE IF NOT EXISTS chatbot_logs (
+                id SERIAL PRIMARY KEY,
+                question TEXT NOT NULL,
+                answer TEXT NOT NULL,
+                latency_ms INTEGER NOT NULL,
+                is_blocked BOOLEAN NOT NULL DEFAULT FALSE,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            );
+        """))
+        await db.commit()
+    except Exception as e:
+        print(f"Failed to ensure chatbot telemetry table: {e}")
+
+async def log_interaction(db: AsyncSession, question: str, answer: str, latency_ms: int, is_blocked: bool):
+    try:
+        await ensure_telemetry_table(db)
+        await db.execute(
+            text("INSERT INTO chatbot_logs (question, answer, latency_ms, is_blocked) VALUES (:q, :a, :l, :b)"),
+            {"q": question, "a": answer, "l": latency_ms, "b": is_blocked}
+        )
+        await db.commit()
+    except Exception as e:
+        print(f"Failed to log chatbot interaction: {e}")
+
 # ── Router endpoint ──
 
 @router.post("", response_model=ChatResponse)
@@ -157,9 +187,13 @@ async def chat_endpoint(
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
 
+    start_time = time.time()
+
     # Run input guardrails
     blocked, reason = IntentClassifier().is_blocked_question(req.question)
     if blocked:
+        latency_ms = int((time.time() - start_time) * 1000)
+        await log_interaction(db, req.question.strip(), reason, latency_ms, True)
         return ChatResponse(answer=reason)
 
     if not os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):
@@ -271,6 +305,49 @@ async def chat_endpoint(
                 break
 
         answer = response.text if response.text else "I could not formulate an answer."
+        latency_ms = int((time.time() - start_time) * 1000)
+        await log_interaction(db, req.question.strip(), answer, latency_ms, False)
         return ChatResponse(answer=answer)
     except Exception as e:
+        latency_ms = int((time.time() - start_time) * 1000)
+        await log_interaction(db, req.question.strip(), f"Agent execution failed: {str(e)}", latency_ms, False)
         raise HTTPException(status_code=500, detail=f"Agent execution failed: {str(e)}")
+
+@router.get("/metrics")
+async def chat_metrics(db: AsyncSession = Depends(get_db)):
+    try:
+        await ensure_telemetry_table(db)
+        
+        # 1. Total Queries
+        res_count = await db.execute(text("SELECT COUNT(*) FROM chatbot_logs"))
+        total_queries = res_count.scalar() or 0
+
+        # 2. Avg Latency
+        res_latency = await db.execute(text("SELECT AVG(latency_ms) FROM chatbot_logs"))
+        avg_latency = res_latency.scalar() or 0.0
+        average_latency_seconds = round(avg_latency / 1000.0, 3)
+
+        # 3. Blocked queries
+        res_blocked = await db.execute(text("SELECT COUNT(*) FROM chatbot_logs WHERE is_blocked = True"))
+        blocked_queries_count = res_blocked.scalar() or 0
+
+        # 4. Common questions
+        res_common = await db.execute(text("""
+            SELECT question, COUNT(*) as count 
+            FROM chatbot_logs 
+            GROUP BY question 
+            ORDER BY count DESC 
+            LIMIT 5
+        """))
+        most_common_questions = [
+            {"question": row[0], "count": row[1]} for row in res_common.fetchall()
+        ]
+
+        return {
+            "total_queries": total_queries,
+            "average_latency_seconds": average_latency_seconds,
+            "blocked_queries_count": blocked_queries_count,
+            "most_common_questions": most_common_questions
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve metrics: {str(e)}")
