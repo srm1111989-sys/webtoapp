@@ -91,7 +91,7 @@ async def process_pending_build():
                     logger.warning(f"Build {build.id}: {provider_name} failed — {e}")
 
             build.status = "failed"
-            build.error_message = "All providers failed: " + "; ".join(f"{k}={v}" for k, v in errors.items())
+            build.error_message = "Build could not be started at this time. Please retry in a few minutes or contact support@websitetoapp.app."
             await db.commit()
             logger.error(f"Build {build.id} failed on all providers: {errors}")
 
