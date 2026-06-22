@@ -19,6 +19,7 @@ from app.models.build import Build
 from app.models.order import Order
 from app.utils.security import decode_token
 from app.utils.email import send_email
+from app.services.guardrails import IntentClassifier
 
 router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
@@ -155,6 +156,11 @@ async def chat_endpoint(
 ):
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
+
+    # Run input guardrails
+    blocked, reason = IntentClassifier().is_blocked_question(req.question)
+    if blocked:
+        return ChatResponse(answer=reason)
 
     if not os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):
         raise HTTPException(status_code=500, detail="Gemini service credentials not configured.")
