@@ -179,11 +179,16 @@ class GitHubService:
                         zf.extractall(dest_dir)
                     os.unlink(zip_path)
 
-                    # Find the extracted file
+                    # Find the extracted file and upload it
                     for root, dirs, files in os.walk(dest_dir):
                         for file in files:
                             filepath = os.path.join(root, file)
-                            url = await upload_file(filepath, f"{dest_dir}/{file}")
+                            with open(filepath, "rb") as fh:
+                                file_bytes = fh.read()
+                            ext = file.rsplit(".", 1)[-1] if "." in file else "bin"
+                            content_type = "application/vnd.android.package-archive" if ext == "apk" else "application/octet-stream"
+                            url = await upload_file(file_bytes, dest_dir, file, content_type)
+                            os.unlink(filepath)
                             return url
 
             logger.warning(f"Artifact '{artifact_name}' not found in run {run_id}")
