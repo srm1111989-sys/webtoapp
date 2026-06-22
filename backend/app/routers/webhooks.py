@@ -57,15 +57,20 @@ async def gitlab_webhook(request: Request, db: AsyncSession = Depends(get_db)):
 @router.post("/github")
 async def github_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     sig = request.headers.get("X-Hub-Signature-256")
-    if not sig and settings.github_webhook_secret:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing signature")
-        
     payload = await request.body()
-    
-    if settings.github_webhook_secret:
-        mac = hmac.new(settings.github_webhook_secret.encode(), msg=payload, digestmod=hashlib.sha256)
-        expected_sig = "sha256=" + mac.hexdigest()
-        if not hmac.compare_digest(expected_sig, sig):
+
+    secrets = [s for s in [settings.github_webhook_secret, settings.github_webhook_secret_2] if s]
+    if secrets:
+        if not sig:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing signature")
+        valid = any(
+            hmac.compare_digest(
+                "sha256=" + hmac.new(s.encode(), msg=payload, digestmod=hashlib.sha256).hexdigest(),
+                sig,
+            )
+            for s in secrets
+        )
+        if not valid:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid signature")
 
     event = request.headers.get("X-GitHub-Event")
