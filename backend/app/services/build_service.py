@@ -164,6 +164,17 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     if app_config.custom_user_agent:
         variables["CUSTOM_USER_AGENT"] = app_config.custom_user_agent
 
+    # Custom Keystore Configuration
+    if app_config.custom_keystore_url:
+        keystore_url = app_config.custom_keystore_url.replace("http://localhost:8000", settings.app_url)
+        variables["CUSTOM_KEYSTORE_URL"] = keystore_url
+        if app_config.custom_keystore_password:
+            variables["CUSTOM_KEYSTORE_PASSWORD"] = app_config.custom_keystore_password
+        if app_config.custom_keystore_alias:
+            variables["CUSTOM_KEYSTORE_ALIAS"] = app_config.custom_keystore_alias
+        if app_config.custom_keystore_private_password:
+            variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] = app_config.custom_keystore_private_password
+
     # Watermark for desktop builds
     variables["SHOW_WATERMARK"] = "true" if show_watermark else "false"
 

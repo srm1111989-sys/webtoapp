@@ -28,6 +28,10 @@ class AppConfig(Base):
     selected_platforms: Mapped[list | None] = mapped_column(JSONB, default=lambda: ["android"])
     desktop_config: Mapped[dict | None] = mapped_column(JSONB)
     custom_user_agent: Mapped[str | None] = mapped_column(String(500))
+    custom_keystore_url: Mapped[str | None] = mapped_column(String(500))
+    custom_keystore_password: Mapped[str | None] = mapped_column(String(255))
+    custom_keystore_alias: Mapped[str | None] = mapped_column(String(255))
+    custom_keystore_private_password: Mapped[str | None] = mapped_column(String(255))
     status: Mapped[str] = mapped_column(String(20), default="draft")  # draft, active, suspended
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

@@ -32,4 +32,12 @@ export const appsApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
   },
+
+  uploadKeystore: (id: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return client.post<AppConfig>(`/api/apps/${id}/keystore`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
 }

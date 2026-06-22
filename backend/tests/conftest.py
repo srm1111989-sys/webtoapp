@@ -63,6 +63,10 @@ def sample_app_config():
     config.firebase_config = {"server_key": "test-key"}
     config.admob_config = {"app_id": "ca-app-pub-123"}
     config.custom_user_agent = "TestAgent/1.0"
+    config.custom_keystore_url = None
+    config.custom_keystore_password = None
+    config.custom_keystore_alias = None
+    config.custom_keystore_private_password = None
     return config
 
 

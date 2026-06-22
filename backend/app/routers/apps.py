@@ -148,3 +148,25 @@ async def upload_splash(
     if url:
         app_config.splash_url = url
     return app_config
+
+
+@router.post("/{app_id}/keystore", response_model=AppConfigResponse)
+async def upload_keystore(
+    app_id: uuid.UUID,
+    file: UploadFile = File(...),
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(AppConfig).where(AppConfig.id == app_id, AppConfig.user_id == user.id)
+    )
+    app_config = result.scalar_one_or_none()
+    if not app_config:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="App not found")
+
+    contents = await file.read()
+    url = await upload_file(contents, f"keystores/{app_id}", file.filename, file.content_type or "application/octet-stream")
+    if url:
+        app_config.custom_keystore_url = url
+    return app_config
+

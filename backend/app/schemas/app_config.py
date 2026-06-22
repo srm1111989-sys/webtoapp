@@ -71,6 +71,10 @@ class AppConfigCreate(BaseModel):
     selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
+    custom_keystore_url: str | None = None
+    custom_keystore_password: str | None = None
+    custom_keystore_alias: str | None = None
+    custom_keystore_private_password: str | None = None
 
 
 class AppConfigUpdate(BaseModel):
@@ -89,6 +93,10 @@ class AppConfigUpdate(BaseModel):
     selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
+    custom_keystore_url: str | None = None
+    custom_keystore_password: str | None = None
+    custom_keystore_alias: str | None = None
+    custom_keystore_private_password: str | None = None
 
     @field_validator('name')
     @classmethod
@@ -155,6 +163,10 @@ class AppConfigResponse(BaseModel):
     selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
+    custom_keystore_url: str | None = None
+    custom_keystore_password: str | None = None
+    custom_keystore_alias: str | None = None
+    custom_keystore_private_password: str | None = None
     status: str
     created_at: datetime
     updated_at: datetime

@@ -25,6 +25,11 @@ interface WizardState {
   admobConfig: AdmobConfig | null
   desktopConfig: DesktopConfig
   customUserAgent: string
+  customKeystoreFile: File | null
+  customKeystoreUrl: string | null
+  customKeystorePassword: string
+  customKeystoreAlias: string
+  customKeystorePrivatePassword: string
   selectedPlanId: string | null
 
   setStep: (step: number) => void
@@ -34,7 +39,7 @@ interface WizardState {
   setVisuals: (data: Partial<Pick<WizardState, 'primaryColor' | 'secondaryColor' | 'statusBarColor' | 'iconFile' | 'iconPreview' | 'splashFile' | 'splashPreview'>>) => void
   setFeatures: (features: Record<string, boolean>) => void
   setNavigation: (type: 'none' | 'bottom_nav' | 'drawer', items: NavigationItem[]) => void
-  setAdvanced: (data: Partial<Pick<WizardState, 'firebaseConfig' | 'admobConfig' | 'customUserAgent'>>) => void
+  setAdvanced: (data: Partial<Pick<WizardState, 'firebaseConfig' | 'admobConfig' | 'customUserAgent' | 'customKeystoreFile' | 'customKeystoreUrl' | 'customKeystorePassword' | 'customKeystoreAlias' | 'customKeystorePrivatePassword'>>) => void
   setDesktopConfig: (config: Partial<DesktopConfig>) => void
   setPlan: (planId: string) => void
   reset: () => void
@@ -111,6 +116,11 @@ const initialState = {
     start_fullscreen: false,
   },
   customUserAgent: '',
+  customKeystoreFile: null,
+  customKeystoreUrl: null,
+  customKeystorePassword: '',
+  customKeystoreAlias: '',
+  customKeystorePrivatePassword: '',
   selectedPlanId: null,
 }
 

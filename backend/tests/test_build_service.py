@@ -82,6 +82,15 @@ class TestBuildPipelineVariablesLogic:
         if app_config.custom_user_agent:
             variables["CUSTOM_USER_AGENT"] = app_config.custom_user_agent
 
+        if getattr(app_config, 'custom_keystore_url', None):
+            variables["CUSTOM_KEYSTORE_URL"] = app_config.custom_keystore_url
+            if getattr(app_config, 'custom_keystore_password', None):
+                variables["CUSTOM_KEYSTORE_PASSWORD"] = app_config.custom_keystore_password
+            if getattr(app_config, 'custom_keystore_alias', None):
+                variables["CUSTOM_KEYSTORE_ALIAS"] = app_config.custom_keystore_alias
+            if getattr(app_config, 'custom_keystore_private_password', None):
+                variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] = app_config.custom_keystore_private_password
+
         return variables
 
     def test_android_variables_include_package_name(self, sample_app_config, sample_order):
@@ -247,6 +256,20 @@ class TestBuildPipelineVariablesLogic:
         variables = self._build_pipeline_variables(sample_app_config, sample_order)
 
         assert "CUSTOM_USER_AGENT" not in variables
+
+    def test_custom_keystore_variables_mapped(self, sample_app_config, sample_order):
+        """Custom keystore fields must map to pipeline variables when present."""
+        sample_app_config.custom_keystore_url = "https://example.com/keystore.jks"
+        sample_app_config.custom_keystore_password = "store-password"
+        sample_app_config.custom_keystore_alias = "key-alias"
+        sample_app_config.custom_keystore_private_password = "private-password"
+
+        variables = self._build_pipeline_variables(sample_app_config, sample_order)
+
+        assert variables["CUSTOM_KEYSTORE_URL"] == "https://example.com/keystore.jks"
+        assert variables["CUSTOM_KEYSTORE_PASSWORD"] == "store-password"
+        assert variables["CUSTOM_KEYSTORE_ALIAS"] == "key-alias"
+        assert variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] == "private-password"
 
 
 # =========================================================================

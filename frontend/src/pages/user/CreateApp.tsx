@@ -212,6 +212,53 @@ function ImageDropzone({
   )
 }
 
+// ---------- Keystore Dropzone ----------
+
+function KeystoreDropzone({
+  label,
+  fileName,
+  onDrop,
+  hint,
+}: {
+  label: string
+  fileName: string | null
+  onDrop: (files: File[]) => void
+  hint: string
+}) {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: { 'application/octet-stream': ['.jks', '.keystore'] },
+    maxFiles: 1,
+    onDrop,
+  })
+
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
+          isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+        }`}
+      >
+        <input {...getInputProps()} />
+        {fileName ? (
+          <div className="text-gray-700 font-medium flex flex-col items-center">
+            <Upload className="w-8 h-8 mx-auto mb-2 text-green-600" />
+            <p className="text-sm">Selected keystore file:</p>
+            <p className="text-xs text-blue-600 font-mono mt-1">{fileName}</p>
+          </div>
+        ) : (
+          <div className="text-gray-500">
+            <Upload className="w-8 h-8 mx-auto mb-2" />
+            <p className="text-sm">Drop .jks or .keystore file here or click to upload</p>
+            <p className="text-xs text-gray-400 mt-1">{hint}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ---------- Color Picker Section ----------
 
 function ColorPickerField({
@@ -851,6 +898,24 @@ function Step3Advanced() {
   )
   const [navItems, setNavItems] = useState<NavigationItem[]>(wizard.navigationItems)
 
+  const [customKeystoreFile, setCustomKeystoreFile] = useState<File | null>(wizard.customKeystoreFile)
+  const [customKeystoreUrl, setCustomKeystoreUrl] = useState<string | null>(wizard.customKeystoreUrl)
+  const [customKeystorePassword, setCustomKeystorePassword] = useState(wizard.customKeystorePassword)
+  const [customKeystoreAlias, setCustomKeystoreAlias] = useState(wizard.customKeystoreAlias)
+  const [customKeystorePrivatePassword, setCustomKeystorePrivatePassword] = useState(wizard.customKeystorePrivatePassword)
+  const [showKeystorePass, setShowKeystorePass] = useState(false)
+  const [showKeyPass, setShowKeyPass] = useState(false)
+
+  const onKeystoreDrop = useCallback(
+    (files: File[]) => {
+      const file = files[0]
+      if (file) {
+        setCustomKeystoreFile(file)
+      }
+    },
+    [],
+  )
+
   const addNavItem = () => {
     setNavItems([...navItems, { label: '', url: '' }])
   }
@@ -866,7 +931,7 @@ function Step3Advanced() {
   }
 
   const saveMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       if (!wizard.appId) throw new Error('No app ID')
 
       const firebaseConfig =
@@ -884,6 +949,12 @@ function Step3Advanced() {
             }
           : undefined
 
+      let uploadedUrl = customKeystoreUrl
+      if (customKeystoreFile) {
+        const res = await appsApi.uploadKeystore(wizard.appId, customKeystoreFile)
+        uploadedUrl = res.data.custom_keystore_url || null
+      }
+
       return appsApi.update(wizard.appId, {
         firebase_config: firebaseConfig,
         admob_config: admobConfig,
@@ -891,13 +962,22 @@ function Step3Advanced() {
         custom_user_agent: customUA || undefined,
         navigation_type: navType,
         navigation_items: navItems.filter((item) => item.label && item.url),
+        custom_keystore_url: uploadedUrl || undefined,
+        custom_keystore_password: customKeystorePassword || undefined,
+        custom_keystore_alias: customKeystoreAlias || undefined,
+        custom_keystore_private_password: customKeystorePrivatePassword || undefined,
       })
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       wizard.setAdvanced({
         firebaseConfig: { server_key: firebaseServerKey, google_services_json: firebaseServicesJson },
         admobConfig: { app_id: admobAppId, banner_id: admobBannerId, interstitial_id: admobInterstitialId, rewarded_id: admobRewardedId },
         customUserAgent: customUA,
+        customKeystoreFile: customKeystoreFile,
+        customKeystoreUrl: res.data.custom_keystore_url || null,
+        customKeystorePassword: customKeystorePassword,
+        customKeystoreAlias: customKeystoreAlias,
+        customKeystorePrivatePassword: customKeystorePrivatePassword,
       })
       wizard.setNavigation(navType, navItems.filter((item) => item.label && item.url))
       wizard.setStep(4)
@@ -965,9 +1045,81 @@ function Step3Advanced() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Interstitial Ad ID</label>
           <input className={inputClass} value={admobInterstitialId} onChange={(e) => setAdmobInterstitialId(e.target.value)} placeholder="ca-app-pub-xxxxx/xxxxx" />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Rewarded Ad ID</label>
-          <input className={inputClass} value={admobRewardedId} onChange={(e) => setAdmobRewardedId(e.target.value)} placeholder="ca-app-pub-xxxxx/xxxxx" />
+      </CollapsibleSection>
+      )}
+
+      {/* Custom Keystore — Android only */}
+      {hasAndroid && (
+      <CollapsibleSection
+        title="Custom Keystore Signing (Optional)"
+        helpUrl="https://developer.android.com/studio/publish/app-signing"
+        helpLabel="How to generate a keystore and upload it"
+      >
+        <div className="space-y-4">
+          <p className="text-xs text-gray-500">
+            If you already have this app live on Google Play, upload your existing signing keystore here. 
+            This ensures your new build can be uploaded as an update. If left empty, WebToApp will automatically generate a secure signing key for you.
+          </p>
+          
+          <KeystoreDropzone
+            label="Upload Keystore File (.jks / .keystore)"
+            fileName={customKeystoreFile ? customKeystoreFile.name : (customKeystoreUrl ? "keystore.jks (already uploaded)" : null)}
+            onDrop={onKeystoreDrop}
+            hint="Must be a valid .jks or .keystore file"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Keystore Password</label>
+              <div className="relative">
+                <input
+                  type={showKeystorePass ? "text" : "password"}
+                  className={inputClass}
+                  value={customKeystorePassword}
+                  onChange={(e) => setCustomKeystorePassword(e.target.value)}
+                  placeholder="Enter Keystore Password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowKeystorePass(!showKeystorePass)}
+                  className="absolute right-3 top-2.5 text-xs text-gray-500 hover:text-gray-700 font-medium"
+                >
+                  {showKeystorePass ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Key Alias</label>
+              <input
+                className={inputClass}
+                value={customKeystoreAlias}
+                onChange={(e) => setCustomKeystoreAlias(e.target.value)}
+                placeholder="Enter Key Alias"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Private Key Password <span className="text-xs text-gray-400 font-normal">(Optional — defaults to keystore password if blank)</span>
+            </label>
+            <div className="relative">
+              <input
+                type={showKeyPass ? "text" : "password"}
+                className={inputClass}
+                value={customKeystorePrivatePassword}
+                onChange={(e) => setCustomKeystorePrivatePassword(e.target.value)}
+                placeholder="Enter Key Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowKeyPass(!showKeyPass)}
+                className="absolute right-3 top-2.5 text-xs text-gray-500 hover:text-gray-700 font-medium"
+              >
+                {showKeyPass ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
         </div>
       </CollapsibleSection>
       )}

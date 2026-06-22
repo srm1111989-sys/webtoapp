@@ -43,6 +43,14 @@ on:
         default: ""
       BUILD_AAB:
         default: "false"
+      CUSTOM_KEYSTORE_URL:
+        default: ""
+      CUSTOM_KEYSTORE_PASSWORD:
+        default: ""
+      CUSTOM_KEYSTORE_ALIAS:
+        default: ""
+      CUSTOM_KEYSTORE_PRIVATE_PASSWORD:
+        default: ""
 
 jobs:
   build:
@@ -78,19 +86,33 @@ jobs:
           HEREDOC
           fi
 
-      - name: Generate keystore
+      - name: Process keystore
         run: |
-          KS_PASS=$(openssl rand -base64 18)
-          keytool -genkeypair \
-            -alias upload-key \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -keystore keystore.jks \
-            -storepass "$KS_PASS" -keypass "$KS_PASS" \
-            -dname "CN=${{ inputs.APP_NAME }}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
-          echo "KEYSTORE_PASSWORD=$KS_PASS" >> $GITHUB_ENV
-          echo "KEY_ALIAS=upload-key" >> $GITHUB_ENV
-          echo "KEY_PASSWORD=$KS_PASS" >> $GITHUB_ENV
-          echo "KEYSTORE_PATH=$PWD/keystore.jks" >> $GITHUB_ENV
+          if [ -n "${{ inputs.CUSTOM_KEYSTORE_URL }}" ]; then
+            echo "Custom keystore URL provided. Downloading..."
+            wget -q "${{ inputs.CUSTOM_KEYSTORE_URL }}" -O keystore.jks
+            echo "KEYSTORE_PASSWORD=${{ inputs.CUSTOM_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+            echo "KEY_ALIAS=${{ inputs.CUSTOM_KEYSTORE_ALIAS }}" >> $GITHUB_ENV
+            KEY_PASS="${{ inputs.CUSTOM_KEYSTORE_PRIVATE_PASSWORD }}"
+            if [ -z "$KEY_PASS" ]; then
+              KEY_PASS="${{ inputs.CUSTOM_KEYSTORE_PASSWORD }}"
+            fi
+            echo "KEY_PASSWORD=$KEY_PASS" >> $GITHUB_ENV
+            echo "KEYSTORE_PATH=$PWD/keystore.jks" >> $GITHUB_ENV
+            echo "Custom keystore configured successfully."
+          else
+            KS_PASS=$(openssl rand -base64 18)
+            keytool -genkeypair \
+              -alias upload-key \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -keystore keystore.jks \
+              -storepass "$KS_PASS" -keypass "$KS_PASS" \
+              -dname "CN=${{ inputs.APP_NAME }}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
+            echo "KEYSTORE_PASSWORD=$KS_PASS" >> $GITHUB_ENV
+            echo "KEY_ALIAS=upload-key" >> $GITHUB_ENV
+            echo "KEY_PASSWORD=$KS_PASS" >> $GITHUB_ENV
+            echo "KEYSTORE_PATH=$PWD/keystore.jks" >> $GITHUB_ENV
+          fi
 
       - name: Process icon
         run: |

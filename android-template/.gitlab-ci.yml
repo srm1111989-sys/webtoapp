@@ -39,25 +39,35 @@ prepare:
       fi
     - chmod +x ./gradlew
 
-    # Generate release keystore for signing
+    # Process release keystore for signing (custom or auto-generated)
     - |
-      KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
-      KS_ALIAS="${KEY_ALIAS:-upload-key}"
-      APP_PKG="${PACKAGE_NAME:-com.webtoapp.app}"
-      echo "Generating release keystore..."
-      keytool -genkeypair \
-        -alias "$KS_ALIAS" \
-        -keyalg RSA \
-        -keysize 2048 \
-        -validity 10000 \
-        -keystore keystore.jks \
-        -storepass "$KS_PASS" \
-        -keypass "$KS_PASS" \
-        -dname "CN=${APP_NAME:-WebToApp}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
-      echo "KEYSTORE_PASSWORD=$KS_PASS" > keystore.env
-      echo "KEY_ALIAS=$KS_ALIAS" >> keystore.env
-      echo "KEY_PASSWORD=$KS_PASS" >> keystore.env
-      echo "Keystore generated: keystore.jks (alias: $KS_ALIAS)"
+      if [ -n "$CUSTOM_KEYSTORE_URL" ]; then
+        echo "Custom keystore URL provided. Downloading..."
+        apt-get update -qq && apt-get install -y -qq wget > /dev/null 2>&1
+        wget -q "$CUSTOM_KEYSTORE_URL" -O keystore.jks
+        echo "KEYSTORE_PASSWORD=$CUSTOM_KEYSTORE_PASSWORD" > keystore.env
+        echo "KEY_ALIAS=$CUSTOM_KEYSTORE_ALIAS" >> keystore.env
+        echo "KEY_PASSWORD=${CUSTOM_KEYSTORE_PRIVATE_PASSWORD:-$CUSTOM_KEYSTORE_PASSWORD}" >> keystore.env
+        echo "Custom keystore downloaded successfully."
+      else
+        KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
+        KS_ALIAS="${KEY_ALIAS:-upload-key}"
+        APP_PKG="${PACKAGE_NAME:-com.webtoapp.app}"
+        echo "Generating release keystore..."
+        keytool -genkeypair \
+          -alias "$KS_ALIAS" \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -keystore keystore.jks \
+          -storepass "$KS_PASS" \
+          -keypass "$KS_PASS" \
+          -dname "CN=${APP_NAME:-WebToApp}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
+        echo "KEYSTORE_PASSWORD=$KS_PASS" > keystore.env
+        echo "KEY_ALIAS=$KS_ALIAS" >> keystore.env
+        echo "KEY_PASSWORD=$KS_PASS" >> keystore.env
+        echo "Keystore generated: keystore.jks (alias: $KS_ALIAS)"
+      fi
 
     # Replace config.json with build variables
     - |
