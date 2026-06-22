@@ -25,6 +25,7 @@ const features = [
 const allPremiumFeatures = [
   { icon: Smartphone, title: 'Android App' },
   { icon: Monitor, title: 'Desktop App' },
+  { icon: Shield, title: 'Custom Keystore Upload' },
   { icon: Bell, title: 'Push Notifications' },
   { icon: Fingerprint, title: 'Biometric Auth' },
   { icon: QrCode, title: 'QR Scanner' },
@@ -132,13 +133,14 @@ const testimonials = [
 ]
 
 const ANDROID_FALLBACK = { slug: 'android-paid', price_inr: 1000, price_usd: 1000,
-  highlights: ['All 40+ Features', 'No Watermark', 'Signed APK + AAB', 'Keystore Included', '10 Builds / 30 Days', 'Publish App on Google Play Store'] }
+  highlights: ['All 40+ Features', 'No Watermark', 'Custom Keystore Upload', 'Keystore Included', '10 Builds / 30 Days', 'Publish App on Google Play Store'] }
 const DESKTOP_FALLBACK = { slug: 'desktop-paid', price_inr: 1000, price_usd: 1000,
   highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '10 Builds / 30 Days'] }
 
 const faqs = [
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
   { q: 'Can I publish to Google Play Store?', a: 'Yes! The Paid plan includes signed AAB files ready for Play Store submission.' },
+  { q: 'Can I use my existing keystore signature?', a: 'Yes! If you already have an app live on the Google Play Store, you can upload your existing custom keystore (.jks or .keystore) and credentials in our advanced settings so you can release updates seamlessly.' },
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
