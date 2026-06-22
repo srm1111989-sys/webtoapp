@@ -407,3 +407,12 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
             sub.status = "pending"
 
     return {"status": "ok"}
+
+
+# ─── Razorpay compat alias (matches URL configured in Razorpay dashboard) ────
+razorpay_compat_router = APIRouter(prefix="/api/razorpay", tags=["webhooks"])
+
+
+@razorpay_compat_router.post("/webhook")
+async def razorpay_webhook_compat(request: Request, db: AsyncSession = Depends(get_db)):
+    return await razorpay_webhook(request, db)
