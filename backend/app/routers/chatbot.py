@@ -323,7 +323,7 @@ async def chat_metrics(db: AsyncSession = Depends(get_db)):
         total_queries = res_count.scalar() or 0
 
         # 2. Avg Latency
-        res_latency = await db.execute(text("SELECT AVG(latency_ms) FROM chatbot_logs"))
+        res_latency = await db.execute(text("SELECT COALESCE(AVG(latency_ms), 0.0)::float FROM chatbot_logs"))
         avg_latency = res_latency.scalar() or 0.0
         average_latency_seconds = round(avg_latency / 1000.0, 3)
 
