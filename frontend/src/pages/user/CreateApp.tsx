@@ -1292,14 +1292,26 @@ function Step3Advanced() {
 
 // ========== STEP 4 - PLAN & REVIEW ==========
 
+const ANDROID_PLANS_FALLBACK: Plan[] = [
+  { id: 'android-free', name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0, billing_type: 'one_time', max_apps: 2, sort_order: 1, is_active: true, platform: 'android', description: '2 free builds with watermark', features: {} },
+  { id: 'android-paid', name: 'Paid', slug: 'android-paid', price_inr: 207500, price_usd: 2500, billing_type: 'one_time', max_apps: 1, sort_order: 2, is_active: true, platform: 'android', description: 'All features, one-time payment', features: {} },
+]
+
+const DESKTOP_PLANS_FALLBACK: Plan[] = [
+  { id: 'desktop-free', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0, billing_type: 'one_time', max_apps: 2, sort_order: 4, is_active: true, platform: 'desktop', description: 'Build up to 2 apps with watermark & 3-day trial', features: {} },
+  { id: 'desktop-paid', name: 'Paid', slug: 'desktop-paid', price_inr: 207500, price_usd: 2500, billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop', description: 'Full desktop app, one-time', features: {} },
+]
+
 function Step4PlanReview() {
   const wizard = useWizardStore()
   const navigate = useNavigate()
 
-  const { data: plans, isLoading: plansLoading } = useQuery({
+  const { data: plansData, isLoading: plansLoading } = useQuery({
     queryKey: ['plans'],
     queryFn: () => plansApi.list().then((r) => r.data),
   })
+  const isDesktop = wizard.selectedPlatforms.includes('desktop') && !wizard.selectedPlatforms.includes('android')
+  const plans = plansData ?? (isDesktop ? DESKTOP_PLANS_FALLBACK : ANDROID_PLANS_FALLBACK)
 
   const { data: paymentMode } = useQuery({
     queryKey: ['payment-mode'],
@@ -1314,7 +1326,7 @@ function Step4PlanReview() {
 
   // Default to paid plan once plans load (if none chosen yet).
   useEffect(() => {
-    if (selectedPlan || !plans) return
+    if (selectedPlan) return
     const platformPlans = (plans as Plan[]).filter((p) => wizard.selectedPlatforms.includes(p.platform as any))
     const paid = platformPlans.find((p) => p.price_inr > 0)
     if (paid) {
