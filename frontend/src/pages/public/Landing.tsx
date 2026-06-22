@@ -19,13 +19,14 @@ const features = [
   { icon: Smartphone, title: 'Android Apps', desc: 'Convert your website into a native Android app with full-screen experience and smooth performance.' },
   { icon: Monitor, title: 'Windows Desktop Apps', desc: 'Generate a Windows .exe installer with configurable window, system tray, and more.' },
   { icon: Zap, title: 'Built in Minutes', desc: 'Configure your app with our wizard, pay, and get your builds automatically delivered.' },
+  { icon: Shield, title: 'Custom Keystore (.JKS)', desc: 'Upload your own .JKS keystore to sign your app — essential for Play Store updates without reinstalling.' },
   { icon: Shield, title: 'Feature-Rich', desc: 'Push notifications, biometric auth, QR scanner, AdMob, navigation menus, and 10+ features.' },
 ]
 
 const allPremiumFeatures = [
   { icon: Smartphone, title: 'Android App' },
   { icon: Monitor, title: 'Desktop App' },
-  { icon: Shield, title: 'Custom Keystore Upload' },
+  { icon: Shield, title: 'Custom Keystore (.JKS)' },
   { icon: Bell, title: 'Push Notifications' },
   { icon: Fingerprint, title: 'Biometric Auth' },
   { icon: QrCode, title: 'QR Scanner' },
@@ -132,10 +133,10 @@ const testimonials = [
   },
 ]
 
-const ANDROID_FALLBACK = { slug: 'android-paid', price_inr: 1000, price_usd: 1000,
-  highlights: ['All 40+ Features', 'No Watermark', 'Custom Keystore Upload', 'Keystore Included', '10 Builds / 30 Days', 'Publish App on Google Play Store'] }
-const DESKTOP_FALLBACK = { slug: 'desktop-paid', price_inr: 1000, price_usd: 1000,
-  highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '10 Builds / 30 Days'] }
+const ANDROID_FALLBACK = { slug: 'android-paid', price_inr: 207500, price_usd: 2500,
+  highlights: ['All 40+ Features', 'No Watermark', 'Custom Keystore (.JKS) Upload', 'Keystore Included', '5 Rebuilds / 30 Days', 'Publish App on Google Play Store'] }
+const DESKTOP_FALLBACK = { slug: 'desktop-paid', price_inr: 207500, price_usd: 2500,
+  highlights: ['All Desktop Features', 'No Watermark', 'Windows .exe Installer', 'System Tray Support', 'Custom Window Settings', '5 Rebuilds / 30 Days'] }
 
 const faqs = [
   { q: 'Do I need coding skills?', a: 'No. Our wizard guides you through the entire process. Just paste your website URL and customize visually.' },
@@ -144,7 +145,7 @@ const faqs = [
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
-  { q: 'Is WebToApp better than GoNative or WebIntoApp?', a: 'WebToApp offers 40+ features at a one-time price from $10 — vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
+  { q: 'Is WebToApp better than GoNative or WebIntoApp?', a: 'WebToApp offers 40+ features at a one-time price from $25 — vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
   { q: 'What websites can I convert to an app?', a: 'Any website works — Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebToApp.' },
   { q: 'Will my app be approved by Google Play?', a: 'Yes. We generate a properly signed AAB that meets Google Play guidelines. We also include a compliance checklist to help you submit without rejections.' },
 ]
@@ -221,7 +222,7 @@ export default function Landing() {
     setPublishLoading(true)
     try {
       const order = await createRazorpayOrder({
-        amount: 1000,
+        amount: 1500,
         currency: 'USD',
         receipt: `publish_${Date.now()}`,
         notes: { name: publishForm.name, email: publishForm.email, appName: publishForm.appName, websiteUrl: publishForm.websiteUrl, notes: publishForm.notes, service: 'play-store-publish' },
@@ -275,7 +276,7 @@ export default function Landing() {
             Convert Any Website to an App <span className="text-primary-600">in 5 Minutes</span>
           </h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-3 sm:mb-4 max-w-3xl mx-auto text-center">
-            No coding required. One-time payment from <strong>$10</strong> — 90% cheaper than GoNative, Median &amp; WebIntoApp. No subscriptions, ever.
+            No coding required. One-time payment from <strong>$25</strong> — 90% cheaper than GoNative, Median &amp; WebIntoApp. No subscriptions, ever.
           </p>
 
           {/* URL Input Box */}
@@ -310,10 +311,10 @@ export default function Landing() {
               <div className="flex-1 min-w-0 text-center sm:text-left">
                 <p className="text-xs text-indigo-500 font-semibold uppercase tracking-wider mb-0.5">Already have an Android app?</p>
                 <p className="text-base sm:text-lg font-bold text-indigo-900 leading-tight">Publish Your App on Google Play Store</p>
-                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup — just $10 flat</p>
+                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup — just $15 flat</p>
               </div>
               <div className="shrink-0 bg-indigo-600 group-hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                Get Started — $10 <ArrowRight className="w-4 h-4" />
+                Get Started — $25 <ArrowRight className="w-4 h-4" />
               </div>
             </Link>
           </div>
@@ -362,7 +363,7 @@ export default function Landing() {
               WebToApp vs GoNative vs WebIntoApp vs Median
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-              GoNative charges $99/month. Median starts at $99/month. WebIntoApp costs $149+/year. WebToApp is a one-time $10 payment with more features than all of them.
+              GoNative charges $99/month. Median starts at $99/month. WebIntoApp costs $149+/year. WebToApp is a one-time $25 payment with more features than all of them.
             </p>
           </div>
 
@@ -380,8 +381,8 @@ export default function Landing() {
               </thead>
               <tbody>
                 {([
-                  { feature: 'Starting Price', a: '$99/mo', b: '$16/yr', c: '$99/mo', us: '$10 once', bold: true },
-                  { feature: '1-Year Total Cost', a: '$1,188+', b: '$60+', c: '$1,188+', us: '$10', bold: true },
+                  { feature: 'Starting Price', a: '$99/mo', b: '$16/yr', c: '$99/mo', us: '$25 once', bold: true },
+                  { feature: '1-Year Total Cost', a: '$1,188+', b: '$60+', c: '$1,188+', us: '$25', bold: true },
                   { feature: 'Android App', a: '✓', b: '✓', c: '✓', us: '✓', bold: false },
                   { feature: 'Windows Desktop App', a: '✗', b: '✗', c: '✗', us: '✓', bold: false },
                   { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: '✓ Included', bold: false },
@@ -494,7 +495,7 @@ export default function Landing() {
                 {/* MRP - Strikethrough */}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">$30</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">$50</span>
                 </div>
 
                 {/* Actual Price - Large and Bold */}
@@ -507,7 +508,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  You Save $20
+                  You Save $25
                 </div>
               </div>
 
@@ -549,7 +550,7 @@ export default function Landing() {
                 {/* MRP - Strikethrough */}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-500 font-medium">MRP:</span>
-                  <span className="text-xl font-bold text-gray-400 line-through">$20</span>
+                  <span className="text-xl font-bold text-gray-400 line-through">$50</span>
                 </div>
 
                 {/* Actual Price - Large and Bold */}
@@ -562,7 +563,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  You Save $10
+                  You Save $25
                 </div>
               </div>
 
@@ -622,7 +623,7 @@ export default function Landing() {
                   <div className="p-2 bg-indigo-100 rounded-xl"><Store className="w-6 h-6 text-indigo-600" /></div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Publish App on Play Store</h3>
-                    <p className="text-sm text-indigo-600 font-semibold">$10 one-time</p>
+                    <p className="text-sm text-indigo-600 font-semibold">$15 one-time</p>
                   </div>
                 </div>
 
@@ -689,7 +690,7 @@ export default function Landing() {
                   disabled={publishLoading || !publishForm.name || !publishForm.email || !publishForm.appName}
                   className="mt-4 w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
                 >
-                  {publishLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Store className="w-4 h-4" /> Pay $10 &amp; Submit Request</>}
+                  {publishLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Store className="w-4 h-4" /> Pay $15 &amp; Submit Request</>}
                 </button>
               </>
             )}
@@ -731,7 +732,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
               <p className="text-gray-600 mb-4">
-                Pay once, own forever. Android: $10. Desktop: $10. No subscriptions.
+                Pay once, own forever. Android: $25. Desktop: $25. No subscriptions.
                 <span className="font-semibold text-green-600"> 90% cheaper than competitors!</span>
               </p>
               <Link to="/pricing" className="text-green-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
@@ -915,7 +916,7 @@ export default function Landing() {
             One-time payment. No subscription. 7-day money-back guarantee. Join thousands of businesses already on mobile.
           </p>
           <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">
-            {isLoggedIn ? 'Create New App' : 'Convert My Website — From $10'} <ArrowRight className="w-5 h-5" />
+            {isLoggedIn ? 'Create New App' : 'Convert My Website — From $25'} <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
