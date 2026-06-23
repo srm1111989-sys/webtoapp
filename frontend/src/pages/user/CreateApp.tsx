@@ -135,6 +135,176 @@ const FEATURES = [
 
 const STEP_LABELS = ['Basic Info', 'Visuals', 'Features', 'Advanced', 'Plan & Review']
 
+// ========== PHONE PREVIEW ==========
+
+function PhonePreview() {
+  const wizard = useWizardStore()
+  const [iframeError, setIframeError] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+
+  const url = wizard.url || ''
+  const appName = wizard.name || 'My App'
+  const statusBarColor = wizard.statusBarColor || '#1E3A5F'
+  const primaryColor = wizard.primaryColor || '#2563EB'
+  const iconUrl = wizard.iconPreview || null
+  const navItems = wizard.navigationItems || []
+  const hasNav = navItems.length > 0 && wizard.navigationType !== 'none'
+
+  // Re-check iframe when url changes
+  useEffect(() => { setIframeError(false) }, [url])
+
+  const domain = (() => {
+    try { return new URL(url.startsWith('http') ? url : `https://${url}`).hostname }
+    catch { return url }
+  })()
+
+  return (
+    <>
+      {/* Mobile toggle button */}
+      <button
+        onClick={() => setShowPreview(true)}
+        className="lg:hidden fixed bottom-20 right-4 z-40 flex items-center gap-2 bg-primary-600 text-white px-4 py-2.5 rounded-full shadow-lg text-sm font-medium"
+      >
+        <Smartphone className="w-4 h-4" />
+        Preview
+      </button>
+
+      {/* Mobile overlay */}
+      {showPreview && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="relative">
+            <button
+              onClick={() => setShowPreview(false)}
+              className="absolute -top-10 right-0 text-white flex items-center gap-1 text-sm"
+            >
+              <X className="w-4 h-4" /> Close
+            </button>
+            <PhoneFrame
+              url={url} appName={appName} statusBarColor={statusBarColor}
+              primaryColor={primaryColor} iconUrl={iconUrl} domain={domain}
+              hasNav={hasNav} navItems={navItems} iframeError={iframeError}
+              onIframeError={() => setIframeError(true)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Desktop sticky panel */}
+      <div className="hidden lg:flex flex-col items-center gap-3 sticky top-6 self-start">
+        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Live Preview</p>
+        <PhoneFrame
+          url={url} appName={appName} statusBarColor={statusBarColor}
+          primaryColor={primaryColor} iconUrl={iconUrl} domain={domain}
+          hasNav={hasNav} navItems={navItems} iframeError={iframeError}
+          onIframeError={() => setIframeError(true)}
+        />
+        <p className="text-xs text-gray-400 text-center max-w-[200px]">
+          Preview updates as you fill in the form
+        </p>
+      </div>
+    </>
+  )
+}
+
+function PhoneFrame({
+  url, appName, statusBarColor, primaryColor, iconUrl, domain,
+  hasNav, navItems, iframeError, onIframeError,
+}: {
+  url: string; appName: string; statusBarColor: string; primaryColor: string
+  iconUrl: string | null; domain: string; hasNav: boolean
+  navItems: any[]; iframeError: boolean; onIframeError: () => void
+}) {
+  const canEmbed = !!url && !iframeError
+
+  return (
+    <div className="relative w-[220px] h-[440px]">
+      {/* Phone shell */}
+      <div className="absolute inset-0 rounded-[2.5rem] border-[10px] border-gray-800 bg-gray-800 shadow-2xl overflow-hidden">
+        {/* Notch */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-gray-800 rounded-b-2xl z-20" />
+
+        {/* Screen content */}
+        <div className="relative w-full h-full bg-white flex flex-col overflow-hidden rounded-[1.8rem]">
+          {/* Status bar */}
+          <div
+            className="flex items-center justify-between px-4 pt-6 pb-1.5 shrink-0 z-10"
+            style={{ backgroundColor: statusBarColor }}
+          >
+            <span className="text-[9px] text-white/90 font-medium">9:41</span>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-1.5 border border-white/70 rounded-sm relative">
+                <div className="absolute inset-[1px] right-[2px] bg-white/70 rounded-sm" />
+              </div>
+            </div>
+          </div>
+
+          {/* App toolbar */}
+          <div
+            className="flex items-center gap-2 px-3 py-2 shrink-0"
+            style={{ backgroundColor: statusBarColor }}
+          >
+            {iconUrl ? (
+              <img src={iconUrl} alt="icon" className="w-5 h-5 rounded object-cover" />
+            ) : (
+              <div className="w-5 h-5 rounded" style={{ backgroundColor: primaryColor }} />
+            )}
+            <span className="text-white text-[11px] font-semibold truncate flex-1">{appName}</span>
+            <Globe className="w-3.5 h-3.5 text-white/70" />
+          </div>
+
+          {/* Website content */}
+          <div className="flex-1 relative overflow-hidden bg-gray-50">
+            {!url ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400">
+                <Globe className="w-8 h-8 opacity-30" />
+                <p className="text-[10px] text-center px-4">Enter your website URL to see a preview</p>
+              </div>
+            ) : canEmbed ? (
+              <iframe
+                key={url}
+                src={url.startsWith('http') ? url : `https://${url}`}
+                className="w-full h-full border-none"
+                style={{ transform: 'scale(0.45)', transformOrigin: 'top left', width: '222%', height: '222%' }}
+                onError={onIframeError}
+                sandbox="allow-scripts allow-same-origin allow-forms"
+                title="App preview"
+              />
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center mb-1"
+                  style={{ backgroundColor: primaryColor + '20' }}
+                >
+                  <Globe className="w-6 h-6" style={{ color: primaryColor }} />
+                </div>
+                <p className="text-[11px] font-semibold text-gray-700 text-center truncate w-full">{domain}</p>
+                <p className="text-[9px] text-gray-400 text-center">
+                  This site doesn't allow embedding — your app will still open it normally
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom nav bar */}
+          {hasNav && (
+            <div className="shrink-0 border-t border-gray-100 bg-white flex items-center justify-around py-1.5 px-2">
+              {navItems.slice(0, 4).map((item: any, i: number) => (
+                <div key={i} className="flex flex-col items-center gap-0.5">
+                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: i === 0 ? primaryColor : '#d1d5db' }} />
+                  <span className="text-[7px] text-gray-500 truncate max-w-[36px]">{item.label || 'Tab'}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Home indicator */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-gray-600 rounded-full" />
+    </div>
+  )
+}
+
 function StepIndicator({ currentStep }: { currentStep: number }) {
   return (
     <div className="mb-6">
@@ -410,8 +580,10 @@ export default function CreateApp() {
 
   const setStep = (s: number) => wizard.setStep(s)
 
+  const showPreviewPanel = step < 4
+
   return (
-    <div className="max-w-5xl mx-auto py-5 sm:py-6 px-3 sm:px-4">
+    <div className="max-w-6xl mx-auto py-5 sm:py-6 px-3 sm:px-4">
       <div className="mb-5">
         <h1 className="text-lg font-semibold text-gray-900">Create your app</h1>
         <p className="text-sm text-gray-500 mt-0.5">Convert your website into a mobile app in 5 steps</p>
@@ -419,12 +591,16 @@ export default function CreateApp() {
 
       <StepIndicator currentStep={step} />
 
-      <div className="bg-white rounded-lg border border-gray-200 p-5 sm:p-6">
-        {step === 0 && <Step0BasicInfo />}
-        {step === 1 && <Step1Visuals />}
-        {step === 2 && <Step2Features />}
-        {step === 3 && <Step3Advanced />}
-        {step === 4 && <Step4PlanReview />}
+      <div className={`flex gap-8 items-start ${showPreviewPanel ? 'lg:grid lg:grid-cols-[1fr_240px]' : ''}`}>
+        <div className="bg-white rounded-lg border border-gray-200 p-5 sm:p-6 min-w-0 flex-1">
+          {step === 0 && <Step0BasicInfo />}
+          {step === 1 && <Step1Visuals />}
+          {step === 2 && <Step2Features />}
+          {step === 3 && <Step3Advanced />}
+          {step === 4 && <Step4PlanReview />}
+        </div>
+
+        {showPreviewPanel && <PhonePreview />}
       </div>
     </div>
   )
