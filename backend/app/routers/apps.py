@@ -49,7 +49,9 @@ async def list_apps(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
-        select(AppConfig).where(AppConfig.user_id == user.id).order_by(AppConfig.created_at.desc())
+        select(AppConfig)
+        .where(AppConfig.user_id == user.id, AppConfig.status != "draft")
+        .order_by(AppConfig.created_at.desc())
     )
     apps = result.scalars().all()
     return AppConfigListResponse(apps=apps, total=len(apps))
