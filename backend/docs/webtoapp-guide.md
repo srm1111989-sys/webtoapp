@@ -8,9 +8,9 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 
 | Plan | Price | Builds |
 |------|-------|--------|
-| Free (Android or Desktop) | $0 | 2 builds total, watermarked splash |
-| Premium Android App | $25 one-time | 5 rebuilds / 30 rolling days |
-| Premium Desktop App | $25 one-time | 5 rebuilds / 30 rolling days |
+| Free (Android or Desktop) | $0 | 2 builds total (lifetime), watermarked splash |
+| Premium Android App | $25 one-time | 5 builds total (lifetime) per order |
+| Premium Desktop App | $25 one-time | 5 builds total (lifetime) per order |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
 | Android App + Play Store Bundle | $40 one-time | Premium Android + Play Store listing |
 
@@ -109,7 +109,14 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 4. **Advanced** — Configure Firebase, AdMob IDs, custom keystore (.JKS), User-Agent, navigation items, desktop window settings.
 5. **Plan & Review** — Select Free or Premium plan, apply promo code, pay via Razorpay (INR/USD) or Stripe (USD).
 
-After payment the build is triggered automatically. Users receive a download link when ready.
+After payment the build is triggered automatically. Users receive an email with the download link when ready.
+
+### Editing an Existing App
+
+1. Go to **My Apps** and click the pencil icon on any app card.
+2. The wizard pre-loads all your existing settings (URL, icon, colors, features, etc.).
+3. Make your changes and click through the steps.
+4. On the final step, paid users see a **Rebuild App** button — click it to trigger a new build with the updated settings. No additional payment required (uses one of your 5 lifetime builds).
 
 ---
 
@@ -138,10 +145,17 @@ Without this, Google Play will reject updates due to signature mismatch (differe
 
 ## Build Limits & Rebuilds
 
-* **Free plan**: 2 builds total (lifetime).
-* **Paid plans**: 5 rebuilds per 30 rolling days per order.
-* Each rebuild lets you update your app URL, icon, or settings and get a new signed APK/AAB.
-* The 30-day rolling window resets from the date of each build, not from purchase date.
+* **Free plan**: 2 builds total (lifetime, across all free apps on your account).
+* **Paid plans**: 5 builds total (lifetime) per order — use them to update your app URL, icon, or settings anytime.
+* Each rebuild generates a freshly signed APK/AAB with your latest settings.
+* Need more than 5 builds? Contact support@websitetoapp.app to purchase additional builds.
+
+### My Apps Dashboard
+
+The **My Apps** page shows each app with:
+* **Plan badge** — "Free Plan" or "Paid Plan" so you know which plan is active for that app.
+* **Remaining builds** — e.g. "3 builds remaining of 5" so you always know how many rebuilds you have left.
+* Clicking a card opens the order detail page (or the edit page if no order exists yet).
 
 ---
 
