@@ -121,7 +121,10 @@ export default function MyApps() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {apps.map((app) => (
+          {apps.map((app) => {
+            const appOrder = orders.find((o) => o.app_config_id === app.id)
+            const detailUrl = appOrder ? `/orders/${appOrder.id}` : `/apps/${app.id}/edit`
+            return (
             <div
               key={app.id}
               className="group relative bg-white rounded-2xl border-2 border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all overflow-hidden"
@@ -135,7 +138,7 @@ export default function MyApps() {
               >
                 <Pencil className="w-4 h-4" />
               </Link>
-              <div className="p-6">
+              <Link to={detailUrl} className="block p-6 h-full">
                 {/* Header with icon and name */}
                 <div className="flex items-start gap-4 mb-4">
                   {app.icon_url ? (
@@ -203,9 +206,10 @@ export default function MyApps() {
                     Created {formatDate(app.created_at)}
                   </span>
                 </div>
-              </div>
+              </Link>
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>
