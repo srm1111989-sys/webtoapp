@@ -44,6 +44,7 @@ export default function EditApp() {
       name: data.name,
       url: data.url,
       packageName: data.package_name ?? '',
+      versionCode: data.version_code ?? null,
       description: data.description ?? '',
     })
     wizard.setVisuals({
