@@ -70,9 +70,11 @@ jobs:
 
       - name: Configure app
         run: |
+          # Persist VERSION_CODE for all subsequent steps
+          echo "VERSION_CODE=${{ inputs.VERSION_CODE }}" >> $GITHUB_ENV
+
           # Write config.json
-          if [ -n "${{ inputs.FEATURES_JSON }}" ]; then
-            cat > app/src/main/assets/config.json << HEREDOC
+          cat > app/src/main/assets/config.json << HEREDOC
           {
             "app_name": "${{ inputs.APP_NAME }}",
             "app_url": "${{ inputs.APP_URL }}",
@@ -81,10 +83,13 @@ jobs:
             "secondary_color": "${{ inputs.SECONDARY_COLOR }}",
             "status_bar_color": "${{ inputs.STATUS_BAR_COLOR }}",
             "features": ${{ inputs.FEATURES_JSON }},
-            "navigation_items": ${{ inputs.NAVIGATION_ITEMS }}
+            "navigation_items": ${{ inputs.NAVIGATION_ITEMS }},
+            "admob_config": ${{ inputs.ADMOB_CONFIG != '' && inputs.ADMOB_CONFIG || '{}' }},
+            "firebase_config": ${{ inputs.FIREBASE_CONFIG != '' && inputs.FIREBASE_CONFIG || '{}' }},
+            "trial_days": ${{ inputs.TRIAL_DAYS }},
+            "purchase_url": "${{ inputs.PURCHASE_URL }}"
           }
           HEREDOC
-          fi
 
       - name: Process keystore
         run: |
@@ -150,7 +155,8 @@ jobs:
             -PSECONDARY_COLOR="${{ inputs.SECONDARY_COLOR }}" \
             -PSTATUS_BAR_COLOR="${{ inputs.STATUS_BAR_COLOR }}" \
             -PFIREBASE_ENABLED="${{ inputs.FIREBASE_ENABLED }}" \
-            -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}"
+            -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}" \
+            -PVERSION_CODE="${{ inputs.VERSION_CODE }}"
 
       - name: Build AAB
         if: inputs.BUILD_AAB == 'true'
@@ -164,7 +170,8 @@ jobs:
             -PSECONDARY_COLOR="${{ inputs.SECONDARY_COLOR }}" \
             -PSTATUS_BAR_COLOR="${{ inputs.STATUS_BAR_COLOR }}" \
             -PFIREBASE_ENABLED="${{ inputs.FIREBASE_ENABLED }}" \
-            -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}"
+            -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}" \
+            -PVERSION_CODE="${{ inputs.VERSION_CODE }}"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
