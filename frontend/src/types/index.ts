@@ -44,6 +44,7 @@ export interface AppConfig {
   selected_platforms?: ('android' | 'desktop')[]
   desktop_config?: DesktopConfig
   custom_user_agent?: string
+  version_code?: number | null
   custom_keystore_url?: string
   custom_keystore_password?: string
   custom_keystore_alias?: string
