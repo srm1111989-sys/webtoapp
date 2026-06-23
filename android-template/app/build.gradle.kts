@@ -15,8 +15,9 @@ android {
         applicationId = project.findProperty("APP_PACKAGE_NAME")?.toString() ?: "com.webtoapp.template"
         minSdk = 24
         targetSdk = 34
-        versionCode = (project.findProperty("VERSION_CODE")?.toString()?.toIntOrNull() ?: System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1)
-        versionName = "1.0"
+        val vc = (project.findProperty("VERSION_CODE")?.toString()?.toIntOrNull() ?: System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1)
+        versionCode = vc
+        versionName = "1.0.$vc"
 
         manifestPlaceholders["hostName"] = project.findProperty("APP_HOST") ?: "example.com"
         manifestPlaceholders["defaultUrl"] = project.findProperty("APP_URL") ?: "https://example.com"
