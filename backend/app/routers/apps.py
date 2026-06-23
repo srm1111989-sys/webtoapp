@@ -1,7 +1,8 @@
 import uuid
+from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, delete
 from app.database import get_db
 from app.models.user import User
 from app.models.app_config import AppConfig
@@ -48,9 +49,26 @@ async def list_apps(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    # Show non-draft apps, plus draft apps that have a paid order (wizard complete, awaiting build)
+    # Pure drafts (abandoned wizard sessions with no order) are hidden
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+    await db.execute(
+        delete(AppConfig).where(
+            AppConfig.user_id == user.id,
+            AppConfig.status == "draft",
+            AppConfig.created_at < cutoff,
+            ~AppConfig.id.in_(select(Order.app_config_id).where(Order.user_id == user.id)),
+        )
+    )
+    await db.commit()
+
     result = await db.execute(
         select(AppConfig)
-        .where(AppConfig.user_id == user.id, AppConfig.status != "draft")
+        .where(
+            AppConfig.user_id == user.id,
+            (AppConfig.status != "draft") |
+            AppConfig.id.in_(select(Order.app_config_id).where(Order.user_id == user.id))
+        )
         .order_by(AppConfig.created_at.desc())
     )
     apps = result.scalars().all()

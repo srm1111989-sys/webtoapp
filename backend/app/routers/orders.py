@@ -103,13 +103,6 @@ async def create_order(
     await db.flush()
     await db.refresh(order)
 
-    # Promote app out of draft so it appears in My Apps
-    app_config_result = await db.execute(
-        select(AppConfig).where(AppConfig.id == data.app_config_id)
-    )
-    app_config_obj = app_config_result.scalar_one_or_none()
-    if app_config_obj and app_config_obj.status == "draft":
-        app_config_obj.status = "pending"
 
     # Only send confirmation email for free plans — paid plans send after payment verified
     if amount == 0:

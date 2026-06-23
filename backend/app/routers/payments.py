@@ -9,7 +9,6 @@ from app.database import get_db
 from app.models.user import User
 from app.models.order import Order
 from app.models.payment import Payment
-from app.models.app_config import AppConfig
 from app.models.setting import Setting
 from app.schemas.payment import (
     RazorpayVerifyRequest, RazorpayOrderResponse, StripeCheckoutRequest,
@@ -211,12 +210,6 @@ async def verify_razorpay_payment(
     order.gateway_payment_id = data.razorpay_payment_id
     order.payment_gateway = gateway_label
 
-    # Promote app out of draft
-    ac_result = await db.execute(select(AppConfig).where(AppConfig.id == order.app_config_id))
-    ac = ac_result.scalar_one_or_none()
-    if ac and ac.status == "draft":
-        ac.status = "pending"
-
     await db.flush()
 
     # Trigger build
@@ -322,12 +315,6 @@ async def test_payment(
 
     order.status = "paid"
     order.payment_gateway = "test"
-
-    # Promote app out of draft
-    ac_result = await db.execute(select(AppConfig).where(AppConfig.id == order.app_config_id))
-    ac = ac_result.scalar_one_or_none()
-    if ac and ac.status == "draft":
-        ac.status = "pending"
 
     await db.flush()
 
