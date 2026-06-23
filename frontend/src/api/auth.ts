@@ -6,7 +6,7 @@ export const authApi = {
     client.post<{ message: string }>('/api/auth/register', data),
 
   login: (data: { email: string; password: string }) =>
-    client.post<TokenResponse>('/api/auth/login', data),
+    client.post<TokenResponse>('/api/auth/login', data, { _skipRefresh: true } as any),
 
   refresh: (refresh_token: string) =>
     client.post<TokenResponse>('/api/auth/refresh', { refresh_token }),
