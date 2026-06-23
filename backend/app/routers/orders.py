@@ -73,6 +73,17 @@ async def create_order(
     if gateway == "stripe" and not (settings.stripe_publishable_key and settings.stripe_secret_key):
         gateway = "razorpay"
 
+    # Clean up any stale pending orders for this app before creating a new one
+    stale = await db.execute(
+        select(Order).where(
+            Order.app_config_id == data.app_config_id,
+            Order.user_id == user.id,
+            Order.status == "pending",
+        )
+    )
+    for stale_order in stale.scalars().all():
+        await db.delete(stale_order)
+
     order = Order(
         user_id=user.id,
         app_config_id=data.app_config_id,
