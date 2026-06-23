@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2, AlertCircle } from 'lucide-react'
@@ -11,6 +11,7 @@ export default function EditApp() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const wizard = useWizardStore()
+  const [wizardReady, setWizardReady] = useState(false)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['app', id],
@@ -18,16 +19,16 @@ export default function EditApp() {
     enabled: !!id,
   })
 
-  const { data: ordersData } = useQuery({
+  const { data: ordersData, isLoading: ordersLoading } = useQuery({
     queryKey: ['orders-all'],
     queryFn: () => ordersApi.list(1, 100).then((r) => r.data),
     enabled: !!id,
   })
 
   useEffect(() => {
-    if (!data) return
+    // Wait for both queries to finish before populating wizard
+    if (!data || ordersLoading) return
 
-    // Find the most recent order for this app (prefer paid, then any)
     const appOrders = (ordersData?.orders ?? [])
       .filter((o) => o.app_config_id === id)
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
@@ -69,9 +70,12 @@ export default function EditApp() {
     if (data.desktop_config) {
       wizard.setDesktopConfig(data.desktop_config as any)
     }
-  }, [data, ordersData])
 
-  if (isLoading) {
+    // Only mount CreateApp after wizard is fully populated
+    setWizardReady(true)
+  }, [data, ordersData, ordersLoading])
+
+  if (isLoading || ordersLoading || !wizardReady) {
     return (
       <div className="flex items-center justify-center py-32">
         <Loader2 className="w-10 h-10 animate-spin text-primary-600" />
