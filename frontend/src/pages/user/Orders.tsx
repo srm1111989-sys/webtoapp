@@ -7,9 +7,13 @@ import { ShoppingCart, Loader2, AlertCircle, ChevronRight } from 'lucide-react'
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
   paid: 'bg-green-100 text-green-800',
+  free: 'bg-blue-100 text-blue-800',
   failed: 'bg-red-100 text-red-800',
   refunded: 'bg-gray-100 text-gray-800',
 }
+
+const orderLabel = (status: string, amount: number) =>
+  status === 'paid' && amount === 0 ? 'free' : status
 
 export default function Orders() {
   const {
@@ -72,9 +76,9 @@ export default function Orders() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-gray-900">{order.order_number}</span>
                 <span
-                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[order.status] ?? 'bg-gray-100 text-gray-800'}`}
+                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[orderLabel(order.status, order.amount)] ?? 'bg-gray-100 text-gray-800'}`}
                 >
-                  {order.status}
+                  {orderLabel(order.status, order.amount)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
@@ -138,9 +142,9 @@ export default function Orders() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[order.status] ?? 'bg-gray-100 text-gray-800'}`}
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[orderLabel(order.status, order.amount)] ?? 'bg-gray-100 text-gray-800'}`}
                       >
-                        {order.status}
+                        {orderLabel(order.status, order.amount)}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
