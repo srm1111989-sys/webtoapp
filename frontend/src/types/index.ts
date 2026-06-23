@@ -116,6 +116,8 @@ export interface Build {
   exe_url?: string
   source_url?: string
   keystore_url?: string
+  keystore_password?: string
+  keystore_alias?: string
   error_message?: string
   started_at?: string
   completed_at?: string

@@ -1,0 +1,5 @@
+
+UPDATE plans SET price_inr = 83000 WHERE slug IN ('android-paid', 'desktop-paid');
+INSERT INTO plans (id, slug, name, price_inr, price_usd, billing_type, max_apps, platform, description, sort_order, features, is_active, created_at, updated_at)
+SELECT gen_random_uuid(), 'android-both', 'App + Play Store', 166000, 2000, 'one_time', 1, 'android', 'App build + Play Store Listing bundle', 3, features || '{"play_store_listing": true}'::jsonb, true, now(), now() FROM plans WHERE slug = 'android-paid' ON CONFLICT (slug) DO NOTHING;
+

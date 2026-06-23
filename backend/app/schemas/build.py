@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 
 class BuildResponse(BaseModel):
@@ -16,6 +16,8 @@ class BuildResponse(BaseModel):
     exe_url: str | None = None
     source_url: str | None = None
     keystore_url: str | None = None
+    keystore_password: str | None = None
+    keystore_alias: str | None = None
     error_message: str | None = None
     started_at: datetime | None = None
     completed_at: datetime | None = None

@@ -416,15 +416,35 @@ export default function OrderDetail() {
                       </a>
                     )}
                     {build.keystore_url && (
-                      <a
-                        href={build.keystore_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-sm font-medium"
-                      >
-                        <Download className="w-4 h-4" />
-                        Download Keystore
-                      </a>
+                      <div className="w-full">
+                        <a
+                          href={build.keystore_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-sm font-medium"
+                        >
+                          <Download className="w-4 h-4" />
+                          Download Keystore (.jks)
+                        </a>
+                        {(build.keystore_password || build.keystore_alias) && (
+                          <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs space-y-1">
+                            <p className="font-semibold text-amber-800 mb-1.5">Keystore Credentials</p>
+                            {build.keystore_alias && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-amber-700 w-24 shrink-0">Key Alias</span>
+                                <code className="bg-white border border-amber-200 rounded px-2 py-0.5 font-mono text-amber-900 select-all">{build.keystore_alias}</code>
+                              </div>
+                            )}
+                            {build.keystore_password && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-amber-700 w-24 shrink-0">Password</span>
+                                <code className="bg-white border border-amber-200 rounded px-2 py-0.5 font-mono text-amber-900 select-all">{build.keystore_password}</code>
+                              </div>
+                            )}
+                            <p className="text-amber-600 pt-1">Keep these safe — required to update your app on Google Play.</p>
+                          </div>
+                        )}
+                      </div>
                     )}
                     {build.exe_url && (
                       <a
