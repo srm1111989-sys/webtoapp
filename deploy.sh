@@ -7,11 +7,11 @@ echo "=== WebToApp Deploy ==="
 echo "[1/5] Pulling latest..."
 git pull origin main
 
-# Restore prod env from git copy — protects against backend/.env corruption
-# during deploys. backend/.env.production is the committed source of truth.
+# Restore prod env from git copy — backend/.env.production is the committed source of truth.
 if [ -f backend/.env.production ]; then
   cp backend/.env.production backend/.env
-  echo "  Restored backend/.env from git (.env.production)"
+  cp backend/.env.production .env
+  echo "  Restored backend/.env and .env from git (.env.production)"
 fi
 
 BUILD_VERSION=$(cat BUILD_VERSION 2>/dev/null | tr -d '[:space:]')
