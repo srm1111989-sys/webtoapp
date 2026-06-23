@@ -33,6 +33,7 @@ import CreateApp from '@/pages/user/CreateApp'
 import MyApps from '@/pages/user/MyApps'
 import OrderDetail from '@/pages/user/OrderDetail'
 import Orders from '@/pages/user/Orders'
+import EditApp from '@/pages/user/EditApp'
 // Payment pages
 import PaymentSuccess from '@/pages/payment/PaymentSuccess'
 import PaymentCancel from '@/pages/payment/PaymentCancel'
@@ -85,6 +86,7 @@ export default function App() {
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/apps/create" element={<CreateApp />} />
+          <Route path="/apps/:id/edit" element={<EditApp />} />
           <Route path="/apps" element={<MyApps />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<OrderDetail />} />

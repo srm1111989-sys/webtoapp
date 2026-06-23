@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { appsApi } from '@/api/apps'
 import { ordersApi } from '@/api/orders'
 import { formatDate } from '@/utils/format'
-import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle } from 'lucide-react'
+import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle, Pencil } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
   draft: 'bg-amber-50 text-amber-700 border border-amber-200',
@@ -122,11 +122,19 @@ export default function MyApps() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {apps.map((app) => (
-            <Link
+            <div
               key={app.id}
-              to={`/apps/${app.id}`}
-              className="group bg-white rounded-2xl border-2 border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all overflow-hidden"
+              className="group relative bg-white rounded-2xl border-2 border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all overflow-hidden"
             >
+              {/* Edit button */}
+              <Link
+                to={`/apps/${app.id}/edit`}
+                onClick={(e) => e.stopPropagation()}
+                className="absolute top-3 right-3 z-10 p-1.5 rounded-lg bg-gray-100 hover:bg-primary-100 hover:text-primary-700 text-gray-500 transition-colors"
+                title="Edit app"
+              >
+                <Pencil className="w-4 h-4" />
+              </Link>
               <div className="p-6">
                 {/* Header with icon and name */}
                 <div className="flex items-start gap-4 mb-4">
@@ -196,7 +204,7 @@ export default function MyApps() {
                   </span>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}
