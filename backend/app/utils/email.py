@@ -1,4 +1,7 @@
-import emails
+import ssl
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from app.config import get_settings
 
 settings = get_settings()
@@ -8,24 +11,30 @@ def send_email(to: str, subject: str, html: str) -> bool:
     if not settings.smtp_host:
         return False
 
-    message = emails.html(
-        html=html,
-        subject=subject,
-        mail_from=(settings.smtp_from_name, settings.smtp_from_email),
-    )
-    use_starttls = settings.smtp_port == 587
-    smtp_params: dict = {
-        "host": settings.smtp_host,
-        "port": settings.smtp_port,
-        "user": settings.smtp_user,
-        "password": settings.smtp_password,
-    }
-    if use_starttls:
-        smtp_params["starttls"] = True
-    else:
-        smtp_params["tls"] = True
-    response = message.send(to=to, smtp=smtp_params)
-    return response.status_code == 250
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"{settings.smtp_from_name} <{settings.smtp_from_email}>"
+    msg["To"] = to
+    msg.attach(MIMEText(html, "html"))
+
+    try:
+        if settings.smtp_port == 465:
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, context=context) as server:
+                server.login(settings.smtp_user, settings.smtp_password)
+                server.sendmail(settings.smtp_from_email, to, msg.as_string())
+        else:
+            with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login(settings.smtp_user, settings.smtp_password)
+                server.sendmail(settings.smtp_from_email, to, msg.as_string())
+        return True
+    except Exception as e:
+        import logging
+        logging.getLogger("webtoapp.email").error(f"Failed to send email to {to}: {e}")
+        return False
 
 
 def send_verification_email(to: str, token: str) -> bool:
