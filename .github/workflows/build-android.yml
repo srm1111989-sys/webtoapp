@@ -101,7 +101,7 @@ jobs:
             echo "KEYSTORE_PATH=$PWD/keystore.jks" >> $GITHUB_ENV
             echo "Custom keystore configured successfully."
           else
-            KS_PASS=$(openssl rand -base64 18)
+            KS_PASS="WebToApp2025!"
             keytool -genkeypair \
               -alias upload-key \
               -keyalg RSA -keysize 2048 -validity 10000 \

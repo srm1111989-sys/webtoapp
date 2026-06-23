@@ -204,7 +204,7 @@ async def get_order(
 
     # Inject keystore credentials from build variables so users can see them
     for build_resp, build_obj in zip(response.builds, order.builds):
-        if build_resp.keystore_url and build_obj.variables:
+        if build_obj.variables:
             v = build_obj.variables if isinstance(build_obj.variables, dict) else {}
             build_resp.keystore_password = v.get("CUSTOM_KEYSTORE_PASSWORD") or v.get("KEYSTORE_PASSWORD")
             build_resp.keystore_alias = v.get("CUSTOM_KEYSTORE_ALIAS") or v.get("KEY_ALIAS")

@@ -170,17 +170,20 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     if app_config.custom_keystore_url:
         keystore_url = app_config.custom_keystore_url.replace("http://localhost:8000", settings.app_url)
         variables["CUSTOM_KEYSTORE_URL"] = keystore_url
-        if app_config.custom_keystore_password:
-            variables["CUSTOM_KEYSTORE_PASSWORD"] = app_config.custom_keystore_password
-        if app_config.custom_keystore_alias:
-            variables["CUSTOM_KEYSTORE_ALIAS"] = app_config.custom_keystore_alias
-        if app_config.custom_keystore_private_password:
-            variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] = app_config.custom_keystore_private_password
+        variables["CUSTOM_KEYSTORE_PASSWORD"] = app_config.custom_keystore_password or ""
+        variables["CUSTOM_KEYSTORE_ALIAS"] = app_config.custom_keystore_alias or "upload-key"
+        variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] = (
+            app_config.custom_keystore_private_password or app_config.custom_keystore_password or ""
+        )
     elif not is_free and platform == "android":
         # Paid builds without a custom keystore use the WebToApp master keystore
         variables["CUSTOM_KEYSTORE_URL"] = f"{settings.app_url}/api/artifacts/master/webtoapp-master.jks"
         variables["CUSTOM_KEYSTORE_PASSWORD"] = settings.master_keystore_password
         variables["CUSTOM_KEYSTORE_ALIAS"] = settings.master_keystore_alias
+    elif platform == "android":
+        # Free builds: auto-generated keystore with fixed standard credentials
+        variables["KEYSTORE_PASSWORD"] = "WebToApp2025!"
+        variables["KEY_ALIAS"] = "upload-key"
 
     # Watermark for desktop builds
     variables["SHOW_WATERMARK"] = "true" if show_watermark else "false"
