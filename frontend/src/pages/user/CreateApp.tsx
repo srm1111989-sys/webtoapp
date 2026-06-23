@@ -62,6 +62,7 @@ import {
   BellRing,
   Nfc,
   Store,
+  CheckCircle2,
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
@@ -1319,9 +1320,65 @@ const DESKTOP_PLANS_FALLBACK: Plan[] = [
   { id: 'desktop-paid', name: 'Paid', slug: 'desktop-paid', price_inr: 207500, price_usd: 2500, billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop', description: 'Full desktop app, one-time', features: {} },
 ]
 
+function Step4Rebuild() {
+  const wizard = useWizardStore()
+  const navigate = useNavigate()
+  const [rebuilding, setRebuilding] = useState(false)
+
+  const platform =
+    wizard.selectedPlatforms?.includes('desktop') && !wizard.selectedPlatforms?.includes('android')
+      ? 'desktop'
+      : 'android'
+
+  const handleRebuild = async () => {
+    if (!wizard.existingOrderId) return
+    setRebuilding(true)
+    try {
+      await buildsApi.trigger(wizard.existingOrderId, platform)
+      toast.success('Rebuild started! Check Build Status for progress.')
+      navigate(`/orders/${wizard.existingOrderId}`)
+    } catch (e: any) {
+      toast.error(e?.response?.data?.detail || 'Failed to start rebuild.')
+    } finally {
+      setRebuilding(false)
+    }
+  }
+
+  return (
+    <div className="max-w-lg mx-auto py-12 text-center">
+      <div className="inline-flex p-4 rounded-full bg-green-50 mb-6">
+        <CheckCircle2 className="w-12 h-12 text-green-600" />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">App Updated!</h2>
+      <p className="text-gray-600 mb-8">
+        Your app configuration has been saved. Rebuild to apply the changes.
+      </p>
+      <button
+        onClick={handleRebuild}
+        disabled={rebuilding}
+        className="inline-flex items-center gap-2 px-8 py-4 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition font-semibold text-lg shadow-lg disabled:opacity-60"
+      >
+        {rebuilding ? <Loader2 className="w-5 h-5 animate-spin" /> : <RefreshCw className="w-5 h-5" />}
+        {rebuilding ? 'Starting rebuild…' : 'Rebuild App'}
+      </button>
+      <p className="mt-4 text-sm text-gray-400">
+        You can also rebuild later from your{' '}
+        <button className="text-primary-600 underline" onClick={() => navigate(`/orders/${wizard.existingOrderId}`)}>
+          order page
+        </button>.
+      </p>
+    </div>
+  )
+}
+
 function Step4PlanReview() {
   const wizard = useWizardStore()
   const navigate = useNavigate()
+
+  // Edit mode: already has a paid/free order — skip payment, show rebuild
+  if (wizard.existingOrderId) {
+    return <Step4Rebuild />
+  }
 
   const { data: plansData, isLoading: plansLoading } = useQuery({
     queryKey: ['plans'],

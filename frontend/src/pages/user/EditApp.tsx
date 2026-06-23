@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { appsApi } from '@/api/apps'
+import { ordersApi } from '@/api/orders'
 import { useWizardStore } from '@/store/wizardStore'
 import CreateApp from './CreateApp'
 
@@ -17,11 +18,26 @@ export default function EditApp() {
     enabled: !!id,
   })
 
+  const { data: ordersData } = useQuery({
+    queryKey: ['orders-all'],
+    queryFn: () => ordersApi.list(1, 100).then((r) => r.data),
+    enabled: !!id,
+  })
+
   useEffect(() => {
     if (!data) return
 
+    // Find the most recent order for this app (prefer paid, then any)
+    const appOrders = (ordersData?.orders ?? [])
+      .filter((o) => o.app_config_id === id)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+    const existingOrder =
+      appOrders.find((o) => o.status === 'paid') ?? appOrders[0] ?? null
+
     wizard.reset()
     wizard.setAppId(data.id)
+    wizard.setExistingOrderId(existingOrder?.id ?? null)
     wizard.setSelectedPlatforms((data.selected_platforms ?? ['android']) as any)
     wizard.setBasicInfo({
       name: data.name,
@@ -53,7 +69,7 @@ export default function EditApp() {
     if (data.desktop_config) {
       wizard.setDesktopConfig(data.desktop_config as any)
     }
-  }, [data])
+  }, [data, ordersData])
 
   if (isLoading) {
     return (
@@ -80,7 +96,5 @@ export default function EditApp() {
     )
   }
 
-  // Render the same CreateApp wizard — wizard store is pre-populated so it
-  // skips the initial create call and uses update (PUT) on every step save.
   return <CreateApp />
 }

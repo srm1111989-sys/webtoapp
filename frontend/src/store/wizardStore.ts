@@ -31,9 +31,11 @@ interface WizardState {
   customKeystoreAlias: string
   customKeystorePrivatePassword: string
   selectedPlanId: string | null
+  existingOrderId: string | null
 
   setStep: (step: number) => void
   setAppId: (id: string) => void
+  setExistingOrderId: (id: string | null) => void
   setSelectedPlatforms: (platforms: Platform[]) => void
   setBasicInfo: (data: { name: string; url: string; packageName?: string; description?: string }) => void
   setVisuals: (data: Partial<Pick<WizardState, 'primaryColor' | 'secondaryColor' | 'statusBarColor' | 'iconFile' | 'iconPreview' | 'splashFile' | 'splashPreview'>>) => void
@@ -122,12 +124,14 @@ const initialState = {
   customKeystoreAlias: '',
   customKeystorePrivatePassword: '',
   selectedPlanId: null,
+  existingOrderId: null,
 }
 
 export const useWizardStore = create<WizardState>()((set) => ({
   ...initialState,
   setStep: (step) => set({ step }),
   setAppId: (appId) => set({ appId }),
+  setExistingOrderId: (existingOrderId) => set({ existingOrderId }),
   setSelectedPlatforms: (selectedPlatforms) => set({ selectedPlatforms }),
   setBasicInfo: (data) => set({
     name: data.name,
