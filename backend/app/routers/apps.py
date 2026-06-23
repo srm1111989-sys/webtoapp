@@ -49,8 +49,7 @@ async def list_apps(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    # Show non-draft apps, plus draft apps that have a paid order (wizard complete, awaiting build)
-    # Pure drafts (abandoned wizard sessions with no order) are hidden
+    # Auto-delete abandoned wizard sessions (draft, no order, older than 24h)
     cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
     await db.execute(
         delete(AppConfig).where(
@@ -62,13 +61,10 @@ async def list_apps(
     )
     await db.commit()
 
+    # Only show non-draft apps (draft = in-progress wizard, hidden from user)
     result = await db.execute(
         select(AppConfig)
-        .where(
-            AppConfig.user_id == user.id,
-            (AppConfig.status != "draft") |
-            AppConfig.id.in_(select(Order.app_config_id).where(Order.user_id == user.id))
-        )
+        .where(AppConfig.user_id == user.id, AppConfig.status != "draft")
         .order_by(AppConfig.created_at.desc())
     )
     apps = result.scalars().all()
