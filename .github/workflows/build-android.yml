@@ -70,10 +70,13 @@ jobs:
 
       - name: Configure app
         run: |
-          # Persist VERSION_CODE for all subsequent steps
           echo "VERSION_CODE=${{ inputs.VERSION_CODE }}" >> $GITHUB_ENV
 
-          # Write config.json
+          ADMOB_CFG='${{ inputs.ADMOB_CONFIG }}'
+          FIREBASE_CFG='${{ inputs.FIREBASE_CONFIG }}'
+          [ -z "$ADMOB_CFG" ] && ADMOB_CFG="{}"
+          [ -z "$FIREBASE_CFG" ] && FIREBASE_CFG="{}"
+
           cat > app/src/main/assets/config.json << HEREDOC
           {
             "app_name": "${{ inputs.APP_NAME }}",
@@ -84,8 +87,8 @@ jobs:
             "status_bar_color": "${{ inputs.STATUS_BAR_COLOR }}",
             "features": ${{ inputs.FEATURES_JSON }},
             "navigation_items": ${{ inputs.NAVIGATION_ITEMS }},
-            "admob_config": ${{ inputs.ADMOB_CONFIG != '' && inputs.ADMOB_CONFIG || '{}' }},
-            "firebase_config": ${{ inputs.FIREBASE_CONFIG != '' && inputs.FIREBASE_CONFIG || '{}' }},
+            "admob_config": ${ADMOB_CFG},
+            "firebase_config": ${FIREBASE_CFG},
             "trial_days": ${{ inputs.TRIAL_DAYS }},
             "purchase_url": "${{ inputs.PURCHASE_URL }}"
           }
