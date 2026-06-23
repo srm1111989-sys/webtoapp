@@ -73,10 +73,15 @@ import { formatPlanPrice, getUserCurrency } from '@/utils/format'
 
 // ---------- Step 0: Basic Info ----------
 
+const PACKAGE_NAME_RE = /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*){1,}$/
+
 const basicInfoSchema = z.object({
   name: z.string().min(1, 'App name is required').max(100),
   url: z.string().url('Please enter a valid URL'),
-  package_name: z.string().optional(),
+  package_name: z.string().optional().refine(
+    val => !val || PACKAGE_NAME_RE.test(val),
+    { message: 'Invalid package name. Use format: com.example.app (lowercase, dot-separated)' }
+  ),
   description: z.string().max(500).optional(),
 })
 
@@ -566,8 +571,20 @@ function Step0BasicInfo() {
         {errors.url && <p className="text-red-600 text-sm mt-2 font-medium">{errors.url.message}</p>}
       </div>
 
-      {/* Package Name and Description hidden — both optional and auto/empty by default */}
-      <input type="hidden" {...register('package_name')} />
+      <div>
+        <label className="block text-base font-semibold text-gray-900 mb-1">
+          Package Name <span className="text-gray-400 font-normal text-sm">(optional)</span>
+        </label>
+        <p className="text-sm text-gray-500 mb-2">
+          Leave blank to auto-generate. Set this only if you need a specific package name, e.g. to update an existing Play Store app.
+        </p>
+        <input
+          {...register('package_name')}
+          className={inputClass}
+          placeholder="com.example.myapp"
+        />
+        {errors.package_name && <p className="text-red-600 text-sm mt-2 font-medium">{errors.package_name.message}</p>}
+      </div>
       <input type="hidden" {...register('description')} />
 
       <div className="flex justify-end pt-6 border-t-2 border-gray-100">
