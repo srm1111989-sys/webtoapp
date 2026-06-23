@@ -305,7 +305,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         except Exception as e:
             logger.error(f"Failed to download artifacts for pipeline {pipeline_id}: {e}")
 
-        # Send build completion email
+        # Mark app as active and send build completion email
         try:
             from app.utils.email import send_build_complete_email
             result = await db.execute(select(Order).where(Order.id == build.order_id))
@@ -317,6 +317,8 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 user = user_result.scalar_one_or_none()
                 app_result = await db.execute(select(AC).where(AC.id == order.app_config_id))
                 app = app_result.scalar_one_or_none()
+                if app:
+                    app.status = "active"
                 if user and app:
                     download_url = build.apk_url or build.exe_url or f"{settings.app_url}/apps"
                     if download_url.startswith("http://localhost"):
