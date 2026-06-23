@@ -43,6 +43,8 @@ on:
         default: ""
       BUILD_AAB:
         default: "false"
+      VERSION_CODE:
+        default: "1"
       CUSTOM_KEYSTORE_URL:
         default: ""
       CUSTOM_KEYSTORE_PASSWORD:
