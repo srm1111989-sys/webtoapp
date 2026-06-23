@@ -83,6 +83,10 @@ class Settings(BaseSettings):
     # Google OAuth
     google_client_id: str = ""
 
+    # Master keystore (used for all builds without a custom keystore)
+    master_keystore_password: str = "WebToApp2025!"
+    master_keystore_alias: str = "webtoapp-key"
+
     # Admin
     admin_email: str = "admin@websitetoapp.app"
     admin_password: str = "admin123"

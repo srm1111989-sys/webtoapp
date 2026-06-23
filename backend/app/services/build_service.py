@@ -175,6 +175,11 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
             variables["CUSTOM_KEYSTORE_ALIAS"] = app_config.custom_keystore_alias
         if app_config.custom_keystore_private_password:
             variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] = app_config.custom_keystore_private_password
+    elif not is_free and platform == "android":
+        # Paid builds without a custom keystore use the WebToApp master keystore
+        variables["CUSTOM_KEYSTORE_URL"] = f"{settings.app_url}/api/artifacts/master/webtoapp-master.jks"
+        variables["CUSTOM_KEYSTORE_PASSWORD"] = settings.master_keystore_password
+        variables["CUSTOM_KEYSTORE_ALIAS"] = settings.master_keystore_alias
 
     # Watermark for desktop builds
     variables["SHOW_WATERMARK"] = "true" if show_watermark else "false"
