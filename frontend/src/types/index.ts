@@ -88,6 +88,7 @@ export interface Order {
   plan_name?: string
   app_name?: string
   selected_platforms?: ('android' | 'desktop')[]
+  build_count?: number
 }
 
 export interface DesktopConfig {

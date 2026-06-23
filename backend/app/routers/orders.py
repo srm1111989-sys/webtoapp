@@ -6,6 +6,7 @@ from sqlalchemy import select, func
 from app.database import get_db
 from app.models.user import User
 from app.models.order import Order
+from app.models.build import Build
 from app.models.plan import Plan
 from app.models.app_config import AppConfig
 from app.models.promo_code import PromoCode
@@ -156,6 +157,17 @@ async def list_orders(
     )
     orders = result.scalars().all()
 
+    # Fetch build counts per order in one query
+    order_ids = [o.id for o in orders]
+    build_counts: dict = {}
+    if order_ids:
+        bc_result = await db.execute(
+            select(Build.order_id, func.count(Build.id))
+            .where(Build.order_id.in_(order_ids))
+            .group_by(Build.order_id)
+        )
+        build_counts = {row[0]: row[1] for row in bc_result.all()}
+
     order_responses = []
     for order in orders:
         resp = OrderResponse.model_validate(order)
@@ -164,6 +176,7 @@ async def list_orders(
         if order.app_config:
             resp.app_name = order.app_config.name
             resp.selected_platforms = order.app_config.selected_platforms
+        resp.build_count = build_counts.get(order.id, 0)
         order_responses.append(resp)
 
     return OrderListResponse(orders=order_responses, total=total, page=page, per_page=per_page)

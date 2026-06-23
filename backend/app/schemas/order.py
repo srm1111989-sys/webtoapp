@@ -25,6 +25,7 @@ class OrderResponse(BaseModel):
     plan_name: str | None = None
     app_name: str | None = None
     selected_platforms: list[str] | None = None
+    build_count: int = 0
     created_at: datetime
     updated_at: datetime
 

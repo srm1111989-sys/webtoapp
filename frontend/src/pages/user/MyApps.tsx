@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { appsApi } from '@/api/apps'
 import { ordersApi } from '@/api/orders'
 import { formatDate } from '@/utils/format'
-import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle, Pencil } from 'lucide-react'
+import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle, Pencil, Hammer } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
   draft: 'bg-amber-50 text-amber-700 border border-amber-200',
@@ -124,6 +124,10 @@ export default function MyApps() {
           {apps.map((app) => {
             const appOrder = orders.find((o) => o.app_config_id === app.id)
             const detailUrl = appOrder ? `/orders/${appOrder.id}` : `/apps/${app.id}/edit`
+            const isPaid = appOrder && appOrder.amount > 0
+            const buildLimit = isPaid ? 5 : 2
+            const buildsUsed = appOrder?.build_count ?? 0
+            const buildsLeft = Math.max(0, buildLimit - buildsUsed)
             return (
             <div
               key={app.id}
@@ -188,16 +192,33 @@ export default function MyApps() {
                 )}
 
                 {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t-2 border-gray-50">
-                  <span
-                    className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold ${statusColors[app.status] ?? 'bg-gray-50 text-gray-700 border border-gray-200'}`}
-                  >
-                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-xs text-gray-500 group-hover:text-primary-600 transition">
-                    <span className="hidden sm:inline">View details</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
+                <div className="pt-4 border-t-2 border-gray-50 space-y-2">
+                  <div className="flex items-center justify-between">
+                    {appOrder ? (
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold ${isPaid ? 'bg-primary-50 text-primary-700 border border-primary-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}`}>
+                        {isPaid ? 'Paid Plan' : 'Free Plan'}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-50 text-gray-500 border border-gray-200">
+                        No order
+                      </span>
+                    )}
+                    <span className="inline-flex items-center gap-1 text-xs text-gray-500 group-hover:text-primary-600 transition">
+                      <span className="hidden sm:inline">View details</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                  {appOrder && (
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <Hammer className="w-3.5 h-3.5 shrink-0" />
+                      <span>
+                        <span className={buildsLeft === 0 ? 'text-red-600 font-semibold' : 'text-gray-700 font-medium'}>
+                          {buildsLeft} build{buildsLeft !== 1 ? 's' : ''} remaining
+                        </span>
+                        {' '}of {buildLimit}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Creation date */}
