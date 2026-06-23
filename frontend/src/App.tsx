@@ -87,6 +87,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/apps/create" element={<CreateApp />} />
           <Route path="/apps/:id/edit" element={<EditApp />} />
+          <Route path="/apps/:id" element={<EditApp />} />
           <Route path="/apps" element={<MyApps />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
