@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -111,19 +111,15 @@ async def trigger_build_endpoint(
                 detail="Free plan build limit reached (2 builds per account). Upgrade to a paid plan for more builds.",
             )
     else:
-        # Paid plans: 5 rebuilds per 30 rolling days per order
-        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+        # Paid plans: 5 builds total (lifetime) per order
         build_count_result = await db.execute(
-            select(func.count(Build.id)).where(
-                Build.order_id == order_id,
-                Build.created_at >= thirty_days_ago,
-            )
+            select(func.count(Build.id)).where(Build.order_id == order_id)
         )
         build_count = build_count_result.scalar() or 0
         if build_count >= 5:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Build limit reached (5 rebuilds per 30 days). Try again later.",
+                detail="Build limit reached (5 builds per app). Contact support to purchase additional builds.",
             )
 
     build = await trigger_build(order_id, db, platform=platform)
