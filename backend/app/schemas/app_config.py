@@ -71,6 +71,7 @@ class AppConfigCreate(BaseModel):
     selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
+    version_code: int | None = None
     custom_keystore_url: str | None = None
     custom_keystore_password: str | None = None
     custom_keystore_alias: str | None = None
@@ -93,6 +94,7 @@ class AppConfigUpdate(BaseModel):
     selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
+    version_code: int | None = None
     custom_keystore_url: str | None = None
     custom_keystore_password: str | None = None
     custom_keystore_alias: str | None = None
@@ -163,6 +165,7 @@ class AppConfigResponse(BaseModel):
     selected_platforms: list[str] | None = None
     desktop_config: dict | None = None
     custom_user_agent: str | None = None
+    version_code: int | None = None
     custom_keystore_url: str | None = None
     custom_keystore_password: str | None = None
     custom_keystore_alias: str | None = None

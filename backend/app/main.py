@@ -29,6 +29,17 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 @app.on_event("startup")
 async def startup_event():
     start_scheduler()
+    # Column migrations — safe to run on every restart
+    from app.database import engine
+    from sqlalchemy import text
+    async with engine.begin() as conn:
+        for sql in [
+            "ALTER TABLE app_configs ADD COLUMN IF NOT EXISTS version_code INTEGER",
+        ]:
+            try:
+                await conn.execute(text(sql))
+            except Exception as e:
+                pass
 
 
 app.add_middleware(

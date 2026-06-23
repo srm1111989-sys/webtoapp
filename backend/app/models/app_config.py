@@ -28,6 +28,7 @@ class AppConfig(Base):
     selected_platforms: Mapped[list | None] = mapped_column(JSONB, default=lambda: ["android"])
     desktop_config: Mapped[dict | None] = mapped_column(JSONB)
     custom_user_agent: Mapped[str | None] = mapped_column(String(500))
+    version_code: Mapped[int | None] = mapped_column(default=None)
     custom_keystore_url: Mapped[str | None] = mapped_column(String(500))
     custom_keystore_password: Mapped[str | None] = mapped_column(String(255))
     custom_keystore_alias: Mapped[str | None] = mapped_column(String(255))

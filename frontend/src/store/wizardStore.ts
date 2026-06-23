@@ -10,6 +10,7 @@ interface WizardState {
   name: string
   url: string
   packageName: string
+  versionCode: number | null
   description: string
   iconFile: File | null
   iconPreview: string | null
@@ -37,7 +38,7 @@ interface WizardState {
   setAppId: (id: string) => void
   setExistingOrderId: (id: string | null) => void
   setSelectedPlatforms: (platforms: Platform[]) => void
-  setBasicInfo: (data: { name: string; url: string; packageName?: string; description?: string }) => void
+  setBasicInfo: (data: { name: string; url: string; packageName?: string; versionCode?: number | null; description?: string }) => void
   setVisuals: (data: Partial<Pick<WizardState, 'primaryColor' | 'secondaryColor' | 'statusBarColor' | 'iconFile' | 'iconPreview' | 'splashFile' | 'splashPreview'>>) => void
   setFeatures: (features: Record<string, boolean>) => void
   setNavigation: (type: 'none' | 'bottom_nav' | 'drawer', items: NavigationItem[]) => void
@@ -54,6 +55,7 @@ const initialState = {
   name: '',
   url: '',
   packageName: '',
+  versionCode: null,
   description: '',
   iconFile: null,
   iconPreview: null,
@@ -137,6 +139,7 @@ export const useWizardStore = create<WizardState>()((set) => ({
     name: data.name,
     url: data.url,
     packageName: data.packageName || '',
+    versionCode: data.versionCode ?? null,
     description: data.description || '',
   }),
   setVisuals: (data) => set(data),

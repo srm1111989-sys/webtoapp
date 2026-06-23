@@ -110,6 +110,7 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
         "ORDER_ID": str(order.id),
         "PLATFORM": platform,
         "PACKAGE_NAME": _sanitize_package_name(app_config.package_name or f"com.webtoapp.{domain.replace('.', '_').replace('-', '_')}"),
+        "VERSION_CODE": str(app_config.version_code) if app_config.version_code else "1",
     }
 
     if app_config.icon_url:

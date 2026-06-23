@@ -83,6 +83,7 @@ const basicInfoSchema = z.object({
     val => !val || PACKAGE_NAME_RE.test(val),
     { message: 'Invalid package name. Use format: com.example.app (lowercase, dot-separated)' }
   ),
+  version_code: z.coerce.number().int().min(1).max(999999).optional().nullable(),
   description: z.string().max(500).optional(),
 })
 
@@ -620,6 +621,7 @@ function Step0BasicInfo() {
       name: wizard.name,
       url: wizard.url,
       package_name: wizard.packageName,
+      version_code: wizard.versionCode ?? undefined,
       description: wizard.description,
     },
   })
@@ -630,6 +632,7 @@ function Step0BasicInfo() {
         name: data.name,
         url: data.url,
         package_name: data.package_name || undefined,
+        version_code: data.version_code ?? undefined,
         description: data.description || undefined,
         selected_platforms: wizard.selectedPlatforms,
       }),
@@ -639,6 +642,7 @@ function Step0BasicInfo() {
         name: res.data.name,
         url: res.data.url,
         packageName: res.data.package_name || '',
+        versionCode: res.data.version_code ?? null,
         description: res.data.description || '',
       })
       trackAppCreated(res.data.name, wizard.selectedPlatforms[0] || 'android')
@@ -656,6 +660,7 @@ function Step0BasicInfo() {
         name: data.name,
         url: data.url,
         package_name: data.package_name || undefined,
+        version_code: data.version_code ?? undefined,
         description: data.description || undefined,
         selected_platforms: wizard.selectedPlatforms,
       }),
@@ -664,6 +669,7 @@ function Step0BasicInfo() {
         name: res.data.name,
         url: res.data.url,
         packageName: res.data.package_name || '',
+        versionCode: res.data.version_code ?? null,
         description: res.data.description || '',
       })
       wizard.setStep(1)
@@ -762,6 +768,24 @@ function Step0BasicInfo() {
         />
         {errors.package_name && <p className="text-red-600 text-sm mt-2 font-medium">{errors.package_name.message}</p>}
       </div>
+      <div>
+        <label className="block text-base font-semibold text-gray-900 mb-1">
+          Version Code <span className="text-gray-400 font-normal text-sm">(optional)</span>
+        </label>
+        <p className="text-sm text-gray-500 mb-2">
+          Integer used by Google Play to identify app versions. Must be higher than the previous upload (e.g. 2, 3…). Leave blank to use 1.
+        </p>
+        <input
+          {...register('version_code')}
+          type="number"
+          min={1}
+          max={999999}
+          className={inputClass}
+          placeholder="1"
+        />
+        {errors.version_code && <p className="text-red-600 text-sm mt-2 font-medium">{errors.version_code.message}</p>}
+      </div>
+
       <input type="hidden" {...register('description')} />
 
       <div className="flex justify-end pt-6 border-t-2 border-gray-100">
