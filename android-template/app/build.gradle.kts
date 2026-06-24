@@ -9,12 +9,12 @@ if (file("google-services.json").exists()) {
 
 android {
     namespace = "com.webtoapp.template"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = project.findProperty("APP_PACKAGE_NAME")?.toString() ?: "com.webtoapp.template"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         val vc = (project.findProperty("VERSION_CODE")?.toString()?.toIntOrNull() ?: System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1)
         versionCode = vc
         versionName = "1.0.$vc"
