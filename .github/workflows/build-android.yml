@@ -145,7 +145,7 @@ jobs:
         run: |
           wget -q "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
           if [ -s /tmp/splash_raw ]; then
-            convert /tmp/splash_raw PNG:app/src/main/res/drawable/splash_image.png || true
+            convert '/tmp/splash_raw[0]' PNG:app/src/main/res/drawable/splash_image.png || true
           fi
 
       - name: Build APK
