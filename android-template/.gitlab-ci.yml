@@ -28,6 +28,9 @@ prepare:
     - export PATH=$JAVA_HOME/bin:$PATH
     - java -version
 
+    # Install SDK 35 (required by compileSdk/targetSdk 35)
+    - yes | sdkmanager "platforms;android-35" > /dev/null 2>&1 || true
+
     # Bootstrap Gradle wrapper if not present
     - |
       if [ ! -f ./gradlew ]; then
@@ -180,7 +183,8 @@ build_apk:
         -PSECONDARY_COLOR="${SECONDARY_COLOR}" \
         -PSTATUS_BAR_COLOR="${STATUS_BAR_COLOR}" \
         -PFIREBASE_ENABLED="${FIREBASE_ENABLED:-false}" \
-        -PADMOB_ENABLED="${ADMOB_ENABLED:-false}"
+        -PADMOB_ENABLED="${ADMOB_ENABLED:-false}" \
+        -PVERSION_CODE="${VERSION_CODE:-1}"
   artifacts:
     paths:
       - app/build/outputs/apk/release/app-release.apk
@@ -211,7 +215,8 @@ build_aab:
         -PSECONDARY_COLOR="${SECONDARY_COLOR}" \
         -PSTATUS_BAR_COLOR="${STATUS_BAR_COLOR}" \
         -PFIREBASE_ENABLED="${FIREBASE_ENABLED:-false}" \
-        -PADMOB_ENABLED="${ADMOB_ENABLED:-false}"
+        -PADMOB_ENABLED="${ADMOB_ENABLED:-false}" \
+        -PVERSION_CODE="${VERSION_CODE:-1}"
   artifacts:
     paths:
       - app/build/outputs/bundle/release/app-release.aab
