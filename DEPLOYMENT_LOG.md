@@ -23,16 +23,16 @@
 **Environment Variables Configured**:
 ```env
 # Razorpay (Live & Test)
-RAZORPAY_KEY_ID=rzp_live_SJBT7Uhme061Lm
-RAZORPAY_TEST_KEY_ID=rzp_test_SJBgkHSwwfVzCK
+RAZORPAY_KEY_ID=<configured in Doppler>
+RAZORPAY_TEST_KEY_ID=<configured in Doppler>
 
 # GitLab CI/CD
-GITLAB_TOKEN=glpat-G063Iq-ACQr7-DbXKuZH4m86MQp1OjF1ZmI2Cw.01.120c8eep1
+GITLAB_TOKEN=<configured in Doppler>
 GITLAB_ANDROID_PROJECT_ID=77087514
 GITLAB_DESKTOP_PROJECT_ID=79731841
 
 # Hetzner Cloud
-HETZNER_API_TOKEN=hzaKRah43QvKAxDE2sSWo78uaoLImOoyqOkTCj99wMeJ2mkdqw2BaHDebwTpxj0U
+HETZNER_API_TOKEN=<configured in Doppler>
 
 # Production Settings
 ENVIRONMENT=production
@@ -114,7 +114,7 @@ INFO:     Application startup complete.
 
 1. **deploy.sh** - Deployment automation script
 2. **.env.production** - Production environment template
-3. **backend/.env** - Updated with Hetzner API token
+3. **backend/.env** - Legacy local backend environment file
 4. **DEPLOYMENT_LOG.md** - This file
 
 ### Key Learnings

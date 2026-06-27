@@ -1,8 +1,12 @@
 import urllib.request
 import json
+import os
 
-token = 'glpat-G063Iq-ACQr7-DbXKuZH4m86MQp1OjF1ZmI2Cw.01.120c8eep1'
+token = os.environ.get('GITLAB_TOKEN', '')
 url = 'https://gitlab.com/api/v4/projects'
+
+if not token:
+    raise SystemExit('Set GITLAB_TOKEN before running this script')
 
 headers = {
     'PRIVATE-TOKEN': token

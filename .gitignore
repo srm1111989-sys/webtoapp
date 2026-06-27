@@ -1,8 +1,11 @@
 # Environment
 .env
+.env.production
 .env.local
 .env.runtime
 backend/.env.runtime
+frontend/.env.local
+client_secret_*.json
 
 # Python
 __pycache__/
