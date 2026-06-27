@@ -81,6 +81,8 @@ class Settings(BaseSettings):
     sentry_dsn: str = ""
 
     # Google OAuth
+    google_oauth_client_id: str = ""
+    google_oauth_client_secret: str = ""
     google_client_id: str = ""
     google_oauth_client_json: str = ""
 

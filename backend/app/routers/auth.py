@@ -28,6 +28,10 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
 def resolve_google_client_id() -> str:
+    oauth_client_id = getattr(settings, "google_oauth_client_id", "") or os.environ.get("GOOGLE_OAUTH_CLIENT_ID", "")
+    if oauth_client_id:
+        return oauth_client_id
+
     raw_json = getattr(settings, "google_oauth_client_json", "") or os.environ.get("GOOGLE_OAUTH_CLIENT_JSON", "")
     if raw_json:
         try:
