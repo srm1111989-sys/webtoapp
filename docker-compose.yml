@@ -24,10 +24,10 @@ services:
       - ./backend:/app
       - buildlogs:/app/logs
     env_file:
-      - .env
+      - .env.runtime
     environment:
-      DATABASE_URL: postgresql+asyncpg://webtoapp:webtoapp@db:5432/webtoapp
-      DATABASE_URL_SYNC: postgresql://webtoapp:webtoapp@db:5432/webtoapp
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://webtoapp:change-me@db:5432/webtoapp}
+      DATABASE_URL_SYNC: ${DATABASE_URL_SYNC:-postgresql://webtoapp:change-me@db:5432/webtoapp}
     depends_on:
       db:
         condition: service_healthy
@@ -38,7 +38,7 @@ services:
       - "127.0.0.1:5434:5432"
     environment:
       POSTGRES_USER: webtoapp
-      POSTGRES_PASSWORD: webtoapp
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
       POSTGRES_DB: webtoapp
     volumes:
       - pgdata:/var/lib/postgresql/data

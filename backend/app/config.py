@@ -84,12 +84,12 @@ class Settings(BaseSettings):
     google_client_id: str = ""
 
     # Master keystore (used for all builds without a custom keystore)
-    master_keystore_password: str = "WebToApp2025!"
+    master_keystore_password: str = ""
     master_keystore_alias: str = "webtoapp-key"
 
     # Admin
     admin_email: str = "admin@websitetoapp.app"
-    admin_password: str = "admin123"
+    admin_password: str = ""
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 
