@@ -82,6 +82,7 @@ class Settings(BaseSettings):
 
     # Google OAuth
     google_client_id: str = ""
+    google_oauth_client_json: str = ""
 
     # Master keystore (used for all builds without a custom keystore)
     master_keystore_password: str = ""

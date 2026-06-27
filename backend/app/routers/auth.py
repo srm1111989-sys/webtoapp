@@ -1,5 +1,7 @@
 import uuid
 import secrets
+import json
+import os
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,6 +25,18 @@ from app.rate_limit import limiter
 settings = get_settings()
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+
+
+def resolve_google_client_id() -> str:
+    raw_json = getattr(settings, "google_oauth_client_json", "") or os.environ.get("GOOGLE_OAUTH_CLIENT_JSON", "")
+    if raw_json:
+        try:
+            payload = json.loads(raw_json)
+            return payload.get("web", {}).get("client_id") or payload.get("installed", {}).get("client_id") or ""
+        except Exception:
+            pass
+
+    return settings.google_client_id or os.environ.get("GOOGLE_CLIENT_ID", "")
 
 
 @router.post("/register", response_model=MessageResponse, status_code=status.HTTP_201_CREATED)
@@ -153,14 +167,15 @@ async def reset_password(request: Request, data: ResetPasswordRequest, db: Async
 @router.post("/google", response_model=TokenResponse)
 @limiter.limit("10/minute")
 async def google_auth(request: Request, data: GoogleAuthRequest, db: AsyncSession = Depends(get_db)):
-    if not settings.google_client_id:
+    google_client_id = resolve_google_client_id()
+    if not google_client_id:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Google sign-in is not configured")
 
     try:
         idinfo = google_id_token.verify_oauth2_token(
             data.credential,
             google_requests.Request(),
-            settings.google_client_id,
+            google_client_id,
         )
     except ValueError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Google token")
@@ -195,6 +210,11 @@ async def google_auth(request: Request, data: GoogleAuthRequest, db: AsyncSessio
         access_token=create_access_token(token_data),
         refresh_token=create_refresh_token(token_data),
     )
+
+
+@router.get("/google-client-id")
+async def google_client_id():
+    return {"clientId": resolve_google_client_id() or None}
 
 
 @router.get("/me", response_model=UserResponse)
