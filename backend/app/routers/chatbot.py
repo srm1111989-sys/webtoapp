@@ -26,6 +26,10 @@ router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
 SUPPORT_EMAIL = "support@websitetoapp.app"
 
+
+def is_chatbot_enabled() -> bool:
+    return os.environ.get("ASK_AI_ENABLED", "false").lower() == "true"
+
 def load_docs_context() -> str:
     paths_to_try = [
         os.path.join(os.path.dirname(__file__), "..", "docs"),
@@ -184,6 +188,9 @@ async def chat_endpoint(
     user: Optional[User] = Depends(get_optional_user),
     db: AsyncSession = Depends(get_db)
 ):
+    if not is_chatbot_enabled():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
 
@@ -315,6 +322,9 @@ async def chat_endpoint(
 
 @router.get("/metrics")
 async def chat_metrics(db: AsyncSession = Depends(get_db)):
+    if not is_chatbot_enabled():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
     try:
         await ensure_telemetry_table(db)
         

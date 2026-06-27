@@ -9,6 +9,7 @@ interface Message {
 }
 
 export default function FloatingSupportButton() {
+  const isEnabled = import.meta.env.VITE_ASK_AI_ENABLED === 'true'
   const { user, accessToken } = useAuthStore()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
@@ -38,6 +39,7 @@ export default function FloatingSupportButton() {
   }, [open])
 
   // Hide on admin pages
+  if (!isEnabled) return null
   if (window.location.pathname.startsWith('/admin')) return null
 
   const handleSend = async (e: React.FormEvent) => {
