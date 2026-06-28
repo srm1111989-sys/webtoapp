@@ -65,6 +65,13 @@ BACKEND_PYTHON="$BACKEND_DIR/venv/bin/python"
 if [ ! -x "$BACKEND_PYTHON" ]; then
   python3 -m venv "$BACKEND_DIR/venv"
 fi
+
+# Alembic loads settings from the process environment, so source the native
+# runtime env before running migrations.
+set -a
+. "$BACKEND_NATIVE_ENV"
+set +a
+
 "$BACKEND_PYTHON" -m pip install --upgrade pip setuptools wheel
 "$BACKEND_PYTHON" -m pip install -r "$BACKEND_DIR/requirements.txt"
 (
