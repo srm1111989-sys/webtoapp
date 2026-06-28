@@ -67,7 +67,10 @@ if [ ! -x "$BACKEND_PYTHON" ]; then
 fi
 "$BACKEND_PYTHON" -m pip install --upgrade pip setuptools wheel
 "$BACKEND_PYTHON" -m pip install -r "$BACKEND_DIR/requirements.txt"
-"$BACKEND_PYTHON" -m alembic upgrade head
+(
+  cd "$BACKEND_DIR"
+  "$BACKEND_PYTHON" -m alembic upgrade head
+)
 
 echo "[4/6] Building frontend..."
 (
