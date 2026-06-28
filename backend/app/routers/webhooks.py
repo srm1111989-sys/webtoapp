@@ -19,6 +19,7 @@ from app.utils.email import send_order_confirmation_email
 settings = get_settings()
 logger = logging.getLogger("webtoapp.webhooks")
 router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
+RAZORPAY_PRODUCT_KEY = "webtoapp"
 
 
 # ─── Helper ──────────────────────────────────────────────
@@ -29,6 +30,10 @@ async def _find_subscription_by_gateway_id(db: AsyncSession, gateway_id: str) ->
         select(Subscription).where(Subscription.gateway_subscription_id == gateway_id)
     )
     return result.scalar_one_or_none()
+
+
+def _razorpay_product_matches(notes: dict | None) -> bool:
+    return (notes or {}).get("product") == RAZORPAY_PRODUCT_KEY
 
 
 # ─── GitLab Webhook ──────────────────────────────────────
@@ -338,6 +343,13 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
         payment_entity = body.get("payload", {}).get("payment", {}).get("entity", {})
         notes = payment_entity.get("notes", {})
         order_id = notes.get("order_id")
+
+        if not _razorpay_product_matches(notes):
+            logger.warning(
+                "Ignoring Razorpay payment for non-WebToApp product",
+                extra={"order_id": order_id, "product": notes.get("product")},
+            )
+            return {"status": "ok", "skipped": "product_mismatch"}
 
         if order_id:
             result = await db.execute(select(Order).where(Order.id == order_id))

@@ -4,6 +4,7 @@
  */
 
 const Razorpay = require('razorpay');
+const RAZORPAY_PRODUCT_KEY = 'webtoapp';
 
 module.exports = async (req, res) => {
   // Handle CORS preflight
@@ -54,7 +55,10 @@ module.exports = async (req, res) => {
       amount: amount, // Amount in smallest currency unit (paise for INR)
       currency: currency,
       receipt: receipt || `order_${Date.now()}`,
-      notes: notes || {},
+      notes: {
+        ...(notes || {}),
+        product: (notes && notes.product) || RAZORPAY_PRODUCT_KEY,
+      },
     });
 
     // Return success response

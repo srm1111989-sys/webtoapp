@@ -23,6 +23,7 @@ from app.rate_limit import limiter
 from app.utils.email import send_order_confirmation_email, send_admin_payment_notification
 
 settings = get_settings()
+RAZORPAY_PRODUCT_KEY = "webtoapp"
 router = APIRouter(prefix="/api/payments", tags=["payments"])
 
 # Production server hostnames — when running on these, treat as live regardless of env vars
@@ -148,6 +149,10 @@ async def create_razorpay_order(
         "amount": order.amount,
         "currency": order.currency,
         "receipt": order.order_number,
+        "notes": {
+            "product": RAZORPAY_PRODUCT_KEY,
+            "order_id": str(order.id),
+        },
     })
 
     order.gateway_order_id = razorpay_order["id"]
