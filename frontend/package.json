@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build && node generate-static-pages.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
+    "start:prod": "node serve-static.mjs",
     "test:e2e": "npx playwright test",
     "test:e2e:ui": "npx playwright test --ui",
     "test:e2e:full": "npx playwright test full-e2e-with-apk.spec.ts --headed --timeout=1800000",
