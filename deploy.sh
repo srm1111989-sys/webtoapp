@@ -66,11 +66,9 @@ if [ ! -x "$BACKEND_PYTHON" ]; then
   python3 -m venv "$BACKEND_DIR/venv"
 fi
 
-# Alembic loads settings from the process environment, so source the native
-# runtime env before running migrations.
-set -a
-. "$BACKEND_NATIVE_ENV"
-set +a
+# Alembic only needs the database URLs from the native runtime env.
+export DATABASE_URL="$(grep '^DATABASE_URL=' "$BACKEND_NATIVE_ENV" | cut -d= -f2-)"
+export DATABASE_URL_SYNC="$(grep '^DATABASE_URL_SYNC=' "$BACKEND_NATIVE_ENV" | cut -d= -f2-)"
 
 "$BACKEND_PYTHON" -m pip install --upgrade pip setuptools wheel
 "$BACKEND_PYTHON" -m pip install -r "$BACKEND_DIR/requirements.txt"
