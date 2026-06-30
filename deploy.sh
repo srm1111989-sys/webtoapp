@@ -36,8 +36,7 @@ echo "[1/6] Syncing git..."
 git fetch origin main
 git reset --hard origin/main
 
-BUILD_VERSION="$(cat BUILD_VERSION 2>/dev/null | tr -d '[:space:]' || true)"
-BUILD_VERSION="${BUILD_VERSION:-$(git rev-parse --short HEAD)}"
+BUILD_VERSION="$(git rev-parse --short HEAD)"
 export BUILD_VERSION
 echo "Build version: $BUILD_VERSION"
 
@@ -81,8 +80,23 @@ echo "[4/6] Building frontend..."
 (
   cd "$FRONTEND_DIR"
   npm ci --no-audit --no-fund
-  BUILD_VERSION="$BUILD_VERSION" npm run build
+  VITE_ASK_AI_ENABLED=true BUILD_VERSION="$BUILD_VERSION" npm run build
 )
+
+python3 - <<PY
+from pathlib import Path
+import re
+
+version = "${BUILD_VERSION}"
+root = Path("/opt/webtoapp/frontend/dist")
+pattern = re.compile(r'(?P<attr>\b(?:src|href))=(?P<q>["\'])/(?P<path>(?!/)[^"\']+?)(?:\?v=[^"\']*)?(?P=q)')
+
+for html in root.rglob("*.html"):
+    text = html.read_text()
+    updated = pattern.sub(lambda m: f'{m.group("attr")}={m.group("q")}/{m.group("path")}?v={version}{m.group("q")}', text)
+    if updated != text:
+        html.write_text(updated)
+PY
 
 echo "[5/6] Restarting systemd services..."
 systemctl restart webtoapp-backend
