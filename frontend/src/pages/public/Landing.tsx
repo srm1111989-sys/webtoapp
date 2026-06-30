@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
@@ -19,7 +19,7 @@ const features = [
   { icon: Smartphone, title: 'Android Apps', desc: 'Convert your website into a native Android app with full-screen experience and smooth performance.' },
   { icon: Monitor, title: 'Windows Desktop Apps', desc: 'Generate a Windows .exe installer with configurable window, system tray, and more.' },
   { icon: Zap, title: 'Built in Minutes', desc: 'Configure your app with our wizard, pay, and get your builds automatically delivered.' },
-  { icon: Shield, title: 'Custom Keystore (.JKS)', desc: 'Upload your own .JKS keystore to sign your app — essential for Play Store updates without reinstalling.' },
+  { icon: Shield, title: 'Custom Keystore (.JKS)', desc: 'Upload your own .JKS keystore to sign your app - essential for Play Store updates without reinstalling.' },
   { icon: Shield, title: 'Feature-Rich', desc: 'Push notifications, biometric auth, QR scanner, AdMob, navigation menus, and 10+ features.' },
 ]
 
@@ -145,14 +145,14 @@ const faqs = [
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
-  { q: 'Is WebToApp better than GoNative or WebIntoApp?', a: 'WebToApp offers 40+ features at a one-time price from $25 — vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
-  { q: 'What websites can I convert to an app?', a: 'Any website works — Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebToApp.' },
+  { q: 'Is WebToApp better than GoNative or WebIntoApp?', a: 'WebToApp offers 40+ features at a one-time price from $25 - vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
+  { q: 'What websites can I convert to an app?', a: 'Any website works - Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebToApp.' },
   { q: 'Will my app be approved by Google Play?', a: 'Yes. We generate a properly signed AAB that meets Google Play guidelines. We also include a compliance checklist to help you submit without rejections.' },
 ]
 
 export default function Landing() {
   useSEO({
-    title: 'Convert Website to Android App Free — WebsiteToApp',
+    title: 'Convert Website to Android App Free - WebsiteToApp',
     description: 'Convert any website to an Android app in 5 minutes. Free forever plan. Push notifications, splash screen, offline support. Trusted by 1000+ developers.',
     canonical: 'https://websitetoapp.app/',
   })
@@ -273,14 +273,14 @@ export default function Landing() {
       <section className="bg-gradient-to-b from-white via-primary-50 to-white py-6 sm:py-8 lg:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-gray-900 text-center">
-            Convert Any Website to an App <span className="text-primary-600">in 5 Minutes</span>
+            Turn Your Website Into a <span className="text-primary-600">Play-Store-Ready App</span> in Minutes
           </h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-2 sm:mb-3 max-w-3xl mx-auto text-center">
-            No coding required. One-time payment from <strong>$25</strong> — 90% cheaper than GoNative, Median &amp; WebIntoApp. No subscriptions, ever.
+            No coding required. One-time payment from <strong>$25</strong>. Get an Android APK/AAB or Windows installer with branding, push notifications, and Play Store signing support without a monthly platform fee.
           </p>
           <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 text-center flex items-center justify-center gap-1.5">
             <MessageCircle className="w-4 h-4 text-green-500" />
-            <span>💬 Live support available — avg response time under 5 minutes</span>
+            <span>Live support available - average response time under 5 minutes</span>
           </p>
 
           {/* URL Input Box */}
@@ -301,10 +301,10 @@ export default function Landing() {
                 onClick={handleGetStarted}
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-10 py-3.5 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 transition-all shadow-lg whitespace-nowrap"
               >
-                {isLoggedIn ? 'Create App' : 'Convert'} <ArrowRight className="w-5 h-5" />
+                {isLoggedIn ? 'Create App' : 'Build My App'} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
-            {/* Publish App CTA — below URL box */}
+            {/* Publish App CTA â€” below URL box */}
             <Link
               to="/publish-app"
               className="mt-5 flex flex-col sm:flex-row items-center gap-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 rounded-2xl px-5 py-4 sm:py-5 hover:border-indigo-400 hover:shadow-md transition-all group no-underline"
@@ -313,14 +313,45 @@ export default function Landing() {
                 <Store className="w-7 h-7 text-white" />
               </div>
               <div className="flex-1 min-w-0 text-center sm:text-left">
-                <p className="text-xs text-indigo-500 font-semibold uppercase tracking-wider mb-0.5">Already have an Android app?</p>
+                <p className="text-xs text-indigo-500 font-semibold uppercase tracking-wider mb-0.5">Already have an Android build?</p>
                 <p className="text-base sm:text-lg font-bold text-indigo-900 leading-tight">Publish Your App on Google Play Store</p>
-                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup — just $15 flat</p>
+                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup - $25 flat</p>
               </div>
               <div className="shrink-0 bg-indigo-600 group-hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                Get Started — $25 <ArrowRight className="w-4 h-4" />
+                Get Started - $25 <ArrowRight className="w-4 h-4" />
               </div>
             </Link>
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
+            {[
+              {
+                icon: Smartphone,
+                title: 'Android build delivered',
+                text: 'Get APK and Play-Store-ready AAB output for launches, testing, and distribution.',
+              },
+              {
+                icon: Shield,
+                title: 'Signing and branding included',
+                text: 'Use your own keystore, app icon, colors, splash screen, and package identity.',
+              },
+              {
+                icon: Monitor,
+                title: 'Desktop app optional',
+                text: 'Add a Windows installer if you also want a desktop version for internal teams or customers.',
+              },
+            ].map((item) => {
+              const Icon = item.icon
+              return (
+                <div key={item.title} className="rounded-2xl border border-primary-100 bg-white/90 p-4 text-left shadow-sm">
+                  <div className="inline-flex p-2 rounded-xl bg-primary-50 mb-3">
+                    <Icon className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900 mb-1">{item.title}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{item.text}</p>
+                </div>
+              )
+            })}
           </div>
 
           {/* Social Proof Bar */}
@@ -336,11 +367,11 @@ export default function Landing() {
             </span>
             <span className="hidden sm:block h-4 w-px bg-gray-300" />
             <span className="flex items-center gap-1.5">
-              ⭐ <span className="font-bold text-gray-900 text-base sm:text-lg">4.8/5</span> Avg Rating
+              <Star className="w-4 h-4 text-primary-500 fill-primary-500" /> <span className="font-bold text-gray-900 text-base sm:text-lg">4.8/5</span> Avg Rating
             </span>
             <span className="hidden sm:block h-4 w-px bg-gray-300" />
             <span className="flex items-center gap-1.5">
-              🌍 <span className="font-bold text-gray-900 text-base sm:text-lg">45+</span> Countries
+              <Globe className="w-4 h-4 text-primary-500" /> <span className="font-bold text-gray-900 text-base sm:text-lg">45+</span> Countries
             </span>
           </div>
 
@@ -357,6 +388,28 @@ export default function Landing() {
             </div>
           </div>
 
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
+            {[
+              {
+                title: 'For founders',
+                text: 'Launch a mobile app fast for your MVP, community, course, or SaaS without hiring an app team first.',
+              },
+              {
+                title: 'For agencies',
+                text: 'Turn client websites into paid app upsells and ship faster with a fixed delivery process and lower build cost.',
+              },
+              {
+                title: 'For store owners',
+                text: 'Get repeat orders through app installs, push notifications, and a smoother mobile checkout experience.',
+              },
+            ].map((card) => (
+              <div key={card.title} className="rounded-2xl border border-primary-100 bg-white/90 p-4 text-left shadow-sm">
+                <p className="text-sm font-semibold text-primary-700 mb-1">{card.title}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">{card.text}</p>
+              </div>
+            ))}
+          </div>
+
           {/* Mini Testimonials Strip */}
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-4xl mx-auto">
             {[
@@ -369,7 +422,7 @@ export default function Landing() {
                   {[1,2,3,4,5].map(i => <Star key={i} className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />)}
                 </div>
                 <p className="text-xs text-gray-600 mb-2 leading-relaxed">&ldquo;{t.text}&rdquo;</p>
-                <p className="text-xs font-semibold text-gray-900">{t.name} <span className="font-normal text-gray-400">· {t.role}</span></p>
+                <p className="text-xs font-semibold text-gray-900">{t.name} <span className="font-normal text-gray-400">- {t.role}</span></p>
               </div>
             ))}
           </div>
@@ -409,16 +462,16 @@ export default function Landing() {
       <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-14">
-            <p className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-3">Price Comparison with Other Competitors</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-3">Comparison for buyers evaluating monthly app builders</p>
             <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
               <TrendingDown className="w-4 h-4" />
               Save up to 95%
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-              WebToApp vs GoNative vs WebIntoApp vs Median
+              Compare WebToApp with GoNative, WebIntoApp, and Median
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-              GoNative charges $99/month. Median starts at $99/month. WebIntoApp costs $149+/year. WebToApp is a one-time $25 payment with more features than all of them.
+              If you are comparing one-time purchase vs recurring platforms, this matrix shows the pricing gap and which deliverables are included without extra subscriptions.
             </p>
           </div>
 
@@ -438,13 +491,13 @@ export default function Landing() {
                 {([
                   { feature: 'Starting Price', a: '$99/mo', b: '$16/yr', c: '$99/mo', us: '$25 once', bold: true },
                   { feature: '1-Year Total Cost', a: '$1,188+', b: '$60+', c: '$1,188+', us: '$25', bold: true },
-                  { feature: 'Android App', a: '✓', b: '✓', c: '✓', us: '✓', bold: false },
-                  { feature: 'Windows Desktop App', a: '✗', b: '✗', c: '✗', us: '✓', bold: false },
-                  { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: '✓ Included', bold: false },
-                  { feature: 'Biometric Auth', a: 'JS Bridge', b: '✗', c: 'JS Bridge', us: '✓ Included', bold: false },
-                  { feature: 'AdMob / Monetization', a: '✗', b: '✗', c: '✗', us: '✓ Included', bold: false },
-                  { feature: 'No Watermark', a: '✓', b: 'Paid tier', c: '✓', us: '✓ Always', bold: false },
-                  { feature: 'No-Code Setup', a: 'Partial', b: '✓', c: 'Dev skills', us: '✓ Wizard', bold: false },
+                  { feature: 'Android App', a: 'Yes', b: 'Yes', c: 'Yes', us: 'Yes', bold: false },
+                  { feature: 'Windows Desktop App', a: 'No', b: 'No', c: 'No', us: 'Yes', bold: false },
+                  { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: 'Yes Included', bold: false },
+                  { feature: 'Biometric Auth', a: 'JS Bridge', b: 'No', c: 'JS Bridge', us: 'Yes Included', bold: false },
+                  { feature: 'AdMob / Monetization', a: 'No', b: 'No', c: 'No', us: 'Yes Included', bold: false },
+                  { feature: 'No Watermark', a: 'Yes', b: 'Paid tier', c: 'Yes', us: 'Yes Always', bold: false },
+                  { feature: 'No-Code Setup', a: 'Partial', b: 'Yes', c: 'Dev skills', us: 'Yes Wizard', bold: false },
                   { feature: 'Total Features', a: '~20', b: '~15', c: '~20', us: '40+', bold: false },
                 ]).map((row, idx) => (
                   <tr key={idx} className={row.bold ? 'bg-gray-50' : ''}>
@@ -495,9 +548,9 @@ export default function Landing() {
 
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
             {[
-              { name: 'GoNative', slug: 'gonative', price: '$99–$299/mo' },
-              { name: 'WebIntoApp', slug: 'webintoapp', price: '$16–$60/yr' },
-              { name: 'Median.co', slug: 'median', price: '$99–$299/mo' },
+              { name: 'GoNative', slug: 'gonative', price: '$99-$299/mo' },
+              { name: 'WebIntoApp', slug: 'webintoapp', price: '$16-$60/yr' },
+              { name: 'Median.co', slug: 'median', price: '$99-$299/mo' },
               { name: 'AppsGeyser', slug: 'appsgeyser', price: 'Free + $9.99/mo' },
             ].map((c) => (
               <Link
@@ -507,7 +560,7 @@ export default function Landing() {
               >
                 <p className="font-semibold text-sm text-gray-900 mb-1">vs {c.name}</p>
                 <p className="text-xs text-red-500 font-medium mb-2">{c.price}</p>
-                <p className="text-xs text-primary-600">Full comparison →</p>
+                <p className="text-xs text-primary-600">Full comparison -&gt;</p>
               </Link>
             ))}
           </div>
@@ -525,7 +578,7 @@ export default function Landing() {
               <span className="font-semibold text-green-900">ALL 40+ Features Included</span>
             </div>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-              One-time payment • No subscriptions • No hidden charges • Lifetime access
+              One-time payment | No subscriptions | No hidden charges | Lifetime access
             </p>
           </div>
 
@@ -534,10 +587,10 @@ export default function Landing() {
             {/* Android Card */}
             <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-4 sm:p-5 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
-                🔥 Most Popular
+                Most Popular
               </span>
               <div className="absolute -top-3 -right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold shadow-xl">
-                🚀 Launch Price
+                Launch Price
               </div>
               <div className="flex items-center gap-2 mb-3">
                 <Smartphone className="w-6 h-6 text-primary-600" />
@@ -563,12 +616,12 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  Launch Offer — Save $25
+                  Launch Offer - Save $25
                 </div>
               </div>
 
               <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
-                💎 One-time payment · Lifetime access
+                One-time payment | Lifetime access
               </p>
               <ul className="space-y-2 flex-1 mb-6">
                 {androidHighlights.map((h, i) => (
@@ -586,13 +639,13 @@ export default function Landing() {
               </Link>
               <div className="flex items-center gap-2 mt-3 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
                 <Shield className="w-4 h-4 text-green-600 shrink-0" />
-                <span className="text-xs font-medium text-green-800">7-Day Money-Back Guarantee — No questions asked</span>
+                <span className="text-xs font-medium text-green-800">7-Day Money-Back Guarantee - No questions asked</span>
               </div>
               <div className="flex items-center justify-center gap-3 mt-2 text-[10px] sm:text-xs text-gray-400">
                 <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> 256-bit SSL</span>
-                <span>•</span>
-                <span>💳 Razorpay Secured</span>
-                <span>•</span>
+                <span>|</span>
+                <span>Razorpay Secured</span>
+                <span>|</span>
                 <span>UPI / Card / NetBanking</span>
               </div>
             </div>
@@ -600,10 +653,10 @@ export default function Landing() {
             {/* Desktop Card */}
             <div className="bg-white border-2 border-primary-500 ring-2 ring-primary-500 rounded-2xl p-4 sm:p-5 flex flex-col relative shadow-xl hover:shadow-2xl transition-shadow">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-xs px-4 py-1 rounded-full font-medium shadow-lg">
-                💻 Best Value
+                Best Value
               </span>
               <div className="absolute -top-3 -right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold shadow-xl">
-                🚀 Launch Price
+                Launch Price
               </div>
               <div className="flex items-center gap-2 mb-3">
                 <Monitor className="w-6 h-6 text-primary-600" />
@@ -629,12 +682,12 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  Launch Offer — Save $25
+                  Launch Offer - Save $25
                 </div>
               </div>
 
               <p className="text-sm font-semibold text-primary-600 mb-4 mt-2">
-                💎 One-time payment · Lifetime access
+                One-time payment | Lifetime access
               </p>
               <ul className="space-y-2 flex-1 mb-6">
                 {desktopHighlights.map((h) => (
@@ -652,13 +705,13 @@ export default function Landing() {
               </Link>
               <div className="flex items-center gap-2 mt-3 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
                 <Shield className="w-4 h-4 text-green-600 shrink-0" />
-                <span className="text-xs font-medium text-green-800">7-Day Money-Back Guarantee — No questions asked</span>
+                <span className="text-xs font-medium text-green-800">7-Day Money-Back Guarantee - No questions asked</span>
               </div>
               <div className="flex items-center justify-center gap-3 mt-2 text-[10px] sm:text-xs text-gray-400">
                 <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> 256-bit SSL</span>
-                <span>•</span>
-                <span>💳 Razorpay Secured</span>
-                <span>•</span>
+                <span>|</span>
+                <span>Razorpay Secured</span>
+                <span>|</span>
                 <span>UPI / Card / NetBanking</span>
               </div>
             </div>
@@ -666,7 +719,7 @@ export default function Landing() {
 
           <div className="text-center mt-8">
             <Link to="/pricing" className="text-primary-600 hover:text-primary-700 font-medium text-sm">
-              View full feature comparison →
+              View full feature comparison -&gt;
             </Link>
           </div>
         </div>
@@ -688,10 +741,10 @@ export default function Landing() {
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Payment Successful!</h3>
                 <p className="text-gray-600 text-sm mb-4">Our team will contact you within 24 hours at <strong>{publishForm.email}</strong>.</p>
                 <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-left">
-                  <p className="text-sm font-semibold text-indigo-900 mb-2">📋 Next Step — Action Required:</p>
+                  <p className="text-sm font-semibold text-indigo-900 mb-2">Next Step - Action Required:</p>
                   <p className="text-sm text-indigo-700">Please add our email to your Google Play Console account with <strong>Release Manager</strong> permissions:</p>
                   <p className="text-sm font-bold text-indigo-900 mt-2 bg-white rounded-lg px-3 py-2 border border-indigo-200">support@websitetoapp.app</p>
-                  <p className="text-xs text-indigo-600 mt-2">Go to Play Console → Users and permissions → Invite new users → Enter our email → Grant Release Manager access.</p>
+                  <p className="text-xs text-indigo-600 mt-2">Go to Play Console -&gt; Users and permissions -&gt; Invite new users -&gt; Enter our email -&gt; Grant Release Manager access.</p>
                 </div>
               </div>
             ) : (
@@ -758,7 +811,7 @@ export default function Landing() {
                 </div>
 
                 <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
-                  <p className="font-semibold mb-1">📌 Note:</p>
+                  <p className="font-semibold mb-1">Note:</p>
                   <p>Our team will contact you shortly after payment. You will need to add our email <strong>support@websitetoapp.app</strong> to your Play Console account with <strong>Release Manager</strong> permissions to allow us to publish.</p>
                 </div>
 
@@ -836,7 +889,7 @@ export default function Landing() {
           <div className="mb-16">
             <div className="text-center mb-8">
               <h3 className="text-2xl sm:text-3xl font-bold mb-2">All 40+ Features at a Glance</h3>
-              <p className="text-gray-600 md:hidden">👉 Swipe horizontally to see all features →</p>
+              <p className="text-gray-600 md:hidden">Swipe horizontally to see all features -&gt;</p>
               <p className="text-gray-600 hidden md:block">Everything included in one simple plan</p>
             </div>
 
@@ -981,7 +1034,7 @@ export default function Landing() {
           <h2 className="text-xl font-bold text-gray-900 mb-2">Not sure which method is right for you?</h2>
           <p className="text-gray-600 mb-4">Read our complete guide comparing all 5 methods to convert your website to an app.</p>
           <Link to="/blog/convert-website-to-app-guide-2026" className="text-primary-600 font-semibold hover:underline text-lg">
-            📖 Read: How to Convert Any Website to a Mobile App (2026 Guide) →
+            Read: How to Convert Any Website to a Mobile App (2026 Guide) -&gt;
           </Link>
         </div>
       </section>
@@ -993,10 +1046,11 @@ export default function Landing() {
             One-time payment. No subscription. 7-day money-back guarantee. Join thousands of businesses already on mobile.
           </p>
           <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">
-            {isLoggedIn ? 'Create New App' : 'Convert My Website — From $25'} <ArrowRight className="w-5 h-5" />
+            {isLoggedIn ? 'Create New App' : 'Convert My Website - From $25'} <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
     </div>
   )
 }
+
