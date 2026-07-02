@@ -83,7 +83,12 @@ class ChatResponse(BaseModel):
     answer: str
 
 # ── Gemini Auth helper ──
-def init_google_auth():
+def init_gemini_auth():
+    gemini_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if gemini_key:
+        genai.configure(api_key=gemini_key)
+        return
+
     g_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
     credentials = None
     if g_json:
@@ -95,7 +100,7 @@ def init_google_auth():
             )
         except Exception as e:
             print(f"Error parsing service account JSON: {e}")
-            
+
     if not credentials:
         try:
             credentials, _ = google.auth.default(
@@ -103,8 +108,9 @@ def init_google_auth():
             )
         except Exception as e:
             print(f"ADC failed: {e}")
-            
-    genai.configure(credentials=credentials)
+
+    if credentials:
+        genai.configure(credentials=credentials)
 
 # ── Tool Definitions ──
 
@@ -116,7 +122,7 @@ get_user_apps_decl = FunctionDeclaration(
 
 get_build_status_decl = FunctionDeclaration(
     name="get_build_status",
-    description="Get the status of the most recent app builds for the user (Android APK, iOS, etc.). Use this when the user asks about build progress or downloads.",
+    description="Get the status of the most recent app builds for the user (Android APK, Windows Desktop, etc.). Use this when the user asks about build progress or downloads.",
     parameters={"type": "OBJECT", "properties": {}}
 )
 
@@ -203,19 +209,18 @@ async def chat_endpoint(
         await log_interaction(db, req.question.strip(), reason, latency_ms, True)
         return ChatResponse(answer=reason)
 
-    if not os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):
-        raise HTTPException(status_code=500, detail="Gemini service credentials not configured.")
-
     try:
-        init_google_auth()
+        init_gemini_auth()
+        if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")):
+            raise HTTPException(status_code=500, detail="Gemini credentials not configured.")
 
         documentation_context = load_docs_context()
         system_instruction = (
             "You are WebToApp AI Assistant, a helpful support copilot for the WebToApp platform. "
-            "Help users answer questions about converting websites into Android & iOS apps. "
+            "Help users answer questions about converting websites into Android apps. "
             "WebToApp details:\n"
             "- Website: https://websitetoapp.app\n"
-            "- Features: Push notifications, Splash screen, custom color styling, offline support, file uploads/downloads, Google Play/App Store publishing help.\n"
+            "- Features: Push notifications, Splash screen, custom color styling, offline support, file uploads/downloads, Google Play publishing help.\n"
             "- Pricing: Basic Plan ($19) offers 1 build/month, Pro Plan ($49) offers unlimited builds, custom branding, and push notifications. Agency Plan ($99) includes Play Store upload assistance.\n"
             "- Support: support@websitetoapp.app.\n\n"
             "If the user is logged in, you can look up their apps using 'get_user_apps' or check build progress with 'get_build_status'. "
