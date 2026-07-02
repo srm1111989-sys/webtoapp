@@ -2361,13 +2361,11 @@ Since your app loads content from your WordPress site via REST API, any new post
 - Plugins requiring browser extensions
 - Admin-only tools
 
-### Can I have both iOS and Android apps?
+### Does WebsiteToApp support iOS?
 
-**With WebsiteToApp:** Android + Windows Desktop apps currently supported. iOS coming in Q2 2026.
+**Currently supported:** Android apps + Windows Desktop apps.
 
-**For iOS now:** Use AppMySite or Appy Pie (both offer iOS, but cost more).
-
-**Alternative:** Progressive Web App (PWA) works on iOS without App Store.
+**For iOS:** Use a Progressive Web App (PWA) — works on iOS Safari without the App Store, no extra cost.
 
 ### Do I need a WordPress.com or self-hosted WordPress?
 
@@ -3229,16 +3227,15 @@ Redeem for $10 off your next purchase. Limited time!
 
 ### Do I need iOS app too?
 
-**Depends on your audience:**
+**WebsiteToApp builds Android apps.** For iOS users, these options work:
 
-**If 70%+ of traffic is Android:** Focus on Android first
+**If 70%+ of traffic is Android:** Android app covers most of your audience.
 
-**If iOS traffic is significant:** Consider these options:
-1. Use multi-platform builder (Appy Pie, Tapcart)
-2. Build Android first, iOS later
-3. Offer PWA for iOS users (Progressive Web App)
+**If iOS traffic is significant:**
+1. Use a multi-platform builder (Appy Pie, Tapcart) for native iOS
+2. Offer a PWA (Progressive Web App) — works on iOS Safari, no App Store needed, no extra cost
 
-**Most merchants:** Start with Android, add iOS if app succeeds.
+**Most merchants:** Start with Android. PWA covers iOS without additional cost.
 
 ### How much revenue can I expect from the app?
 

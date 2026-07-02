@@ -16,7 +16,7 @@ export default function FloatingSupportButton() {
     {
       id: 'welcome',
       role: 'bot',
-      text: 'Hello! I am **WebToApp Assistant**, your AI helper. I can answer questions about converting websites into Android & iOS apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
+      text: 'Hello! I am **WebToApp Assistant**, your AI helper. I can answer questions about converting websites into Android apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
     }
   ])
   const [input, setInput] = useState('')

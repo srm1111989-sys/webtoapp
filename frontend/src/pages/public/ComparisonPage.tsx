@@ -42,7 +42,7 @@ const WHO_SHOULD_USE: Record<string, { them: string[]; us: string[] }> = {
     us: ['Anyone publishing to the Google Play Store (needs signed AAB)', 'Businesses that cannot have third-party branding in their app', 'Users who need push notifications or AdMob', 'Anyone who wants a permanent app without monthly fees'],
   },
   appmysite: {
-    them: ['WordPress/WooCommerce site owners who prefer a visual dashboard', 'Teams that specifically want iOS support today'],
+    them: ['WordPress/WooCommerce site owners who prefer a visual dashboard'],
     us: ['Users with non-WordPress sites (React, Shopify, Angular, etc.)', 'Businesses wanting push notifications on the lowest-cost plan', 'Anyone who wants to pay once and never renew', 'Users who need Windows desktop app alongside mobile'],
   },
 }

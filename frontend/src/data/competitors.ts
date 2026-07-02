@@ -51,7 +51,6 @@ export const competitors: Competitor[] = [
     ],
     features: [
       { name: 'Android App', them: '✓', us: '✓', usBetter: false },
-      { name: 'iOS App', them: '✓ ($299/mo)', us: 'Coming soon', usBetter: false },
       { name: 'Windows Desktop App', them: '✗', us: '✓', usBetter: true },
       { name: 'Push Notifications', them: 'Included', us: '✓ Included', usBetter: false },
       { name: 'Biometric Auth', them: 'JS Bridge', us: '✓ No-code', usBetter: true },
@@ -102,7 +101,6 @@ export const competitors: Competitor[] = [
     ],
     features: [
       { name: 'Android App', them: '✓', us: '✓', usBetter: false },
-      { name: 'iOS App', them: 'Extra cost', us: 'Coming soon', usBetter: false },
       { name: 'Windows Desktop App', them: '✗', us: '✓', usBetter: true },
       { name: 'Push Notifications', them: 'Add-on ($)', us: '✓ Included', usBetter: true },
       { name: 'No Watermark', them: 'Paid tier only', us: '✓ Always', usBetter: true },
@@ -152,7 +150,6 @@ export const competitors: Competitor[] = [
     ],
     features: [
       { name: 'Android App', them: '✓', us: '✓', usBetter: false },
-      { name: 'iOS App', them: '✓ ($299/mo)', us: 'Coming soon', usBetter: false },
       { name: 'Windows Desktop App', them: '✗', us: '✓', usBetter: true },
       { name: 'Push Notifications', them: 'JS Bridge needed', us: '✓ No-code', usBetter: true },
       { name: 'Biometric Auth', them: 'JS Bridge needed', us: '✓ No-code', usBetter: true },
@@ -250,7 +247,6 @@ export const competitors: Competitor[] = [
     ],
     features: [
       { name: 'Android App', them: '✓ ($19/mo)', us: '✓ ($10 once)', usBetter: true },
-      { name: 'iOS App', them: '✓ ($49/mo)', us: 'Coming soon', usBetter: false },
       { name: 'Windows Desktop App', them: '✗', us: '✓', usBetter: true },
       { name: 'Push Notifications', them: 'Higher plan only', us: '✓ Included', usBetter: true },
       { name: 'No Watermark', them: '✓', us: '✓', usBetter: false },
