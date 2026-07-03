@@ -322,8 +322,9 @@ async def chat_endpoint(
         return ChatResponse(answer=answer)
     except Exception as e:
         latency_ms = int((time.time() - start_time) * 1000)
-        await log_interaction(db, req.question.strip(), f"Agent execution failed: {str(e)}", latency_ms, False)
-        raise HTTPException(status_code=500, detail=f"Agent execution failed: {str(e)}")
+        print(f"[chatbot] agent error: {e}")
+        await log_interaction(db, req.question.strip(), "AI assistant temporarily unavailable.", latency_ms, False)
+        raise HTTPException(status_code=500, detail="AI assistant temporarily unavailable. Please try again or contact support@websitetoapp.app.")
 
 @router.get("/metrics")
 async def chat_metrics(db: AsyncSession = Depends(get_db)):
