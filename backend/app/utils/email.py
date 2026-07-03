@@ -1,8 +1,19 @@
 import ssl
 import smtplib
+import json
+from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from app.config import get_settings
+
+_EMAIL_LOG = '/opt/webtoapp/logs/email_sends.jsonl'
+
+def _log_email(to, subject, status, error=None):
+    try:
+        entry = {'ts': datetime.utcnow().isoformat(), 'to': to, 'subject': subject, 'status': status, 'provider': 'zoho_smtp'}
+        if error: entry['error'] = str(error)[:200]
+        with open(_EMAIL_LOG, 'a') as f: f.write(json.dumps(entry) + '\n')
+    except Exception: pass
 
 settings = get_settings()
 
@@ -30,10 +41,12 @@ def send_email(to: str, subject: str, html: str) -> bool:
                 server.ehlo()
                 server.login(settings.smtp_user, settings.smtp_password)
                 server.sendmail(settings.smtp_from_email, to, msg.as_string())
+        _log_email(to, subject, 'sent')
         return True
     except Exception as e:
         import logging
         logging.getLogger("webtoapp.email").error(f"Failed to send email to {to}: {e}")
+        _log_email(to, subject, 'failed', e)
         return False
 
 
