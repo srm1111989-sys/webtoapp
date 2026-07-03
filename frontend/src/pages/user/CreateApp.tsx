@@ -1901,7 +1901,7 @@ function Step4PlanReview() {
                   setPublishServiceSuccess(false)
                   setShowPublishServiceModal(true)
                 }}
-                className="relative flex flex-col rounded-xl border-2 border-indigo-300 bg-indigo-50 hover:border-indigo-500 hover:bg-indigo-100 p-5 text-left transition-all"
+                className="relative flex flex-col rounded-xl border-2 border-gray-200 bg-white hover:border-indigo-400 hover:bg-indigo-50 p-5 text-left transition-all"
               >
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-semibold px-3 py-0.5 rounded-full whitespace-nowrap">
                   Add-on Service
