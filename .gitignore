@@ -3,7 +3,9 @@
 .env.production
 .env.local
 .env.runtime
+.env.native
 backend/.env.runtime
+backend/.env.native
 frontend/.env.local
 client_secret_*.json
 

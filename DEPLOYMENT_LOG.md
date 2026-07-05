@@ -57,28 +57,24 @@ git pull origin main
 # Update .env with production configuration
 # (Updated via script)
 
-# Stop containers
-docker compose down
+# Sync the latest git commit
+git fetch origin main
+git reset --hard origin/main
 
-# Rebuild backend with Razorpay SDK
-docker compose build --no-cache backend
-
-# Start all services
-docker compose up -d
+# Refresh secrets and native runtime env
+./deploy.sh
 ```
 
 #### 4. Container Status (After Deployment)
 
-All containers running successfully:
+All native services running successfully:
 
-| Container | Status | Port Mapping |
-|-----------|--------|--------------|
-| webtoapp-frontend-1 | Running | 127.0.0.1:3000→80 |
-| webtoapp-backend-1 | Running | 127.0.0.1:8000→8000 |
-| webtoapp-db-1 | Healthy | 127.0.0.1:5432→5432 |
-| webtoapp-redis-1 | Healthy | 127.0.0.1:6379→6379 |
-| webtoapp-celery-worker-1 | Running | - |
-| webtoapp-celery-beat-1 | Running | - |
+| Service | Status | Port Mapping |
+|---------|--------|--------------|
+| webtoapp-frontend.service | Running | 127.0.0.1:3000 |
+| webtoapp-backend.service | Running | 127.0.0.1:8000 |
+| postgresql.service | Available | 127.0.0.1:5432 |
+| redis-server.service | Available | 127.0.0.1:6379 |
 
 #### 5. Nginx Configuration
 
@@ -119,10 +115,10 @@ INFO:     Application startup complete.
 
 ### Key Learnings
 
-1. **Docker Compose Command**: Server uses `docker compose` (v5.0.2), not `docker-compose`
+1. **Native Services**: Production now runs via `systemd` units, not Docker Compose
 2. **Port Binding**: Production uses `127.0.0.1:PORT` for security (not `0.0.0.0`)
 3. **Nginx Proxy**: All external traffic goes through Nginx reverse proxy
-4. **Dependencies**: Always verify Python packages are actually installed in container, not just listed in requirements.txt
+4. **Dependencies**: Always verify Python packages are installed in the backend virtualenv, not just listed in `requirements.txt`
 
 ### Next Steps
 
@@ -135,30 +131,30 @@ INFO:     Application startup complete.
 
 **Check deployment status**:
 ```bash
-ssh root@157.90.228.171 'cd /root/webtoapp && docker compose ps'
+ssh root@157.90.228.171 'systemctl status webtoapp-backend webtoapp-frontend --no-pager'
 ```
 
 **View backend logs**:
 ```bash
-ssh root@157.90.228.171 'cd /root/webtoapp && docker compose logs -f backend'
+ssh root@157.90.228.171 'journalctl -u webtoapp-backend -f'
 ```
 
 **Restart services**:
 ```bash
-ssh root@157.90.228.171 'cd /root/webtoapp && docker compose restart backend'
+ssh root@157.90.228.171 'systemctl restart webtoapp-backend webtoapp-frontend'
 ```
 
 **Verify Razorpay SDK**:
 ```bash
-ssh root@157.90.228.171 'docker compose exec backend pip show razorpay'
+ssh root@157.90.228.171 '/opt/webtoapp/backend/venv/bin/python -m pip show razorpay'
 ```
 
 ### Troubleshooting Reference
 
 If payment fails again, check:
-1. Backend logs: `docker compose logs backend`
+1. Backend logs: `journalctl -u webtoapp-backend`
 2. Razorpay dashboard for API errors
-3. Environment variables are loaded: `docker compose exec backend env | grep RAZOR`
+3. Environment variables are loaded from `/opt/webtoapp/backend/.env.native`
 4. Network connectivity between frontend and backend
 
 ---

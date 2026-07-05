@@ -11,4 +11,6 @@ Expected Doppler target:
 - project: `webtoapp`
 - config: `prd`
 
-`deploy.sh` downloads secrets into a temporary env file, copies them to `.env.runtime` files used by Docker Compose, and removes those runtime files on exit.
+`deploy.sh` downloads secrets into a temporary env file, copies them to `.env.runtime` and `backend/.env.native`, then restarts the native systemd services.
+
+Gemini should be configured with `GEMINI_API_KEY` in Doppler. `GOOGLE_SERVICE_ACCOUNT_JSON` remains a fallback for older deployments, but the code now prefers the API key first.
