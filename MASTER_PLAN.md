@@ -1,8 +1,21 @@
+# Last updated: 2026-07-06 by plan-updater based on SC data
 # WebsiteToApp.app - 90-Day SEO Master Plan
 
 **Start Date:** February 27, 2026
 **End Date:** May 28, 2026
 **Goal:** 25,000+ monthly organic visitors by Day 90
+
+---
+
+## SEARCH CONSOLE PRIORITY — 2026-07-06
+
+- [ ] Refresh homepage `<title>`, meta description, and H1 for `webtoapp`
+  - Keep the homepage as the canonical brand query page and make the free-trial CTA more explicit.
+- [ ] Create `/blog/webtoapp-free` — target `webtoapp free`
+  - Angle: free plan, no credit card, what is included, and when to upgrade.
+- [ ] Create `/alternatives/webintoapp` — target `webintoapp`
+  - Angle: direct comparison vs WebIntoApp, pricing, features, and migration path.
+- [ ] Add internal links from the homepage and top conversion posts to the new brand/free/comparison pages
 
 ---
 
