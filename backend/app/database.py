@@ -1,3 +1,4 @@
+import logging
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm import DeclarativeBase
@@ -5,8 +6,12 @@ from app.config import get_settings
 
 settings = get_settings()
 
+if not settings.sql_echo:
+    logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+    logging.getLogger("sqlalchemy.pool").setLevel(logging.WARNING)
+
 # Main engine for FastAPI (connection pooling)
-_engine_kwargs = dict(echo=settings.debug)
+_engine_kwargs = dict(echo=settings.sql_echo)
 if not settings.database_url.startswith("sqlite"):
     _engine_kwargs.update(pool_size=20, max_overflow=10)
 

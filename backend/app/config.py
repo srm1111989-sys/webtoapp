@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     api_url: str = "http://localhost:8000"
     environment: str = "development"
     debug: bool = True
+    sql_echo: bool = False
 
     # Database
     database_url: str = "postgresql+asyncpg://webtoapp:webtoapp@db:5432/webtoapp"
