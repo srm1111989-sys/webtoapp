@@ -181,37 +181,6 @@ def send_admin_payment_notification(
     )
 
 
-def send_ci_quota_exhausted_email(providers_checked: list[str]) -> bool:
-    """Alert admin that ALL CI build providers (GitLab + both GitHub fallbacks)
-    report exhausted quota — builds are now running on best-effort fallback
-    order rather than a confirmed-available provider. Not sent when only
-    some providers are low, since the fallback chain is still absorbing load."""
-    provider_list = ", ".join(providers_checked)
-    html = f"""
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;
-                border: 2px solid #dc2626; border-radius: 8px; overflow: hidden;">
-      <div style="background: #dc2626; padding: 16px 24px;">
-        <h2 style="color: white; margin: 0; font-size: 20px;">⚠️ All CI Build Providers Exhausted</h2>
-      </div>
-      <div style="padding: 20px 24px;">
-        <p style="font-size: 14px; color: #111827;">
-          All {len(providers_checked)} configured build providers ({provider_list}) report exhausted
-          CI quota. New builds are still being attempted in fallback order, but none currently
-          confirm available capacity — expect delays or failures until quota resets.
-        </p>
-        <p style="margin: 16px 0 0; font-size: 13px; color: #6b7280;">
-          Check quota resets on each GitLab/GitHub account, or add another fallback account.
-        </p>
-      </div>
-    </div>
-    """
-    return send_email(
-        ADMIN_NOTIFY_EMAIL,
-        f"⚠️ WebToApp: all {len(providers_checked)} CI providers exhausted",
-        html,
-    )
-
-
 def send_build_complete_email(
     to: str,
     app_name: str,

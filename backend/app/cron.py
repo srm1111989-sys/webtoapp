@@ -9,19 +9,12 @@ from app.database import async_session
 from app.models.build import Build
 from app.services.github_service import GitHubService
 from app.services.gitlab_service import GitLabService
-from app.utils.email import send_ci_quota_exhausted_email
 
 logger = logging.getLogger("webtoapp.cron")
 
 # Quota results are cached for 5 minutes so each build doesn't re-check all 3 APIs
 _QUOTA_TTL = 300
 _quota_cache: dict[str, tuple[bool, float]] = {}
-
-# Alert admin at most once per hour when every provider is exhausted — builds
-# are checked every minute, so without a cooldown this would spam an email
-# per pending build the entire time all three stay exhausted.
-_ALERT_COOLDOWN = 3600
-_last_alert_at: float = 0.0
 
 def _check_quota_cached(key: str, check_fn) -> bool:
     now = time.monotonic()
@@ -39,8 +32,6 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     Falls back to all three (in order) if every quota check returns False, so a
     genuine API error never blocks all builds.
     """
-    global _last_alert_at
-
     gitlab  = GitLabService(platform=platform)
     github1 = GitHubService(platform=platform, account=1)
     github2 = GitHubService(platform=platform, account=2)
@@ -57,14 +48,6 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
         # Every provider reported exhausted quota — try all anyway (quota check may be wrong)
         logger.warning("All providers report exhausted quota; attempting all in fallback order")
         available = [(name, svc) for name, svc, _ in candidates]
-
-        now = time.monotonic()
-        if now - _last_alert_at > _ALERT_COOLDOWN:
-            _last_alert_at = now
-            try:
-                send_ci_quota_exhausted_email([name for name, _, _ in candidates])
-            except Exception as e:
-                logger.warning(f"Failed to send CI quota exhausted alert: {e}")
 
     return available
 
