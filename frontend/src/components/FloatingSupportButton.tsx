@@ -16,7 +16,7 @@ export default function FloatingSupportButton() {
     {
       id: 'welcome',
       role: 'bot',
-      text: 'Hello! I am **WebToApp Assistant**, your AI helper. I can answer questions about converting websites into Android apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
+      text: 'Hello! I am **WebToApp Expert Assistant**. I can answer questions about converting websites into Android apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
     }
   ])
   const [input, setInput] = useState('')
@@ -132,11 +132,11 @@ export default function FloatingSupportButton() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          aria-label="Contact support"
+          aria-label="Talk to an Expert"
           className="fixed bottom-5 right-5 z-40 flex items-center gap-2 px-4 py-3 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 hover:scale-105 transition-all"
         >
           <MessageCircle className="w-5 h-5" />
-          <span className="hidden sm:inline text-sm font-medium">Ask AI</span>
+          <span className="hidden sm:inline text-sm font-medium">Talk to an Expert</span>
         </button>
       )}
 
@@ -152,7 +152,7 @@ export default function FloatingSupportButton() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
               <h3 className="font-semibold flex items-center gap-2 text-gray-900">
-                <MessageCircle className="w-5 h-5 text-primary-600" /> WebToApp AI Assistant
+                <MessageCircle className="w-5 h-5 text-primary-600" /> WebToApp Expert Assistant
               </h3>
               <div className="flex items-center gap-2">
                 <button 
