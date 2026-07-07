@@ -1,4 +1,4 @@
-# Last updated: 2026-07-06 by plan-updater based on SC data
+# Last updated: 2026-07-07 by plan-updater based on SC data
 # WebsiteToApp.app - 90-Day SEO Master Plan
 
 **Start Date:** February 27, 2026
@@ -7,7 +7,7 @@
 
 ---
 
-## SEARCH CONSOLE PRIORITY — 2026-07-06
+## SEARCH CONSOLE PRIORITY — 2026-07-07
 
 - [ ] Refresh homepage `<title>`, meta description, and H1 for `webtoapp`
   - Keep the homepage as the canonical brand query page and make the free-trial CTA more explicit.
