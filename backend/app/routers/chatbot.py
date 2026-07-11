@@ -217,6 +217,10 @@ async def chat_endpoint(
     if not is_chatbot_enabled():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
 
+    # Require login to use the AI assistant.
+    if user is None:
+        return ChatResponse(answer="Please [sign in](https://websitetoapp.app/login) to chat with the AI assistant.")
+
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
 
