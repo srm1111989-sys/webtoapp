@@ -257,7 +257,7 @@ async def chat_endpoint(
         )
 
         model = genai.GenerativeModel(
-            "gemini-2.5-flash",
+            "gemini-flash-latest",
             tools=[chatbot_tools],
             system_instruction=system_instruction
         )
