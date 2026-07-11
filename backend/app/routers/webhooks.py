@@ -5,7 +5,7 @@ import logging
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Request, HTTPException, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, text
 from app.database import get_db
 from app.models.build import Build
 from app.models.order import Order
@@ -37,6 +37,25 @@ def _razorpay_product_matches(notes: dict | None) -> bool:
 
 
 # ─── GitLab Webhook ──────────────────────────────────────
+
+async def _webhook_already_processed(db: AsyncSession, gateway: str, event_id: str) -> bool:
+    """Atomic idempotency guard. Records (gateway, event_id) and returns True if it
+    was already seen — so retried / duplicated webhook deliveries are ignored.
+    Payment gateways retry on non-2xx and can fan the same event more than once."""
+    if not event_id:
+        return False
+    await db.execute(text(
+        "CREATE TABLE IF NOT EXISTS processed_webhook_events ("
+        "gateway VARCHAR(20) NOT NULL, event_id VARCHAR(191) NOT NULL, "
+        "processed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), "
+        "PRIMARY KEY (gateway, event_id))"))
+    res = await db.execute(text(
+        "INSERT INTO processed_webhook_events (gateway, event_id) VALUES (:g, :e) "
+        "ON CONFLICT (gateway, event_id) DO NOTHING RETURNING event_id"),
+        {"g": gateway, "e": event_id})
+    await db.commit()
+    return res.first() is None
+
 
 @router.post("/gitlab")
 async def gitlab_webhook(request: Request, db: AsyncSession = Depends(get_db)):
@@ -124,6 +143,9 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
 
     event_type = event["type"]
     data_object = event["data"]["object"]
+
+    if await _webhook_already_processed(db, "stripe", event.get("id", "")):
+        return {"status": "ok", "skipped": "duplicate"}
 
     # ── One-time payment: checkout.session.completed ──
     if event_type == "checkout.session.completed":
@@ -337,6 +359,10 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
 
     body = json.loads(payload)
     event = body.get("event")
+
+    _rzp_eid = request.headers.get("X-Razorpay-Event-Id") or         (body.get("payload", {}).get("payment", {}).get("entity", {}) or {}).get("id") or         hashlib.sha256(payload).hexdigest()
+    if await _webhook_already_processed(db, "razorpay", _rzp_eid):
+        return {"status": "ok", "skipped": "duplicate"}
 
     # ── One-time payment events ──
     if event == "payment.captured":
