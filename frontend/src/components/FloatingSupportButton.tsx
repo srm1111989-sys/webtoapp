@@ -23,6 +23,20 @@ export default function FloatingSupportButton() {
   const [loading, setLoading] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
+  // Per-user conversation persistence (localStorage)
+  const chatKey = () => 'wta_chat_' + (user?.id || (accessToken ? accessToken.slice(-24) : 'anon'))
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(chatKey())
+      if (raw) { const saved = JSON.parse(raw); if (Array.isArray(saved) && saved.length) setMessages(saved) }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id])
+  useEffect(() => {
+    try { localStorage.setItem(chatKey(), JSON.stringify(messages.slice(-50))) } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages])
+
   // Auto-scroll to bottom
   useEffect(() => {
     if (open) {
@@ -135,6 +149,7 @@ export default function FloatingSupportButton() {
           aria-label="Talk to an Expert"
           className="fixed bottom-5 right-5 z-40 flex items-center gap-2 px-4 py-3 rounded-full bg-primary-600 text-white shadow-lg hover:bg-primary-700 hover:scale-105 transition-all"
         >
+          <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-white"></span>
           <MessageCircle className="w-5 h-5" />
           <span className="hidden sm:inline text-sm font-medium">Talk to an Expert</span>
         </button>
@@ -153,6 +168,7 @@ export default function FloatingSupportButton() {
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
               <h3 className="font-semibold flex items-center gap-2 text-gray-900">
                 <MessageCircle className="w-5 h-5 text-primary-600" /> WebToApp Expert Assistant
+                <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-600"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>online</span>
               </h3>
               <div className="flex items-center gap-2">
                 <button 
