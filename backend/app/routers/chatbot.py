@@ -171,9 +171,42 @@ async def ensure_telemetry_table(db: AsyncSession):
                 created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
         """))
+        await db.execute(text("ALTER TABLE chatbot_logs ADD COLUMN IF NOT EXISTS user_key TEXT"))
+        await db.execute(text("ALTER TABLE chatbot_logs ADD COLUMN IF NOT EXISTS total_tokens INTEGER NOT NULL DEFAULT 0"))
+        await db.execute(text("ALTER TABLE chatbot_logs ADD COLUMN IF NOT EXISTS est_cost_usd NUMERIC(10,6) NOT NULL DEFAULT 0"))
+        await db.execute(text("CREATE INDEX IF NOT EXISTS idx_chatbot_logs_ratelimit ON chatbot_logs (user_key, created_at)"))
         await db.commit()
     except Exception as e:
         print(f"Failed to ensure chatbot telemetry table: {e}")
+
+
+# gemini-flash-latest blended $/token — conservative single rate for cost tracking.
+COST_PER_TOKEN_USD = 0.60 / 1_000_000
+def est_cost_usd(tokens: int) -> float:
+    return round(tokens * COST_PER_TOKEN_USD, 6)
+
+# Per-key rate limits, counted from chatbot_logs (durable, shared across workers).
+RL_PER_HOUR = 30
+RL_PER_DAY = 150
+async def check_rate_limit(db: AsyncSession, user_key: str) -> Optional[str]:
+    """Returns None if allowed, else a 'hour'/'day' scope string."""
+    try:
+        await ensure_telemetry_table(db)
+        row = (await db.execute(
+            text("""SELECT
+                COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '1 hour') AS hour,
+                COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '1 day')  AS day
+              FROM chatbot_logs WHERE user_key = :k"""),
+            {"k": user_key}
+        )).first()
+        if row and row.hour >= RL_PER_HOUR:
+            return "hour"
+        if row and row.day >= RL_PER_DAY:
+            return "day"
+        return None
+    except Exception as e:
+        print(f"Rate-limit check failed (allowing): {e}")
+        return None  # fail open
 
 
 
@@ -195,12 +228,15 @@ async def report_feedback_central(question: str, answer: str):
     except Exception as e:
         print(f"[chatbot] central feedback report failed: {e}")
 
-async def log_interaction(db: AsyncSession, question: str, answer: str, latency_ms: int, is_blocked: bool):
+async def log_interaction(db: AsyncSession, question: str, answer: str, latency_ms: int, is_blocked: bool,
+                          user_key: str = "anon", total_tokens: int = 0):
     try:
         await ensure_telemetry_table(db)
         await db.execute(
-            text("INSERT INTO chatbot_logs (question, answer, latency_ms, is_blocked) VALUES (:q, :a, :l, :b)"),
-            {"q": question, "a": answer, "l": latency_ms, "b": is_blocked}
+            text("""INSERT INTO chatbot_logs (question, answer, latency_ms, is_blocked, user_key, total_tokens, est_cost_usd)
+                    VALUES (:q, :a, :l, :b, :k, :t, :c)"""),
+            {"q": question, "a": answer, "l": latency_ms, "b": is_blocked,
+             "k": user_key, "t": total_tokens, "c": est_cost_usd(total_tokens)}
         )
         await db.commit()
     except Exception as e:
@@ -225,12 +261,24 @@ async def chat_endpoint(
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
 
     start_time = time.time()
+    user_key = f"email:{user.email.lower()}"
+    total_tokens = 0
+
+    # Rate limit before spending any Gemini tokens.
+    rl_scope = await check_rate_limit(db, user_key)
+    if rl_scope:
+        msg = ("You have reached the hourly message limit for the AI assistant. Please try again later."
+               if rl_scope == "hour"
+               else "You have reached the daily message limit for the AI assistant. Please try again tomorrow.")
+        latency_ms = int((time.time() - start_time) * 1000)
+        await log_interaction(db, req.question.strip(), msg, latency_ms, True, user_key, 0)
+        return ChatResponse(answer=msg)
 
     # Run input guardrails
     blocked, reason = IntentClassifier().is_blocked_question(req.question)
     if blocked:
         latency_ms = int((time.time() - start_time) * 1000)
-        await log_interaction(db, req.question.strip(), reason, latency_ms, True)
+        await log_interaction(db, req.question.strip(), reason, latency_ms, True, user_key, 0)
         return ChatResponse(answer=reason)
 
     try:
@@ -266,6 +314,10 @@ async def chat_endpoint(
         response = chat.send_message(req.question.strip())
 
         for turn in range(5):
+            try:
+                total_tokens += getattr(response, "usage_metadata", None) and response.usage_metadata.total_token_count or 0
+            except Exception:
+                pass
             candidate = response.candidates[0]
             if candidate.content.parts and candidate.content.parts[0].function_call:
                 function_call = candidate.content.parts[0].function_call
@@ -342,13 +394,13 @@ async def chat_endpoint(
 
         answer = response.text if response.text else "I could not formulate an answer."
         latency_ms = int((time.time() - start_time) * 1000)
-        await log_interaction(db, req.question.strip(), answer, latency_ms, False)
+        await log_interaction(db, req.question.strip(), answer, latency_ms, False, user_key, total_tokens)
         _asyncio.create_task(report_feedback_central(req.question.strip(), answer))
         return ChatResponse(answer=answer)
     except Exception as e:
         latency_ms = int((time.time() - start_time) * 1000)
         print(f"[chatbot] agent error: {e}")
-        await log_interaction(db, req.question.strip(), "AI assistant temporarily unavailable.", latency_ms, False)
+        await log_interaction(db, req.question.strip(), "AI assistant temporarily unavailable.", latency_ms, False, user_key, total_tokens)
         raise HTTPException(status_code=500, detail="AI assistant temporarily unavailable. Please try again or contact support@websitetoapp.app.")
 
 @router.get("/metrics")
@@ -384,11 +436,31 @@ async def chat_metrics(db: AsyncSession = Depends(get_db)):
             {"question": row[0], "count": row[1]} for row in res_common.fetchall()
         ]
 
+        # 5. Cost/usage
+        res_cost = await db.execute(text("""
+            SELECT
+                COALESCE(SUM(total_tokens) FILTER (WHERE created_at::date = CURRENT_DATE), 0) AS tokens_today,
+                COALESCE(SUM(est_cost_usd) FILTER (WHERE created_at::date = CURRENT_DATE), 0)::float AS cost_today,
+                COALESCE(SUM(est_cost_usd) FILTER (WHERE created_at > NOW() - INTERVAL '30 days'), 0)::float AS cost_30d
+            FROM chatbot_logs
+        """))
+        cost = res_cost.first()
+        res_top = await db.execute(text("""
+            SELECT user_key, COUNT(*) AS queries, SUM(total_tokens) AS tokens, SUM(est_cost_usd)::float AS cost
+            FROM chatbot_logs WHERE created_at > NOW() - INTERVAL '1 day' AND user_key IS NOT NULL
+            GROUP BY user_key ORDER BY cost DESC LIMIT 5
+        """))
+        top_spenders = [{"user_key": r[0], "queries": r[1], "tokens": int(r[2] or 0), "cost": round(r[3] or 0, 4)} for r in res_top.fetchall()]
+
         return {
             "total_queries": total_queries,
             "average_latency_seconds": average_latency_seconds,
             "blocked_queries_count": blocked_queries_count,
-            "most_common_questions": most_common_questions
+            "most_common_questions": most_common_questions,
+            "tokens_today": int(cost.tokens_today or 0),
+            "cost_today_usd": round(cost.cost_today or 0, 4),
+            "cost_30d_usd": round(cost.cost_30d or 0, 4),
+            "top_spenders_24h": top_spenders,
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve metrics: {str(e)}")
