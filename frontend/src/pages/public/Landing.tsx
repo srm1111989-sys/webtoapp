@@ -9,7 +9,7 @@ import {
   Code, Palette, Share2, RefreshCw, LogOut, Cookie, Database, Settings,
   Video, Volume2, Vibrate, Battery, Info, BarChart, AlertCircle, Languages,
   Download, RotateCw, Maximize, TrendingDown, IndianRupee, DollarSign,
-  Store, X, Loader2, Users, Lock, MessageCircle, ShoppingBag
+  Store, X, Loader2, Users, Lock, MessageCircle, ShoppingBag, Apple
 } from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
 import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
@@ -18,6 +18,7 @@ import { plansApi } from '@/api/orders'
 const features = [
   { icon: Smartphone, title: 'Android Apps', desc: 'Convert your website into a native Android app with full-screen experience and smooth performance.' },
   { icon: Monitor, title: 'Windows Desktop Apps', desc: 'Generate a Windows .exe installer with configurable window, system tray, and more.' },
+  { icon: Apple, title: 'iOS Apps (Beta)', desc: 'Get an unsigned .ipa plus the full Xcode source — you sign and publish with your own Apple Developer account.' },
   { icon: Zap, title: 'Built in Minutes', desc: 'Configure your app with our wizard, pay, and get your builds automatically delivered.' },
   { icon: Shield, title: 'Custom Keystore (.JKS)', desc: 'Upload your own .JKS keystore to sign your app - essential for Play Store updates without reinstalling.' },
   { icon: Shield, title: 'Feature-Rich', desc: 'Push notifications, biometric auth, QR scanner, AdMob, navigation menus, and 10+ features.' },
@@ -26,6 +27,7 @@ const features = [
 const allPremiumFeatures = [
   { icon: Smartphone, title: 'Android App' },
   { icon: Monitor, title: 'Desktop App' },
+  { icon: Apple, title: 'iOS App (Beta)' },
   { icon: Shield, title: 'Custom Keystore (.JKS)' },
   { icon: Bell, title: 'Push Notifications' },
   { icon: Fingerprint, title: 'Biometric Auth' },
@@ -71,7 +73,7 @@ const steps = [
   { num: '1', title: 'Enter Your URL', desc: 'Paste your website URL and configure basic settings.' },
   { num: '2', title: 'Customize', desc: 'Upload icon, set colors, enable features like push notifications.' },
   { num: '3', title: 'Choose Plan', desc: 'Choose your plan and complete payment.' },
-  { num: '4', title: 'Get Your App', desc: 'Download APK, AAB, or Windows .exe built automatically.' },
+  { num: '4', title: 'Get Your App', desc: 'Download APK, AAB, Windows .exe, or iOS .ipa + Xcode source — built automatically.' },
 ]
 
 const testimonials = [
@@ -144,6 +146,7 @@ const faqs = [
   { q: 'Can I use my existing keystore signature?', a: 'Yes! If you already have an app live on the Google Play Store, you can upload your existing custom keystore (.jks or .keystore) and credentials in our advanced settings so you can release updates seamlessly.' },
   { q: 'How long does it take to build?', a: 'Once you submit your configuration, the app is built automatically. Typically 5-10 minutes.' },
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
+  { q: 'Do you support iOS apps?', a: 'Yes, in beta. We generate an unsigned .ipa plus the complete Xcode source project. You sign and publish it with your own Apple Developer account ($99/yr) — we don\'t provide App Store publishing support. Same price as Android.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
   { q: 'Is WebToApp better than GoNative or WebIntoApp?', a: 'WebToApp offers 40+ features at a one-time price from $25 - vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
   { q: 'What websites can I convert to an app?', a: 'Any website works - Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebToApp.' },
