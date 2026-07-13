@@ -190,8 +190,10 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     # Watermark for desktop builds
     variables["SHOW_WATERMARK"] = "true" if show_watermark else "false"
 
-    # Paid users always get AAB (for Play Store) in addition to APK
-    if platform == "android" and not is_free:
+    # Every Android build gets an AAB alongside the APK (policy change
+    # 2026-07-13: free plans included — AAB questions were the #1 support
+    # driver and the watermark/trial already differentiates free builds).
+    if platform == "android":
         variables["BUILD_AAB"] = "true"
 
     # Desktop-specific variables
@@ -331,11 +333,16 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 if app:
                     app.status = "active"
                 if user and app:
-                    download_url = build.apk_url or build.exe_url or f"{settings.app_url}/apps"
-                    if download_url.startswith("http://localhost"):
-                        download_url = download_url.replace("http://localhost:8000", settings.app_url)
+                    def _pub(url: str | None) -> str:
+                        if not url:
+                            return ""
+                        return url.replace("http://localhost:8000", settings.app_url)
+                    download_url = _pub(build.apk_url or build.exe_url) or f"{settings.app_url}/apps"
                     platform_name = "Desktop" if build.platform == "desktop" else "Android"
-                    send_build_complete_email(user.email, app.name, order.order_number, download_url, platform_name)
+                    send_build_complete_email(
+                        user.email, app.name, order.order_number, download_url, platform_name,
+                        aab_url=_pub(build.aab_url), keystore_url=_pub(build.keystore_url),
+                    )
                     logger.info(f"Build complete email sent to {user.email} for {app.name}")
         except Exception as e:
             logger.warning(f"Failed to send build complete email: {e}")

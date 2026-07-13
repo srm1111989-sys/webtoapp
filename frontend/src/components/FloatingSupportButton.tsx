@@ -56,11 +56,24 @@ export default function FloatingSupportButton() {
   if (!isEnabled) return null
   if (window.location.pathname.startsWith('/admin')) return null
 
+  // Top real support themes from chatbot analytics — shown as one-tap chips
+  // at the start of a conversation so users don't face an empty box.
+  const SUGGESTIONS = [
+    'Where do I download my APK / AAB?',
+    'How much does it cost?',
+    'How do I publish to the Play Store?',
+    'How do push notifications work?',
+    'How do I set up my splash screen?',
+  ]
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || loading) return
+    await sendQuestion(input.trim())
+  }
 
-    const userQuestion = input.trim()
+  const sendQuestion = async (userQuestion: string) => {
+    if (loading) return
     const userMessage: Message = {
       id: Math.random().toString(),
       role: 'user',
@@ -206,6 +219,21 @@ export default function FloatingSupportButton() {
                 </div>
               ))}
               
+              {messages.length <= 1 && !loading && (
+                <div className="flex flex-wrap gap-2">
+                  {SUGGESTIONS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => sendQuestion(s)}
+                      className="px-3 py-1.5 rounded-full border border-primary-300 bg-white text-primary-700 text-xs hover:bg-primary-50 transition-colors shadow-sm"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {loading && (
                 <div className="flex justify-start">
                   <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-none px-4 py-3 text-sm shadow-sm flex items-center gap-1">

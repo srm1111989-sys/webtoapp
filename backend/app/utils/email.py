@@ -187,7 +187,17 @@ def send_build_complete_email(
     order_number: str,
     download_url: str,
     platform: str = "Android",
+    aab_url: str = "",
+    keystore_url: str = "",
 ) -> bool:
+    # "Where is my AAB?" was the #1 chatbot support driver — put the links
+    # directly in the completion email instead of making users hunt for them.
+    extra_buttons = ""
+    if aab_url:
+        extra_buttons += f'<a href="{aab_url}" style="background: #2563eb; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; margin-left: 8px;">Download AAB (Play Store)</a>'
+    keystore_note = ""
+    if keystore_url:
+        keystore_note = f'<p style="font-size: 13px; color: #6b7280;">Signing keystore (needed for Play Store updates — keep it safe): <a href="{keystore_url}" style="color: #4f46e5;">download .jks</a></p>'
     html = f"""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background: #059669; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
@@ -210,14 +220,16 @@ def send_build_complete_email(
           </tr>
         </table>
         <div style="text-align: center; margin: 24px 0;">
-          <a href="{download_url}" style="background: #059669; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">Download APK</a>
+          <a href="{download_url}" style="background: #059669; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">Download {'APK' if platform == 'Android' else 'App'}</a>
+          {extra_buttons}
         </div>
+        {keystore_note}
         <p style="font-size: 14px; color: #6b7280;">You can also download your app from your <a href="{settings.app_url}/apps" style="color: #4f46e5;">dashboard</a>.</p>
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
         <p style="font-size: 13px; color: #6b7280;"><strong>Next steps:</strong></p>
         <ul style="font-size: 13px; color: #6b7280; padding-left: 20px;">
           <li>Install the APK on your Android device to test</li>
-          <li>Upload to Google Play Store using the AAB format (available in your dashboard)</li>
+          <li>Upload the AAB file to the Google Play Store (button above, or from your dashboard)</li>
           <li>Share with your users!</li>
         </ul>
         <p style="font-size: 12px; color: #9ca3af; text-align: center; margin-top: 20px;">Questions? Reply to this email or contact support@websitetoapp.app</p>

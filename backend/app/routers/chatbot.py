@@ -293,7 +293,7 @@ async def chat_endpoint(
             "WebToApp details:\n"
             "- Website: https://websitetoapp.app\n"
             "- Features: Push notifications, Splash screen, custom color styling, offline support, file uploads/downloads, Google Play publishing help.\n"
-            "- Pricing: Basic Plan ($19) offers 1 build/month, Pro Plan ($49) offers unlimited builds, custom branding, and push notifications. Agency Plan ($99) includes Play Store upload assistance.\n"
+            "- Pricing (all one-time, no subscription): Free (watermarked, 3-day trial, 2 builds), Android App $25, Desktop App $25, Play Store Listing add-on $15, Android App + Play Store bundle $40. Indian users pay INR equivalent. Both APK and AAB files are provided on ALL plans, including free.\n"
             "- Support: support@websitetoapp.app.\n\n"
             "If the user is logged in, you can look up their apps using 'get_user_apps' or check build progress with 'get_build_status'. "
             "You can also submit support requests for them using 'send_support_email'. "

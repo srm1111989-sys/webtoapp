@@ -8,7 +8,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 
 | Plan | Price | Builds |
 |------|-------|--------|
-| Free (Android or Desktop) | $0 | 2 builds total (lifetime), watermarked splash |
+| Free (Android or Desktop) | $0 | 2 builds total (lifetime), watermark banner + 3-day trial |
 | Premium Android App | $25 one-time | 5 builds total (lifetime) per order |
 | Premium Desktop App | $25 one-time | 5 builds total (lifetime) per order |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
@@ -17,6 +17,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 * All paid plans are **one-time payments** — no subscriptions, no renewals, no hidden charges.
 * Indian users pay in INR (₹2075 for $25 equivalent plans).
 * Promo/discount codes can be applied at checkout.
+* **APK and AAB files are included on ALL plans, including Free.** The AAB (Android App Bundle) is the format Google Play requires. Download buttons for APK, AAB and the signing keystore appear on the Orders page once a build completes, and the links are also in the build-complete email.
 
 ---
 
@@ -165,3 +166,22 @@ The **My Apps** page shows each app with:
 * **WhatsApp**: Available for paid plan users
 * **Refund policy**: Case-by-case. Contact support within 7 days of purchase.
 * For billing issues, order status, or technical problems — email support@websitetoapp.app with your order number.
+
+## Firebase Push Notifications — Server Key setup
+
+To enable push notifications you need two things from the [Firebase Console](https://console.firebase.google.com):
+
+1. **google-services.json** — Project Settings → Your apps → Android app → download `google-services.json`. Upload it in step 4 (Advanced) of the wizard. The package name in Firebase must exactly match your app's package name.
+2. **Service account / API credentials** — the legacy "Cloud Messaging Server Key" is deprecated by Google and hidden by default. In Project Settings → Cloud Messaging: if you see "Cloud Messaging API (Legacy)" as disabled, click the three-dot menu → "Manage API in Google Cloud Console" → Enable. After enabling, the Server Key appears under Project Settings → Cloud Messaging. New Firebase projects should prefer the **FCM HTTP v1 API** with a service-account JSON (Project Settings → Service accounts → Generate new private key).
+
+Common issues:
+* "Server key not visible" — the legacy API is disabled; enable it via the three-dot menu as above.
+* Notifications not arriving — check the package name matches and the device has notification permission (Android 13+ prompts at first app launch).
+
+## Splash Screen configuration
+
+* Upload the splash image in step 2 (Visuals) of the wizard. Any common image format works (PNG/JPG/WebP) — it is converted automatically.
+* Recommended size: **1080×1920 px (portrait)**. Very large images are resized automatically; extremely wide/landscape images may be cropped on phones.
+* The splash background color comes from your app's primary color setting.
+* Free plan builds show a small watermark banner; paid builds are watermark-free.
+* To change the splash later: edit the app in the dashboard, upload a new image, and rebuild.
