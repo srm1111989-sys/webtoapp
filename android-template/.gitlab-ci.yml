@@ -132,7 +132,8 @@ prepare:
       if [ -n "$SPLASH_URL" ]; then
         wget -q "$SPLASH_URL" -O /tmp/splash_raw || true
         if [ -s /tmp/splash_raw ]; then
-          convert /tmp/splash_raw PNG:app/src/main/res/drawable/splash_image.png 2>/dev/null || true
+          # Bound the size: oversized user images make AAPT2 time out (build 2026-07-09)
+          convert /tmp/splash_raw -resize "1440x2560>" PNG:app/src/main/res/drawable/splash_image.png 2>/dev/null || true
           rm -f /tmp/splash_raw
         fi
       fi
