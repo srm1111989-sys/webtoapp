@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSEO } from '@/hooks/useSEO'
 import {
-  Smartphone, Bell, Fingerprint, QrCode, WifiOff, Shield, Navigation, Camera, MapPin, Upload, Code, Palette, Monitor, ArrowRight,
+  Smartphone, Bell, Fingerprint, QrCode, WifiOff, Shield, Navigation, Camera, MapPin, Upload, Code, Palette, Monitor, ArrowRight, Apple,
   Share2, Download, RotateCw, Maximize, RefreshCw, Star, LogOut, ArrowLeft, Cookie, Database, Settings,
   Globe, Video, Volume2, Vibrate, Wifi, Battery, Info, Zap, BarChart, AlertCircle, FileText, Languages, Check, X
 } from 'lucide-react'
@@ -18,6 +18,12 @@ const allFeatures = [
     icon: Monitor,
     title: 'Windows Desktop App',
     desc: 'Generate a Windows .exe installer for your website. Configure window size, title bar, menu bar, system tray, and fullscreen mode.',
+    category: 'Platform',
+  },
+  {
+    icon: Apple,
+    title: 'iOS App (Beta)',
+    desc: 'Get an unsigned .ipa plus the full Xcode source project. Sign and publish it with your own Apple Developer account — same price as Android.',
     category: 'Platform',
   },
 
@@ -345,7 +351,7 @@ export default function Features() {
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">40+ Premium Features</h1>
           <p className="text-primary-100 text-lg sm:text-xl max-w-3xl mx-auto mb-8">
-            Everything you need to create professional Android and Windows desktop apps from your website. No coding required.
+            Everything you need to create professional Android, Windows desktop, and iOS apps from your website. No coding required.
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm sm:text-base">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3">
