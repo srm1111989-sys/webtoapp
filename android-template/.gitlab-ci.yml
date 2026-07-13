@@ -28,6 +28,9 @@ prepare:
     - export PATH=$JAVA_HOME/bin:$PATH
     - java -version
 
+    # Install SDK 35 (required by compileSdk/targetSdk 35)
+    - yes | sdkmanager "platforms;android-35" > /dev/null 2>&1 || true
+
     # Bootstrap Gradle wrapper if not present
     - |
       if [ ! -f ./gradlew ]; then
@@ -43,6 +46,8 @@ prepare:
     - |
       if [ -n "${CUSTOM_KEYSTORE_URL}" ]; then
         echo "Downloading custom keystore..."
+        # wget isn't installed until the icon step — install it here too
+        apt-get install -y -qq wget > /dev/null 2>&1 || true
         wget -q "${CUSTOM_KEYSTORE_URL}" -O keystore.jks
         KS_PASS="${CUSTOM_KEYSTORE_PASSWORD}"
         KS_ALIAS="${CUSTOM_KEYSTORE_ALIAS}"
