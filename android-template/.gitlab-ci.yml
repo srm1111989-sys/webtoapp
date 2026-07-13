@@ -28,9 +28,6 @@ prepare:
     - export PATH=$JAVA_HOME/bin:$PATH
     - java -version
 
-    # Install SDK 35 (required by compileSdk/targetSdk 35)
-    - yes | sdkmanager "platforms;android-35" > /dev/null 2>&1 || true
-
     # Bootstrap Gradle wrapper if not present
     - |
       if [ ! -f ./gradlew ]; then
@@ -42,20 +39,21 @@ prepare:
       fi
     - chmod +x ./gradlew
 
-    # Process release keystore for signing (custom or auto-generated)
+    # Use custom keystore if provided, otherwise generate one
     - |
-      if [ -n "$CUSTOM_KEYSTORE_URL" ]; then
-        echo "Custom keystore URL provided. Downloading..."
-        apt-get update -qq && apt-get install -y -qq wget > /dev/null 2>&1
-        wget -q "$CUSTOM_KEYSTORE_URL" -O keystore.jks
-        echo "KEYSTORE_PASSWORD=$CUSTOM_KEYSTORE_PASSWORD" > keystore.env
-        echo "KEY_ALIAS=$CUSTOM_KEYSTORE_ALIAS" >> keystore.env
-        echo "KEY_PASSWORD=${CUSTOM_KEYSTORE_PRIVATE_PASSWORD:-$CUSTOM_KEYSTORE_PASSWORD}" >> keystore.env
-        echo "Custom keystore downloaded successfully."
+      if [ -n "${CUSTOM_KEYSTORE_URL}" ]; then
+        echo "Downloading custom keystore..."
+        wget -q "${CUSTOM_KEYSTORE_URL}" -O keystore.jks
+        KS_PASS="${CUSTOM_KEYSTORE_PASSWORD}"
+        KS_ALIAS="${CUSTOM_KEYSTORE_ALIAS}"
+        KEY_PASS="${CUSTOM_KEYSTORE_PRIVATE_PASSWORD:-${CUSTOM_KEYSTORE_PASSWORD}}"
+        echo "KEYSTORE_PASSWORD=$KS_PASS" > keystore.env
+        echo "KEY_ALIAS=$KS_ALIAS" >> keystore.env
+        echo "KEY_PASSWORD=$KEY_PASS" >> keystore.env
+        echo "Custom keystore configured."
       else
-        KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
-        KS_ALIAS="${KEY_ALIAS:-upload-key}"
-        APP_PKG="${PACKAGE_NAME:-com.webtoapp.app}"
+        KS_PASS="$(head -c 200 /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 24)"
+        KS_ALIAS="upload-key"
         echo "Generating release keystore..."
         keytool -genkeypair \
           -alias "$KS_ALIAS" \
@@ -84,7 +82,11 @@ prepare:
         "secondary_color": "${SECONDARY_COLOR}",
         "status_bar_color": "${STATUS_BAR_COLOR}",
         "features": ${FEATURES_JSON},
-        "navigation_items": ${NAVIGATION_ITEMS:-[]}
+        "navigation_items": ${NAVIGATION_ITEMS:-[]},
+        "admob_config": ${ADMOB_CONFIG:-{}},
+        "firebase_config": ${FIREBASE_CONFIG:-{}},
+        "trial_days": ${TRIAL_DAYS:-0},
+        "purchase_url": "${PURCHASE_URL:-}"
       }
       HEREDOC
       fi
@@ -227,6 +229,9 @@ build_aab:
 
 webhook_notify:
   stage: deploy
+  image: curlimages/curl:latest
+  variables:
+    GIT_STRATEGY: none
   script:
     - |
       if [ -n "$WEBHOOK_URL" ]; then
@@ -236,3 +241,5 @@ webhook_notify:
           -d "{\"object_kind\":\"pipeline\",\"object_attributes\":{\"id\":$CI_PIPELINE_ID,\"status\":\"$CI_PIPELINE_STATUS\"},\"project\":{\"id\":$CI_PROJECT_ID}}"
       fi
   when: always
+
+
