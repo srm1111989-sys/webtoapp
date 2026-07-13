@@ -140,6 +140,25 @@ async def sync_active_builds():
                     pipeline_data = service.get_pipeline(build.pipeline_id)
                     remote_status = pipeline_data.get("status")
 
+                    # Self-heal: a GitLab pipeline that died on ci_quota_exceeded
+                    # isn't a real build failure — requeue it so the provider list
+                    # (with GitLab now known-exhausted) sends it to GitHub. Retry once.
+                    if (remote_status == "failed" and provider_name not in ["github1", "github2", "github"]
+                            and not (build.variables or {}).get("_quota_retried")
+                            and isinstance(service, GitLabService)
+                            and service.pipeline_quota_exceeded(build.pipeline_id)):
+                        logger.warning(f"Build {build.id}: GitLab ci_quota_exceeded — requeuing on another provider")
+                        _quota_cache["gitlab"] = (False, time.monotonic())  # skip GitLab in next selection
+                        v = dict(build.variables or {})
+                        v["_quota_retried"] = True
+                        v.pop("_build_provider", None)
+                        build.variables = v
+                        build.status = "pending"
+                        build.pipeline_id = None
+                        build.started_at = None
+                        await db.commit()
+                        continue
+
                     if remote_status in ["success", "failed", "canceled"]:
                         logger.info(f"Sync active builds: Build {build.id} (pipeline {build.pipeline_id}) finished with status {remote_status} on {provider_name}")
                         await handle_build_webhook(build.pipeline_id, remote_status, pipeline_data, db)

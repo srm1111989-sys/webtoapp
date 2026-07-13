@@ -155,35 +155,43 @@ class GitLabService:
 
             # If limit is 0/None (common for personal namespaces on GitLab.com REST API),
             # check the latest pipeline to see if it failed due to exhausted quota in the current month.
-            logger.info(f"GitLab namespace limit is {limit}. Falling back to checking latest pipeline status.")
+            logger.info(f"GitLab namespace limit is {limit}. Falling back to checking recent pipeline statuses.")
+            # Quota is namespace-wide; a single project's latest pipeline can be a
+            # stale success while the namespace is actually exhausted. Check the
+            # last few failed pipelines this month for ci_quota_exceeded.
             with httpx.Client(timeout=10) as client:
-                pr = client.get(self._api_url("/pipelines?per_page=1"), headers=self.headers)
+                pr = client.get(self._api_url("/pipelines?per_page=5&status=failed"), headers=self.headers)
                 pr.raise_for_status()
                 pipelines = pr.json()
 
-            if pipelines:
-                latest = pipelines[0]
-                created_at_str = latest.get("created_at")
-                if created_at_str and latest.get("status") == "failed":
-                    from datetime import datetime, timezone
-                    created_dt = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
-                    now_utc = datetime.now(timezone.utc)
-                    if created_dt.year == now_utc.year and created_dt.month == now_utc.month:
-                        # Fetch jobs for this failed pipeline
-                        with httpx.Client(timeout=10) as client:
-                            jr = client.get(self._api_url(f"/pipelines/{latest['id']}/jobs"), headers=self.headers)
-                            jr.raise_for_status()
-                            jobs = jr.json()
-                        for job in jobs:
-                            if job.get("failure_reason") == "ci_quota_exceeded":
-                                logger.info(f"GitLab quota exhausted: Latest pipeline {latest['id']} failed with ci_quota_exceeded")
-                                return False
+            from datetime import datetime, timezone
+            now_utc = datetime.now(timezone.utc)
+            for p in pipelines:
+                created_at_str = p.get("created_at")
+                if not created_at_str:
+                    continue
+                created_dt = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
+                if created_dt.year != now_utc.year or created_dt.month != now_utc.month:
+                    continue
+                if self.pipeline_quota_exceeded(p["id"]):
+                    logger.info(f"GitLab quota exhausted: pipeline {p['id']} failed with ci_quota_exceeded")
+                    return False
 
             logger.info(f"GitLab quota OK: No recent failed pipelines with ci_quota_exceeded in current month")
             return True
         except Exception as e:
             logger.warning(f"GitLab quota check failed ({e}), assuming available")
             return True
+
+    def pipeline_quota_exceeded(self, pipeline_id: int) -> bool:
+        """True if any job in this pipeline failed with ci_quota_exceeded."""
+        try:
+            with httpx.Client(timeout=10) as client:
+                jr = client.get(self._api_url(f"/pipelines/{pipeline_id}/jobs"), headers=self.headers)
+                jr.raise_for_status()
+                return any(j.get("failure_reason") == "ci_quota_exceeded" for j in jr.json())
+        except Exception:
+            return False
 
     def cancel_pipeline(self, pipeline_id: int) -> dict:
         """Cancel a running pipeline."""
