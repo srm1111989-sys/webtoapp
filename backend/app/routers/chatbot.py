@@ -337,7 +337,7 @@ async def chat_endpoint(
                             result = "No apps found. You can create a new app in the dashboard."
                         else:
                             result = "Your configured apps:\n" + "\n".join(
-                                f"- **{app.app_name}** ({app.platform}): URL={app.web_url}, Package={app.package_name}, Created={app.created_at.strftime('%Y-%m-%d')}"
+                                f"- **{app.name}** ({', '.join(app.selected_platforms or ['android'])}): URL={app.url}, Package={app.package_name}, Created={app.created_at.strftime('%Y-%m-%d')}"
                                 for app in apps
                             )
                 elif name == "get_build_status":
@@ -356,9 +356,12 @@ async def chat_endpoint(
                             result = "No builds found for your account yet."
                         else:
                             result = "Your recent build attempts:\n" + "\n".join(
-                                f"- Build #{b.id[:8]} ({b.platform}): Status={b.status}, Created={b.created_at.strftime('%Y-%m-%d %H:%M')}"
+                                f"- Build #{str(b.id)[:8]} ({b.platform}/{b.build_type}): Status={b.status}, Created={b.created_at.strftime('%Y-%m-%d %H:%M')}"
                                 + (f", Error={b.error_message}" if b.error_message else "")
-                                + (f", Download={b.output_url}" if b.output_url else "")
+                                + (f", APK={b.apk_url}" if b.apk_url else "")
+                                + (f", AAB={b.aab_url}" if b.aab_url else "")
+                                + (f", EXE={b.exe_url}" if b.exe_url else "")
+                                + (f", Keystore={b.keystore_url}" if b.keystore_url else "")
                                 for b in builds
                             )
                 elif name == "send_support_email":

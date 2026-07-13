@@ -76,15 +76,9 @@ export default function EditApp() {
     setWizardReady(true)
   }, [data, ordersData, ordersLoading])
 
-  if (isLoading || ordersLoading || !wizardReady) {
-    return (
-      <div className="flex items-center justify-center py-32">
-        <Loader2 className="w-10 h-10 animate-spin text-primary-600" />
-      </div>
-    )
-  }
-
-  if (isError || !data) {
+  // Error/not-found must be checked before the wizardReady spinner: on a 404
+  // wizardReady never becomes true, so the old order spun forever.
+  if (isError || (!isLoading && !data)) {
     return (
       <div className="max-w-lg mx-auto mt-16">
         <div className="rounded-xl bg-red-50 border border-red-200 p-6 flex items-start gap-3 text-red-700">
@@ -97,6 +91,14 @@ export default function EditApp() {
             </p>
           </div>
         </div>
+      </div>
+    )
+  }
+
+  if (isLoading || ordersLoading || !wizardReady) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <Loader2 className="w-10 h-10 animate-spin text-primary-600" />
       </div>
     )
   }
