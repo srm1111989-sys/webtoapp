@@ -93,8 +93,10 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     """Convert app config to GitLab CI pipeline variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
 
-    # Determine watermark and trial: free plans (amount=0) get watermark + 7-day trial
-    is_free = order.amount == 0
+    # Determine watermark and trial: free plans (amount=0) get watermark + trial.
+    # order_metadata.force_premium (set by admin rebuild) overrides — used to grant
+    # premium builds for $0 (e.g. share-for-upgrade rewards) without a fake payment.
+    is_free = order.amount == 0 and not (order.order_metadata or {}).get("force_premium")
     show_watermark = is_free
     trial_days = 3 if is_free else 0
     purchase_url = f"{settings.app_url}/pricing" if is_free else ""
@@ -302,7 +304,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
                 result = await db.execute(select(Order).where(Order.id == build.order_id))
                 order = result.scalar_one_or_none()
-                is_free = order and order.amount == 0
+                is_free = order and order.amount == 0 and not (order.order_metadata or {}).get("force_premium")
                 if not is_free:
                     keystore_url = await service.download_artifact(
                         pipeline_id,

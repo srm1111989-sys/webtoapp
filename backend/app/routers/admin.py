@@ -219,6 +219,7 @@ async def list_all_orders(
 @router.post("/orders/{order_id}/rebuild", response_model=BuildResponse)
 async def force_rebuild(
     order_id: uuid.UUID,
+    force_premium: bool = Query(False, description="Build as premium (no watermark/trial, AAB + keystore) even if the order amount is 0 — for share-for-upgrade rewards"),
     admin: Admin = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db),
 ):
@@ -226,6 +227,10 @@ async def force_rebuild(
     order = result.scalar_one_or_none()
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+
+    if force_premium:
+        order.order_metadata = {**(order.order_metadata or {}), "force_premium": True}
+        await db.commit()
 
     build = await trigger_build(order_id, db)
     return build
