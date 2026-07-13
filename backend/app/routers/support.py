@@ -77,3 +77,36 @@ async def submit_support(payload: SupportRequest, request: Request):
     if not ok:
         raise HTTPException(status_code=500, detail="Failed to send email")
     return {"ok": True}
+
+
+# ── iOS waitlist — capture demand before investing in an iOS build pipeline ──
+_IOS_WAITLIST_FILE = "/opt/webtoapp/logs/ios_waitlist.jsonl"
+
+
+class IosWaitlistRequest(BaseModel):
+    email: EmailStr
+    website: Optional[str] = Field(None, max_length=500)
+
+
+@router.post("/ios-waitlist")
+async def ios_waitlist(payload: IosWaitlistRequest, request: Request):
+    if not _ip_allowed(request.client.host if request.client else "?"):
+        raise HTTPException(status_code=429, detail="Too many requests")
+    import json as _json
+    import os as _os
+    from datetime import datetime as _dt
+    try:
+        _os.makedirs(_os.path.dirname(_IOS_WAITLIST_FILE), exist_ok=True)
+        # Dedupe by email
+        try:
+            with open(_IOS_WAITLIST_FILE) as f:
+                if any(_json.loads(l).get("email", "").lower() == payload.email.lower() for l in f if l.strip()):
+                    return {"ok": True, "already": True}
+        except FileNotFoundError:
+            pass
+        with open(_IOS_WAITLIST_FILE, "a") as f:
+            f.write(_json.dumps({"ts": _dt.utcnow().isoformat(), "email": payload.email,
+                                 "website": payload.website or ""}) + "\n")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Could not join waitlist")
+    return {"ok": True}

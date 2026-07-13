@@ -185,3 +185,16 @@ Common issues:
 * The splash background color comes from your app's primary color setting.
 * Free plan builds show a small watermark banner; paid builds are watermark-free.
 * To change the splash later: edit the app in the dashboard, upload a new image, and rebuild.
+
+## Live App Preview (simulator)
+
+WebToApp includes a **live phone-frame preview** — no install needed:
+
+* Open the app wizard (Create App or edit an existing app). On desktop, the preview panel is pinned on the right; on mobile, tap the **Preview** button in the bottom corner.
+* The simulator shows your website inside a phone frame with your configured app name, status-bar color, icon, and bottom navigation — it updates live as you change settings in the wizard.
+* Some websites block being embedded (X-Frame-Options); in that case the preview shows the app chrome with a placeholder instead of the page — your real app is NOT affected by this, it always loads your site.
+* This is a preview of the app shell before building. To test the real thing, build the free APK and install it on a device.
+
+## iOS support
+
+iOS is **not available yet**. Reasons: Apple requires each publisher to have their own Apple Developer account ($99/year), and Apple's App Store review (guideline 4.2) rejects simple website-wrapper apps, so an iOS product needs a richer native shell. An **iOS waitlist** is available in the app wizard — joining it helps us prioritize. Alternatives today: your website can be installed as a PWA on iPhone (Share → Add to Home Screen), and Android + Desktop apps are fully supported.

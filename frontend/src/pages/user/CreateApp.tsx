@@ -8,6 +8,7 @@ import { useDropzone } from 'react-dropzone'
 import { HexColorPicker } from 'react-colorful'
 import toast from 'react-hot-toast'
 import {
+  Apple,
   Globe,
   Smartphone,
   Monitor,
@@ -65,6 +66,7 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
+import { useAuthStore } from '@/store/authStore'
 import { appsApi } from '@/api/apps'
 import { ordersApi, buildsApi, paymentsApi, plansApi } from '@/api/orders'
 import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
@@ -131,6 +133,53 @@ const FEATURES = [
   { key: 'firebase_notification', label: 'Firebase Notification', description: 'Firebase Cloud Messaging (FCM) for push notifications with rich media, actions, and deep links.', helpUrl: 'https://firebase.google.com/docs/cloud-messaging/android/client', icon: BellRing },
   { key: 'tap_to_pay', label: 'Tap to Pay', description: 'NFC-based contactless payment support. Accept tap-to-pay transactions using device NFC hardware.', helpUrl: 'https://developer.android.com/develop/connectivity/nfc', icon: Nfc },
 ] as const
+
+// ---------- iOS waitlist tile (platform not available yet — measuring demand) ----------
+function IosWaitlistTile() {
+  const { user } = useAuthStore()
+  const wizard = useWizardStore()
+  const [joined, setJoined] = useState(() => localStorage.getItem('ios_waitlist') === '1')
+  const [busy, setBusy] = useState(false)
+
+  const join = async () => {
+    if (joined || busy) return
+    const email = user?.email
+    if (!email) { toast.error('Please log in first'); return }
+    setBusy(true)
+    try {
+      const res = await fetch('/api/support/ios-waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, website: wizard.url || undefined }),
+      })
+      if (!res.ok) throw new Error()
+      localStorage.setItem('ios_waitlist', '1')
+      setJoined(true)
+      toast.success("You're on the iOS waitlist — we'll email you when it's ready!")
+    } catch {
+      toast.error('Could not join the waitlist, please try again')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={join}
+      disabled={joined || busy}
+      className="relative flex items-center gap-3 px-4 py-3 rounded-md border border-dashed border-gray-300 bg-gray-50 text-left transition-colors hover:border-gray-400 disabled:cursor-default"
+    >
+      <div className="p-2 rounded-md bg-gray-100 text-gray-500">
+        <Apple className="w-4 h-4" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium text-gray-700">iOS <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 border border-amber-200 rounded px-1 py-0.5 ml-1 align-middle">SOON</span></div>
+        <div className="text-xs text-gray-500">{joined ? "On the waitlist ✓" : 'Join the waitlist'}</div>
+      </div>
+    </button>
+  )
+}
 
 // ---------- Step indicator ----------
 
@@ -700,7 +749,7 @@ function Step0BasicInfo() {
       <div>
         <label className="block text-sm font-medium text-gray-900 mb-1">Platform *</label>
         <p className="text-xs text-gray-500 mb-3">Choose where your app will run</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
           {([
             { key: 'android' as Platform, icon: Smartphone, title: 'Android', subtitle: 'APK & AAB' },
             { key: 'desktop' as Platform, icon: Monitor, title: 'Desktop', subtitle: 'Windows EXE' },
@@ -728,6 +777,7 @@ function Step0BasicInfo() {
               </button>
             )
           })}
+          <IosWaitlistTile />
         </div>
       </div>
 
