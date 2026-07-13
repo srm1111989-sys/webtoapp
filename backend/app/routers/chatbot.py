@@ -308,7 +308,10 @@ async def chat_endpoint(
         model = genai.GenerativeModel(
             "gemini-flash-latest",
             tools=[chatbot_tools],
-            system_instruction=system_instruction
+            system_instruction=system_instruction,
+            # Cap output — support answers should be short; output tokens are the
+            # most expensive part of the bill. Keeps replies tight and cheap.
+            generation_config={"max_output_tokens": 600, "temperature": 0.4},
         )
 
         chat = model.start_chat()
