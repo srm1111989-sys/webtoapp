@@ -45,6 +45,110 @@ WebToApp · https://websitetoapp.app
 
 ---
 
+## Tier 1 — personalized drafts (ready to review, NOT sent)
+
+Common subject: **Your app {app_name} — want to take it fully native?**
+All from support@websitetoapp.app, signed Swapnil. Each opens with something true
+about *their* business so it reads as a human note, not a blast.
+
+### 1. vishalsilverinfo@gmail.com — Vishal Silver (jewelry e-commerce)
+
+> Hi,
+>
+> Swapnil here, founder of WebToApp — you built the Vishal Silver app with us.
+>
+> Your sterling silver and antique idol catalog is exactly the kind of business where a
+> **fully native app** earns its keep: a fast product gallery that feels premium (like
+> your pieces), push notifications when new stock or designs drop, and one-tap reorders
+> for returning customers.
+>
+> We've started doing custom native app development for a few of our users. Is that
+> something you've considered for Vishal Silver? Reply and I'll send an honest
+> fixed-price estimate — no discovery-call runaround.
+
+### 2. tigerblackbhatt@gmail.com — ListSnap AI / snaptolist.com
+
+> Hi,
+>
+> Swapnil from WebToApp — you built ListSnap AI with us.
+>
+> Of every app on our platform, yours is the one that most *wants* to be native:
+> snap-to-list is a camera-first workflow, and a native camera pipeline (burst capture,
+> on-device crop, background upload while the seller keeps snapping) would make it feel
+> like magic compared to a web view.
+>
+> We now do custom native development. Interested in what a native ListSnap would look
+> like? Reply and I'll sketch it with a fixed price.
+
+### 3. magedicore@gmail.com — ICORE CRM (warm: we just fixed their build)
+
+> Hi Maged,
+>
+> Swapnil from WebToApp. First — apologies again for the build failure you hit last
+> week; it's fixed and your app went out today.
+>
+> Looking at ICORE, I noticed the employee self-service dashboard. That's the classic
+> case for a **native companion app**: biometric login, offline attendance/requests that
+> sync later, and proper push for approvals — things a web wrapper can't do well.
+>
+> We've started building custom native apps for business users. If a native ESS app for
+> ICORE is interesting, reply and I'll put together a concrete scope and fixed price.
+
+### 4. jorgefonseca580124@gmail.com — EFACTURASAPP (e-invoicing)
+
+> Hi Jorge,
+>
+> Swapnil from WebToApp — you built EFACTURASAPP with us.
+>
+> For an invoicing product, a native app unlocks the things your users likely ask for:
+> creating facturas offline and syncing later, biometric login for accountants, and
+> reliable notifications when an invoice is accepted. A web wrapper can't do those well.
+>
+> We now offer custom native development. Worth a conversation for EFACTURASAPP? Reply
+> and I'll send a fixed-price estimate. (Happy to continue in Spanish if easier.)
+
+### 5. assiinoffice@gmail.com — AssiinPay (digital payments)
+
+> Hi,
+>
+> Swapnil from WebToApp — you built AssiinPay with us.
+>
+> Payments is the one category where users genuinely trust a native app more: biometric
+> confirmation, device binding, instant push receipts. If AssiinPay is growing, a native
+> app is usually the next credibility step.
+>
+> We've started doing custom native builds. Interested in an estimate for AssiinPay?
+> Just reply. (English or French — both fine.)
+
+### 6. a4adil2024@gmail.com — Tech Baba Store (electronics e-commerce)
+
+> Hi Adil,
+>
+> Swapnil from WebToApp — you built the Tech Baba Store app with us.
+>
+> For a store like yours, the jump from web-wrapper to **native shop app** usually pays
+> for itself in repeat orders: faster browsing, push for deals and restocks, and a
+> checkout that remembers the customer. That's what keeps buyers ordering from the app
+> instead of the browser.
+>
+> We now build custom native apps. Want a fixed-price estimate for a native Tech Baba
+> Store? Just reply to this email.
+
+### 7. yumvagusengapatrick14@gmail.com — MAISHA (platform, Rwanda)
+
+> Hi Patrick,
+>
+> Swapnil from WebToApp — you built MAISHA with us.
+>
+> Since MAISHA is a logged-in platform, a native app would give your members persistent
+> sessions (no re-logins), reliable notifications, and a much smoother feel on the
+> low-end Android devices most users carry.
+>
+> We've started offering custom native development. If that's on your roadmap for
+> MAISHA, reply and I'll send an honest fixed-price estimate.
+
+---
+
 ## Candidate table (probed 2026-07-13)
 
 ### Tier 1 — send first (live business, clear native-app fit)
