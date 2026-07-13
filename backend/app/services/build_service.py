@@ -287,6 +287,17 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 )
                 if exe_url:
                     build.exe_url = exe_url
+            elif build.platform == "ios":
+                # iOS is GitHub-only. We ship an unsigned IPA (test in a simulator)
+                # plus the full Xcode source so the user can sign & publish under
+                # their own Apple account. apk_url reuses the "primary download".
+                ipa_url = await service.download_artifact(pipeline_id, "ios-ipa", folder)
+                if ipa_url:
+                    build.ipa_url = ipa_url
+                    build.apk_url = ipa_url  # primary download link in UI/email
+                source_url = await service.download_artifact(pipeline_id, "ios-source", folder)
+                if source_url:
+                    build.source_url = source_url
             else:
                 apk_url = await service.download_artifact(
                     pipeline_id,

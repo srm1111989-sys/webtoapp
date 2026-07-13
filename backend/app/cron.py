@@ -32,15 +32,23 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     Falls back to all three (in order) if every quota check returns False, so a
     genuine API error never blocks all builds.
     """
-    gitlab  = GitLabService(platform=platform)
     github1 = GitHubService(platform=platform, account=1)
     github2 = GitHubService(platform=platform, account=2)
 
-    candidates = [
-        ("gitlab",   gitlab,  lambda: _check_quota_cached("gitlab",   gitlab.has_quota)),
-        ("github1",  github1, lambda: _check_quota_cached("github1",  github1.has_quota)),
-        ("github2",  github2, lambda: _check_quota_cached("github2",  github2.has_quota)),
-    ]
+    # iOS builds only exist on the GitHub runners (macOS); GitLab's pipeline
+    # builds Android, so it must never be offered for iOS.
+    if platform == "ios":
+        candidates = [
+            ("github1", github1, lambda: _check_quota_cached("github1", github1.has_quota)),
+            ("github2", github2, lambda: _check_quota_cached("github2", github2.has_quota)),
+        ]
+    else:
+        gitlab = GitLabService(platform=platform)
+        candidates = [
+            ("gitlab",   gitlab,  lambda: _check_quota_cached("gitlab",   gitlab.has_quota)),
+            ("github1",  github1, lambda: _check_quota_cached("github1",  github1.has_quota)),
+            ("github2",  github2, lambda: _check_quota_cached("github2",  github2.has_quota)),
+        ]
 
     available = [(name, svc) for name, svc, check in candidates if check()]
 
