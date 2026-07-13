@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { AppConfig, NavigationItem, FirebaseConfig, AdmobConfig, DesktopConfig } from '@/types'
 
-export type Platform = 'android' | 'desktop'
+export type Platform = 'android' | 'desktop' | 'ios'
 
 interface WizardState {
   step: number

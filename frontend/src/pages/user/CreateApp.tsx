@@ -66,7 +66,6 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
-import { useAuthStore } from '@/store/authStore'
 import { appsApi } from '@/api/apps'
 import { ordersApi, buildsApi, paymentsApi, plansApi } from '@/api/orders'
 import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy'
@@ -133,53 +132,6 @@ const FEATURES = [
   { key: 'firebase_notification', label: 'Firebase Notification', description: 'Firebase Cloud Messaging (FCM) for push notifications with rich media, actions, and deep links.', helpUrl: 'https://firebase.google.com/docs/cloud-messaging/android/client', icon: BellRing },
   { key: 'tap_to_pay', label: 'Tap to Pay', description: 'NFC-based contactless payment support. Accept tap-to-pay transactions using device NFC hardware.', helpUrl: 'https://developer.android.com/develop/connectivity/nfc', icon: Nfc },
 ] as const
-
-// ---------- iOS waitlist tile (platform not available yet — measuring demand) ----------
-function IosWaitlistTile() {
-  const { user } = useAuthStore()
-  const wizard = useWizardStore()
-  const [joined, setJoined] = useState(() => localStorage.getItem('ios_waitlist') === '1')
-  const [busy, setBusy] = useState(false)
-
-  const join = async () => {
-    if (joined || busy) return
-    const email = user?.email
-    if (!email) { toast.error('Please log in first'); return }
-    setBusy(true)
-    try {
-      const res = await fetch('/api/support/ios-waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, website: wizard.url || undefined }),
-      })
-      if (!res.ok) throw new Error()
-      localStorage.setItem('ios_waitlist', '1')
-      setJoined(true)
-      toast.success("You're on the iOS waitlist — we'll email you when it's ready!")
-    } catch {
-      toast.error('Could not join the waitlist, please try again')
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={join}
-      disabled={joined || busy}
-      className="relative flex items-center gap-3 px-4 py-3 rounded-md border border-dashed border-gray-300 bg-gray-50 text-left transition-colors hover:border-gray-400 disabled:cursor-default"
-    >
-      <div className="p-2 rounded-md bg-gray-100 text-gray-500">
-        <Apple className="w-4 h-4" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-gray-700">iOS <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 border border-amber-200 rounded px-1 py-0.5 ml-1 align-middle">SOON</span></div>
-        <div className="text-xs text-gray-500">{joined ? "On the waitlist ✓" : 'Join the waitlist'}</div>
-      </div>
-    </button>
-  )
-}
 
 // ---------- Step indicator ----------
 
@@ -753,6 +705,7 @@ function Step0BasicInfo() {
           {([
             { key: 'android' as Platform, icon: Smartphone, title: 'Android', subtitle: 'APK & AAB' },
             { key: 'desktop' as Platform, icon: Monitor, title: 'Desktop', subtitle: 'Windows EXE' },
+            { key: 'ios' as Platform, icon: Apple, title: 'iOS', subtitle: 'IPA + Xcode source' },
           ]).map(({ key, icon: Icon, title, subtitle }) => {
             const selected = wizard.selectedPlatforms.includes(key)
             return (
@@ -777,8 +730,13 @@ function Step0BasicInfo() {
               </button>
             )
           })}
-          <IosWaitlistTile />
         </div>
+        {wizard.selectedPlatforms.includes('ios') && (
+          <p className="mt-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+            iOS is in beta. You'll get an unsigned .ipa plus the full Xcode source — you sign and publish it
+            with your own Apple Developer account. We don't provide App Store publishing support.
+          </p>
+        )}
       </div>
 
       <div>
@@ -861,7 +819,7 @@ function Step0BasicInfo() {
 
 function Step1Visuals() {
   const wizard = useWizardStore()
-  const hasAndroid = wizard.selectedPlatforms.includes('android')
+  const hasAndroid = wizard.selectedPlatforms.includes('android') || wizard.selectedPlatforms.includes('ios')
   const hasDesktop = wizard.selectedPlatforms.includes('desktop')
   const desktopOnly = hasDesktop && !hasAndroid
 
@@ -1056,7 +1014,7 @@ function Step2Features() {
     saveMutation.mutate()
   }
 
-  const hasAndroid = wizard.selectedPlatforms.includes('android')
+  const hasAndroid = wizard.selectedPlatforms.includes('android') || wizard.selectedPlatforms.includes('ios')
   const desktopOnly = !hasAndroid && wizard.selectedPlatforms.includes('desktop')
 
   return (
@@ -1256,7 +1214,7 @@ function Step3Advanced() {
   })
 
   const inputClass = 'w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-  const hasAndroid = wizard.selectedPlatforms.includes('android')
+  const hasAndroid = wizard.selectedPlatforms.includes('android') || wizard.selectedPlatforms.includes('ios')
 
   return (
     <div className="space-y-6">
@@ -1575,10 +1533,7 @@ function Step4Rebuild() {
   const navigate = useNavigate()
   const [rebuilding, setRebuilding] = useState(false)
 
-  const platform =
-    wizard.selectedPlatforms?.includes('desktop') && !wizard.selectedPlatforms?.includes('android')
-      ? 'desktop'
-      : 'android'
+  const platform = wizard.selectedPlatforms?.[0] || 'android'
 
   const handleRebuild = async () => {
     if (!wizard.existingOrderId) return
@@ -1707,10 +1662,8 @@ function Step4PlanReview() {
       // Free plan — auto-trigger build immediately so user sees it in Build Status
       if (plan && plan.price_inr === 0 && plan.price_usd === 0) {
         trackFreeAppBuild(wizard.name || 'App')
-        // Determine platform from wizard selection
-        const platform = wizard.selectedPlatforms?.includes('desktop') && !wizard.selectedPlatforms?.includes('android')
-          ? 'desktop'
-          : 'android'
+        // Determine platform from wizard selection (single-select)
+        const platform = wizard.selectedPlatforms?.[0] || 'android'
         try {
           await buildsApi.trigger(order.id, platform)
           toast.success('Build started! Check Build Status for progress.')

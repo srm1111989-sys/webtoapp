@@ -41,7 +41,7 @@ export interface AppConfig {
   features: Record<string, boolean>
   firebase_config?: FirebaseConfig
   admob_config?: AdmobConfig
-  selected_platforms?: ('android' | 'desktop')[]
+  selected_platforms?: ('android' | 'desktop' | 'ios')[]
   desktop_config?: DesktopConfig
   custom_user_agent?: string
   version_code?: number | null
@@ -88,7 +88,7 @@ export interface Order {
   builds?: Build[]
   plan_name?: string
   app_name?: string
-  selected_platforms?: ('android' | 'desktop')[]
+  selected_platforms?: ('android' | 'desktop' | 'ios')[]
   build_count?: number
 }
 
