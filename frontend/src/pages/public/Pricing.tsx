@@ -141,6 +141,7 @@ export default function Pricing() {
   const playStoreListingPlan = allAndroidPlans.find((p: any) => p.slug === 'play-store-listing')
   const desktopFreePlan = allDesktopPlans.find((p: any) => p.price_inr === 0)
   const desktopPaidPlan = allDesktopPlans.find((p: any) => p.price_inr > 0)
+  const iosBetaPlan = plans && (plans as any[]).find((p: any) => p.slug === 'ios-beta')
 
   return (
     <div>
@@ -444,6 +445,53 @@ export default function Pricing() {
               </ul>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* iOS Plan (Beta) */}
+      <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <h2 className="text-2xl font-bold text-gray-900">iOS App</h2>
+          <span className="text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-0.5">BETA</span>
+        </div>
+        <p className="text-center text-gray-500 text-sm mb-8 max-w-2xl mx-auto">
+          Same price as Android. We generate your iOS app and hand you the unsigned build plus the full Xcode
+          source — <strong>you publish it yourself with your own Apple Developer account</strong>. We do not
+          offer App Store publishing support.
+        </p>
+        <div className="max-w-md mx-auto">
+          <div className="border-2 border-gray-200 rounded-xl p-6 flex flex-col bg-white">
+            <h3 className="text-xl font-bold mb-1">iOS App</h3>
+            <p className="text-gray-500 text-sm mb-4">Unsigned IPA + complete Xcode source project</p>
+            <div className="mb-4">
+              <span className="text-3xl font-bold">
+                {iosBetaPlan
+                  ? formatPlanPrice(iosBetaPlan.price_inr, iosBetaPlan.price_usd)
+                  : formatPlanPrice(207500, 2500)}
+              </span>
+              <span className="text-gray-500 text-sm ml-1">one-time</span>
+            </div>
+            <Link to="/register" className="block text-center py-2 rounded-lg font-medium mb-6 bg-primary-600 text-white hover:bg-primary-700">
+              Get Started
+            </Link>
+            <ul className="space-y-2 flex-1">
+              {[
+                'Native WKWebView iOS app from your website',
+                'Unsigned .ipa — test in the iOS simulator / Xcode',
+                'Full Xcode source project included',
+                'Your icon, colors and splash',
+              ].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-sm">
+                  <Check className="w-4 h-4 text-green-500 shrink-0" />
+                  <span>{f}</span>
+                </li>
+              ))}
+              <li className="flex items-start gap-2 text-sm text-amber-600">
+                <X className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <span>You sign &amp; publish with your own Apple account — no publishing support</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 
