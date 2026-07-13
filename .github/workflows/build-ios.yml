@@ -1,0 +1,114 @@
+name: Build iOS App
+
+on:
+  workflow_dispatch:
+    inputs:
+      APP_NAME:
+        required: true
+      APP_URL:
+        required: true
+      APP_HOST:
+        default: ""
+      PACKAGE_NAME:
+        default: "com.webtoapp.app"
+      ORDER_ID:
+        default: ""
+      PRIMARY_COLOR:
+        default: "#2563EB"
+      STATUS_BAR_COLOR:
+        default: "#1E3A5F"
+      ICON_URL:
+        default: ""
+      FEATURES_JSON:
+        default: "{}"
+      VERSION_CODE:
+        default: "1"
+      _build_provider:
+        default: "github"
+
+jobs:
+  build:
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: ios-template
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure app
+        run: |
+          cat > App/config.json << 'EOFCONFIG'
+          {
+            "app_name": "${{ inputs.APP_NAME }}",
+            "app_url": "${{ inputs.APP_URL }}",
+            "app_host": "${{ inputs.APP_HOST }}",
+            "primary_color": "${{ inputs.PRIMARY_COLOR }}",
+            "status_bar_color": "${{ inputs.STATUS_BAR_COLOR }}",
+            "features": ${{ inputs.FEATURES_JSON }}
+          }
+          EOFCONFIG
+          python3 -c "import json; json.load(open('App/config.json')); print('config.json valid')"
+
+      - name: App icon
+        run: |
+          if [ -n "${{ inputs.ICON_URL }}" ]; then
+            curl -sL --max-time 20 "${{ inputs.ICON_URL }}" -o /tmp/icon_raw || true
+            if [ -s /tmp/icon_raw ]; then
+              sips -s format png -z 1024 1024 /tmp/icon_raw \
+                --out App/Assets.xcassets/AppIcon.appiconset/icon1024.png || echo "icon convert failed — using default"
+            fi
+          fi
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          SAFE_BUNDLE="$(echo "${{ inputs.PACKAGE_NAME }}" | tr -cd 'a-zA-Z0-9.-')"
+          sed -i '' "s/__BUNDLE_ID__/${SAFE_BUNDLE:-com.webtoapp.app}/" project.yml
+          sed -i '' "s/__VERSION_CODE__/${{ inputs.VERSION_CODE }}/g" project.yml
+          APP_NAME_ESCAPED="$(echo "${{ inputs.APP_NAME }}" | sed 's/[&/\]/\\&/g')"
+          sed -i '' "s/__APP_NAME__/${APP_NAME_ESCAPED}/g" App/Info.plist
+          xcodegen generate
+
+      - name: Build unsigned .app
+        run: |
+          xcodebuild \
+            -project WebToApp.xcodeproj \
+            -target App \
+            -configuration Release \
+            -sdk iphoneos \
+            SYMROOT="$PWD/build" \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package unsigned IPA
+        run: |
+          APP_PATH=$(find build -name "App.app" -type d | head -1)
+          echo "app at: $APP_PATH"
+          mkdir -p Payload
+          cp -r "$APP_PATH" Payload/
+          zip -qr app-unsigned.ipa Payload
+          ls -la app-unsigned.ipa
+
+      - name: Package Xcode source
+        run: |
+          zip -qr ios-source.zip App project.yml README-IOS.md \
+            -x "App/Assets.xcassets/AppIcon.appiconset/icon1024.png"
+          # include the generated icon separately so the source zip always builds
+          zip -q ios-source.zip App/Assets.xcassets/AppIcon.appiconset/icon1024.png
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ios-template/app-unsigned.ipa
+          retention-days: 30
+
+      - name: Upload source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-source
+          path: ios-template/ios-source.zip
+          retention-days: 30

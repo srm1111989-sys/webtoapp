@@ -1,0 +1,8 @@
+{
+  "app_name": "WebToApp",
+  "app_url": "https://example.com",
+  "app_host": "example.com",
+  "primary_color": "#2563EB",
+  "status_bar_color": "#1E3A5F",
+  "features": {}
+}
