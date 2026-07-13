@@ -21,6 +21,8 @@ class GitHubService:
         self.platform = platform
         if platform == "desktop":
             self.workflow_file = "build-desktop.yml"
+        elif platform == "ios":
+            self.workflow_file = "build-ios.yml"
         else:
             self.workflow_file = "build-android.yml"
         self.headers = {
@@ -41,6 +43,12 @@ class GitHubService:
         "VERSION_CODE"
     }
 
+    _ALLOWED_INPUTS_IOS = {
+        "APP_NAME", "APP_URL", "APP_HOST", "PACKAGE_NAME", "ORDER_ID",
+        "PRIMARY_COLOR", "STATUS_BAR_COLOR", "ICON_URL", "FEATURES_JSON",
+        "VERSION_CODE", "_build_provider",
+    }
+
     _ALLOWED_INPUTS_DESKTOP = {
         "APP_NAME", "APP_URL", "ORDER_ID", "PRIMARY_COLOR", "WINDOW_WIDTH",
         "WINDOW_HEIGHT", "MIN_WIDTH", "MIN_HEIGHT", "SHOW_TITLE_BAR",
@@ -50,7 +58,12 @@ class GitHubService:
 
     def trigger_pipeline(self, variables: dict) -> dict:
         """Trigger a GitHub Actions workflow dispatch with variables as inputs."""
-        allowed_keys = self._ALLOWED_INPUTS_DESKTOP if self.platform == "desktop" else self._ALLOWED_INPUTS_ANDROID
+        if self.platform == "desktop":
+            allowed_keys = self._ALLOWED_INPUTS_DESKTOP
+        elif self.platform == "ios":
+            allowed_keys = self._ALLOWED_INPUTS_IOS
+        else:
+            allowed_keys = self._ALLOWED_INPUTS_ANDROID
         filtered_inputs = {k: str(v) for k, v in variables.items() if k in allowed_keys}
 
         with httpx.Client(timeout=30) as client:
