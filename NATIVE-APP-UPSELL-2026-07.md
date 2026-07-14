@@ -39,6 +39,9 @@ If it's interesting, reply and I'll send an honest estimate (timeline + fixed pr
 no discovery-call runaround). If not, no worries — your current app keeps working
 as-is, and we're here either way.
 
+We also do **website development and ongoing maintenance** — so if you need the site
+behind your app built, redesigned, or kept updated and secure, we can cover that too.
+
 Best,
 Swapnil
 WebToApp · https://websitetoapp.app
@@ -50,6 +53,11 @@ WebToApp · https://websitetoapp.app
 Common subject: **Your app {app_name} — want to take it fully native?**
 All from support@websitetoapp.app, signed Swapnil. Each opens with something true
 about *their* business so it reads as a human note, not a blast.
+
+**Append to every Tier-1 draft** (one line before the sign-off): *"We also build and
+maintain websites — so if you ever need the site itself built, redesigned, or kept
+updated, we can handle that too."* Keep it to the single line so the native-app ask
+stays the focus.
 
 ### 1. vishalsilverinfo@gmail.com — Vishal Silver (jewelry e-commerce)
 
