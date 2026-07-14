@@ -84,7 +84,12 @@ const basicInfoSchema = z.object({
     val => !val || PACKAGE_NAME_RE.test(val),
     { message: 'Invalid package name. Use format: com.example.app (lowercase, dot-separated)' }
   ),
-  version_code: z.coerce.number().int().min(1).max(999999).optional().nullable(),
+  // empty input must stay "unset": z.coerce alone turns '' into 0, which then
+  // fails min(1) and blocks the wizard even though the field is optional
+  version_code: z.preprocess(
+    (v) => (v === '' || v === null || v === undefined ? undefined : v),
+    z.coerce.number().int().min(1).max(999999).optional()
+  ).nullable(),
   description: z.string().max(500).optional(),
 })
 
