@@ -239,30 +239,80 @@ public class WebViewActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT));
     }
 
-    private void setupWatermarkBanner(LinearLayout root) {
-        TextView watermark = new TextView(this);
-        watermark.setText("Made with websitetoapp.app");
-        watermark.setTextColor(Color.parseColor("#6B7280"));
-        watermark.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-        watermark.setBackgroundColor(Color.parseColor("#F3F4F6"));
-        watermark.setGravity(android.view.Gravity.CENTER);
-        int pad = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
+    private int dp(float v) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v,
                 getResources().getDisplayMetrics());
-        watermark.setPadding(0, pad, 0, pad);
-        watermark.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://websitetoapp.app"));
-            intent.setPackage("com.android.chrome");
-            try {
-                startActivity(intent);
-            } catch (Exception e) {
-                // Chrome not installed, fall back to default browser
-                intent.setPackage(null);
-                startActivity(intent);
-            }
-        });
-        root.addView(watermark, new LinearLayout.LayoutParams(
+    }
+
+    private void setupWatermarkBanner(LinearLayout root) {
+        // Slim, modern branded bar: dark gradient with rounded top corners,
+        // a lightning glyph, "Built with WebToApp" (brand accent), and an
+        // "Upgrade" chip. Tapping the bar opens the site; the chip opens pricing.
+        LinearLayout bar = new LinearLayout(this);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        bar.setPadding(dp(14), dp(9), dp(12), dp(9));
+
+        GradientDrawable barBg = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{Color.parseColor("#1E293B"), Color.parseColor("#0F172A")});
+        float r = dp(14);
+        barBg.setCornerRadii(new float[]{r, r, r, r, 0, 0, 0, 0}); // round top only
+        bar.setBackground(barBg);
+        bar.setElevation(dp(8));
+
+        // ⚡ + "Built with " (muted) + "WebToApp" (accent, bold)
+        TextView lead = new TextView(this);
+        lead.setText("⚡ Built with ");
+        lead.setTextColor(Color.parseColor("#94A3B8"));
+        lead.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f);
+
+        TextView brand = new TextView(this);
+        brand.setText("WebToApp");
+        brand.setTextColor(Color.parseColor("#60A5FA"));
+        brand.setTypeface(Typeface.DEFAULT_BOLD);
+        brand.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f);
+
+        View spacer = new View(this);
+        LinearLayout.LayoutParams spLp = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+
+        // "Upgrade ›" chip
+        TextView chip = new TextView(this);
+        chip.setText("Upgrade ›");
+        chip.setTextColor(Color.WHITE);
+        chip.setTypeface(Typeface.DEFAULT_BOLD);
+        chip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
+        chip.setPadding(dp(12), dp(5), dp(12), dp(5));
+        GradientDrawable chipBg = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{Color.parseColor("#3B82F6"), Color.parseColor("#2563EB")});
+        chipBg.setCornerRadius(dp(20));
+        chip.setBackground(chipBg);
+
+        final String purchaseUrl = features != null ? features.optString("purchase_url", "") : "";
+        chip.setOnClickListener(v -> openUrl(!purchaseUrl.isEmpty() ? purchaseUrl : "https://websitetoapp.app/pricing"));
+        bar.setOnClickListener(v -> openUrl("https://websitetoapp.app"));
+
+        bar.addView(lead);
+        bar.addView(brand);
+        bar.addView(spacer, spLp);
+        bar.addView(chip);
+
+        root.addView(bar, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
+    }
+
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setPackage("com.android.chrome");
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            intent.setPackage(null);
+            startActivity(intent);
+        }
     }
 
     private int getNavIcon(String iconName) {

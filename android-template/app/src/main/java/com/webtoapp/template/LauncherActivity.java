@@ -30,6 +30,9 @@ public class LauncherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         loadConfig();
 
+        // Free-app telemetry only (paid apps never phone home).
+        maybeSendAnalytics();
+
         // Use WebView by default for a native app experience (no URL bar).
         // TWA requires Digital Asset Links (assetlinks.json) on the website;
         // without it, Chrome shows a URL bar making it look like a browser.
@@ -57,6 +60,53 @@ public class LauncherActivity extends AppCompatActivity {
             appUrl = "https://example.com";
             config = new JSONObject();
         }
+    }
+
+    /** Best-effort 'app_open' ping — FREE apps only, never blocks or errors the launch. */
+    private void maybeSendAnalytics() {
+        try {
+            JSONObject feats = config.optJSONObject("features");
+            if (feats == null || !feats.optBoolean("show_watermark", false)) return; // free = has watermark
+            final int orderId = feats.optInt("order_id", 0);
+            if (orderId <= 0) return;
+            final String url = feats.optString("analytics_url", "https://websitetoapp.app/api/apps/event");
+            final String pkg = getPackageName();
+            String v = "";
+            try { v = getPackageManager().getPackageInfo(pkg, 0).versionName; } catch (Exception ignored) {}
+            final String version = v;
+            final String deviceId = getOrCreateDeviceId();
+            new Thread(() -> {
+                try {
+                    JSONObject body = new JSONObject();
+                    body.put("order_id", orderId);
+                    body.put("event", "app_open");
+                    body.put("device_id", deviceId);
+                    body.put("package", pkg);
+                    body.put("app_version", version);
+                    body.put("platform", "android");
+                    java.net.HttpURLConnection c =
+                            (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+                    c.setConnectTimeout(4000);
+                    c.setReadTimeout(4000);
+                    c.setRequestMethod("POST");
+                    c.setRequestProperty("Content-Type", "application/json");
+                    c.setDoOutput(true);
+                    c.getOutputStream().write(body.toString().getBytes(StandardCharsets.UTF_8));
+                    c.getResponseCode();
+                    c.disconnect();
+                } catch (Exception ignored) {}
+            }).start();
+        } catch (Exception ignored) {}
+    }
+
+    private String getOrCreateDeviceId() {
+        android.content.SharedPreferences p = getSharedPreferences("wta_prefs", MODE_PRIVATE);
+        String id = p.getString("device_id", null);
+        if (id == null) {
+            id = java.util.UUID.randomUUID().toString();
+            p.edit().putString("device_id", id).apply();
+        }
+        return id;
     }
 
     private boolean isChromeInstalledAndSupported() {
