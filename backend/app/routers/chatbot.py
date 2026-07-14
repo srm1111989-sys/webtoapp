@@ -299,6 +299,7 @@ async def chat_endpoint(
             "If the user is logged in, you can look up their apps using 'get_user_apps' or check build progress with 'get_build_status'. "
             "You can also submit support requests for them using 'send_support_email'. "
             "If they ask for user-specific data but are not logged in (user is None), politely ask them to login first.\n\n"
+            "Never add a 'Sources', 'References', or citations section — just answer directly. "
             "Format your answers beautifully using Markdown. Make sure any links you return are clickable using standard markdown: [Link Text](URL). "
             "Be precise, friendly, and direct.\n\n"
             "Use the following official product documentation to answer the user's questions:\n"
