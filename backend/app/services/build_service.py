@@ -98,7 +98,7 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     # premium builds for $0 (e.g. share-for-upgrade rewards) without a fake payment.
     is_free = order.amount == 0 and not (order.order_metadata or {}).get("force_premium")
     show_watermark = is_free
-    trial_days = 3 if is_free else 0
+    trial_days = 15 if is_free else 0
     purchase_url = f"{settings.app_url}/pricing" if is_free else ""
 
     variables = {

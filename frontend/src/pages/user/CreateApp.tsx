@@ -1529,7 +1529,7 @@ const ANDROID_PLANS_FALLBACK: Plan[] = [
 ]
 
 const DESKTOP_PLANS_FALLBACK: Plan[] = [
-  { id: 'desktop-free', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0, billing_type: 'one_time', max_apps: 2, sort_order: 4, is_active: true, platform: 'desktop', description: 'Build up to 2 apps with watermark & 3-day trial', features: {} },
+  { id: 'desktop-free', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0, billing_type: 'one_time', max_apps: 2, sort_order: 4, is_active: true, platform: 'desktop', description: 'Build up to 2 apps with watermark & 15-day trial', features: {} },
   { id: 'desktop-paid', name: 'Paid', slug: 'desktop-paid', price_inr: 207500, price_usd: 2500, billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop', description: 'Full desktop app, one-time', features: {} },
 ]
 
@@ -1882,7 +1882,7 @@ function Step4PlanReview() {
                     <p className="text-sm text-gray-600 mt-3">{plan.description}</p>
                   )}
                   {plan.price_inr === 0 ? (
-                    <p className="mt-3 text-sm font-bold text-amber-600">⏱ 3-day free trial</p>
+                    <p className="mt-3 text-sm font-bold text-amber-600">⏱ 15-day free trial</p>
                   ) : (
                     <ul className="mt-4 space-y-1.5 text-sm text-gray-700">
                       <li className="flex items-center gap-2">

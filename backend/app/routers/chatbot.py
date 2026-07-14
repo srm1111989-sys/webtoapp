@@ -294,7 +294,7 @@ async def chat_endpoint(
             "- Website: https://websitetoapp.app\n"
             "- Features: Push notifications, Splash screen, custom color styling, offline support, file uploads/downloads, Google Play publishing help, live phone-frame app preview in the wizard (the 'simulator').\n"
             "- iOS is not available yet (Apple review rejects plain webview wrappers); there is an iOS waitlist in the wizard. iPhones can use the website as a PWA meanwhile.\n"
-            "- Pricing (all one-time, no subscription): Free (watermarked, 3-day trial, 2 builds), Android App $25, Desktop App $25, Play Store Listing add-on $15, Android App + Play Store bundle $40. Indian users pay INR equivalent. Both APK and AAB files are provided on ALL plans, including free.\n"
+            "- Pricing (all one-time, no subscription): Free (watermarked, 15-day trial, 2 builds), Android App $25, Desktop App $25, Play Store Listing add-on $15, Android App + Play Store bundle $40. Indian users pay INR equivalent. Both APK and AAB files are provided on ALL plans, including free.\n"
             "- Support: support@websitetoapp.app.\n\n"
             "If the user is logged in, you can look up their apps using 'get_user_apps' or check build progress with 'get_build_status'. "
             "You can also submit support requests for them using 'send_support_email'. "
