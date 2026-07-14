@@ -136,6 +136,10 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     features["show_watermark"] = show_watermark
     features["trial_days"] = trial_days
     features["purchase_url"] = purchase_url
+    # Free apps only: carry the order id so the app can send an anonymous
+    # 'app_open' analytics ping (paid apps omit it and never phone home).
+    if is_free:
+        features["order_id"] = order.id
     variables["FEATURES_JSON"] = json.dumps(features)
 
     # Trial and purchase variables for template
