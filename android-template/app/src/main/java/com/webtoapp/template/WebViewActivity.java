@@ -154,15 +154,20 @@ public class WebViewActivity extends AppCompatActivity {
         root.addView(webContainer, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
 
-        // Watermark banner (if enabled)
+        // Watermark: floating pill over the content area (added to webContainer,
+        // not root) so it never collides with the bottom navigation row.
         if (features.optBoolean("show_watermark", false)) {
-            setupWatermarkBanner(root);
+            setupWatermarkBanner(webContainer);
         }
 
         // Bottom Navigation (if enabled with items)
         setupBottomNavigation(root, primaryColor);
 
-        setContentView(root);
+        // Force the root to fill the window so the weighted WebView container
+        // expands and the watermark bar is pinned to the bottom (not centered).
+        setContentView(root, new android.view.ViewGroup.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 
         swipeRefresh.setOnRefreshListener(() -> webView.reload());
 
@@ -244,64 +249,62 @@ public class WebViewActivity extends AppCompatActivity {
                 getResources().getDisplayMetrics());
     }
 
-    private void setupWatermarkBanner(LinearLayout root) {
-        // Slim, modern branded bar: dark gradient with rounded top corners,
-        // a lightning glyph, "Built with WebToApp" (brand accent), and an
-        // "Upgrade" chip. Tapping the bar opens the site; the chip opens pricing.
-        LinearLayout bar = new LinearLayout(this);
-        bar.setOrientation(LinearLayout.HORIZONTAL);
-        bar.setGravity(Gravity.CENTER_VERTICAL);
-        bar.setPadding(dp(14), dp(9), dp(12), dp(9));
+    private void setupWatermarkBanner(FrameLayout container) {
+        // Compact FLOATING pill overlaid on the bottom of the content area — it
+        // adds no layout height and sits ABOVE the app's bottom menu (which is a
+        // sibling row below this container), so the two never overlap.
+        // "⚡ Built with websitetoapp.app · Upgrade ›", tappable.
+        LinearLayout pill = new LinearLayout(this);
+        pill.setOrientation(LinearLayout.HORIZONTAL);
+        pill.setGravity(Gravity.CENTER_VERTICAL);
+        pill.setPadding(dp(13), dp(7), dp(7), dp(7));
 
-        GradientDrawable barBg = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT,
-                new int[]{Color.parseColor("#1E293B"), Color.parseColor("#0F172A")});
-        float r = dp(14);
-        barBg.setCornerRadii(new float[]{r, r, r, r, 0, 0, 0, 0}); // round top only
-        bar.setBackground(barBg);
-        bar.setElevation(dp(8));
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(Color.parseColor("#F20F172A")); // ~95% opaque dark slate
+        bg.setCornerRadius(dp(22));
+        bg.setStroke(dp(1), Color.parseColor("#334155"));
+        pill.setBackground(bg);
+        pill.setElevation(dp(10));
 
-        // ⚡ + "Built with " (muted) + "WebToApp" (accent, bold)
         TextView lead = new TextView(this);
         lead.setText("⚡ Built with ");
         lead.setTextColor(Color.parseColor("#94A3B8"));
-        lead.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f);
+        lead.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
 
         TextView brand = new TextView(this);
-        brand.setText("WebToApp");
+        brand.setText("websitetoapp.app");
         brand.setTextColor(Color.parseColor("#60A5FA"));
         brand.setTypeface(Typeface.DEFAULT_BOLD);
-        brand.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12.5f);
+        brand.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
 
-        View spacer = new View(this);
-        LinearLayout.LayoutParams spLp = new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-
-        // "Upgrade ›" chip
         TextView chip = new TextView(this);
         chip.setText("Upgrade ›");
         chip.setTextColor(Color.WHITE);
         chip.setTypeface(Typeface.DEFAULT_BOLD);
-        chip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
-        chip.setPadding(dp(12), dp(5), dp(12), dp(5));
+        chip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.5f);
+        chip.setPadding(dp(11), dp(4), dp(11), dp(4));
         GradientDrawable chipBg = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
                 new int[]{Color.parseColor("#3B82F6"), Color.parseColor("#2563EB")});
-        chipBg.setCornerRadius(dp(20));
+        chipBg.setCornerRadius(dp(18));
         chip.setBackground(chipBg);
+        LinearLayout.LayoutParams chipLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        chipLp.leftMargin = dp(9);
 
         final String purchaseUrl = features != null ? features.optString("purchase_url", "") : "";
         chip.setOnClickListener(v -> openUrl(!purchaseUrl.isEmpty() ? purchaseUrl : "https://websitetoapp.app/pricing"));
-        bar.setOnClickListener(v -> openUrl("https://websitetoapp.app"));
+        pill.setOnClickListener(v -> openUrl("https://websitetoapp.app"));
 
-        bar.addView(lead);
-        bar.addView(brand);
-        bar.addView(spacer, spLp);
-        bar.addView(chip);
+        pill.addView(lead);
+        pill.addView(brand);
+        pill.addView(chip, chipLp);
 
-        root.addView(bar, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        lp.bottomMargin = dp(16);
+        container.addView(pill, lp);
     }
 
     private void openUrl(String url) {
