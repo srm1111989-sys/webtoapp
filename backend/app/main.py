@@ -9,7 +9,7 @@ from starlette.responses import FileResponse
 from app.config import get_settings
 from app.middleware.logging import RequestLoggingMiddleware
 from app.rate_limit import limiter
-from app.routers import auth, users, apps, orders, payments, builds, webhooks, admin, plans, blog, seo, promo, client_errors, support, chatbot
+from app.routers import auth, users, apps, orders, payments, builds, webhooks, admin, plans, blog, seo, promo, client_errors, support, chatbot, app_events
 from app.utils.email import send_admin_payment_notification as _admin_notify
 
 settings = get_settings()
@@ -35,6 +35,22 @@ async def startup_event():
     async with engine.begin() as conn:
         for sql in [
             "ALTER TABLE app_configs ADD COLUMN IF NOT EXISTS version_code INTEGER",
+            # Free-app telemetry (open events). Idempotent create on every boot.
+            """CREATE TABLE IF NOT EXISTS app_events (
+                id UUID PRIMARY KEY,
+                order_id INTEGER,
+                event VARCHAR(40) NOT NULL DEFAULT 'app_open',
+                device_id VARCHAR(64),
+                package VARCHAR(255),
+                app_version VARCHAR(30),
+                platform VARCHAR(16) DEFAULT 'android',
+                ip_address VARCHAR(45),
+                created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+            )""",
+            "CREATE INDEX IF NOT EXISTS ix_app_events_order_id ON app_events(order_id)",
+            "CREATE INDEX IF NOT EXISTS ix_app_events_device_id ON app_events(device_id)",
+            "CREATE INDEX IF NOT EXISTS ix_app_events_created_at ON app_events(created_at)",
+            "CREATE INDEX IF NOT EXISTS ix_app_events_order_created ON app_events(order_id, created_at)",
         ]:
             try:
                 await conn.execute(text(sql))
@@ -73,6 +89,7 @@ app.include_router(promo.router)
 app.include_router(client_errors.router)
 app.include_router(support.router)
 app.include_router(chatbot.router)
+app.include_router(app_events.router)
 
 
 # Serve local artifacts when S3 is not configured.
