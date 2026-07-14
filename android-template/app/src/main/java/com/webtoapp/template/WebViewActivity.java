@@ -505,9 +505,11 @@ public class WebViewActivity extends AppCompatActivity {
         title.setLayoutParams(titleParams);
         layout.addView(title);
 
-        // Message
+        // Message — trial length is dynamic (matches features.trial_days) so it
+        // never drifts from the plan the app was built on.
+        int trialLen = features.optInt("trial_days", 15);
         TextView message = new TextView(this);
-        message.setText("Your 15-day free trial has ended.\nUpgrade to Premium to continue using this app with all features and no watermark.");
+        message.setText("Your " + trialLen + "-day free trial has ended.\nUpgrade to Premium to continue using this app with all features and no watermark.");
         message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         message.setTextColor(Color.parseColor("#6B7280"));
         message.setGravity(Gravity.CENTER);
