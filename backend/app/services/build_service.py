@@ -182,7 +182,16 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
             app_config.custom_keystore_private_password or app_config.custom_keystore_password or ""
         )
     elif not is_free and platform == "android":
-        # Paid builds without a custom keystore use the WebToApp master keystore
+        # Paid builds without a custom keystore use the WebToApp master keystore.
+        # Guard: dispatching without the keystore provisioned burns the customer's
+        # build attempts on a guaranteed CI failure (incident 2026-07-16).
+        master_path = Path("/app/storage/artifacts/master/webtoapp-master.jks")
+        if not settings.master_keystore_password or not master_path.exists():
+            raise RuntimeError(
+                "Master keystore not configured (file or MASTER_KEYSTORE_PASSWORD missing) — "
+                "cannot sign a paid build. Provision /app/storage/artifacts/master/webtoapp-master.jks "
+                "and set MASTER_KEYSTORE_PASSWORD in .env.native."
+            )
         variables["CUSTOM_KEYSTORE_URL"] = f"{settings.app_url}/api/artifacts/master/webtoapp-master.jks"
         variables["CUSTOM_KEYSTORE_PASSWORD"] = settings.master_keystore_password
         variables["CUSTOM_KEYSTORE_ALIAS"] = settings.master_keystore_alias
@@ -367,9 +376,12 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.progress = 0
         build.completed_at = now
 
-        # Fetch pipeline job logs for failure analysis
-        if build.variables and build.variables.get("_build_provider") == "github":
-            service = GitHubService(platform=build.platform)
+        # Fetch pipeline job logs for failure analysis (same provider routing as the success path)
+        provider = (build.variables or {}).get("_build_provider", "gitlab")
+        if provider in ("github", "github1"):
+            service = GitHubService(platform=build.platform, account=1)
+        elif provider == "github2":
+            service = GitHubService(platform=build.platform, account=2)
         else:
             service = GitLabService(platform=build.platform)
             

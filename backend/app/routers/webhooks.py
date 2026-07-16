@@ -367,7 +367,9 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
     # ── One-time payment events ──
     if event == "payment.captured":
         payment_entity = body.get("payload", {}).get("payment", {}).get("entity", {})
-        notes = payment_entity.get("notes", {})
+        notes = payment_entity.get("notes") or {}
+        if not isinstance(notes, dict):  # Razorpay sends notes as [] when empty
+            notes = {}
         order_id = notes.get("order_id")
 
         if not _razorpay_product_matches(notes):
