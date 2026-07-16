@@ -180,6 +180,17 @@ export default function BlogPost() {
 
       {/* Content */}
       <article className="py-12 max-w-4xl mx-auto px-4">
+        {post.videoId && (
+          <div className="relative rounded-xl overflow-hidden mb-10" style={{ paddingBottom: '56.25%', height: 0 }}>
+            <iframe
+              src={`https://www.youtube.com/embed/${post.videoId}`}
+              title={post.title}
+              loading="lazy"
+              allowFullScreen
+              className="absolute top-0 left-0 w-full h-full border-0"
+            />
+          </div>
+        )}
         <div
           className="max-w-none"
           dangerouslySetInnerHTML={{ __html: htmlContent }}

@@ -6,12 +6,14 @@ export interface BlogPost {
   readTime: string
   category: string
   image?: string
+  videoId?: string // YouTube video embedded above the article body
   content: string
 }
 
 export const blogPosts: BlogPost[] = [
   {
     slug: 'convert-website-to-android-app-2026',
+    videoId: 'G2kqyOva9KM',
     title: 'Convert Website to Android App 2026: Complete Step-by-Step Guide',
     description: 'Comprehensive guide to converting your website to Android app in 2026. Learn about APK vs AAB, Google Play publishing, best converters comparison, and step-by-step tutorial. No coding required.',
     date: '2026-03-01',
@@ -1223,6 +1225,7 @@ For most small businesses and startups, a WebView-based native app offers the be
   },
   {
     slug: 'publish-app-on-google-play-store',
+    videoId: 'F18w05Dd_j4',
     title: 'How to Publish Your App on Google Play Store: Complete Guide',
     description: 'Step-by-step walkthrough for publishing your Android app on Google Play Store. From creating a developer account to uploading your AAB and going live.',
     date: '2025-11-15',
@@ -3948,6 +3951,7 @@ For most website owners, **starting with a free converter and upgrading when you
   },
   {
     slug: 'website-to-apk-converter-guide-2026',
+    videoId: 'korh49v75AE',
     title: 'Website to APK Converter: How to Convert Any Website to Android App in 2026',
     description: 'Complete guide to converting websites to APK files. Learn about the best website to APK converters, webview app makers, and how to create Android apps from websites without coding.',
     date: '2026-03-12',
