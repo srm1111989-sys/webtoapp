@@ -8,7 +8,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 
 | Plan | Price | Builds |
 |------|-------|--------|
-| Free (Android or Desktop) | $0 | 2 builds total (lifetime), watermark banner + 3-day trial |
+| Free (Android or Desktop) | $0 | 2 builds total (lifetime), watermark banner + 15-day trial (app stops working after the trial until you upgrade) |
 | Premium Android App | $25 one-time | 5 builds total (lifetime) per order |
 | Premium Desktop App | $25 one-time | 5 builds total (lifetime) per order |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
@@ -146,7 +146,7 @@ Without this, Google Play will reject updates due to signature mismatch (differe
 
 ## Build Limits & Rebuilds
 
-* **Free plan**: 2 builds total (lifetime, across all free apps on your account).
+* **Free plan**: 2 builds total (lifetime, across all free apps on your account). Free apps show a small watermark bar and run for a 15-day trial; after that the app blocks with an upgrade screen until you buy a paid plan.
 * **Paid plans**: 5 builds total (lifetime) per order — use them to update your app URL, icon, or settings anytime.
 * Each rebuild generates a freshly signed APK/AAB with your latest settings.
 * Need more than 5 builds? Contact support@websitetoapp.app to purchase additional builds.
