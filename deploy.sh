@@ -55,6 +55,16 @@ sed -i \
   -e 's#redis://redis:6379/#redis://127.0.0.1:6379/#g' \
   "$TMP_ENV"
 
+# Host-local secrets the read-only Doppler service token cannot store
+# (e.g. MASTER_KEYSTORE_PASSWORD). Kept root-only at /root/.webtoapp-local.env;
+# appended after the Doppler download so deploys never wipe them
+# (incident 2026-07-16: a deploy dropped the master keystore password and
+# every paid-build payment verify 500'd).
+LOCAL_ENV=/root/.webtoapp-local.env
+if [ -s "$LOCAL_ENV" ]; then
+  { echo ""; cat "$LOCAL_ENV"; } >> "$TMP_ENV"
+fi
+
 install -m 600 "$TMP_ENV" "$RUNTIME_ENV"
 install -m 600 "$TMP_ENV" "$BACKEND_RUNTIME_ENV"
 install -m 600 "$TMP_ENV" "$BACKEND_NATIVE_ENV"

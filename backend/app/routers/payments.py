@@ -22,6 +22,9 @@ from app.services.build_service import trigger_build
 from app.rate_limit import limiter
 from app.utils.email import send_order_confirmation_email, send_admin_payment_notification
 
+import logging
+logger = logging.getLogger(__name__)
+
 settings = get_settings()
 RAZORPAY_PRODUCT_KEY = "webtoapp"
 router = APIRouter(prefix="/api/payments", tags=["payments"])
@@ -221,10 +224,18 @@ async def verify_razorpay_payment(
     if ac and ac.status == "draft":
         ac.status = "active"
 
-    await db.flush()
+    # Persist the paid status BEFORE attempting the build — a build-trigger
+    # failure must never roll back or 500 a captured payment (incident
+    # 2026-07-16: keystore guard raised, verify 500'd, order stayed pending).
+    await db.commit()
 
-    # Trigger build
-    await trigger_build(order.id, db)
+    build_error = None
+    try:
+        await trigger_build(order.id, db)
+        await db.commit()
+    except Exception as e:
+        build_error = str(e)
+        logger.error(f"Payment recorded but build trigger failed for order {order.id}: {e}")
 
     # Send emails
     app_name = order.app_config.name if order.app_config else "App"
@@ -332,9 +343,13 @@ async def test_payment(
     if ac and ac.status == "draft":
         ac.status = "active"
 
-    await db.flush()
+    await db.commit()
 
-    await trigger_build(order.id, db)
+    try:
+        await trigger_build(order.id, db)
+        await db.commit()
+    except Exception as e:
+        logger.error(f"Payment recorded but build trigger failed for order {order.id}: {e}")
 
     # Send emails
     app_name = order.app_config.name if order.app_config else "App"
