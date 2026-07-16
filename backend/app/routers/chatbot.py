@@ -214,7 +214,7 @@ async def check_rate_limit(db: AsyncSession, user_key: str) -> Optional[str]:
 import asyncio as _asyncio
 import httpx as _httpx
 
-async def report_feedback_central(question: str, answer: str):
+async def report_feedback_central(question: str, answer: str, user_email: str = ""):
     token = os.environ.get("FEEDBACK_INGEST_TOKEN", "")
     if not token:
         return
@@ -223,7 +223,7 @@ async def report_feedback_central(question: str, answer: str):
             await client.post(
                 "https://modbussimulator.com/api/chatbot-feedback",
                 headers={"x-feedback-token": token},
-                json={"site": "websitetoapp.app", "question": question, "answer": answer},
+                json={"site": "websitetoapp.app", "question": question, "answer": answer, "user_email": user_email},
             )
     except Exception as e:
         print(f"[chatbot] central feedback report failed: {e}")
@@ -403,7 +403,7 @@ async def chat_endpoint(
         answer = response.text if response.text else "I could not formulate an answer."
         latency_ms = int((time.time() - start_time) * 1000)
         await log_interaction(db, req.question.strip(), answer, latency_ms, False, user_key, total_tokens)
-        _asyncio.create_task(report_feedback_central(req.question.strip(), answer))
+        _asyncio.create_task(report_feedback_central(req.question.strip(), answer, user.email or ""))
         return ChatResponse(answer=answer)
     except Exception as e:
         latency_ms = int((time.time() - start_time) * 1000)
