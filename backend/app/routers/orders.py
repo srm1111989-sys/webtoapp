@@ -163,7 +163,7 @@ async def list_orders(
     if order_ids:
         bc_result = await db.execute(
             select(Build.order_id, func.count(Build.id))
-            .where(Build.order_id.in_(order_ids))
+            .where(Build.order_id.in_(order_ids), Build.status != "failed")
             .group_by(Build.order_id)
         )
         build_counts = {row[0]: row[1] for row in bc_result.all()}

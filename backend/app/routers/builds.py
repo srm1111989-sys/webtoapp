@@ -102,7 +102,7 @@ async def trigger_build_endpoint(
         free_build_count_result = await db.execute(
             select(func.count(Build.id))
             .join(Order, Build.order_id == Order.id)
-            .where(Order.user_id == user.id, Order.amount == 0)
+            .where(Order.user_id == user.id, Order.amount == 0, Build.status != "failed")
         )
         free_build_count = free_build_count_result.scalar() or 0
         if free_build_count >= 2:
@@ -113,7 +113,7 @@ async def trigger_build_endpoint(
     else:
         # Paid plans: 5 builds total (lifetime) per order
         build_count_result = await db.execute(
-            select(func.count(Build.id)).where(Build.order_id == order_id)
+            select(func.count(Build.id)).where(Build.order_id == order_id, Build.status != "failed")
         )
         build_count = build_count_result.scalar() or 0
         if build_count >= 5:
