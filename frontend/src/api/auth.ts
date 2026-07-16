@@ -1,9 +1,10 @@
 import client from './client'
 import type { TokenResponse, User } from '@/types'
+import { getAttribution } from '@/utils/attribution'
 
 export const authApi = {
   register: (data: { email: string; password: string; full_name: string; phone?: string }) =>
-    client.post<{ message: string }>('/api/auth/register', data),
+    client.post<{ message: string }>('/api/auth/register', { ...data, attribution: getAttribution() }),
 
   login: (data: { email: string; password: string }) =>
     client.post<TokenResponse>('/api/auth/login', data, { _skipRefresh: true } as any),
@@ -24,7 +25,7 @@ export const authApi = {
     client.post<{ message: string }>('/api/auth/resend-verification', { email }),
 
   googleLogin: (credential: string) =>
-    client.post<TokenResponse>('/api/auth/google', { credential }),
+    client.post<TokenResponse>('/api/auth/google', { credential, attribution: getAttribution() }),
 
   getMe: () =>
     client.get<User>('/api/auth/me'),

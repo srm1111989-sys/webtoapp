@@ -35,6 +35,7 @@ async def startup_event():
     async with engine.begin() as conn:
         for sql in [
             "ALTER TABLE app_configs ADD COLUMN IF NOT EXISTS version_code INTEGER",
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS signup_attribution JSONB",
             # Free-app telemetry (open events). Idempotent create on every boot.
             """CREATE TABLE IF NOT EXISTS app_events (
                 id UUID PRIMARY KEY,

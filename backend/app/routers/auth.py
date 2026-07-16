@@ -26,6 +26,18 @@ settings = get_settings()
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
+def _clean_attribution(att) -> dict | None:
+    """Keep only known string fields from client-supplied attribution."""
+    if not isinstance(att, dict):
+        return None
+    out = {}
+    for k in ("source", "medium", "campaign", "keyword", "referrer", "landing", "ts"):
+        v = att.get(k)
+        if isinstance(v, str) and v.strip():
+            out[k] = v.strip()[:300]
+    return out or None
+
+
 
 def resolve_google_client_id() -> str:
     oauth_client_id = getattr(settings, "google_oauth_client_id", "") or os.environ.get("GOOGLE_OAUTH_CLIENT_ID", "")
@@ -57,6 +69,7 @@ async def register(request: Request, data: RegisterRequest, db: AsyncSession = D
         full_name=data.full_name,
         phone=data.phone,
         verification_token=verification_token,
+        signup_attribution=_clean_attribution(data.attribution),
     )
     db.add(user)
     await db.flush()
@@ -198,6 +211,7 @@ async def google_auth(request: Request, data: GoogleAuthRequest, db: AsyncSessio
             full_name=idinfo.get("name", email.split("@")[0]),
             avatar_url=idinfo.get("picture"),
             is_verified=True,
+            signup_attribution=_clean_attribution(data.attribution),
         )
         db.add(user)
         await db.flush()

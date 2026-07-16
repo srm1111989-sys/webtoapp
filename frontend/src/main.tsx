@@ -6,6 +6,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { Toaster } from 'react-hot-toast'
 import App from './App'
+import { captureFirstTouch } from '@/utils/attribution'
+
+captureFirstTouch()
 
 const queryClient = new QueryClient({
   defaultOptions: {

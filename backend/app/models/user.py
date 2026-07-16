@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy import String, Boolean, DateTime, func
+from sqlalchemy.dialects.postgresql import JSONB
 from app.models.compat import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
@@ -17,6 +18,7 @@ class User(Base):
     avatar_url: Mapped[str | None] = mapped_column(String(500))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    signup_attribution: Mapped[dict | None] = mapped_column(JSONB)
     verification_token: Mapped[str | None] = mapped_column(String(255))
     reset_token: Mapped[str | None] = mapped_column(String(255))
     reset_token_expires: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

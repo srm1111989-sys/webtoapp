@@ -6,6 +6,7 @@ class RegisterRequest(BaseModel):
     password: str = Field(min_length=8, max_length=128)
     full_name: str = Field(min_length=1, max_length=255)
     phone: str | None = None
+    attribution: dict | None = None  # first-touch source/keyword from the frontend
 
 
 class LoginRequest(BaseModel):
@@ -34,6 +35,7 @@ class ResetPasswordRequest(BaseModel):
 
 class GoogleAuthRequest(BaseModel):
     credential: str
+    attribution: dict | None = None  # first-touch source/keyword from the frontend
 
 
 class MessageResponse(BaseModel):
