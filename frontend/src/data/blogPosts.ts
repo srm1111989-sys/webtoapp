@@ -9671,7 +9671,7 @@ We tested and compared 7 of the most popular website-to-app converters to help y
 
 | Plan | Price | What You Get |
 |------|-------|-------------|
-| Free | $0 | 2 builds, basic features |
+| Free | $0 | 1 free build, basic features |
 | Pro | $25 | Unlimited builds, all features |
 
 All paid plans are **one-time payments** — no monthly subscriptions.
@@ -10027,7 +10027,7 @@ Ready to convert your website to an app? Here is the fastest path:
 1. Visit [WebsiteToApp.app](https://websitetoapp.app)
 2. Enter your website URL
 3. Customize your app (icon, colors, features)
-4. Build your app (free — no payment needed for first 2 builds)
+4. Build your app (your first build is free)
 5. Download your APK/AAB and test on your phone
 
 For a complete step-by-step walkthrough, read our [Convert Website to App Guide 2026](/blog/convert-website-to-app-guide-2026).

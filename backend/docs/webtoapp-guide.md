@@ -8,9 +8,9 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 
 | Plan | Price | Builds |
 |------|-------|--------|
-| Free (Android or Desktop) | $0 | 2 builds total (lifetime), watermark banner + 15-day trial (app stops working after the trial until you upgrade) |
-| Premium Android App | $25 one-time | 5 builds total (lifetime) per order |
-| Premium Desktop App | $25 one-time | 5 builds total (lifetime) per order |
+| Free (Android or Desktop) | $0 | ONE free build per account (lifetime), watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
+| Premium Android App | $25 one-time | Modify + rebuild up to 3× per month |
+| Premium Desktop App | $25 one-time | Modify + rebuild up to 3× per month |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
 | Android App + Play Store Bundle | $40 one-time | Premium Android + Play Store listing |
 
@@ -117,7 +117,7 @@ After payment the build is triggered automatically. Users receive an email with 
 1. Go to **My Apps** and click the pencil icon on any app card.
 2. The wizard pre-loads all your existing settings (URL, icon, colors, features, etc.).
 3. Make your changes and click through the steps.
-4. On the final step, paid users see a **Rebuild App** button — click it to trigger a new build with the updated settings. No additional payment required (uses one of your 5 lifetime builds).
+4. On the final step, paid users see a **Rebuild App** button — click it to trigger a new build with the updated settings. No additional payment required (uses one of your 3 monthly rebuilds). Free apps can be edited too — the changes take effect when you upgrade, since the paid build uses your latest settings.
 
 ---
 
@@ -146,16 +146,16 @@ Without this, Google Play will reject updates due to signature mismatch (differe
 
 ## Build Limits & Rebuilds
 
-* **Free plan**: 2 builds total (lifetime, across all free apps on your account). Free apps show a small watermark bar and run for a 15-day trial; after that the app blocks with an upgrade screen until you buy a paid plan.
-* **Paid plans**: 5 builds total (lifetime) per order — use them to update your app URL, icon, or settings anytime.
+* **Free plan**: ONE successful build per account, lifetime (failed builds never count against you). Free apps show a small watermark bar and run for a 15-day trial; after that the installed app pauses with a notice until the app is upgraded from the dashboard — paying unlocks the already-installed app instantly, no reinstall needed.
+* **Paid plans**: edit your app and rebuild up to 3 times per calendar month (the initial build does not count; the counter resets on the 1st). Failed builds never count.
 * Each rebuild generates a freshly signed APK/AAB with your latest settings.
-* Need more than 5 builds? Contact support@websitetoapp.app to purchase additional builds.
+* Need more rebuilds in a month? Contact support@websitetoapp.app.
 
 ### My Apps Dashboard
 
 The **My Apps** page shows each app with:
 * **Plan badge** — "Free Plan" or "Paid Plan" so you know which plan is active for that app.
-* **Remaining builds** — e.g. "3 builds remaining of 5" so you always know how many rebuilds you have left.
+* **State chip and website URL** — FREE with trial countdown, TRIAL ENDED, or PAID with the monthly rebuild meter (e.g. "2 rebuilds left this month").
 * Clicking a card opens the order detail page (or the edit page if no order exists yet).
 
 ---
