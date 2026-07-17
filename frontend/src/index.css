@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
+/* ── Design tokens (Tailwind v4): utilities compile to these variables, so
+   swapping them under [data-theme=…] re-skins the whole app at runtime. ── */
 @theme {
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
@@ -11,6 +15,150 @@
   --color-primary-700: #1d4ed8;
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a5f;
+
+  /* semantic surfaces (new components use these; themes override them) */
+  --color-app: #fafafa;
+  --color-surface: #ffffff;
+  --color-line: #e5e7eb;
+  --color-ink: #111827;
+  --color-soft: #6b7280;
+}
+
+/* ══ Theme palettes ═══════════════════════════════════════════════════════
+   Default (no attribute / "vercel") keeps the enterprise-blue look.
+   Each theme overrides the primary scale + neutrals; Linear flips the gray
+   scale for a dark-first UI. */
+
+[data-theme="stripe"] {
+  --color-primary-50: #f0efff;
+  --color-primary-100: #e4e2ff;
+  --color-primary-200: #cecbff;
+  --color-primary-300: #aaa5ff;
+  --color-primary-400: #8780ff;
+  --color-primary-500: #7a72ff;
+  --color-primary-600: #635bff;
+  --color-primary-700: #5851df;
+  --color-primary-800: #4f46e5;
+  --color-app: #f6f9fc;
+  --color-gray-50: #f6f9fc;
+  --color-ink: #1a1f36;
+  --color-gray-900: #1a1f36;
+}
+
+[data-theme="github"] {
+  --color-primary-50: #ddf4ff;
+  --color-primary-100: #b6e3ff;
+  --color-primary-200: #80ccff;
+  --color-primary-300: #54aeff;
+  --color-primary-400: #218bff;
+  --color-primary-500: #0969da;
+  --color-primary-600: #0969da;
+  --color-primary-700: #0550ae;
+  --color-primary-800: #033d8b;
+  --color-app: #f6f8fa;
+  --color-gray-50: #f6f8fa;
+  --color-gray-200: #d0d7de;
+  --color-line: #d0d7de;
+  --color-ink: #24292f;
+  --color-gray-900: #24292f;
+}
+
+[data-theme="apple"] {
+  --color-primary-50: #e8f3ff;
+  --color-primary-100: #d1e8ff;
+  --color-primary-200: #a3d1ff;
+  --color-primary-300: #70b8ff;
+  --color-primary-400: #339dff;
+  --color-primary-500: #1489ff;
+  --color-primary-600: #007aff;
+  --color-primary-700: #0066d6;
+  --color-primary-800: #0055b3;
+  --color-app: #f5f5f7;
+  --color-gray-50: #f5f5f7;
+  --color-ink: #1d1d1f;
+  --color-gray-900: #1d1d1f;
+}
+
+[data-theme="indigo"] {
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-app: #f8fafc;
+  --color-gray-50: #f8fafc;
+  --color-gray-200: #e2e8f0;
+  --color-line: #e2e8f0;
+  --color-ink: #0f172a;
+  --color-gray-900: #0f172a;
+}
+
+/* Linear — dark-first: neutrals flip, surfaces go near-black. */
+[data-theme="linear"] {
+  --color-primary-50: #16203a;
+  --color-primary-100: #1b2947;
+  --color-primary-200: #24355c;
+  --color-primary-300: #2f4574;
+  --color-primary-400: #7ca5ff;
+  --color-primary-500: #6b97ff;
+  --color-primary-600: #5b8cff;
+  --color-primary-700: #4a7af0;
+  --color-primary-800: #3d68d6;
+  --color-app: #09090b;
+  --color-surface: #18181b;
+  --color-line: #27272a;
+  --color-ink: #fafafa;
+  --color-soft: #a1a1aa;
+  --color-white: #18181b;
+  --color-gray-50: #101012;
+  --color-gray-100: #1b1b1f;
+  --color-gray-200: #27272a;
+  --color-gray-300: #3f3f46;
+  --color-gray-400: #52525b;
+  --color-gray-500: #a1a1aa;
+  --color-gray-600: #c8c8cf;
+  --color-gray-700: #dededf;
+  --color-gray-800: #ececee;
+  --color-gray-900: #fafafa;
+}
+
+body {
+  background: var(--color-app);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* ── Motion & polish ─────────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.25s ease-out both; }
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--color-gray-100) 25%, var(--color-gray-200) 50%, var(--color-gray-100) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 8px;
+}
+
+/* Accessible focus ring everywhere */
+:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
 /* Hide scrollbar for horizontal scrolling features */

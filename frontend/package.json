@@ -17,6 +17,7 @@
     "test:android:create-avd": "npx ts-node e2e/setup/android-setup.ts --create-avd"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
     "@hookform/resolvers": "^3.9.1",
     "@react-oauth/google": "^0.13.4",
     "@tanstack/react-query": "^5.62.8",

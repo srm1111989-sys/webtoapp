@@ -46,6 +46,8 @@ import AdminOrders from '@/pages/admin/AdminOrders'
 import AdminBuilds from '@/pages/admin/AdminBuilds'
 import AdminPlans from '@/pages/admin/AdminPlans'
 import AdminSettings from '@/pages/admin/AdminSettings'
+import Settings from '@/pages/user/Settings'
+import Subscription from '@/pages/user/Subscription'
 
 export default function App() {
   return (
@@ -91,6 +93,8 @@ export default function App() {
           <Route path="/apps" element={<MyApps />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
+          <Route path="/billing" element={<Subscription />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
 

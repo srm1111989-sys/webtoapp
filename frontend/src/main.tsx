@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter'
 import './index.css'
 import { StrictMode, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -7,8 +8,10 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { Toaster } from 'react-hot-toast'
 import App from './App'
 import { captureFirstTouch } from '@/utils/attribution'
+import { initTheme } from '@/lib/theme'
 
 captureFirstTouch()
+initTheme()
 
 const queryClient = new QueryClient({
   defaultOptions: {
