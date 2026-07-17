@@ -88,10 +88,10 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
     <div>
       {showHeader && (<>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Apps</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-xl font-bold text-ink tracking-tight">My Apps</h1>
+          <p className="mt-1 text-sm text-soft">
             Manage and track all your app conversions in one place
           </p>
           {freeBuildUsed && isFreeUser && (
@@ -104,15 +104,15 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
         {canCreateMore ? (
           <Link
             to="/apps/create"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-200 hover:shadow-xl font-medium self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition shadow-sm text-sm font-medium self-start sm:self-auto"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             Create New App
           </Link>
         ) : (
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl hover:from-amber-600 hover:to-amber-700 transition-all shadow-lg font-medium self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition shadow-sm text-sm font-medium self-start sm:self-auto"
           >
             Upgrade to Premium
           </Link>
@@ -122,8 +122,10 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
       </>)}
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-32">
-          <Loader2 className="w-10 h-10 animate-spin text-primary-600" />
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="skeleton h-20 rounded-2xl" />
+          ))}
         </div>
       ) : isError ? (
         <div className="rounded-xl bg-red-50 border border-red-200 p-6 flex items-start gap-3 text-red-700">
@@ -134,26 +136,26 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
           </div>
         </div>
       ) : apps.length === 0 ? (
-        <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 py-20 text-center">
-          <div className="inline-flex p-5 rounded-full bg-primary-50 mb-6">
-            <AppWindow className="w-16 h-16 text-primary-600" />
+        <div className="bg-surface rounded-2xl border-2 border-dashed border-line py-16 text-center">
+          <div className="inline-flex p-4 rounded-full bg-primary-50 mb-5">
+            <AppWindow className="w-12 h-12 text-primary-600" />
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+          <h3 className="text-xl font-bold text-ink mb-2">
             No apps yet
           </h3>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
+          <p className="text-sm text-soft mb-6 max-w-md mx-auto">
             Start converting your websites into native Android and Windows apps in just a few minutes
           </p>
           <Link
             to="/apps/create"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition font-medium shadow-lg"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium shadow-sm"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             Create Your First App
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border-2 border-gray-100 divide-y divide-gray-100">
+        <div className="bg-surface rounded-2xl border border-line divide-y divide-line shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
           {apps.map((app) => {
             const appOrders = orders.filter((o) => o.app_config_id === app.id)
             const appOrder =
@@ -165,20 +167,20 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
             const showUpgrade =
               appOrder && (appOrder.plan_state === 'free_trial' || appOrder.plan_state === 'free_expired')
             return (
-              <div key={app.id} className="flex flex-col sm:flex-row sm:items-center gap-4 p-5 hover:bg-gray-50 transition">
+              <div key={app.id} className="flex flex-col sm:flex-row sm:items-center gap-4 p-5 hover:bg-gray-50 transition-colors">
                 {/* Icon + name + URL */}
                 <Link to={detailUrl} className="flex items-center gap-4 flex-1 min-w-0">
                   {app.icon_url ? (
-                    <img src={app.icon_url} alt={app.name} className="w-12 h-12 rounded-xl object-cover border-2 border-gray-100 shrink-0" />
+                    <img src={app.icon_url} alt={app.name} className="w-12 h-12 rounded-xl object-cover border border-line shrink-0" />
                   ) : (
-                    <div className="w-12 h-12 rounded-xl border-2 border-gray-100 flex items-center justify-center shrink-0"
+                    <div className="w-12 h-12 rounded-xl border border-line flex items-center justify-center shrink-0"
                          style={{ backgroundColor: app.primary_color || '#6366f1' }}>
                       <AppWindow className="w-6 h-6 text-white" />
                     </div>
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-gray-900 truncate">{app.name}</span>
+                      <span className="font-semibold text-ink truncate">{app.name}</span>
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${chip.cls}`}>
                         {appOrder?.plan_state === 'free_trial' && <Clock className="w-3 h-3 mr-1" />}
                         {chip.label}
@@ -190,12 +192,12 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-md text-[11px] font-medium"><Monitor className="w-3 h-3" />Desktop</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-500 min-w-0">
+                    <div className="flex items-center gap-1.5 mt-1 text-sm text-soft min-w-0">
                       <Globe className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate" title={app.url}>{app.url}</span>
                     </div>
                     {appOrder?.plan_state === 'paid' && (
-                      <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-1.5 mt-1 text-xs text-soft">
                         <Hammer className="w-3 h-3 shrink-0" />
                         <span className={appOrder.rebuilds_left_this_month === 0 ? 'text-red-600 font-semibold' : ''}>
                           {appOrder.rebuilds_left_this_month ?? 3} rebuild{(appOrder.rebuilds_left_this_month ?? 3) !== 1 ? 's' : ''} left this month
@@ -209,7 +211,7 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
                 <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
                   <Link
                     to={`/apps/${app.id}/edit`}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 border-gray-200 text-gray-600 hover:border-primary-300 hover:text-primary-700 text-sm font-medium transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line text-soft hover:border-primary-300 hover:text-primary-700 text-sm font-medium transition"
                   >
                     <Pencil className="w-4 h-4" /> Edit
                   </Link>
@@ -229,7 +231,7 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
                   ) : (
                     <Link
                       to={detailUrl}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium transition"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-ink hover:bg-gray-200 text-sm font-medium transition"
                     >
                       View <ArrowRight className="w-4 h-4" />
                     </Link>

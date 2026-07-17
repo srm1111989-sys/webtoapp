@@ -4,7 +4,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ordersApi, buildsApi, paymentsApi } from '@/api/orders'
 import { useNavigate } from 'react-router-dom'
 import { createRazorpayOrder } from '@/api/razorpay-proxy'
-import { formatCurrency, formatDate, formatDateTime } from '@/utils/format'
+import { formatCurrency, formatDateTime } from '@/utils/format'
+import { Card, Badge, Skeleton, Button } from '@/components/ui'
+import BuildPipeline from '@/components/BuildPipeline'
 import type { Build } from '@/types'
 import toast from 'react-hot-toast'
 import {
@@ -18,30 +20,31 @@ import {
   XCircle,
   Hammer,
   CreditCard,
+  Mail,
 } from 'lucide-react'
 
-const orderStatusColors: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  paid: 'bg-green-100 text-green-800',
-  free: 'bg-blue-100 text-blue-800',
-  failed: 'bg-red-100 text-red-800',
-  refunded: 'bg-gray-100 text-gray-800',
+const statusTone: Record<string, 'amber' | 'green' | 'blue' | 'red' | 'gray'> = {
+  pending: 'amber',
+  paid: 'green',
+  free: 'blue',
+  failed: 'red',
+  refunded: 'gray',
 }
 
 const orderLabel = (status: string, amount: number) =>
   status === 'paid' && amount === 0 ? 'free' : status
 
-const buildStatusColors: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  building: 'bg-blue-100 text-blue-800',
-  success: 'bg-green-100 text-green-800',
-  failed: 'bg-red-100 text-red-800',
+const buildTone: Record<string, 'amber' | 'green' | 'blue' | 'red'> = {
+  pending: 'amber',
+  building: 'blue',
+  success: 'green',
+  failed: 'red',
 }
 
 const buildStatusIcons: Record<string, React.ReactNode> = {
-  pending: <Clock className="w-5 h-5 text-yellow-600" />,
-  building: <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />,
-  success: <CheckCircle2 className="w-5 h-5 text-green-600" />,
+  pending: <Clock className="w-5 h-5 text-amber-600" />,
+  building: <Loader2 className="w-5 h-5 text-primary-600 animate-spin" />,
+  success: <CheckCircle2 className="w-5 h-5 text-emerald-600" />,
   failed: <XCircle className="w-5 h-5 text-red-600" />,
 }
 
@@ -167,113 +170,105 @@ export default function OrderDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      <div className="space-y-4 animate-fade-up">
+        <Skeleton className="h-8 w-40" />
+        <Skeleton className="h-40" />
+        <Skeleton className="h-64" />
       </div>
     )
   }
 
   if (isError || !order) {
     return (
-      <div className="rounded-lg bg-red-50 p-4 flex items-center gap-3 text-red-700">
+      <Card className="p-4 flex items-center gap-3 text-red-700 border-red-200">
         <AlertCircle className="w-5 h-5 shrink-0" />
-        <p>Failed to load order details. Please try again.</p>
-      </div>
+        <p className="text-sm">Failed to load order details. Please try again.</p>
+      </Card>
     )
   }
 
   const latestBuild = builds && builds.length > 0 ? builds[0] : null
 
   return (
-    <div>
+    <div className="animate-fade-up">
       {/* Back link */}
       <Link
         to="/orders"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6"
+        className="inline-flex items-center gap-1.5 text-sm text-soft hover:text-ink mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Orders
       </Link>
 
       {/* Order Header */}
-      <div className="bg-white rounded-xl border p-6 mb-6">
+      <Card className="p-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Order {order.order_number}
+            <h1 className="text-xl font-bold text-ink tracking-tight">
+              Order <span className="font-mono">{order.order_number}</span>
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-soft mt-1">
               Placed on {formatDateTime(order.created_at)}
             </p>
+            {order.app_url && (
+              <a
+                href={order.app_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-primary-600 hover:underline mt-1 inline-block"
+              >
+                {order.app_url}
+              </a>
+            )}
           </div>
-          <span
-            className={`inline-flex items-center self-start px-3 py-1 rounded-full text-sm font-medium ${orderStatusColors[orderLabel(order.status, order.amount)] ?? 'bg-gray-100 text-gray-800'}`}
-          >
+          <Badge tone={statusTone[orderLabel(order.status, order.amount)] ?? 'gray'} className="self-start !text-sm !px-3 !py-1">
             {orderLabel(order.status, order.amount)}
-          </span>
+          </Badge>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-              Amount
-            </p>
-            <p className="text-lg font-semibold text-gray-900">
-              {formatCurrency(order.amount, order.currency)}
+            <p className="text-[11px] text-soft uppercase tracking-wider font-semibold mb-1">Amount</p>
+            <p className="text-lg font-semibold text-ink tabular-nums">
+              {order.amount > 0 ? formatCurrency(order.amount, order.currency) : 'Free'}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-              Plan
-            </p>
-            <p className="text-lg font-semibold text-gray-900">
-              {order.plan_name ?? '-'}
-            </p>
+            <p className="text-[11px] text-soft uppercase tracking-wider font-semibold mb-1">Plan</p>
+            <p className="text-lg font-semibold text-ink">{order.plan_name ?? '-'}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-              App
-            </p>
-            <p className="text-lg font-semibold text-gray-900">
-              {order.app_name ?? '-'}
-            </p>
+            <p className="text-[11px] text-soft uppercase tracking-wider font-semibold mb-1">App</p>
+            <p className="text-lg font-semibold text-ink truncate">{order.app_name ?? '-'}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-              Payment
-            </p>
-            <p className="text-lg font-semibold text-gray-900">
-              {order.payment_gateway ?? '-'}
-            </p>
+            <p className="text-[11px] text-soft uppercase tracking-wider font-semibold mb-1">Payment</p>
+            <p className="text-lg font-semibold text-ink">{order.payment_gateway ?? '-'}</p>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Build Status */}
-      <div className="bg-white rounded-xl border p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <Hammer className="w-5 h-5 text-gray-400" />
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <h2 className="text-base font-semibold text-ink flex items-center gap-2">
+            <Hammer className="w-5 h-5 text-soft" />
             Build Status
           </h2>
           {order.status === 'pending' && order.amount > 0 && (
-            <button
-              onClick={handlePay}
-              disabled={isPaying}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button onClick={handlePay} disabled={isPaying}>
               {isPaying ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <CreditCard className="w-4 h-4" />
               )}
               Pay Now
-            </button>
+            </Button>
           )}
           {order.status === 'paid' && (
             <div className="flex items-center gap-2">
               {(!order.selected_platforms || order.selected_platforms.includes('android')) && (
-                <button
+                <Button
                   onClick={() => triggerBuild.mutate('android')}
                   disabled={
                     triggerBuild.isPending ||
@@ -281,7 +276,6 @@ export default function OrderDetail() {
                       (latestBuild.status === 'building' ||
                         latestBuild.status === 'pending'))
                   }
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {triggerBuild.isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -289,7 +283,7 @@ export default function OrderDetail() {
                     <RefreshCw className="w-4 h-4" />
                   )}
                   {order.amount === 0 ? 'Build free app' : 'Build Android'}
-                </button>
+                </Button>
               )}
               {order.selected_platforms?.includes('desktop') && (
                 <button
@@ -315,7 +309,7 @@ export default function OrderDetail() {
         </div>
 
         {triggerBuild.isError && (
-          <div className="rounded-lg bg-red-50 border border-red-200 p-4 mb-4 text-sm">
+          <div className="rounded-xl bg-red-50 border border-red-200 p-4 mb-4 text-sm">
             <div className="flex items-start gap-2 text-red-700 mb-3">
               <AlertCircle className="w-5 h-5 shrink-0" />
               <div>
@@ -327,9 +321,7 @@ export default function OrderDetail() {
               href={`mailto:support@websitetoapp.app?subject=Build Trigger Failed - Order ${order.order_number}&body=Hi Support Team,%0D%0A%0D%0AI'm unable to trigger a build for my order.%0D%0A%0D%0AOrder Number: ${order.order_number}%0D%0A%0D%0APlease help me resolve this issue.%0D%0A%0D%0AThank you!`}
               className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium text-sm"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
+              <Mail className="w-4 h-4" />
               Contact Support
             </a>
           </div>
@@ -337,10 +329,10 @@ export default function OrderDetail() {
 
         {!builds || builds.length === 0 ? (
           <div className="text-center py-10">
-            <Hammer className="w-10 h-10 mx-auto text-gray-300 mb-3" />
-            <p className="text-gray-500">No builds yet.</p>
+            <Hammer className="w-10 h-10 mx-auto text-soft/40 mb-3" />
+            <p className="text-soft">No builds yet.</p>
             {order.status === 'paid' && (
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-soft/70 mt-1">
                 Trigger a build to generate your {
                   order.selected_platforms?.includes('desktop') && !order.selected_platforms?.includes('android')
                     ? 'Windows EXE'
@@ -351,70 +343,59 @@ export default function OrderDetail() {
               </p>
             )}
             {order.status === 'pending' && (
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-soft/70 mt-1">
                 Complete payment to start building your app.
               </p>
             )}
           </div>
         ) : (
           <div className="space-y-4">
-            {builds.map((build: Build) => (
-              <div
-                key={build.id}
-                className="border rounded-lg p-4"
-              >
+            {builds.map((build: Build, idx: number) => (
+              <div key={build.id} className="border border-line rounded-xl p-4 bg-app/50">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     {buildStatusIcons[build.status] ?? (
-                      <Clock className="w-5 h-5 text-gray-400" />
+                      <Clock className="w-5 h-5 text-soft" />
                     )}
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${buildStatusColors[build.status] ?? 'bg-gray-100 text-gray-800'}`}
-                        >
-                          {build.status}
-                        </span>
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            build.platform === 'desktop'
-                              ? 'bg-indigo-100 text-indigo-700'
-                              : 'bg-emerald-100 text-emerald-700'
-                          }`}
-                        >
+                        <Badge tone={buildTone[build.status] ?? 'gray'}>{build.status}</Badge>
+                        <Badge tone={build.platform === 'desktop' ? 'purple' : 'green'}>
                           {build.platform === 'desktop' ? 'Windows' : 'Android'}
-                        </span>
+                        </Badge>
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {build.build_type} &middot;{' '}
-                        {formatDateTime(build.created_at)}
+                      <p className="text-xs text-soft mt-1">
+                        {build.build_type} &middot; {formatDateTime(build.created_at)}
                       </p>
                     </div>
                   </div>
-
-                  {build.status === 'building' && (
-                    <span className="text-sm text-blue-600 font-medium flex items-center gap-1.5">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Building
-                    </span>
+                  {idx === 0 && builds.length > 1 && (
+                    <span className="text-[11px] font-semibold text-soft uppercase tracking-wide">Latest</span>
                   )}
                 </div>
 
+                {/* Stage pipeline for the most recent build (always) + any active build */}
+                {(idx === 0 || build.status === 'building' || build.status === 'pending') && (
+                  <div className="mb-3 pt-1">
+                    <BuildPipeline status={build.status} progress={build.progress} />
+                  </div>
+                )}
+
                 {build.status === 'building' && (
-                  <p className="mt-2 text-xs text-gray-500">
+                  <p className="mt-2 text-xs text-soft">
                     Hang tight — this usually takes a few minutes. We'll email you when it's ready.
                   </p>
                 )}
 
                 {/* Download buttons on success */}
                 {build.status === 'success' && (
-                  <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t">
+                  <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t border-line">
                     {build.apk_url && (
                       <a
                         href={build.apk_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium"
                       >
                         <Download className="w-4 h-4" />
                         Download APK
@@ -425,7 +406,7 @@ export default function OrderDetail() {
                         href={build.aab_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-medium"
                       >
                         <Download className="w-4 h-4" />
                         Download AAB
@@ -478,24 +459,20 @@ export default function OrderDetail() {
 
                 {/* Error message on failure */}
                 {build.status === 'failed' && build.error_message && (
-                  <div className="mt-3 pt-3 border-t">
-                    <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm">
+                  <div className="mt-3 pt-3 border-t border-line">
+                    <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm">
                       <div className="flex items-start gap-2 text-red-700">
                         <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                         <div className="flex-1">
                           <p className="font-semibold text-red-800">Build Failed</p>
-                          <p className="mt-1 text-red-700">
-                            {build.error_message}
-                          </p>
+                          <p className="mt-1 text-red-700">{build.error_message}</p>
                           <div className="mt-3 pt-3 border-t border-red-200">
                             <p className="text-red-600 text-xs mb-2">Need help? Contact our support team:</p>
                             <a
                               href={`mailto:support@websitetoapp.app?subject=Build Failed - Order ${order.order_number}&body=Hi Support Team,%0D%0A%0D%0AMy build has failed with the following error:%0D%0A${encodeURIComponent(build.error_message)}%0D%0A%0D%0AOrder Number: ${order.order_number}%0D%0ABuild ID: ${build.id}%0D%0APlatform: ${build.platform}%0D%0A%0D%0APlease help me resolve this issue.%0D%0A%0D%0AThank you!`}
                               className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                              </svg>
+                              <Mail className="w-4 h-4" />
                               Contact Support
                             </a>
                           </div>
@@ -507,14 +484,12 @@ export default function OrderDetail() {
 
                 {/* Timestamps */}
                 {(build.started_at || build.completed_at) && (
-                  <div className="mt-3 pt-3 border-t flex gap-6 text-xs text-gray-400">
+                  <div className="mt-3 pt-3 border-t border-line flex gap-6 text-xs text-soft">
                     {build.started_at && (
                       <span>Started: {formatDateTime(build.started_at)}</span>
                     )}
                     {build.completed_at && (
-                      <span>
-                        Completed: {formatDateTime(build.completed_at)}
-                      </span>
+                      <span>Completed: {formatDateTime(build.completed_at)}</span>
                     )}
                   </div>
                 )}
@@ -522,7 +497,7 @@ export default function OrderDetail() {
             ))}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   )
 }
