@@ -248,8 +248,14 @@ async def log_interaction(db: AsyncSession, question: str, answer: str, latency_
 async def chat_endpoint(
     req: ChatRequest,
     user: Optional[User] = Depends(get_optional_user),
+    # NOTE: anonymous access removed 2026-07-17 — see guard at the top of the handler.
     db: AsyncSession = Depends(get_db)
 ):
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please sign in to chat with the AI assistant.",
+        )
     if not is_chatbot_enabled():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
 

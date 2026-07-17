@@ -99,6 +99,14 @@ export default function FloatingSupportButton() {
       })
 
       const data = await res.json().catch(() => ({}))
+      if (res.status === 401) {
+        setMessages((prev) => [...prev, {
+          id: Math.random().toString(),
+          role: 'bot' as const,
+          text: 'Please sign in to chat with the AI assistant — use the Login button at the top right, then ask me again.'
+        }])
+        return
+      }
       if (!res.ok) throw new Error(data.detail || data.error || `Error (${res.status})`)
 
       const botMessage: Message = {
