@@ -197,6 +197,48 @@ async def cleanup_abandoned_drafts():
         logger.error(f"cleanup_abandoned_drafts failed: {e}")
 
 scheduler.add_job(cleanup_abandoned_drafts, 'interval', hours=1)
+async def cleanup_abandoned_pending_orders():
+    """Delete unpaid pending orders older than 24h (payment never completed)
+    plus their app configs when nothing else references them — an abandoned
+    checkout must leave nothing behind (product rule 2026-07-17)."""
+    try:
+        from datetime import datetime, timedelta, timezone
+        from sqlalchemy import select, exists, not_
+        from app.models.app_config import AppConfig
+        from app.models.order import Order
+        from app.models.build import Build
+        async with async_session() as db:
+            cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+            stale = (await db.execute(
+                select(Order).where(
+                    Order.status == "pending",
+                    Order.amount > 0,
+                    Order.gateway_payment_id.is_(None),
+                    Order.created_at < cutoff,
+                    not_(exists(select(Build.id).where(Build.order_id == Order.id))),
+                )
+            )).scalars().all()
+            removed_orders, removed_configs = 0, 0
+            for o in stale:
+                ac_id = o.app_config_id
+                await db.delete(o)
+                await db.flush()
+                others = (await db.execute(
+                    select(Order.id).where(Order.app_config_id == ac_id).limit(1)
+                )).first()
+                if others is None:
+                    ac = (await db.execute(select(AppConfig).where(AppConfig.id == ac_id))).scalar_one_or_none()
+                    if ac:
+                        await db.delete(ac)
+                        removed_configs += 1
+                removed_orders += 1
+            await db.commit()
+            if removed_orders:
+                logger.info(f"cleanup_abandoned_pending_orders: removed {removed_orders} orders, {removed_configs} configs")
+    except Exception as e:
+        logger.error(f"cleanup_abandoned_pending_orders failed: {e}")
+
+scheduler.add_job(cleanup_abandoned_pending_orders, 'interval', hours=1)
 
 scheduler.add_job(process_pending_build, 'interval', minutes=1)
 scheduler.add_job(sync_active_builds, 'interval', minutes=1)

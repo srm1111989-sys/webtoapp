@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ordersApi, buildsApi, paymentsApi } from '@/api/orders'
+import { useNavigate } from 'react-router-dom'
 import { createRazorpayOrder } from '@/api/razorpay-proxy'
 import { formatCurrency, formatDate, formatDateTime } from '@/utils/format'
 import type { Build } from '@/types'
@@ -47,6 +48,7 @@ const buildStatusIcons: Record<string, React.ReactNode> = {
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const [isPaying, setIsPaying] = useState(false)
 
   const {
@@ -115,6 +117,20 @@ export default function OrderDetail() {
         } finally {
           setIsPaying(false)
         }
+      },
+    }
+    ;(options as any).modal = {
+      ondismiss: async () => {
+        setIsPaying(false)
+        // Backing out of payment leaves nothing behind: drop the pending
+        // order (and its config if this was its only order).
+        try {
+          await ordersApi.remove(data.order_id)
+          queryClient.invalidateQueries({ queryKey: ['orders'] })
+          queryClient.invalidateQueries({ queryKey: ['apps'] })
+          toast('Payment cancelled — nothing was saved.', { icon: 'ℹ️' })
+          navigate('/apps')
+        } catch { /* already paid or already gone */ }
       },
     }
     const rzp = new (window as any).Razorpay(options)

@@ -237,6 +237,45 @@ async def list_orders(
     return OrderListResponse(orders=order_responses, total=total, page=page, per_page=per_page)
 
 
+@router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def cancel_pending_order(
+    order_id: uuid.UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Cancel an unpaid pending order (user backed out of payment).
+
+    Abandoned payments must leave nothing behind (product rule 2026-07-17):
+    the pending order is deleted, and if its app config has no other orders
+    it is deleted too (it was a wizard run that never became an app).
+    Only pending, build-less, unpaid orders can be cancelled.
+    """
+    order = (await db.execute(
+        select(Order).where(Order.id == order_id, Order.user_id == user.id)
+    )).scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    if order.status != "pending" or order.gateway_payment_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only unpaid pending orders can be cancelled")
+    has_builds = (await db.execute(
+        select(func.count(Build.id)).where(Build.order_id == order.id)
+    )).scalar() or 0
+    if has_builds:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order has builds and cannot be cancelled")
+
+    ac_id = order.app_config_id
+    await db.delete(order)
+    await db.flush()
+    remaining = (await db.execute(
+        select(func.count(Order.id)).where(Order.app_config_id == ac_id)
+    )).scalar() or 0
+    if remaining == 0:
+        ac = (await db.execute(select(AppConfig).where(AppConfig.id == ac_id))).scalar_one_or_none()
+        if ac:
+            await db.delete(ac)
+    return None
+
+
 @router.get("/{order_id}", response_model=OrderDetailResponse)
 async def get_order(
     order_id: uuid.UUID,

@@ -12,6 +12,10 @@ export const ordersApi = {
 
   get: (id: string) =>
     client.get<Order>(`/api/orders/${id}`),
+
+  // Cancel an unpaid pending order (backing out of payment leaves nothing behind).
+  remove: (id: string) =>
+    client.delete(`/api/orders/${id}`),
 }
 
 export const buildsApi = {
