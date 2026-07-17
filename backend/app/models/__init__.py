@@ -11,9 +11,10 @@ from app.models.subscription import Subscription, SubscriptionPayment
 from app.models.push_campaign import PushCampaign
 from app.models.audit_log import AuditLog
 from app.models.promo_code import PromoCode
+from app.models.team_member import TeamMember
 
 __all__ = [
     "User", "Admin", "Setting", "Plan", "AppConfig", "Order",
     "Payment", "Build", "PWAConfig", "Subscription", "SubscriptionPayment",
-    "PushCampaign", "AuditLog", "PromoCode",
+    "PushCampaign", "AuditLog", "PromoCode", "TeamMember",
 ]

@@ -2,13 +2,30 @@ import uuid
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from app.database import get_db
 from app.models.user import User
 from app.models.admin import Admin
 from app.utils.security import decode_token
 
 security = HTTPBearer()
+
+
+async def team_access(user: User, db: AsyncSession) -> dict[uuid.UUID, str]:
+    """Map of user ids this user may access -> role ('owner' | 'editor' | 'viewer').
+
+    Always contains the user's own id as 'owner'. Other entries come from
+    team_members rows whose email matches the logged-in user's email.
+    """
+    from app.models.team_member import TeamMember  # local import avoids model-import cycles
+
+    access: dict[uuid.UUID, str] = {user.id: "owner"}
+    result = await db.execute(
+        select(TeamMember).where(func.lower(TeamMember.email) == user.email.lower())
+    )
+    for m in result.scalars().all():
+        access.setdefault(m.owner_id, m.role)
+    return access
 
 
 async def get_current_user(

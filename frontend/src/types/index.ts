@@ -52,6 +52,26 @@ export interface AppConfig {
   status: string
   created_at: string
   updated_at: string
+  is_shared?: boolean
+  access_role?: 'owner' | 'editor' | 'viewer'
+}
+
+export interface TeamMember {
+  id: string
+  email: string
+  role: 'viewer' | 'editor'
+  registered: boolean
+  created_at: string
+}
+
+export interface TeamMembership {
+  owner_email: string
+  role: 'viewer' | 'editor'
+}
+
+export interface TeamResponse {
+  members: TeamMember[]
+  memberships: TeamMembership[]
 }
 
 export interface NavigationItem {

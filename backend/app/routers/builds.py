@@ -8,7 +8,7 @@ from app.models.user import User
 from app.models.order import Order
 from app.models.build import Build
 from app.schemas.build import BuildResponse, BuildTriggerRequest
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, team_access
 from app.services.build_service import trigger_build
 
 router = APIRouter(prefix="/api/builds", tags=["builds"])
@@ -20,9 +20,10 @@ async def get_builds_for_order(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    # Verify order belongs to user
+    # Verify order belongs to user or a workspace shared with them
+    access = await team_access(user, db)
     result = await db.execute(
-        select(Order).where(Order.id == order_id, Order.user_id == user.id)
+        select(Order).where(Order.id == order_id, Order.user_id.in_(list(access.keys())))
     )
     order = result.scalar_one_or_none()
     if not order:
@@ -52,9 +53,10 @@ async def get_build(
     if not build:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Build not found")
 
-    # Verify user owns the order
+    # Verify user owns the order or has team access to its workspace
+    access = await team_access(user, db)
     result = await db.execute(
-        select(Order).where(Order.id == build.order_id, Order.user_id == user.id)
+        select(Order).where(Order.id == build.order_id, Order.user_id.in_(list(access.keys())))
     )
     order = result.scalar_one_or_none()
     if not order:
@@ -74,12 +76,17 @@ async def trigger_build_endpoint(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    access = await team_access(user, db)
     result = await db.execute(
-        select(Order).where(Order.id == order_id, Order.user_id == user.id, Order.status == "paid")
+        select(Order).where(
+            Order.id == order_id, Order.user_id.in_(list(access.keys())), Order.status == "paid"
+        )
     )
     order = result.scalar_one_or_none()
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Paid order not found")
+    if access.get(order.user_id) == "viewer":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Viewers can't trigger builds")
 
     # Check for active builds
     active_build_result = await db.execute(
@@ -101,10 +108,12 @@ async def trigger_build_endpoint(
     #          first successful build is not a rebuild; failures never count)
     is_free = order.amount == 0
     if is_free:
+        # Quota belongs to the order's OWNER (matters when an editor triggers
+        # a build on a shared workspace).
         free_build_count_result = await db.execute(
             select(func.count(Build.id))
             .join(Order, Build.order_id == Order.id)
-            .where(Order.user_id == user.id, Order.amount == 0, Build.status == "success")
+            .where(Order.user_id == order.user_id, Order.amount == 0, Build.status == "success")
         )
         if (free_build_count_result.scalar() or 0) >= 1:
             raise HTTPException(

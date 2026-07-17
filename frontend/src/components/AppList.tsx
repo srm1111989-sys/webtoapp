@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { appsApi } from '@/api/apps'
 import { ordersApi, plansApi } from '@/api/orders'
 import { getUserCurrency } from '@/utils/format'
 import type { Order, Plan } from '@/types'
-import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle, Pencil, Hammer, Clock, Zap } from 'lucide-react'
+import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle, Pencil, Hammer, Clock, Zap, Trash2 } from 'lucide-react'
 
 // One chip + one primary action per app state (2026-07-17 flow).
 function stateChip(order?: Order) {
@@ -28,6 +28,7 @@ function stateChip(order?: Order) {
 
 export default function AppList({ showHeader = true }: { showHeader?: boolean }) {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { data: appsData, isLoading, isError } = useQuery({
     queryKey: ['apps'],
     queryFn: () => appsApi.list(),
@@ -83,6 +84,24 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
     },
     onError: () => toast.error('Could not start the upgrade. Please try again.'),
   })
+
+  // Delete = remove from dashboard. Ordered apps are soft-deleted server-side,
+  // so payment history and the lifetime free-build quota are unaffected.
+  const deleteApp = useMutation({
+    mutationFn: (appId: string) => appsApi.delete(appId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['apps'] })
+      queryClient.invalidateQueries({ queryKey: ['orders'] })
+      toast.success('App deleted')
+    },
+    onError: () => toast.error('Could not delete the app. Please try again.'),
+  })
+
+  const confirmDelete = (appId: string, name: string) => {
+    if (window.confirm(`Delete "${name}"?\n\nThis removes the app from your dashboard. Order history is kept, and your used free build does NOT come back.`)) {
+      deleteApp.mutate(appId)
+    }
+  }
 
   return (
     <div>
@@ -164,7 +183,10 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
               appOrders[0]
             const detailUrl = appOrder ? `/orders/${appOrder.id}` : `/apps/${app.id}/edit`
             const chip = stateChip(appOrder)
-            const showUpgrade =
+            const isShared = !!app.is_shared
+            const canEdit = !isShared || app.access_role === 'editor'
+            // Upgrading creates a paid order — owner-only by design
+            const showUpgrade = !isShared &&
               appOrder && (appOrder.plan_state === 'free_trial' || appOrder.plan_state === 'free_expired')
             return (
               <div key={app.id} className="flex flex-col sm:flex-row sm:items-center gap-4 p-5 hover:bg-gray-50 transition-colors">
@@ -185,6 +207,11 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
                         {appOrder?.plan_state === 'free_trial' && <Clock className="w-3 h-3 mr-1" />}
                         {chip.label}
                       </span>
+                      {isShared && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border bg-purple-50 text-purple-700 border-purple-200">
+                          SHARED · {app.access_role}
+                        </span>
+                      )}
                       {app.selected_platforms?.includes('android') && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 rounded-md text-[11px] font-medium"><Smartphone className="w-3 h-3" />Android</span>
                       )}
@@ -209,12 +236,24 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
 
                 {/* Actions */}
                 <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-                  <Link
-                    to={`/apps/${app.id}/edit`}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line text-soft hover:border-primary-300 hover:text-primary-700 text-sm font-medium transition"
-                  >
-                    <Pencil className="w-4 h-4" /> Edit
-                  </Link>
+                  {canEdit && (
+                    <Link
+                      to={`/apps/${app.id}/edit`}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line text-soft hover:border-primary-300 hover:text-primary-700 text-sm font-medium transition"
+                    >
+                      <Pencil className="w-4 h-4" /> Edit
+                    </Link>
+                  )}
+                  {!isShared && (
+                    <button
+                      onClick={() => confirmDelete(app.id, app.name)}
+                      disabled={deleteApp.isPending}
+                      title="Delete app"
+                      className="inline-flex items-center px-2.5 py-2 rounded-lg border border-line text-soft hover:border-red-300 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                   {showUpgrade ? (
                     <button
                       onClick={() => upgrade.mutate(app.id)}

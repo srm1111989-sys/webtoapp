@@ -11,7 +11,7 @@ from app.models.plan import Plan
 from app.models.app_config import AppConfig
 from app.models.promo_code import PromoCode
 from app.schemas.order import OrderCreate, OrderResponse, OrderDetailResponse, OrderListResponse
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, team_access
 from app.config import get_settings
 from app.utils.email import send_order_confirmation_email, send_admin_payment_notification
 
@@ -157,14 +157,17 @@ async def list_orders(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    # Own orders + orders from workspaces shared with this user (team access)
+    access = await team_access(user, db)
+    access_ids = list(access.keys())
     count_result = await db.execute(
-        select(func.count()).select_from(Order).where(Order.user_id == user.id)
+        select(func.count()).select_from(Order).where(Order.user_id.in_(access_ids))
     )
     total = count_result.scalar()
 
     result = await db.execute(
         select(Order)
-        .where(Order.user_id == user.id)
+        .where(Order.user_id.in_(access_ids))
         .order_by(Order.created_at.desc())
         .offset((page - 1) * per_page)
         .limit(per_page)
@@ -297,8 +300,9 @@ async def get_order(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    access = await team_access(user, db)
     result = await db.execute(
-        select(Order).where(Order.id == order_id, Order.user_id == user.id)
+        select(Order).where(Order.id == order_id, Order.user_id.in_(list(access.keys())))
     )
     order = result.scalar_one_or_none()
     if not order:

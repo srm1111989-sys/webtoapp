@@ -173,6 +173,9 @@ class AppConfigResponse(BaseModel):
     status: str
     created_at: datetime
     updated_at: datetime
+    # Team sharing: set when this app belongs to a workspace shared with the caller
+    is_shared: bool = False
+    access_role: str = "owner"  # owner | editor | viewer
 
     model_config = {"from_attributes": True}
 
