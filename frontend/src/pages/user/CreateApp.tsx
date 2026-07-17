@@ -64,7 +64,9 @@ import {
   Nfc,
   Store,
   CheckCircle2,
+  Search as SearchIcon,
 } from 'lucide-react'
+import { Accordion, Badge as UiBadge } from '@/components/ui'
 import { useWizardStore, type Platform } from '@/store/wizardStore'
 import { appsApi } from '@/api/apps'
 import { ordersApi, buildsApi, paymentsApi, plansApi } from '@/api/orders'
@@ -138,6 +140,16 @@ const FEATURES = [
   { key: 'tap_to_pay', label: 'Tap to Pay', description: 'NFC-based contactless payment support. Accept tap-to-pay transactions using device NFC hardware.', helpUrl: 'https://developer.android.com/develop/connectivity/nfc', icon: Nfc },
 ] as const
 
+// Feature accordion groups (presentation only — keys must cover every FEATURES entry)
+const FEATURE_GROUPS: { title: string; subtitle: string; icon: any; keys: string[] }[] = [
+  { title: 'Engagement & Retention', subtitle: 'Notifications, reviews, onboarding', icon: Bell, keys: ['push_notifications', 'firebase_notification', 'in_app_update', 'in_app_review', 'onboarding_screen', 'offer_card', 'intercom'] },
+  { title: 'Monetization & Growth', subtitle: 'Ads, purchases, attribution', icon: DollarSign, keys: ['admob', 'in_app_purchases', 'revenue_cat', 'tap_to_pay', 'facebook_app_events', 'appsflyer'] },
+  { title: 'Security & Sign-in', subtitle: 'Biometrics, passcode, social login', icon: Fingerprint, keys: ['biometric_auth', 'passcode_lock', 'screenshot_prevention', 'social_login'] },
+  { title: 'Navigation & UI', subtitle: 'Menus, shortcuts, deep links', icon: Menu, keys: ['navigation_menu', 'secondary_navigation', 'advanced_bottom_navigation', 'floating_action_menu', 'app_shortcut', 'dynamic_app_icon', 'deep_linking'] },
+  { title: 'Device & Hardware', subtitle: 'Camera, location, Bluetooth, files', icon: Camera, keys: ['qr_scanner', 'camera_access', 'file_upload', 'location_services', 'background_location', 'bluetooth_connectivity', 'native_contacts'] },
+  { title: 'Data, Media & Background', subtitle: 'Offline, storage, media, services', icon: Database, keys: ['offline_mode', 'native_datastore', 'download_file_manager', 'background_service', 'app_auto_launch', 'js_bridge', 'custom_media_player'] },
+]
+
 // ---------- Step indicator ----------
 
 const STEP_LABELS = ['Basic Info', 'Visuals', 'Features', 'Advanced', 'Plan & Review']
@@ -148,6 +160,13 @@ function PhonePreview() {
   const wizard = useWizardStore()
   const [iframeError, setIframeError] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+
+  // Preview toolbar state (visual only — never touches the wizard config)
+  const [device, setDevice] = useState<'phone' | 'tablet'>('phone')
+  const [landscape, setLandscape] = useState(false)
+  const [dark, setDark] = useState(false)
+  const [zoom, setZoom] = useState(1)
+  const [reloadKey, setReloadKey] = useState(0)
 
   const url = wizard.url || ''
   const appName = wizard.name || 'My App'
@@ -164,6 +183,53 @@ function PhonePreview() {
     try { return new URL(url.startsWith('http') ? url : `https://${url}`).hostname }
     catch { return url }
   })()
+
+  const base = device === 'phone' ? { w: 250, h: 500 } : { w: 340, h: 460 }
+  const frameW = landscape ? base.h : base.w
+  const frameH = landscape ? base.w : base.h
+
+  const frame = (
+    <PhoneFrame
+      url={url} appName={appName} statusBarColor={statusBarColor}
+      primaryColor={primaryColor} iconUrl={iconUrl} domain={domain}
+      hasNav={hasNav} navItems={navItems} iframeError={iframeError}
+      onIframeError={() => setIframeError(true)}
+      width={frameW} height={frameH} dark={dark} reloadKey={reloadKey}
+      tablet={device === 'tablet'}
+    />
+  )
+
+  const toolBtn = (active: boolean) =>
+    `p-1.5 rounded-md transition-colors ${active ? 'bg-primary-600 text-white' : 'text-soft hover:bg-gray-100 hover:text-ink'}`
+
+  const toolbar = (
+    <div className="flex items-center gap-0.5 bg-surface border border-line rounded-xl px-1.5 py-1 shadow-sm">
+      <button type="button" title="Phone" aria-label="Phone preview" onClick={() => setDevice('phone')} className={toolBtn(device === 'phone')}>
+        <Smartphone className="w-3.5 h-3.5" />
+      </button>
+      <button type="button" title="Tablet" aria-label="Tablet preview" onClick={() => setDevice('tablet')} className={toolBtn(device === 'tablet')}>
+        <Monitor className="w-3.5 h-3.5" />
+      </button>
+      <span className="w-px h-4 bg-line mx-1" />
+      <button type="button" title="Rotate" aria-label="Rotate preview" onClick={() => setLandscape((v) => !v)} className={toolBtn(landscape)}>
+        <RefreshCw className="w-3.5 h-3.5" />
+      </button>
+      <button type="button" title="Dark mode (simulated)" aria-label="Toggle dark preview" onClick={() => setDark((v) => !v)} className={toolBtn(dark)}>
+        <Palette className="w-3.5 h-3.5" />
+      </button>
+      <button type="button" title="Reload" aria-label="Reload preview" onClick={() => setReloadKey((k) => k + 1)} className={toolBtn(false)}>
+        <Play className="w-3.5 h-3.5" />
+      </button>
+      <span className="w-px h-4 bg-line mx-1" />
+      <button type="button" title="Zoom out" aria-label="Zoom out" onClick={() => setZoom((z) => Math.max(0.75, +(z - 0.25).toFixed(2)))} className={toolBtn(false)}>
+        <ChevronDown className="w-3.5 h-3.5" />
+      </button>
+      <span className="text-[10px] font-semibold text-soft tabular-nums w-8 text-center">{Math.round(zoom * 100)}%</span>
+      <button type="button" title="Zoom in" aria-label="Zoom in" onClick={() => setZoom((z) => Math.min(1.25, +(z + 0.25).toFixed(2)))} className={toolBtn(false)}>
+        <ChevronUp className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  )
 
   return (
     <>
@@ -186,26 +252,24 @@ function PhonePreview() {
             >
               <X className="w-4 h-4" /> Close
             </button>
-            <PhoneFrame
-              url={url} appName={appName} statusBarColor={statusBarColor}
-              primaryColor={primaryColor} iconUrl={iconUrl} domain={domain}
-              hasNav={hasNav} navItems={navItems} iframeError={iframeError}
-              onIframeError={() => setIframeError(true)}
-            />
+            {frame}
           </div>
         </div>
       )}
 
       {/* Desktop sticky panel */}
-      <div className="hidden lg:flex flex-col items-center gap-3 sticky top-6 self-start">
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Live Preview</p>
-        <PhoneFrame
-          url={url} appName={appName} statusBarColor={statusBarColor}
-          primaryColor={primaryColor} iconUrl={iconUrl} domain={domain}
-          hasNav={hasNav} navItems={navItems} iframeError={iframeError}
-          onIframeError={() => setIframeError(true)}
-        />
-        <p className="text-xs text-gray-400 text-center max-w-[200px]">
+      <div className="hidden lg:flex flex-col items-center gap-3 sticky top-20 self-start w-full">
+        <div className="flex items-center justify-between w-full max-w-sm">
+          <p className="text-xs font-semibold text-soft uppercase tracking-wide">Live Preview</p>
+          {toolbar}
+        </div>
+        <div
+          className="flex items-start justify-center overflow-visible transition-transform duration-300"
+          style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}
+        >
+          {frame}
+        </div>
+        <p className="text-xs text-soft/70 text-center max-w-[220px]" style={{ marginTop: `${Math.max(0, (zoom - 1) * frameH)}px` }}>
           Preview updates as you fill in the form
         </p>
       </div>
@@ -216,25 +280,27 @@ function PhonePreview() {
 function PhoneFrame({
   url, appName, statusBarColor, primaryColor, iconUrl, domain,
   hasNav, navItems, iframeError, onIframeError,
+  width = 220, height = 440, dark = false, reloadKey = 0, tablet = false,
 }: {
   url: string; appName: string; statusBarColor: string; primaryColor: string
   iconUrl: string | null; domain: string; hasNav: boolean
   navItems: any[]; iframeError: boolean; onIframeError: () => void
+  width?: number; height?: number; dark?: boolean; reloadKey?: number; tablet?: boolean
 }) {
   const canEmbed = !!url && !iframeError
 
   return (
-    <div className="relative w-[220px] h-[440px]">
-      {/* Phone shell */}
-      <div className="absolute inset-0 rounded-[2.5rem] border-[10px] border-gray-800 bg-gray-800 shadow-2xl overflow-hidden">
-        {/* Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-gray-800 rounded-b-2xl z-20" />
+    <div className="relative transition-all duration-300" style={{ width, height }}>
+      {/* Device shell */}
+      <div className={`absolute inset-0 border-[10px] border-gray-800 bg-gray-800 shadow-2xl overflow-hidden ${tablet ? 'rounded-[1.5rem]' : 'rounded-[2.5rem]'}`}>
+        {/* Notch (phones only) */}
+        {!tablet && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-gray-800 rounded-b-2xl z-20" />}
 
         {/* Screen content */}
-        <div className="relative w-full h-full bg-white flex flex-col overflow-hidden rounded-[1.8rem]">
+        <div className={`relative w-full h-full flex flex-col overflow-hidden ${tablet ? 'rounded-[0.8rem]' : 'rounded-[1.8rem]'} ${dark ? 'bg-gray-900' : 'bg-white'}`}>
           {/* Status bar */}
           <div
-            className="flex items-center justify-between px-4 pt-6 pb-1.5 shrink-0 z-10"
+            className={`flex items-center justify-between px-4 ${tablet ? 'pt-2' : 'pt-6'} pb-1.5 shrink-0 z-10`}
             style={{ backgroundColor: statusBarColor }}
           >
             <span className="text-[9px] text-white/90 font-medium">9:41</span>
@@ -260,7 +326,7 @@ function PhoneFrame({
           </div>
 
           {/* Website content */}
-          <div className="flex-1 relative overflow-hidden bg-gray-50">
+          <div className={`flex-1 relative overflow-hidden ${dark ? 'bg-gray-900' : 'bg-gray-50'}`}>
             {!url ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400">
                 <Globe className="w-8 h-8 opacity-30" />
@@ -268,10 +334,13 @@ function PhoneFrame({
               </div>
             ) : canEmbed ? (
               <iframe
-                key={url}
+                key={`${url}-${reloadKey}`}
                 src={url.startsWith('http') ? url : `https://${url}`}
                 className="w-full h-full border-none"
-                style={{ transform: 'scale(0.45)', transformOrigin: 'top left', width: '222%', height: '222%' }}
+                style={{
+                  transform: 'scale(0.45)', transformOrigin: 'top left', width: '222%', height: '222%',
+                  filter: dark ? 'invert(0.92) hue-rotate(180deg)' : undefined,
+                }}
                 onError={onIframeError}
                 sandbox="allow-scripts allow-same-origin allow-forms"
                 title="App preview"
@@ -284,7 +353,7 @@ function PhoneFrame({
                 >
                   <Globe className="w-6 h-6" style={{ color: primaryColor }} />
                 </div>
-                <p className="text-[11px] font-semibold text-gray-700 text-center truncate w-full">{domain}</p>
+                <p className={`text-[11px] font-semibold text-center truncate w-full ${dark ? 'text-gray-200' : 'text-gray-700'}`}>{domain}</p>
                 <p className="text-[9px] text-gray-400 text-center">
                   This site doesn't allow embedding — your app will still open it normally
                 </p>
@@ -294,11 +363,11 @@ function PhoneFrame({
 
           {/* Bottom nav bar */}
           {hasNav && (
-            <div className="shrink-0 border-t border-gray-100 bg-white flex items-center justify-around py-1.5 px-2">
+            <div className={`shrink-0 border-t flex items-center justify-around py-1.5 px-2 ${dark ? 'border-gray-700 bg-gray-800' : 'border-gray-100 bg-white'}`}>
               {navItems.slice(0, 4).map((item: any, i: number) => (
                 <div key={i} className="flex flex-col items-center gap-0.5">
                   <div className="w-4 h-4 rounded-full" style={{ backgroundColor: i === 0 ? primaryColor : '#d1d5db' }} />
-                  <span className="text-[7px] text-gray-500 truncate max-w-[36px]">{item.label || 'Tab'}</span>
+                  <span className={`text-[7px] truncate max-w-[36px] ${dark ? 'text-gray-400' : 'text-gray-500'}`}>{item.label || 'Tab'}</span>
                 </div>
               ))}
             </div>
@@ -320,19 +389,19 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
           <div key={label} className="flex items-center flex-1 min-w-0 last:flex-none">
             <div className="flex flex-col items-center">
               <div
-                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium border transition-colors ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all ${
                   idx < currentStep
                     ? 'bg-primary-600 border-primary-600 text-white'
                     : idx === currentStep
-                      ? 'border-primary-600 text-primary-600 bg-white'
-                      : 'border-gray-300 text-gray-400 bg-white'
+                      ? 'border-primary-600 text-primary-600 bg-surface ring-4 ring-primary-100'
+                      : 'border-line text-soft bg-surface'
                 }`}
               >
-                {idx < currentStep ? <Check className="w-3.5 h-3.5" /> : idx + 1}
+                {idx < currentStep ? <Check className="w-4 h-4" /> : idx + 1}
               </div>
               <span
                 className={`mt-1.5 text-xs font-medium text-center hidden sm:block whitespace-nowrap ${
-                  idx === currentStep ? 'text-gray-900' : idx < currentStep ? 'text-gray-600' : 'text-gray-400'
+                  idx === currentStep ? 'text-ink' : idx < currentStep ? 'text-soft' : 'text-soft/60'
                 }`}
               >
                 {label}
@@ -341,7 +410,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
             {idx < STEP_LABELS.length - 1 && (
               <div className="flex-1 mx-2 sm:mx-3 -mt-4 sm:mt-0">
                 <div
-                  className={`h-px ${idx < currentStep ? 'bg-primary-600' : 'bg-gray-200'}`}
+                  className={`h-0.5 rounded-full transition-colors ${idx < currentStep ? 'bg-primary-500' : 'bg-line'}`}
                 />
               </div>
             )}
@@ -598,14 +667,14 @@ export default function CreateApp() {
   return (
     <div className="max-w-6xl mx-auto py-5 sm:py-6 px-3 sm:px-4">
       <div className="mb-5">
-        <h1 className="text-lg font-semibold text-gray-900">Create your app</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Convert your website into a mobile app in 5 steps</p>
+        <h1 className="text-xl font-bold text-ink tracking-tight">Create your app</h1>
+        <p className="text-sm text-soft mt-0.5">Convert your website into a mobile app in 5 steps</p>
       </div>
 
       <StepIndicator currentStep={step} />
 
-      <div className={`flex gap-8 items-start ${showPreviewPanel ? 'lg:grid lg:grid-cols-[1fr_240px]' : ''}`}>
-        <div className="bg-white rounded-lg border border-gray-200 p-5 sm:p-6 min-w-0 flex-1">
+      <div className={`flex gap-8 items-start ${showPreviewPanel ? 'lg:grid lg:grid-cols-[3fr_2fr]' : ''}`}>
+        <div className="bg-surface rounded-2xl border border-line p-5 sm:p-6 min-w-0 flex-1 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
           {step === 0 && <Step0BasicInfo />}
           {step === 1 && <Step1Visuals />}
           {step === 2 && <Step2Features />}
@@ -1021,6 +1090,7 @@ function Step1Visuals() {
 function Step2Features() {
   const wizard = useWizardStore()
   const [features, setFeatures] = useState<Record<string, boolean>>(wizard.features)
+  const [search, setSearch] = useState('')
 
   const toggleFeature = (key: string) => {
     setFeatures((prev) => ({ ...prev, [key]: !prev[key] }))
@@ -1047,63 +1117,117 @@ function Step2Features() {
   const hasAndroid = wizard.selectedPlatforms.includes('android') || wizard.selectedPlatforms.includes('ios')
   const desktopOnly = !hasAndroid && wizard.selectedPlatforms.includes('desktop')
 
+  const renderFeature = ({ key, label, description, icon: Icon, helpUrl }: (typeof FEATURES)[number]) => {
+    const enabled = features[key] ?? false
+    return (
+      <button
+        key={key}
+        type="button"
+        onClick={() => toggleFeature(key)}
+        aria-pressed={enabled}
+        className={`flex items-start gap-3 p-3.5 rounded-xl border text-left transition-colors ${
+          enabled
+            ? 'border-primary-500 bg-primary-50/60'
+            : 'border-line hover:border-gray-300 bg-surface'
+        }`}
+      >
+        <div
+          className={`p-1.5 rounded-md shrink-0 ${
+            enabled ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-soft'
+          }`}
+        >
+          <Icon className="w-4 h-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-semibold text-ink">{label}</span>
+            <div
+              className={`w-9 h-5 rounded-full transition-colors flex items-center shrink-0 ${
+                enabled ? 'bg-primary-600 justify-end' : 'bg-gray-300 justify-start'
+              }`}
+            >
+              <div className="w-4 h-4 bg-white rounded-full shadow mx-0.5" />
+            </div>
+          </div>
+          <p className="text-xs text-soft mt-1 leading-relaxed">{description}</p>
+          {helpUrl && (
+            <a
+              href={helpUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="text-xs text-primary-600 hover:text-primary-700 inline-flex items-center gap-1 mt-1.5 font-medium"
+            >
+              Learn more <ExternalLink className="w-3 h-3" />
+            </a>
+          )}
+        </div>
+      </button>
+    )
+  }
+
+  const q = search.trim().toLowerCase()
+  const matches = q
+    ? FEATURES.filter((f) => f.label.toLowerCase().includes(q) || f.description.toLowerCase().includes(q))
+    : []
+  const totalEnabled = FEATURES.filter((f) => features[f.key]).length
+
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-1">App Features</h2>
-        <p className="text-sm text-gray-600">All <span className="font-semibold text-gray-900">50+ premium features</span> are included with the paid plan. Toggle the ones you need.</p>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-ink mb-1">App Features</h2>
+          <p className="text-sm text-soft">All <span className="font-semibold text-ink">50+ premium features</span> are included with the paid plan. Toggle the ones you need.</p>
+        </div>
+        {totalEnabled > 0 && (
+          <UiBadge tone="blue">{totalEnabled} enabled</UiBadge>
+        )}
       </div>
 
       {hasAndroid && (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {FEATURES.map(({ key, label, description, icon: Icon, helpUrl }) => {
-          const enabled = features[key] ?? false
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={() => toggleFeature(key)}
-              className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition-colors ${
-                enabled
-                  ? 'border-primary-600 bg-primary-50/60'
-                  : 'border-gray-200 hover:border-gray-300 bg-white'
-              }`}
-            >
-              <div
-                className={`p-1.5 rounded-md shrink-0 ${
-                  enabled ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-600'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
+        <>
+          <div className="relative max-w-sm">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-soft pointer-events-none" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search features…"
+              className="w-full pl-9 pr-3 py-2 text-sm bg-surface border border-line rounded-lg text-ink placeholder:text-soft focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400"
+            />
+          </div>
+
+          {q ? (
+            matches.length === 0 ? (
+              <p className="text-sm text-soft py-6 text-center">No features match "{search}".</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {matches.map(renderFeature)}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold text-gray-900">{label}</span>
-                  <div
-                    className={`w-9 h-5 rounded-full transition-colors flex items-center shrink-0 ${
-                      enabled ? 'bg-primary-600 justify-end' : 'bg-gray-300 justify-start'
-                    }`}
+            )
+          ) : (
+            <div className="space-y-3">
+              {FEATURE_GROUPS.map((group, gi) => {
+                const groupFeatures = FEATURES.filter((f) => group.keys.includes(f.key))
+                const enabledCount = groupFeatures.filter((f) => features[f.key]).length
+                const GIcon = group.icon
+                return (
+                  <Accordion
+                    key={group.title}
+                    title={group.title}
+                    subtitle={group.subtitle}
+                    icon={<GIcon className="w-4 h-4" />}
+                    defaultOpen={gi === 0}
+                    badge={enabledCount > 0 ? <UiBadge tone="blue">{enabledCount} on</UiBadge> : undefined}
                   >
-                    <div className="w-4 h-4 bg-white rounded-full shadow mx-0.5" />
-                  </div>
-                </div>
-                <p className="text-xs text-gray-600 mt-1 leading-relaxed">{description}</p>
-                {helpUrl && (
-                  <a
-                    href={helpUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-xs text-primary-600 hover:text-primary-700 inline-flex items-center gap-1 mt-1.5 font-medium"
-                  >
-                    Learn more <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
-              </div>
-            </button>
-          )
-        })}
-      </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {groupFeatures.map(renderFeature)}
+                    </div>
+                  </Accordion>
+                )
+              })}
+            </div>
+          )}
+        </>
       )}
 
       {/* Navigation */}
@@ -1931,10 +2055,11 @@ function Step4PlanSelect() {
         </div>
       )}
 
-      {/* Plan Selection */}
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-1">Choose a Plan</h2>
-        <p className="text-sm text-gray-500 mb-4">Select a plan that fits your needs.</p>
+      <div className="grid lg:grid-cols-5 gap-6 items-start">
+      {/* Plan Selection (left column) */}
+      <div className="lg:col-span-3 min-w-0">
+        <h2 className="text-lg font-semibold text-ink mb-1">Choose a Plan</h2>
+        <p className="text-sm text-soft mb-4">Select a plan that fits your needs.</p>
 
         {freeBuildUsed && (
           <div className="mb-4 rounded-xl border-2 border-red-300 bg-red-50 p-4 text-sm text-red-700">
@@ -1947,7 +2072,7 @@ function Step4PlanSelect() {
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any) && p.slug !== 'play-store-listing' && !(freeBuildUsed && p.price_inr === 0 && p.price_usd === 0)).map((plan) => {
               const isSelected = selectedPlan === plan.id
               const isMinimum = minimumPlan?.id === plan.id && selectedGatedFeatures.length > 0
@@ -2050,10 +2175,10 @@ function Step4PlanSelect() {
         )}
       </div>
 
-      {/* Review Summary */}
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Review Summary</h2>
-        <div className="bg-gray-50 rounded-xl p-4 sm:p-6 space-y-4">
+      {/* Review Summary (right column, sticky) */}
+      <div className="lg:col-span-2 lg:sticky lg:top-20">
+        <h2 className="text-lg font-semibold text-ink mb-4">Review Summary</h2>
+        <div className="bg-surface border border-line rounded-2xl p-4 sm:p-5 space-y-4 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
             <div>
               <span className="text-gray-500">App Name</span>
@@ -2138,8 +2263,10 @@ function Step4PlanSelect() {
         </div>
       </div>
 
+      </div>{/* end plan/review grid */}
+
       {/* Promo Code */}
-      <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+      <div className="mt-4 p-4 bg-surface rounded-xl border border-line">
         <p className="text-sm font-medium text-gray-700 mb-2">Have a promo code?</p>
         <div className="flex gap-2">
           <input
