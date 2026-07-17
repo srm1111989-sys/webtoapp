@@ -171,6 +171,32 @@ async def sync_active_builds():
 
 
 scheduler = AsyncIOScheduler()
+async def cleanup_abandoned_drafts():
+    """Delete wizard drafts (app_configs with status='draft' and no orders)
+    older than 48h — drafts are working state, not user-visible apps
+    (product rule 2026-07-17: we don't keep drafts)."""
+    try:
+        from datetime import datetime, timedelta, timezone
+        from sqlalchemy import delete, select, and_, not_, exists
+        from app.models.app_config import AppConfig
+        from app.models.order import Order
+        async with async_session() as db:
+            cutoff = datetime.now(timezone.utc) - timedelta(hours=48)
+            result = await db.execute(
+                delete(AppConfig).where(
+                    AppConfig.status == "draft",
+                    AppConfig.created_at < cutoff,
+                    not_(exists(select(Order.id).where(Order.app_config_id == AppConfig.id))),
+                )
+            )
+            await db.commit()
+            if result.rowcount:
+                logger.info(f"cleanup_abandoned_drafts: removed {result.rowcount} stale drafts")
+    except Exception as e:
+        logger.error(f"cleanup_abandoned_drafts failed: {e}")
+
+scheduler.add_job(cleanup_abandoned_drafts, 'interval', hours=24)
+
 scheduler.add_job(process_pending_build, 'interval', minutes=1)
 scheduler.add_job(sync_active_builds, 'interval', minutes=1)
 

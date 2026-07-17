@@ -685,7 +685,26 @@ function Step0BasicInfo() {
     },
   })
 
+  // Same-site dedupe: one app per website. If they already have an app for
+  // this URL, send them to that app's card to edit/upgrade instead of
+  // creating a duplicate.
+  const { data: existingApps } = useQuery({
+    queryKey: ['apps'],
+    queryFn: () => appsApi.list(),
+    select: (res) => res.data,
+  })
+
   const onSubmit = (data: BasicInfoData) => {
+    if (!wizard.appId) {
+      const norm = (u: string) => u.replace(/\/+$/, '').replace(/^https?:\/\//, '').toLowerCase()
+      const dup = (existingApps?.apps ?? []).find(
+        (a) => a.status !== 'draft' && norm(a.url) === norm(data.url)
+      )
+      if (dup) {
+        toast.error(`You already have an app for this website ("${dup.name}") — edit or upgrade it from My Apps.`, { duration: 6000 })
+        return
+      }
+    }
     if (wizard.appId) {
       updateApp.mutate(data)
     } else {
@@ -1602,6 +1621,17 @@ function Step4PlanReview() {
     queryFn: () => paymentsApi.getPaymentMode().then((r) => r.data),
   })
 
+  // One free SUCCESSFUL build per account, lifetime: once used, the free
+  // plan disappears from the wizard and everything is paid.
+  const { data: myOrders } = useQuery({
+    queryKey: ['orders'],
+    queryFn: () => ordersApi.list(1, 100),
+    select: (res) => res.data,
+  })
+  const freeBuildUsed = (myOrders?.orders ?? []).some(
+    (o) => o.amount === 0 && (o.plan_state === 'free_trial' || o.plan_state === 'free_expired')
+  )
+
   const [selectedPlan, setSelectedPlan] = useState<string | null>(wizard.selectedPlanId)
   const [showPublishServiceModal, setShowPublishServiceModal] = useState(false)
   const [publishServiceSuccess, setPublishServiceSuccess] = useState(false)
@@ -1835,13 +1865,19 @@ function Step4PlanReview() {
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Choose a Plan</h2>
         <p className="text-sm text-gray-500 mb-4">Select a plan that fits your needs.</p>
 
+        {freeBuildUsed && (
+          <div className="mb-4 rounded-xl border-2 border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <span className="font-semibold">Your one free build is already used.</span>{' '}
+            This app will be built on a paid plan — no watermark, no trial.
+          </div>
+        )}
         {plansLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any) && p.slug !== 'play-store-listing').map((plan) => {
+            {(plans as Plan[])?.filter((p) => wizard.selectedPlatforms.includes(p.platform as any) && p.slug !== 'play-store-listing' && !(freeBuildUsed && p.price_inr === 0 && p.price_usd === 0)).map((plan) => {
               const isSelected = selectedPlan === plan.id
               const isMinimum = minimumPlan?.id === plan.id && selectedGatedFeatures.length > 0
               return (

@@ -89,6 +89,10 @@ export interface Order {
   plan_name?: string
   app_name?: string
   selected_platforms?: ('android' | 'desktop' | 'ios')[]
+  app_url?: string
+  plan_state?: 'free_unbuilt' | 'free_trial' | 'free_expired' | 'paid' | 'pending_payment'
+  trial_days_left?: number
+  rebuilds_left_this_month?: number
   build_count?: number
 }
 
