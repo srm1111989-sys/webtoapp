@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { appsApi } from '@/api/apps'
 import { ordersApi, plansApi } from '@/api/orders'
-import { formatDate, getUserCurrency } from '@/utils/format'
+import { getUserCurrency } from '@/utils/format'
 import type { Order, Plan } from '@/types'
 import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle, Pencil, Hammer, Clock, Zap } from 'lucide-react'
 
@@ -150,9 +150,8 @@ export default function MyApps() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl border-2 border-gray-100 divide-y divide-gray-100">
           {apps.map((app) => {
-            // Prefer the paid order for state; else the most recent one.
             const appOrders = orders.filter((o) => o.app_config_id === app.id)
             const appOrder =
               appOrders.find((o) => o.plan_state === 'paid') ||
@@ -163,114 +162,77 @@ export default function MyApps() {
             const showUpgrade =
               appOrder && (appOrder.plan_state === 'free_trial' || appOrder.plan_state === 'free_expired')
             return (
-            <div
-              key={app.id}
-              className="group relative bg-white rounded-2xl border-2 border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all overflow-hidden"
-            >
-              {/* Edit — always available, including free apps (edit, then pay to build) */}
-              <Link
-                to={`/apps/${app.id}/edit`}
-                onClick={(e) => e.stopPropagation()}
-                className="absolute top-3 right-3 z-10 p-1.5 rounded-lg bg-gray-100 hover:bg-primary-100 hover:text-primary-700 text-gray-500 transition-colors"
-                title="Edit app"
-              >
-                <Pencil className="w-4 h-4" />
-              </Link>
-              <Link to={detailUrl} className="block p-6 pb-4">
-                <div className="flex items-start gap-4 mb-4">
+              <div key={app.id} className="flex flex-col sm:flex-row sm:items-center gap-4 p-5 hover:bg-gray-50 transition">
+                {/* Icon + name + URL */}
+                <Link to={detailUrl} className="flex items-center gap-4 flex-1 min-w-0">
                   {app.icon_url ? (
-                    <img
-                      src={app.icon_url}
-                      alt={app.name}
-                      className="w-16 h-16 rounded-2xl object-cover border-2 border-gray-100 shrink-0"
-                    />
+                    <img src={app.icon_url} alt={app.name} className="w-12 h-12 rounded-xl object-cover border-2 border-gray-100 shrink-0" />
                   ) : (
-                    <div
-                      className="w-16 h-16 rounded-2xl border-2 border-gray-100 flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: app.primary_color || '#6366f1' }}
-                    >
-                      <AppWindow className="w-8 h-8 text-white" />
+                    <div className="w-12 h-12 rounded-xl border-2 border-gray-100 flex items-center justify-center shrink-0"
+                         style={{ backgroundColor: app.primary_color || '#6366f1' }}>
+                      <AppWindow className="w-6 h-6 text-white" />
                     </div>
                   )}
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 truncate group-hover:text-primary-600 transition">
-                      {app.name}
-                    </h3>
-                    <div className="flex items-center gap-2 mt-1.5 text-sm text-gray-500">
-                      <Globe className="w-4 h-4 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-gray-900 truncate">{app.name}</span>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${chip.cls}`}>
+                        {appOrder?.plan_state === 'free_trial' && <Clock className="w-3 h-3 mr-1" />}
+                        {chip.label}
+                      </span>
+                      {app.selected_platforms?.includes('android') && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 rounded-md text-[11px] font-medium"><Smartphone className="w-3 h-3" />Android</span>
+                      )}
+                      {app.selected_platforms?.includes('desktop') && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-md text-[11px] font-medium"><Monitor className="w-3 h-3" />Desktop</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-500 min-w-0">
+                      <Globe className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate" title={app.url}>{app.url}</span>
                     </div>
-                  </div>
-                </div>
-
-                {(app.selected_platforms && app.selected_platforms.length > 0) && (
-                  <div className="flex gap-2 mb-4">
-                    {app.selected_platforms.includes('android') && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium">
-                        <Smartphone className="w-3.5 h-3.5" />
-                        Android
-                      </span>
-                    )}
-                    {app.selected_platforms.includes('desktop') && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-medium">
-                        <Monitor className="w-3.5 h-3.5" />
-                        Desktop
-                      </span>
-                    )}
-                  </div>
-                )}
-
-                <div className="pt-4 border-t-2 border-gray-50 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border ${chip.cls}`}>
-                      {appOrder?.plan_state === 'free_trial' && <Clock className="w-3.5 h-3.5 mr-1" />}
-                      {chip.label}
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-xs text-gray-500 group-hover:text-primary-600 transition">
-                      <span className="hidden sm:inline">View details</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </div>
-                  {appOrder?.plan_state === 'paid' && (
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                      <Hammer className="w-3.5 h-3.5 shrink-0" />
-                      <span>
-                        <span className={appOrder.rebuilds_left_this_month === 0 ? 'text-red-600 font-semibold' : 'text-gray-700 font-medium'}>
-                          {appOrder.rebuilds_left_this_month ?? 3} rebuild{(appOrder.rebuilds_left_this_month ?? 3) !== 1 ? 's' : ''} left
+                    {appOrder?.plan_state === 'paid' && (
+                      <div className="flex items-center gap-1.5 mt-1 text-xs text-gray-500">
+                        <Hammer className="w-3 h-3 shrink-0" />
+                        <span className={appOrder.rebuilds_left_this_month === 0 ? 'text-red-600 font-semibold' : ''}>
+                          {appOrder.rebuilds_left_this_month ?? 3} rebuild{(appOrder.rebuilds_left_this_month ?? 3) !== 1 ? 's' : ''} left this month
                         </span>
-                        {' '}this month (resets on the 1st)
-                      </span>
-                    </div>
+                      </div>
+                    )}
+                  </div>
+                </Link>
+
+                {/* Actions */}
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                  <Link
+                    to={`/apps/${app.id}/edit`}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 border-gray-200 text-gray-600 hover:border-primary-300 hover:text-primary-700 text-sm font-medium transition"
+                  >
+                    <Pencil className="w-4 h-4" /> Edit
+                  </Link>
+                  {showUpgrade ? (
+                    <button
+                      onClick={() => upgrade.mutate(app.id)}
+                      disabled={upgrade.isPending}
+                      className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-sm transition ${
+                        appOrder?.plan_state === 'free_expired'
+                          ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow'
+                          : 'bg-primary-50 text-primary-700 border-2 border-primary-200 hover:bg-primary-100'
+                      }`}
+                    >
+                      {upgrade.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                      {appOrder?.plan_state === 'free_expired' ? 'Reactivate — pay & upgrade' : 'Pay & upgrade'}
+                    </button>
+                  ) : (
+                    <Link
+                      to={detailUrl}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium transition"
+                    >
+                      View <ArrowRight className="w-4 h-4" />
+                    </Link>
                   )}
                 </div>
-
-                <div className="mt-3 pt-3 border-t border-gray-50">
-                  <span className="text-xs text-gray-400">
-                    Created {formatDate(app.created_at)}
-                  </span>
-                </div>
-              </Link>
-
-              {/* Primary action for free apps: pay -> we build the premium app
-                  from this app's current config (edits included). */}
-              {showUpgrade && (
-                <div className="px-6 pb-5">
-                  <button
-                    onClick={() => upgrade.mutate(app.id)}
-                    disabled={upgrade.isPending}
-                    className={`w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                      appOrder?.plan_state === 'free_expired'
-                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-lg'
-                        : 'bg-primary-50 text-primary-700 border border-primary-200 hover:bg-primary-100'
-                    }`}
-                  >
-                    {upgrade.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-                    {appOrder?.plan_state === 'free_expired' ? 'Reactivate — pay & upgrade' : 'Pay & upgrade to Premium'}
-                  </button>
-                </div>
-              )}
-            </div>
+              </div>
             )
           })}
         </div>

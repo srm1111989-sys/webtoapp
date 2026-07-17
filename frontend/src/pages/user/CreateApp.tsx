@@ -1559,6 +1559,20 @@ function Step4Rebuild() {
 
   const platform = wizard.selectedPlatforms?.[0] || 'android'
 
+  // Free apps can't rebuild (one lifetime free build) — the way to apply
+  // edits is Pay & upgrade, which builds the premium app from this config.
+  const { data: myOrders } = useQuery({
+    queryKey: ['orders'],
+    queryFn: () => ordersApi.list(1, 100),
+    select: (res) => res.data,
+  })
+  const { data: allPlans } = useQuery({
+    queryKey: ['plans'],
+    queryFn: () => plansApi.list().then((r) => r.data),
+  })
+  const existingOrder = (myOrders?.orders ?? []).find((o) => o.id === wizard.existingOrderId)
+  const isFreeApp = existingOrder ? existingOrder.amount === 0 : false
+
   const handleRebuild = async () => {
     if (!wizard.existingOrderId) return
     setRebuilding(true)
@@ -1573,6 +1587,30 @@ function Step4Rebuild() {
     }
   }
 
+  const handleUpgrade = async () => {
+    if (!wizard.appId) return
+    setRebuilding(true)
+    try {
+      const currency = getUserCurrency()
+      const paidPlans = ((allPlans as Plan[]) || []).filter(
+        (p) => p.platform === platform && (currency === 'INR' ? p.price_inr : p.price_usd) > 0
+      ).sort((a, b) => (currency === 'INR' ? a.price_inr - b.price_inr : a.price_usd - b.price_usd))
+      if (!paidPlans[0]) throw new Error('no plan')
+      const res = await ordersApi.create({
+        app_config_id: wizard.appId,
+        plan_id: paidPlans[0].id,
+        currency,
+        payment_gateway: 'razorpay',
+      })
+      toast.success('Complete the payment — your app builds automatically with these changes')
+      navigate(`/orders/${res.data.id}`)
+    } catch (e: any) {
+      toast.error(e?.response?.data?.detail || 'Could not start the upgrade. Please try again.')
+    } finally {
+      setRebuilding(false)
+    }
+  }
+
   return (
     <div className="max-w-lg mx-auto py-12 text-center">
       <div className="inline-flex p-4 rounded-full bg-green-50 mb-6">
@@ -1580,15 +1618,19 @@ function Step4Rebuild() {
       </div>
       <h2 className="text-2xl font-bold text-gray-900 mb-2">App Updated!</h2>
       <p className="text-gray-600 mb-8">
-        Your app configuration has been saved. Rebuild to apply the changes.
+        {isFreeApp
+          ? 'Your changes are saved. Upgrade to a paid plan and we build your premium app with these changes — no watermark, no trial.'
+          : 'Your app configuration has been saved. Rebuild to apply the changes.'}
       </p>
       <button
-        onClick={handleRebuild}
+        onClick={isFreeApp ? handleUpgrade : handleRebuild}
         disabled={rebuilding}
-        className="inline-flex items-center gap-2 px-8 py-4 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition font-semibold text-lg shadow-lg disabled:opacity-60"
+        className={`inline-flex items-center gap-2 px-8 py-4 text-white rounded-xl transition font-semibold text-lg shadow-lg disabled:opacity-60 ${
+          isFreeApp ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700' : 'bg-primary-600 hover:bg-primary-700'
+        }`}
       >
         {rebuilding ? <Loader2 className="w-5 h-5 animate-spin" /> : <RefreshCw className="w-5 h-5" />}
-        {rebuilding ? 'Starting rebuild…' : 'Rebuild App'}
+        {rebuilding ? 'Working…' : isFreeApp ? 'Pay & upgrade to build' : 'Rebuild App'}
       </button>
       <p className="mt-4 text-sm text-gray-400">
         You can also rebuild later from your{' '}
@@ -1866,7 +1908,7 @@ function Step4PlanReview() {
         <p className="text-sm text-gray-500 mb-4">Select a plan that fits your needs.</p>
 
         {freeBuildUsed && (
-          <div className="mb-4 rounded-xl border-2 border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          <div className="mb-4 rounded-xl border-2 border-red-300 bg-red-50 p-4 text-sm text-red-700">
             <span className="font-semibold">Your one free build is already used.</span>{' '}
             This app will be built on a paid plan — no watermark, no trial.
           </div>
