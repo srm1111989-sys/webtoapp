@@ -44,6 +44,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
+import android.widget.Toast;
 import org.json.JSONObject;
 
 public class WebViewActivity extends AppCompatActivity {
@@ -66,11 +67,20 @@ public class WebViewActivity extends AppCompatActivity {
         loadConfig();
         setupWindow();
 
-        // Check trial expiry for free plan apps
+        // Check trial expiry for free plan apps. A paid upgrade recorded on the
+        // server unlocks the install live — see refreshEntitlement().
         int trialDays = features.optInt("trial_days", 0);
-        if (trialDays > 0 && isTrialExpired(trialDays)) {
-            showTrialExpiredScreen();
-            return;
+        if (trialDays > 0 && !isEntitledPaid()) {
+            if (isTrialExpired(trialDays)) {
+                // If the owner just paid, flip to the unlocked app the moment
+                // the server confirms; meanwhile show the neutral notice.
+                refreshEntitlement(this::recreate);
+                showTrialExpiredScreen();
+                return;
+            }
+            // Trial still running — refresh the cached entitlement quietly so a
+            // payment made on the website unlocks the next launch.
+            refreshEntitlement(null);
         }
 
         setupLayout();
@@ -156,7 +166,7 @@ public class WebViewActivity extends AppCompatActivity {
 
         // Watermark: floating pill over the content area (added to webContainer,
         // not root) so it never collides with the bottom navigation row.
-        if (features.optBoolean("show_watermark", false)) {
+        if (features.optBoolean("show_watermark", false) && !isEntitledPaid()) {
             setupWatermarkBanner(webContainer);
         }
 
@@ -292,9 +302,15 @@ public class WebViewActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         chipLp.leftMargin = dp(9);
 
-        final String purchaseUrl = features != null ? features.optString("purchase_url", "") : "";
-        chip.setOnClickListener(v -> openUrl(!purchaseUrl.isEmpty() ? purchaseUrl : "https://websitetoapp.app/pricing"));
-        pill.setOnClickListener(v -> openUrl("https://websitetoapp.app"));
+        // No purchase link anywhere in the binary (Variant B / Play Payments
+        // safety). The chip re-checks the paid entitlement instead, so a user
+        // who just upgraded on the website can dismiss the watermark instantly.
+        chip.setText("Refresh");
+        chip.setOnClickListener(v -> {
+            Toast.makeText(this, "Checking your plan…", Toast.LENGTH_SHORT).show();
+            refreshEntitlement(this::recreate);
+        });
+        pill.setOnClickListener(null);
 
         pill.addView(lead);
         pill.addView(brand);
@@ -459,6 +475,41 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
+    // ── Server entitlement (Variant B): a paid upgrade made on the website
+    // unlocks this install live — no rebuild, and the app itself never shows
+    // any payment UI, price, or external checkout link. ──
+    private boolean isEntitledPaid() {
+        return getSharedPreferences("webtoapp_entitlement", MODE_PRIVATE).getBoolean("paid", false);
+    }
+
+    /** Fetch paid/unpaid state from the server (4s budget, silent on failure).
+     *  onPaid runs on the UI thread only when the server confirms paid. */
+    private void refreshEntitlement(final Runnable onPaid) {
+        final String orderId = features.optString("order_id", "");
+        final String base = features.optString("entitlement_url", "https://websitetoapp.app/api/apps/entitlement");
+        if (orderId.isEmpty()) return;
+        new Thread(() -> {
+            try {
+                java.net.HttpURLConnection c = (java.net.HttpURLConnection)
+                        new java.net.URL(base + "?order_id=" + orderId).openConnection();
+                c.setConnectTimeout(4000);
+                c.setReadTimeout(4000);
+                java.io.BufferedReader r = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(c.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) sb.append(line);
+                r.close();
+                boolean paid = new JSONObject(sb.toString()).optBoolean("paid", false);
+                getSharedPreferences("webtoapp_entitlement", MODE_PRIVATE)
+                        .edit().putBoolean("paid", paid).apply();
+                if (paid && onPaid != null) runOnUiThread(onPaid);
+            } catch (Exception ignored) {
+                // Offline or server unreachable — keep the baked build behavior.
+            }
+        }).start();
+    }
+
     private boolean isTrialExpired(int trialDays) {
         SharedPreferences prefs = getSharedPreferences("webtoapp_trial", MODE_PRIVATE);
         long firstLaunch = prefs.getLong("first_launch", 0);
@@ -473,7 +524,6 @@ public class WebViewActivity extends AppCompatActivity {
 
     private void showTrialExpiredScreen() {
         String primaryColor = config.optString("primary_color", "#2563EB");
-        String purchaseUrl = features.optString("purchase_url", "https://websitetoapp.app/pricing");
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -509,7 +559,9 @@ public class WebViewActivity extends AppCompatActivity {
         // never drifts from the plan the app was built on.
         int trialLen = features.optInt("trial_days", 15);
         TextView message = new TextView(this);
-        message.setText("Your " + trialLen + "-day free trial has ended.\nUpgrade to Premium to continue using this app with all features and no watermark.");
+        message.setText("This app\'s " + trialLen + "-day free period has ended.\n"
+                + "The app owner can reactivate it anytime from their WebToApp dashboard.\n"
+                + "Already reactivated? Tap the button below.");
         message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         message.setTextColor(Color.parseColor("#6B7280"));
         message.setGravity(Gravity.CENTER);
@@ -524,7 +576,7 @@ public class WebViewActivity extends AppCompatActivity {
 
         // Purchase button
         Button buyButton = new Button(this);
-        buyButton.setText("Upgrade to Premium");
+        buyButton.setText("Check again");
         buyButton.setTextColor(Color.WHITE);
         buyButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         buyButton.setTypeface(null, Typeface.BOLD);
@@ -546,8 +598,8 @@ public class WebViewActivity extends AppCompatActivity {
         btnParams.setMargins(0, btnMargin, 0, 0);
         buyButton.setLayoutParams(btnParams);
         buyButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(purchaseUrl));
-            startActivity(intent);
+            Toast.makeText(this, "Checking…", Toast.LENGTH_SHORT).show();
+            refreshEntitlement(this::recreate);
         });
         layout.addView(buyButton);
 
