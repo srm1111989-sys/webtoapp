@@ -198,3 +198,13 @@ WebToApp includes a **live phone-frame preview** — no install needed:
 ## iOS support
 
 iOS is **not available yet**. Reasons: Apple requires each publisher to have their own Apple Developer account ($99/year), and Apple's App Store review (guideline 4.2) rejects simple website-wrapper apps, so an iOS product needs a richer native shell. An **iOS waitlist** is available in the app wizard — joining it helps us prioritize. Alternatives today: your website can be installed as a PWA on iPhone (Share → Add to Home Screen), and Android + Desktop apps are fully supported.
+
+## TV devices (Fire TV Stick, Android TV, Google TV)
+
+TV devices are **not officially supported**. Our Android apps are built for phones and tablets (touch input, portrait/landscape screens). Details:
+
+* **Fire TV Stick** runs Fire OS, which is Android-based, so the APK we produce can technically be **sideloaded** onto a Fire TV Stick (using Downloader or ADB). However, the app is not TV-optimized: there is no remote-control (D-pad) navigation support, and whether the website is usable depends entirely on how the site responds to a TV browser environment. We can't guarantee usability on TV.
+* **Amazon Appstore / Google Play TV listings**: publishing to TV app stores requires TV-specific development (leanback launcher support, D-pad focus handling) that we do not currently provide, so our apps cannot be submitted as TV apps.
+* **Alternative**: the Windows Desktop app (.exe) works well on a PC or mini-PC connected to a TV screen with a mouse/keyboard.
+
+If TV support matters for your project, email support@websitetoapp.app describing your use case — TV interest is tracked for the roadmap.

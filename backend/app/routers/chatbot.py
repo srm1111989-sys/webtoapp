@@ -320,9 +320,11 @@ async def chat_endpoint(
             "gemini-flash-latest",
             tools=[chatbot_tools],
             system_instruction=system_instruction,
-            # Cap output — support answers should be short; output tokens are the
-            # most expensive part of the bill. Keeps replies tight and cheap.
-            generation_config={"max_output_tokens": 600, "temperature": 0.4},
+            # Cap output — but generously: gemini-2.5 "thinking" tokens count
+            # against this budget, and a 600 cap let internal reasoning starve
+            # the visible answer (users got mid-thought fragments — Fire TV
+            # question incident, 2026-07-16). 2000 leaves room for both.
+            generation_config={"max_output_tokens": 2000, "temperature": 0.4},
         )
 
         chat = model.start_chat()
