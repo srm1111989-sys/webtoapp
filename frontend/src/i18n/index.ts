@@ -1,7 +1,7 @@
 // Simple i18n setup - can be expanded with react-i18next later
 const translations: Record<string, Record<string, string>> = {
   en: {
-    'app.name': 'WebToApp',
+    'app.name': 'WebsiteToApp',
     'app.tagline': 'Convert any website into a native Android app',
     'nav.features': 'Features',
     'nav.pricing': 'Pricing',
@@ -13,7 +13,7 @@ const translations: Record<string, Record<string, string>> = {
     'hero.cta': 'Get Started Free',
   },
   hi: {
-    'app.name': 'WebToApp',
+    'app.name': 'WebsiteToApp',
     'app.tagline': 'किसी भी वेबसाइट को Android ऐप में बदलें',
     'nav.features': 'विशेषताएं',
     'nav.pricing': 'मूल्य निर्धारण',

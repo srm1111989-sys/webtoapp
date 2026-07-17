@@ -48,7 +48,7 @@ const FAQS = [
   },
   {
     q: 'What APK/AAB file do I need to provide?',
-    a: 'You need a signed AAB (Android App Bundle) file. If you used WebToApp\'s paid plan, you already have one. We can also accept signed APKs.',
+    a: 'You need a signed AAB (Android App Bundle) file. If you used WebsiteToApp\'s paid plan, you already have one. We can also accept signed APKs.',
   },
   {
     q: 'Will my app definitely get approved?',
@@ -99,7 +99,7 @@ export default function PlayStorePage() {
         key: order.razorpay_key_id,
         amount: order.amount,
         currency: order.currency,
-        name: 'WebToApp',
+        name: 'WebsiteToApp',
         description: 'Publish App on Google Play Store',
         order_id: order.razorpay_order_id,
         handler: async (response: any) => {

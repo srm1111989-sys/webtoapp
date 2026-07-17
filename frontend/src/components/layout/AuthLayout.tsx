@@ -7,7 +7,7 @@ export default function AuthLayout() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 text-2xl font-bold text-primary-600">
           <Smartphone className="w-8 h-8" />
-          WebToApp
+          WebsiteToApp
         </Link>
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

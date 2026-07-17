@@ -10,7 +10,7 @@ interface SEOProps {
 
 export function useSEO({ title, description, canonical, ogType, noindex }: SEOProps) {
   useEffect(() => {
-    document.title = `${title} | WebToApp`
+    document.title = `${title} | WebsiteToApp`
 
     if (description) {
       setMeta('name', 'description', description)
@@ -18,8 +18,8 @@ export function useSEO({ title, description, canonical, ogType, noindex }: SEOPr
       setMeta('property', 'twitter:description', description)
     }
 
-    setMeta('property', 'og:title', `${title} | WebToApp`)
-    setMeta('property', 'twitter:title', `${title} | WebToApp`)
+    setMeta('property', 'og:title', `${title} | WebsiteToApp`)
+    setMeta('property', 'twitter:title', `${title} | WebsiteToApp`)
 
     if (ogType) {
       setMeta('property', 'og:type', ogType)
@@ -43,7 +43,7 @@ export function useSEO({ title, description, canonical, ogType, noindex }: SEOPr
     }
 
     return () => {
-      document.title = 'WebToApp - Convert Any Website Into Android & Windows Apps'
+      document.title = 'WebsiteToApp - Convert Any Website Into Android & Windows Apps'
       // Remove noindex when leaving the page
       if (noindex) {
         const robotsMeta = document.querySelector<HTMLMetaElement>('meta[name="robots"]')

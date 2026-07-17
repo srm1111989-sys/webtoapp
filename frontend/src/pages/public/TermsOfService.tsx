@@ -12,7 +12,7 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
           <p>
-            By accessing or using WebToApp (<a href="https://websitetoapp.app" className="text-blue-600 hover:underline">websitetoapp.app</a>),
+            By accessing or using WebsiteToApp (<a href="https://websitetoapp.app" className="text-blue-600 hover:underline">websitetoapp.app</a>),
             you agree to be bound by these Terms of Service. If you do not agree, please
             do not use our services.
           </p>
@@ -21,7 +21,7 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Description of Service</h2>
           <p>
-            WebToApp provides a platform to convert websites into Android mobile apps
+            WebsiteToApp provides a platform to convert websites into Android mobile apps
             and Windows desktop applications. Our service includes:
           </p>
           <ul className="list-disc pl-6 space-y-1">
@@ -78,9 +78,9 @@ export default function TermsOfService() {
           <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Intellectual Property</h2>
           <ul className="list-disc pl-6 space-y-1">
             <li>You retain ownership of your website content and branding</li>
-            <li>Apps generated with the Free plan include "Powered by WebToApp" branding</li>
-            <li>Paid plans (Basic and above) remove all WebToApp branding</li>
-            <li>The WebToApp platform, code, and brand remain our intellectual property</li>
+            <li>Apps generated with the Free plan include "Powered by WebsiteToApp" branding</li>
+            <li>Paid plans (Basic and above) remove all WebsiteToApp branding</li>
+            <li>The WebsiteToApp platform, code, and brand remain our intellectual property</li>
           </ul>
         </section>
 
@@ -96,7 +96,7 @@ export default function TermsOfService() {
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Limitation of Liability</h2>
           <p>
-            WebToApp is provided "as is" without warranties of any kind. We are not
+            WebsiteToApp is provided "as is" without warranties of any kind. We are not
             liable for any indirect, incidental, or consequential damages arising
             from your use of the service. Our total liability shall not exceed the
             amount paid by you in the preceding 12 months.

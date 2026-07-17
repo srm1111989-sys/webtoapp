@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Introduction</h2>
           <p>
-            WebToApp ("we", "our", or "us") operates the website{' '}
+            WebsiteToApp ("we", "our", or "us") operates the website{' '}
             <a href="https://websitetoapp.app" className="text-blue-600 hover:underline">websitetoapp.app</a>.
             This Privacy Policy explains how we collect, use, disclose, and safeguard your information
             when you visit our website and use our services.

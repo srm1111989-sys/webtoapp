@@ -63,7 +63,7 @@ export const competitors: Competitor[] = [
       { name: 'Total features', them: '~20', us: '40+', usBetter: true },
     ],
     verdict:
-      "GoNative is a capable platform built for developers and agencies, but at $99–$299/month it's simply not affordable for most businesses. WebToApp offers comparable Android conversion with a no-code wizard at a one-time $10 fee — that's the entire annual GoNative cost saved in the first month.",
+      "GoNative is a capable platform built for developers and agencies, but at $99–$299/month it's simply not affordable for most businesses. WebsiteToApp offers comparable Android conversion with a no-code wizard at a one-time $10 fee — that's the entire annual GoNative cost saved in the first month.",
     switchReasons: [
       'Pay $10 once vs $99–$299 every single month — no renewal ever',
       'Zero coding required — no JavaScript bridge needed',
@@ -73,7 +73,7 @@ export const competitors: Competitor[] = [
     ],
     seoTitle: 'GoNative Alternative — Same Features, 99% Cheaper',
     seoDescription:
-      'GoNative charges $99–$299/month. WebToApp costs $10 one-time with 40+ features and no coding. See the full comparison and switch today.',
+      'GoNative charges $99–$299/month. WebsiteToApp costs $10 one-time with 40+ features and no coding. See the full comparison and switch today.',
   },
   {
     slug: 'webintoapp',
@@ -95,7 +95,7 @@ export const competitors: Competitor[] = [
       'Annual subscription — renew or lose access to your app',
       'Push notifications are a paid add-on',
       'Watermark on lower plans',
-      'Limited customization vs WebToApp',
+      'Limited customization vs WebsiteToApp',
       'No Windows desktop app',
       'Only ~15 features total',
     ],
@@ -112,7 +112,7 @@ export const competitors: Competitor[] = [
       { name: 'Total features', them: '~15', us: '40+', usBetter: true },
     ],
     verdict:
-      "WebIntoApp is a decent starter tool but you're locked into yearly renewals and must pay extra for push notifications — which are included free in WebToApp. For a one-time $10, WebToApp gives you everything WebIntoApp charges extra for, plus 25+ additional features.",
+      "WebIntoApp is a decent starter tool but you're locked into yearly renewals and must pay extra for push notifications — which are included free in WebsiteToApp. For a one-time $10, WebsiteToApp gives you everything WebIntoApp charges extra for, plus 25+ additional features.",
     switchReasons: [
       '$10 one-time vs $60/year — pay less total and never renew',
       'Push notifications, biometric auth, and AdMob all included at no extra cost',
@@ -122,7 +122,7 @@ export const competitors: Competitor[] = [
     ],
     seoTitle: 'WebIntoApp Alternative — More Features, One Payment',
     seoDescription:
-      'WebIntoApp costs $60/year with key features locked behind add-ons. WebToApp is $10 one-time with 40+ features. Compare and see the difference.',
+      'WebIntoApp costs $60/year with key features locked behind add-ons. WebsiteToApp is $10 one-time with 40+ features. Compare and see the difference.',
   },
   {
     slug: 'median',
@@ -160,7 +160,7 @@ export const competitors: Competitor[] = [
       { name: 'Total features (no-code)', them: '~10', us: '40+', usBetter: true },
     ],
     verdict:
-      "Median is a developer tool that can do impressive things with its JS Bridge — but it charges like an enterprise product and requires coding knowledge for most features. WebToApp delivers the same Android conversion with a zero-code wizard at $10 one-time.",
+      "Median is a developer tool that can do impressive things with its JS Bridge — but it charges like an enterprise product and requires coding knowledge for most features. WebsiteToApp delivers the same Android conversion with a zero-code wizard at $10 one-time.",
     switchReasons: [
       '$10 once vs up to $3,588/year — no contest for small businesses',
       'Zero coding required — all 40+ features work without writing a single line of code',
@@ -170,7 +170,7 @@ export const competitors: Competitor[] = [
     ],
     seoTitle: 'Median.co Alternative — No Coding, No Monthly Fee',
     seoDescription:
-      'Median.co costs $99–$299/month and requires JavaScript coding for features. WebToApp is $10 one-time with no coding needed. Full comparison inside.',
+      'Median.co costs $99–$299/month and requires JavaScript coding for features. WebsiteToApp is $10 one-time with no coding needed. Full comparison inside.',
   },
   {
     slug: 'appsgeyser',
@@ -208,7 +208,7 @@ export const competitors: Competitor[] = [
       { name: 'Total features', them: '~8', us: '40+', usBetter: true },
     ],
     verdict:
-      "AppsGeyser's free plan is misleading — the output is branded with their logo and can't be published to Play Store without a paid subscription. WebToApp's $10 one-time fee gives you a clean, fully-signed APK/AAB with 40+ features — no branding, no monthly bills.",
+      "AppsGeyser's free plan is misleading — the output is branded with their logo and can't be published to Play Store without a paid subscription. WebsiteToApp's $10 one-time fee gives you a clean, fully-signed APK/AAB with 40+ features — no branding, no monthly bills.",
     switchReasons: [
       'No AppsGeyser watermark or branding — ever, even on the base plan',
       'Signed AAB included from day one — ready for Google Play immediately',
@@ -218,7 +218,7 @@ export const competitors: Competitor[] = [
     ],
     seoTitle: 'AppsGeyser Alternative — No Branding, Signed Apps, One Price',
     seoDescription:
-      "AppsGeyser puts their branding in your app on the free plan. WebToApp is $10 one-time with no watermark, signed AAB, and 40+ features included.",
+      "AppsGeyser puts their branding in your app on the free plan. WebsiteToApp is $10 one-time with no watermark, signed AAB, and 40+ features included.",
   },
   {
     slug: 'appmysite',
@@ -258,7 +258,7 @@ export const competitors: Competitor[] = [
       { name: 'Total features', them: '~15', us: '40+', usBetter: true },
     ],
     verdict:
-      "AppMySite works well for WordPress and WooCommerce sites, but at $19–$49/month you're paying $228–$588 per year — every year. It locks push notifications to premium plans and doesn't support AdMob, biometric auth, or any non-WordPress site. WebToApp works with any website for a single $10 payment with all features included.",
+      "AppMySite works well for WordPress and WooCommerce sites, but at $19–$49/month you're paying $228–$588 per year — every year. It locks push notifications to premium plans and doesn't support AdMob, biometric auth, or any non-WordPress site. WebsiteToApp works with any website for a single $10 payment with all features included.",
     switchReasons: [
       '$10 once vs $228–$588/year — 20–58× cheaper over one year alone',
       'Works with any website, not just WordPress — React, Shopify, Angular, custom sites',
@@ -268,6 +268,6 @@ export const competitors: Competitor[] = [
     ],
     seoTitle: 'AppMySite Alternative — Any Website, One Price, More Features',
     seoDescription:
-      'AppMySite charges $19–$49/month for WordPress apps. WebToApp is $10 one-time and works with any website. Full feature comparison inside.',
+      'AppMySite charges $19–$49/month for WordPress apps. WebsiteToApp is $10 one-time and works with any website. Full feature comparison inside.',
   },
 ]

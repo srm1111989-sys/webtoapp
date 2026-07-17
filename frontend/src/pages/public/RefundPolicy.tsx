@@ -11,7 +11,7 @@ export default function RefundPolicy() {
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Overview</h2>
           <p>
-            At WebToApp, we want you to be completely satisfied with your purchase.
+            At WebsiteToApp, we want you to be completely satisfied with your purchase.
             This policy outlines the terms for refunds and cancellations for our
             app building services.
           </p>

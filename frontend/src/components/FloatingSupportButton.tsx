@@ -16,7 +16,7 @@ export default function FloatingSupportButton() {
     {
       id: 'welcome',
       role: 'bot',
-      text: 'Hello! I am **WebToApp Expert Assistant**. I can answer questions about converting websites into Android apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
+      text: 'Hello! I am **WebsiteToApp Expert Assistant**. I can answer questions about converting websites into Android apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
     }
   ])
   const [input, setInput] = useState('')
@@ -188,7 +188,7 @@ export default function FloatingSupportButton() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
               <h3 className="font-semibold flex items-center gap-2 text-gray-900">
-                <MessageCircle className="w-5 h-5 text-primary-600" /> WebToApp Expert Assistant
+                <MessageCircle className="w-5 h-5 text-primary-600" /> WebsiteToApp Expert Assistant
                 <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-600"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>online</span>
               </h3>
               <div className="flex items-center gap-2">

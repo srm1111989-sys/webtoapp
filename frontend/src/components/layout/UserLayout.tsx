@@ -21,7 +21,7 @@ export default function UserLayout() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 flex justify-between items-center h-14 sm:h-16">
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 text-base sm:text-lg lg:text-xl font-bold text-primary-600 hover:text-primary-700 transition">
             <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-            <span className="hidden xs:inline">WebToApp</span>
+            <span>WebsiteToApp</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
             <div className="hidden sm:flex items-center gap-2 text-xs sm:text-sm text-gray-600 max-w-[150px] lg:max-w-none truncate">
@@ -70,33 +70,24 @@ export default function UserLayout() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-8 sm:mt-12 mb-20 md:mb-8 border-t bg-gray-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
-            <div className="text-center md:text-left">
-              <p className="text-xs sm:text-sm text-gray-600">
-                © {new Date().getFullYear()} WebToApp. All rights reserved.
-              </p>
+      <footer className="mt-8 sm:mt-12 mb-20 md:mb-0 border-t bg-white">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-primary-600 font-bold">
+              <Smartphone className="w-5 h-5" />
+              WebsiteToApp
             </div>
-            <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
-              <Link
-                to="/"
-                className="text-xs sm:text-sm text-gray-600 hover:text-primary-600 transition font-medium"
-              >
-                Home
-              </Link>
-              <a
-                href="mailto:support@websitetoapp.app"
-                className="text-xs sm:text-sm text-gray-600 hover:text-primary-600 transition inline-flex items-center gap-1 sm:gap-2"
-              >
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span className="hidden sm:inline">support@websitetoapp.app</span>
-                <span className="sm:hidden">Support</span>
-              </a>
-            </div>
+            <nav className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center text-xs sm:text-sm">
+              <Link to="/dashboard" className="text-gray-600 hover:text-primary-600 transition font-medium">Dashboard</Link>
+              <Link to="/apps" className="text-gray-600 hover:text-primary-600 transition font-medium">My Apps</Link>
+              <Link to="/orders" className="text-gray-600 hover:text-primary-600 transition font-medium">Orders</Link>
+              <Link to="/pricing" className="text-gray-600 hover:text-primary-600 transition font-medium">Pricing</Link>
+              <a href="mailto:support@websitetoapp.app" className="text-gray-600 hover:text-primary-600 transition font-medium">support@websitetoapp.app</a>
+            </nav>
           </div>
+          <p className="mt-4 text-center md:text-left text-xs text-gray-400">
+            © {new Date().getFullYear()} WebsiteToApp · websitetoapp.app · Convert any website into a mobile or desktop app.
+          </p>
         </div>
       </footer>
 

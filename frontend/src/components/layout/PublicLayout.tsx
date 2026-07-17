@@ -15,7 +15,7 @@ export default function PublicLayout() {
             {/* Logo - Left aligned */}
             <Link to={accessToken ? '/dashboard' : '/'} className="flex items-center gap-2 text-xl font-bold text-primary-600 hover:text-primary-700 transition">
               <Smartphone className="w-6 h-6" />
-              <span>WebToApp</span>
+              <span>WebsiteToApp</span>
             </Link>
 
             {/* Navigation - Center */}
@@ -101,7 +101,7 @@ export default function PublicLayout() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm">
-            &copy; {new Date().getFullYear()} WebToApp. All rights reserved.
+            &copy; {new Date().getFullYear()} WebsiteToApp. All rights reserved.
           </div>
         </div>
       </footer>

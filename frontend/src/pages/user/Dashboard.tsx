@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/authStore'
 import { ordersApi, paymentsApi } from '@/api/orders'
 import { appsApi } from '@/api/apps'
 import { formatCurrency, formatDate } from '@/utils/format'
+import AppList from '@/components/AppList'
 import {
   AppWindow,
   ShoppingCart,
@@ -70,9 +71,9 @@ export default function Dashboard() {
   const isError = ordersError || appsError
 
   const stats = [
-    { label: 'Total Apps', value: totalApps, icon: AppWindow, color: 'text-primary-600 bg-primary-50' },
-    { label: 'Active Orders', value: activeOrders, icon: ShoppingCart, color: 'text-blue-600 bg-blue-50' },
-    { label: 'Completed Builds', value: completedBuilds, icon: CheckCircle2, color: 'text-emerald-600 bg-emerald-50' },
+    { label: 'Total Apps', value: totalApps, icon: AppWindow, color: 'text-primary-600 bg-primary-50', to: '/apps' },
+    { label: 'Active Orders', value: activeOrders, icon: ShoppingCart, color: 'text-blue-600 bg-blue-50', to: '/orders' },
+    { label: 'Completed Builds', value: completedBuilds, icon: CheckCircle2, color: 'text-emerald-600 bg-emerald-50', to: '/orders' },
   ]
 
   return (
@@ -138,22 +139,33 @@ export default function Dashboard() {
         <>
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {stats.map(({ label, value, icon: Icon, color }) => (
-              <div
+            {stats.map(({ label, value, icon: Icon, color, to }) => (
+              <Link
                 key={label}
-                className="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 transition-colors"
+                to={to}
+                className="group bg-white rounded-lg border border-gray-200 p-4 hover:border-primary-300 hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-md ${color}`}>
                     <Icon className="w-4 h-4" />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs text-gray-500">{label}</p>
-                    <p className="text-xl font-semibold text-gray-900 leading-tight">{value}</p>
+                    <p className="text-xl font-semibold text-gray-900 leading-tight tabular-nums">{value}</p>
                   </div>
+                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all" />
                 </div>
-              </div>
+              </Link>
             ))}
+          </div>
+
+          {/* All apps */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-gray-900">Your apps</h2>
+              <Link to="/apps" className="text-xs font-semibold text-primary-600 hover:underline">Open My Apps →</Link>
+            </div>
+            <AppList showHeader={false} />
           </div>
 
           {/* Recent Orders */}

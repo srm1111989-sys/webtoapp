@@ -67,8 +67,8 @@ export default function ComparisonPage() {
       '@type': 'Article',
       headline: competitor.seoTitle,
       description: competitor.seoDescription,
-      author: { '@type': 'Organization', name: 'WebToApp' },
-      publisher: { '@type': 'Organization', name: 'WebToApp', url: 'https://websitetoapp.app' },
+      author: { '@type': 'Organization', name: 'WebsiteToApp' },
+      publisher: { '@type': 'Organization', name: 'WebsiteToApp', url: 'https://websitetoapp.app' },
     }
     let el = document.getElementById('comparison-jsonld')
     if (!el) {
@@ -98,14 +98,14 @@ export default function ComparisonPage() {
             The Best {competitor.name} Alternative in 2026
           </h1>
           <p className="text-xl text-primary-100 mb-8 max-w-3xl mx-auto">
-            {competitor.name} costs {competitor.pricing.label}. WebToApp gives you the same — and more — for a <strong className="text-white">one-time $25 payment</strong>. No subscriptions. No renewals.
+            {competitor.name} costs {competitor.pricing.label}. WebsiteToApp gives you the same — and more — for a <strong className="text-white">one-time $25 payment</strong>. No subscriptions. No renewals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
               className="bg-white text-primary-700 px-8 py-4 rounded-lg font-semibold inline-flex items-center justify-center gap-2 hover:bg-gray-100 text-lg"
             >
-              Switch to WebToApp — $25 One-Time <ArrowRight className="w-5 h-5" />
+              Switch to WebsiteToApp — $25 One-Time <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               to="/pricing"
@@ -139,14 +139,14 @@ export default function ComparisonPage() {
               </ul>
             </div>
 
-            {/* WebToApp card */}
+            {/* WebsiteToApp card */}
             <div className="border-2 border-green-300 ring-2 ring-green-400 rounded-2xl p-6 bg-green-50 relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs px-4 py-1 rounded-full font-semibold">
                 Recommended Alternative
               </div>
               <div className="flex items-center gap-3 mb-4">
                 <Zap className="w-6 h-6 text-green-600 shrink-0" />
-                <h2 className="text-xl font-bold text-gray-900">WebToApp</h2>
+                <h2 className="text-xl font-bold text-gray-900">WebsiteToApp</h2>
               </div>
               <p className="text-3xl font-extrabold text-green-700 mb-1">$25 one-time</p>
               <p className="text-sm text-gray-600 mb-4">
@@ -169,7 +169,7 @@ export default function ComparisonPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
-            WebToApp vs {competitor.name}: Feature Comparison
+            WebsiteToApp vs {competitor.name}: Feature Comparison
           </h2>
           <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
             Side-by-side breakdown of every important feature
@@ -186,7 +186,7 @@ export default function ComparisonPage() {
                     {competitor.name}
                   </th>
                   <th className="px-5 py-4 text-center text-sm font-bold text-primary-700 border-b border-primary-200 bg-primary-50">
-                    WebToApp
+                    WebsiteToApp
                   </th>
                 </tr>
               </thead>
@@ -283,7 +283,7 @@ export default function ComparisonPage() {
               <div className="bg-white rounded-2xl border-2 border-green-200 p-6">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-3 h-3 bg-green-500 rounded-full" />
-                  <h3 className="text-lg font-bold text-gray-900">Use WebToApp if…</h3>
+                  <h3 className="text-lg font-bold text-gray-900">Use WebsiteToApp if…</h3>
                 </div>
                 <ul className="space-y-3">
                   {WHO_SHOULD_USE[competitor.slug].us.map((item) => (
@@ -303,7 +303,7 @@ export default function ComparisonPage() {
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            5 Reasons to Switch from {competitor.name} to WebToApp
+            5 Reasons to Switch from {competitor.name} to WebsiteToApp
           </h2>
           <div className="grid md:grid-cols-1 gap-4 max-w-3xl mx-auto">
             {competitor.switchReasons.map((reason, i) => (
@@ -331,7 +331,7 @@ export default function ComparisonPage() {
                 to={`/alternatives/${c.slug}`}
                 className="bg-white border rounded-xl p-5 hover:shadow-md hover:border-primary-300 transition-all"
               >
-                <p className="font-semibold text-gray-900 mb-1">WebToApp vs {c.name}</p>
+                <p className="font-semibold text-gray-900 mb-1">WebsiteToApp vs {c.name}</p>
                 <p className="text-sm text-gray-500">{c.pricing.label}</p>
                 <p className="text-xs text-primary-600 font-medium mt-2">Read comparison →</p>
               </Link>

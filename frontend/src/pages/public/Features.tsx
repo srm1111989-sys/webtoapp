@@ -409,7 +409,7 @@ export default function Features() {
       <section className="py-16 sm:py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">WebToApp vs Competitors</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">WebsiteToApp vs Competitors</h2>
             <p className="text-gray-600 text-lg">See how we compare to other solutions</p>
           </div>
 
@@ -419,7 +419,7 @@ export default function Features() {
                 <thead className="bg-gray-50 border-b">
                   <tr>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Feature</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary-600">WebToApp</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-primary-600">WebsiteToApp</th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">Competitor A</th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">Competitor B</th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">Competitor C</th>
@@ -501,7 +501,7 @@ export default function Features() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
               <div className="bg-white rounded-xl p-4 border border-green-200">
                 <div className="text-primary-600 font-bold text-3xl">$25</div>
-                <div className="text-gray-600 text-sm">WebToApp (One-Time)</div>
+                <div className="text-gray-600 text-sm">WebsiteToApp (One-Time)</div>
               </div>
               <div className="bg-white rounded-xl p-4 border border-gray-200 opacity-75">
                 <div className="text-gray-600 font-bold text-3xl">$495</div>

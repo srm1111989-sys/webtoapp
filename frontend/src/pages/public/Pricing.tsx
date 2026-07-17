@@ -182,7 +182,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>WebToApp watermark shown</span>
+                  <span>WebsiteToApp watermark shown</span>
                 </li>
                 <li className="flex items-center gap-2 text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
@@ -391,7 +391,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-sm text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span>WebToApp watermark</span>
+                  <span>WebsiteToApp watermark</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
@@ -505,7 +505,7 @@ export default function Pricing() {
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">How We Compare</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Most web-to-app services charge recurring fees or expensive one-time prices.
-            See how much you save with WebToApp.
+            See how much you save with WebsiteToApp.
           </p>
         </div>
 
@@ -518,7 +518,7 @@ export default function Pricing() {
                 <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">GoNative</th>
                 <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">WebIntoApp</th>
                 <th className="py-4 px-4 sm:px-6 text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">AppMySite</th>
-                <th className="py-4 px-4 sm:px-6 text-sm font-semibold border-b-2 border-primary-200 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp ✓</th>
+                <th className="py-4 px-4 sm:px-6 text-sm font-semibold border-b-2 border-primary-200 text-center bg-primary-50 rounded-t-xl text-primary-700">WebsiteToApp ✓</th>
               </tr>
             </thead>
             <tbody>

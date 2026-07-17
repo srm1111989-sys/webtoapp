@@ -1314,7 +1314,7 @@ function Step3Advanced() {
         <div className="space-y-4">
           <p className="text-xs text-gray-500">
             If you already have this app live on Google Play, upload your existing signing keystore here. 
-            This ensures your new build can be uploaded as an update. If left empty, WebToApp will automatically generate a secure signing key for you.
+            This ensures your new build can be uploaded as an update. If left empty, WebsiteToApp will automatically generate a secure signing key for you.
           </p>
           
           <KeystoreDropzone
@@ -2282,7 +2282,7 @@ function Step4PlanSelect() {
                       const order = await createRazorpayOrder({ amount: 1500, currency: 'USD', receipt: `publish_${Date.now()}`, notes: { name: publishForm.name, email: publishForm.email, appName: publishForm.appName, websiteUrl: publishForm.websiteUrl, notes: publishForm.notes, service: 'play-store-publish' } })
                       const options = {
                         key: order.razorpay_key_id, amount: order.amount, currency: order.currency,
-                        name: 'WebToApp', description: 'Publish App on Google Play Store',
+                        name: 'WebsiteToApp', description: 'Publish App on Google Play Store',
                         order_id: order.razorpay_order_id,
                         handler: async (response: any) => {
                           try {

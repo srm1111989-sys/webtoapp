@@ -276,7 +276,7 @@ export default function BlogPost() {
                   <ExternalLink className="w-3.5 h-3.5" /> IndexFlow — Check if your pages are indexed
                 </a>
                 <Link to="/pricing" className="flex items-center gap-1.5 text-gray-500 hover:text-primary-600 transition-colors">
-                  <ArrowRight className="w-3.5 h-3.5" /> View WebToApp Pricing
+                  <ArrowRight className="w-3.5 h-3.5" /> View WebsiteToApp Pricing
                 </Link>
               </div>
             </div>

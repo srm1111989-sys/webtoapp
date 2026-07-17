@@ -87,14 +87,14 @@ const testimonials = [
   {
     name: 'Priya Mehta',
     role: 'Freelance Developer',
-    text: 'I use WebToApp for all my clients. The apps look truly native and perform great. Business plan is perfect for agencies.',
+    text: 'I use WebsiteToApp for all my clients. The apps look truly native and perform great. Business plan is perfect for agencies.',
     rating: 5,
     avatar: 'https://ui-avatars.com/api/?name=Priya+Mehta&background=8b5cf6&color=fff&size=80',
   },
   {
     name: 'Alex Kim',
     role: 'Startup Founder',
-    text: 'WebToApp helped me validate the idea quickly. One-time payment made it affordable compared to monthly subscriptions.',
+    text: 'WebsiteToApp helped me validate the idea quickly. One-time payment made it affordable compared to monthly subscriptions.',
     rating: 5,
     avatar: 'https://ui-avatars.com/api/?name=Alex+Kim&background=06b6d4&color=fff&size=80',
   },
@@ -148,8 +148,8 @@ const faqs = [
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you support iOS apps?', a: 'Yes, in beta. We generate an unsigned .ipa plus the complete Xcode source project. You sign and publish it with your own Apple Developer account ($99/yr) — we don\'t provide App Store publishing support. Same price as Android.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
-  { q: 'Is WebToApp better than GoNative or WebIntoApp?', a: 'WebToApp offers 40+ features at a one-time price from $25 - vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
-  { q: 'What websites can I convert to an app?', a: 'Any website works - Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebToApp.' },
+  { q: 'Is WebsiteToApp better than GoNative or WebIntoApp?', a: 'WebsiteToApp offers 40+ features at a one-time price from $25 - vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
+  { q: 'What websites can I convert to an app?', a: 'Any website works - Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebsiteToApp.' },
   { q: 'Will my app be approved by Google Play?', a: 'Yes. We generate a properly signed AAB that meets Google Play guidelines. We also include a compliance checklist to help you submit without rejections.' },
 ]
 
@@ -168,7 +168,7 @@ export default function Landing() {
           '@type': 'WebSite',
           '@id': 'https://websitetoapp.app/#website',
           url: 'https://websitetoapp.app/',
-          name: 'WebToApp',
+          name: 'WebsiteToApp',
           description: 'Convert any website to a native Android or Windows app in minutes.',
           potentialAction: {
             '@type': 'SearchAction',
@@ -186,7 +186,7 @@ export default function Landing() {
         },
         {
           '@type': 'SoftwareApplication',
-          name: 'WebToApp',
+          name: 'WebsiteToApp',
           applicationCategory: 'DeveloperApplication',
           operatingSystem: 'Android, Windows',
           offers: { '@type': 'Offer', price: '10', priceCurrency: 'USD' },
@@ -234,7 +234,7 @@ export default function Landing() {
         key: order.razorpay_key_id,
         amount: order.amount,
         currency: order.currency,
-        name: 'WebToApp',
+        name: 'WebsiteToApp',
         description: 'Publish App on Google Play Store',
         order_id: order.razorpay_order_id,
         handler: async (response: any) => {
@@ -471,7 +471,7 @@ export default function Landing() {
               Save up to 95%
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-              Compare WebToApp with GoNative, WebIntoApp, and Median
+              Compare WebsiteToApp with GoNative, WebIntoApp, and Median
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
               If you are comparing one-time purchase vs recurring platforms, this matrix shows the pricing gap and which deliverables are included without extra subscriptions.
@@ -487,7 +487,7 @@ export default function Landing() {
                   <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">WebIntoApp</th>
                   <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">GoNative</th>
                   <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-semibold text-gray-400 border-b-2 border-gray-100 text-center">Median</th>
-                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-bold border-b-2 border-primary-300 text-center bg-primary-50 rounded-t-xl text-primary-700">WebToApp</th>
+                  <th className="py-3 px-3 sm:px-5 text-xs sm:text-sm font-bold border-b-2 border-primary-300 text-center bg-primary-50 rounded-t-xl text-primary-700">WebsiteToApp</th>
                 </tr>
               </thead>
               <tbody>
@@ -831,11 +831,11 @@ export default function Landing() {
         </div>
       )}
 
-      {/* Why Choose WebToApp */}
+      {/* Why Choose WebsiteToApp */}
       <section className="pt-8 sm:pt-12 pb-16 sm:pb-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Why Choose WebToApp?</h2>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Why Choose WebsiteToApp?</h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               Get <span className="text-primary-600 font-semibold">40+ premium features</span> in one affordable plan.
               No subscriptions. No hidden fees. Just a simple one-time payment.
