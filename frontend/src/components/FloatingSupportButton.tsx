@@ -103,7 +103,7 @@ export default function FloatingSupportButton() {
         setMessages((prev) => [...prev, {
           id: Math.random().toString(),
           role: 'bot' as const,
-          text: 'Please sign in to chat with the AI assistant — use the Login button at the top right, then ask me again.'
+          text: 'Please sign in to use support chat — use the Login button at the top right, then ask me again.'
         }])
         return
       }
@@ -120,7 +120,7 @@ export default function FloatingSupportButton() {
       const botError: Message = {
         id: Math.random().toString(),
         role: 'bot',
-        text: `❌ **Error:** ${err.message || 'Failed to query the AI assistant.'}`
+        text: `❌ **Error:** ${err.message || 'Support chat is unavailable right now.'}`
       }
       setMessages((prev) => [...prev, botError])
     } finally {
