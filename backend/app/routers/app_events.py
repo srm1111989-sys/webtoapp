@@ -87,3 +87,46 @@ async def analytics_summary(
             for r in rows
         ],
     }
+
+@router.get("/entitlement")
+async def get_entitlement(order_id: str, db: AsyncSession = Depends(get_db)):
+    """Public entitlement check for generated apps (called at app launch).
+
+    Lets a trial/watermarked build unlock itself WITHOUT a rebuild once the
+    app has been upgraded to a paid plan. Keyed by the unguessable order UUID;
+    returns a single boolean — no PII, no payment info (Variant B: the app
+    itself never shows payment UI; checkout happens on the website only).
+    """
+    import uuid as _uuid
+    from app.models.order import Order
+    from app.models.app_config import AppConfig
+
+    try:
+        oid = _uuid.UUID(order_id)
+    except (ValueError, AttributeError):
+        return {"paid": False}
+
+    order = (await db.execute(select(Order).where(Order.id == oid))).scalar_one_or_none()
+    if not order:
+        return {"paid": False}
+
+    # Paid if any paid-money order exists for the same app config, or for the
+    # same user + same website URL (re-purchase of the same site).
+    paid_same_config = (await db.execute(
+        select(func.count(Order.id)).where(
+            Order.app_config_id == order.app_config_id, Order.amount > 0,
+            Order.status.in_(("paid", "completed")))
+    )).scalar() or 0
+    paid_same_site = 0
+    ac = (await db.execute(select(AppConfig).where(AppConfig.id == order.app_config_id))).scalar_one_or_none()
+    if not paid_same_config and ac and ac.url:
+        paid_same_site = (await db.execute(
+            select(func.count(Order.id))
+            .join(AppConfig, AppConfig.id == Order.app_config_id)
+            .where(Order.user_id == order.user_id, Order.amount > 0,
+                   Order.status.in_(("paid", "completed")),
+                   AppConfig.url == ac.url)
+        )).scalar() or 0
+
+    return {"paid": bool(paid_same_config or paid_same_site)}
+

@@ -45,6 +45,20 @@ async def create_order(
 
     amount = plan.price_inr if data.currency == "INR" else plan.price_usd
 
+    # One free build per user, lifetime (successful builds only — failures
+    # never consume it). Once used, every new app/order must be paid.
+    if amount == 0:
+        used = await db.execute(
+            select(func.count(Build.id))
+            .join(Order, Build.order_id == Order.id)
+            .where(Order.user_id == user.id, Order.amount == 0, Build.status == "success")
+        )
+        if (used.scalar() or 0) >= 1:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Your free build is already used. Choose a paid plan to build this app.",
+            )
+
     # Apply promo code if provided
     promo_applied = None
     if data.promo_code and amount > 0:
@@ -157,17 +171,33 @@ async def list_orders(
     )
     orders = result.scalars().all()
 
-    # Fetch build counts per order in one query
+    # Per-order build stats in one query: non-failed count, first success,
+    # and successful builds this calendar month (drives plan_state + rebuild meter).
+    from datetime import datetime, timezone, timedelta
     order_ids = [o.id for o in orders]
     build_counts: dict = {}
+    first_success: dict = {}
+    month_success: dict = {}
     if order_ids:
+        now = datetime.now(timezone.utc)
+        month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         bc_result = await db.execute(
-            select(Build.order_id, func.count(Build.id))
-            .where(Build.order_id.in_(order_ids), Build.status != "failed")
+            select(
+                Build.order_id,
+                func.count(Build.id).filter(Build.status != "failed"),
+                func.min(Build.created_at).filter(Build.status == "success"),
+                func.count(Build.id).filter(Build.status == "success", Build.created_at >= month_start),
+            )
+            .where(Build.order_id.in_(order_ids))
             .group_by(Build.order_id)
         )
-        build_counts = {row[0]: row[1] for row in bc_result.all()}
+        for oid, n, first, month_n in bc_result.all():
+            build_counts[oid] = n
+            first_success[oid] = first
+            month_success[oid] = month_n
 
+    TRIAL_DAYS = 15
+    REBUILDS_PER_MONTH = 3
     order_responses = []
     for order in orders:
         resp = OrderResponse.model_validate(order)
@@ -176,7 +206,32 @@ async def list_orders(
         if order.app_config:
             resp.app_name = order.app_config.name
             resp.selected_platforms = order.app_config.selected_platforms
+            resp.app_url = order.app_config.url
         resp.build_count = build_counts.get(order.id, 0)
+
+        first = first_success.get(order.id)
+        if order.status == "pending":
+            resp.plan_state = "pending_payment"
+        elif order.amount > 0:
+            resp.plan_state = "paid"
+            used = month_success.get(order.id, 0)
+            # The order's first-ever successful build doesn't count as a
+            # "modification" — only rebuilds after it do.
+            if first is not None and first >= month_start:
+                used = max(0, used - 1)
+            resp.rebuilds_left_this_month = max(0, REBUILDS_PER_MONTH - used)
+        else:
+            if first is None:
+                resp.plan_state = "free_unbuilt"
+            else:
+                elapsed = (datetime.now(timezone.utc) - first).days
+                left = TRIAL_DAYS - elapsed
+                if left > 0:
+                    resp.plan_state = "free_trial"
+                    resp.trial_days_left = left
+                else:
+                    resp.plan_state = "free_expired"
+                    resp.trial_days_left = 0
         order_responses.append(resp)
 
     return OrderListResponse(orders=order_responses, total=total, page=page, per_page=per_page)

@@ -95,31 +95,38 @@ async def trigger_build_endpoint(
             detail="A build for this platform is already in progress. Please wait for it to complete."
         )
 
-    # Build limits
+    # Build limits (2026-07-17 model):
+    #   free — 1 SUCCESSFUL build per user, lifetime (failures never count)
+    #   paid — 3 successful REBUILDS per app per calendar month (the order's
+    #          first successful build is not a rebuild; failures never count)
     is_free = order.amount == 0
     if is_free:
-        # Free plans: max 2 builds total per user (across all free orders)
         free_build_count_result = await db.execute(
             select(func.count(Build.id))
             .join(Order, Build.order_id == Order.id)
-            .where(Order.user_id == user.id, Order.amount == 0, Build.status != "failed")
+            .where(Order.user_id == user.id, Order.amount == 0, Build.status == "success")
         )
-        free_build_count = free_build_count_result.scalar() or 0
-        if free_build_count >= 2:
+        if (free_build_count_result.scalar() or 0) >= 1:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Free plan build limit reached (2 builds per account). Upgrade to a paid plan for more builds.",
+                detail="Your free build is already used. Upgrade this app to a paid plan to build again.",
             )
     else:
-        # Paid plans: 5 builds total (lifetime) per order
-        build_count_result = await db.execute(
-            select(func.count(Build.id)).where(Build.order_id == order_id, Build.status != "failed")
-        )
-        build_count = build_count_result.scalar() or 0
-        if build_count >= 5:
+        from datetime import datetime as _dt, timezone as _tz
+        month_start = _dt.now(_tz.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        stats = (await db.execute(
+            select(
+                func.count(Build.id).filter(Build.status == "success", Build.created_at >= month_start),
+                func.min(Build.created_at).filter(Build.status == "success"),
+            ).where(Build.order_id == order_id)
+        )).one()
+        month_success, first_success = stats[0] or 0, stats[1]
+        if first_success is not None and first_success >= month_start:
+            month_success = max(0, month_success - 1)  # initial build isn't a rebuild
+        if month_success >= 3:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Build limit reached (5 builds per app). Contact support to purchase additional builds.",
+                detail="Monthly rebuild limit reached (3 rebuilds per app per month). It resets on the 1st.",
             )
 
     build = await trigger_build(order_id, db, platform=platform)

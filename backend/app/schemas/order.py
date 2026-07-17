@@ -25,6 +25,10 @@ class OrderResponse(BaseModel):
     plan_name: str | None = None
     app_name: str | None = None
     selected_platforms: list[str] | None = None
+    app_url: str | None = None
+    plan_state: str | None = None  # free_unbuilt | free_trial | free_expired | paid | pending_payment
+    trial_days_left: int | None = None
+    rebuilds_left_this_month: int | None = None
     build_count: int = 0
     created_at: datetime
     updated_at: datetime
