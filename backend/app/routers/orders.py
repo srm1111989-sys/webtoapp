@@ -178,6 +178,7 @@ async def list_orders(
     build_counts: dict = {}
     first_success: dict = {}
     month_success: dict = {}
+    latest_build: dict = {}
     if order_ids:
         now = datetime.now(timezone.utc)
         month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -196,6 +197,15 @@ async def list_orders(
             first_success[oid] = first
             month_success[oid] = month_n
 
+        # Latest build per order (status + progress) for dashboard/build pipeline
+        latest_rows = (await db.execute(
+            select(Build.order_id, Build.status, Build.progress, Build.created_at)
+            .where(Build.order_id.in_(order_ids))
+            .order_by(Build.order_id, Build.created_at.desc())
+            .distinct(Build.order_id)
+        )).all()
+        latest_build = {r[0]: r for r in latest_rows}
+
     TRIAL_DAYS = 15
     REBUILDS_PER_MONTH = 3
     order_responses = []
@@ -208,6 +218,11 @@ async def list_orders(
             resp.selected_platforms = order.app_config.selected_platforms
             resp.app_url = order.app_config.url
         resp.build_count = build_counts.get(order.id, 0)
+        lb = latest_build.get(order.id)
+        if lb is not None:
+            resp.latest_build_status = lb[1]
+            resp.latest_build_progress = lb[2]
+            resp.latest_build_at = lb[3]
 
         first = first_success.get(order.id)
         if order.status == "pending":

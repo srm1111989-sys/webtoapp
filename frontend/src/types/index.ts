@@ -93,6 +93,9 @@ export interface Order {
   plan_state?: 'free_unbuilt' | 'free_trial' | 'free_expired' | 'paid' | 'pending_payment'
   trial_days_left?: number
   rebuilds_left_this_month?: number
+  latest_build_status?: string
+  latest_build_progress?: number
+  latest_build_at?: string
   build_count?: number
 }
 

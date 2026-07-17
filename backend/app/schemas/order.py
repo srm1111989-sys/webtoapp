@@ -29,6 +29,9 @@ class OrderResponse(BaseModel):
     plan_state: str | None = None  # free_unbuilt | free_trial | free_expired | paid | pending_payment
     trial_days_left: int | None = None
     rebuilds_left_this_month: int | None = None
+    latest_build_status: str | None = None
+    latest_build_progress: int | None = None
+    latest_build_at: datetime | None = None
     build_count: int = 0
     created_at: datetime
     updated_at: datetime

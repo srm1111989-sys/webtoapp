@@ -4,236 +4,247 @@ import { useAuthStore } from '@/store/authStore'
 import { ordersApi, paymentsApi } from '@/api/orders'
 import { appsApi } from '@/api/apps'
 import { formatCurrency, formatDate } from '@/utils/format'
+import { Card, CardHeader, Badge, Skeleton } from '@/components/ui'
 import AppList from '@/components/AppList'
+import type { Order } from '@/types'
 import {
-  AppWindow,
-  ShoppingCart,
-  CheckCircle2,
-  Plus,
-  ArrowRight,
-  Loader2,
-  AlertCircle,
-  FlaskConical,
-  Star,
+  AppWindow, ShoppingCart, CheckCircle2, Plus, ArrowRight, AlertCircle, FlaskConical, Star,
+  Hammer, Wallet, Activity as ActivityIcon, BookOpen, Receipt, Rocket, XCircle, Clock,
 } from 'lucide-react'
 
-const statusStyles: Record<string, { dot: string; text: string }> = {
-  pending: { dot: 'bg-amber-500', text: 'text-amber-700' },
-  paid: { dot: 'bg-emerald-500', text: 'text-emerald-700' },
-  building: { dot: 'bg-blue-500', text: 'text-blue-700' },
-  success: { dot: 'bg-emerald-500', text: 'text-emerald-700' },
-  failed: { dot: 'bg-red-500', text: 'text-red-700' },
-  refunded: { dot: 'bg-gray-400', text: 'text-gray-600' },
+const orderTone: Record<string, 'green' | 'amber' | 'blue' | 'red' | 'gray'> = {
+  paid: 'green', pending: 'amber', completed: 'green', failed: 'red',
+}
+
+/** Derive a human activity feed from order + build data (read-only). */
+function activityFrom(orders: Order[]) {
+  const events: { icon: typeof Rocket; tone: string; text: string; sub: string; to: string }[] = []
+  for (const o of orders.slice(0, 12)) {
+    if (o.latest_build_status === 'success') {
+      events.push({ icon: Rocket, tone: 'text-emerald-600 bg-emerald-50', text: `Build completed for ${o.app_name || 'app'}`, sub: o.latest_build_at ? formatDate(o.latest_build_at) : '', to: `/orders/${o.id}` })
+    } else if (o.latest_build_status === 'failed') {
+      events.push({ icon: XCircle, tone: 'text-red-600 bg-red-50', text: `Build failed for ${o.app_name || 'app'}`, sub: 'Retry is free', to: `/orders/${o.id}` })
+    } else if (o.latest_build_status === 'building') {
+      events.push({ icon: Hammer, tone: 'text-primary-600 bg-primary-50', text: `Building ${o.app_name || 'app'}…`, sub: `${o.latest_build_progress ?? 0}%`, to: `/orders/${o.id}` })
+    }
+    if (o.amount > 0 && o.status === 'paid') {
+      events.push({ icon: Wallet, tone: 'text-emerald-600 bg-emerald-50', text: `Payment received — ${o.app_name || o.order_number}`, sub: formatCurrency(o.amount, o.currency), to: `/orders/${o.id}` })
+    } else if (o.plan_state === 'pending_payment') {
+      events.push({ icon: Clock, tone: 'text-amber-600 bg-amber-50', text: `Payment pending — ${o.app_name || o.order_number}`, sub: 'Complete or it self-clears in 24h', to: `/orders/${o.id}` })
+    } else if (o.plan_state === 'free_expired') {
+      events.push({ icon: AlertCircle, tone: 'text-amber-600 bg-amber-50', text: `Trial ended — ${o.app_name || 'app'}`, sub: 'Upgrade to reactivate', to: `/orders/${o.id}` })
+    }
+  }
+  return events.slice(0, 6)
 }
 
 export default function Dashboard() {
   const { user } = useAuthStore()
 
-  const {
-    data: ordersData,
-    isLoading: ordersLoading,
-    isError: ordersError,
-  } = useQuery({
+  const { data: ordersData, isLoading: ordersLoading, isError: ordersError } = useQuery({
     queryKey: ['orders'],
-    queryFn: () => ordersApi.list(1, 20),
+    queryFn: () => ordersApi.list(1, 100),
     select: (res) => res.data,
   })
-
-  const {
-    data: appsData,
-    isLoading: appsLoading,
-    isError: appsError,
-  } = useQuery({
+  const { data: appsData, isLoading: appsLoading, isError: appsError } = useQuery({
     queryKey: ['apps'],
     queryFn: () => appsApi.list(),
     select: (res) => res.data,
   })
-
   const { data: paymentMode } = useQuery({
     queryKey: ['payment-mode'],
     queryFn: () => paymentsApi.getPaymentMode().then((r) => r.data),
   })
 
-  const totalApps = appsData?.total ?? 0
   const orders = ordersData?.orders ?? []
-  const activeOrders = orders.filter(
-    (o) => o.status === 'pending' || o.status === 'paid'
-  ).length
-  const completedBuilds = orders.filter((o) =>
-    o.builds?.some((b) => b.status === 'success')
-  ).length
+  const apps = (appsData?.apps ?? []).filter((a) => a.status !== 'draft')
+  const totalApps = apps.length
+  const activeBuilds = orders.filter((o) => o.latest_build_status === 'building' || o.latest_build_status === 'pending').length
+  const pendingOrders = orders.filter((o) => o.plan_state === 'pending_payment').length
+  const completedBuilds = orders.filter((o) => o.latest_build_status === 'success').length
+  const failedBuilds = orders.filter((o) => o.latest_build_status === 'failed').length
+  const totalSpent = orders.filter((o) => o.amount > 0 && o.status === 'paid')
+    .reduce((s, o) => s + o.amount, 0)
+  const spentCurrency = orders.find((o) => o.amount > 0 && o.status === 'paid')?.currency || 'USD'
+  const successRate = completedBuilds + failedBuilds > 0
+    ? Math.round((completedBuilds / (completedBuilds + failedBuilds)) * 100)
+    : null
+  const hasPremium = orders.some((o) => o.status === 'paid' && o.amount > 0)
   const recentOrders = orders.slice(0, 5)
-  const hasPremium = orders.some(
-    (o) => o.status === 'paid' && o.amount > 0
-  )
-
+  const activity = activityFrom(orders)
   const isLoading = ordersLoading || appsLoading
   const isError = ordersError || appsError
 
   const stats = [
-    { label: 'Total Apps', value: totalApps, icon: AppWindow, color: 'text-primary-600 bg-primary-50', to: '/apps' },
-    { label: 'Active Orders', value: activeOrders, icon: ShoppingCart, color: 'text-blue-600 bg-blue-50', to: '/orders' },
-    { label: 'Completed Builds', value: completedBuilds, icon: CheckCircle2, color: 'text-emerald-600 bg-emerald-50', to: '/orders' },
+    { label: 'Total Apps', value: totalApps as number | string, icon: AppWindow, tone: 'text-primary-600 bg-primary-50', to: '/apps', sub: null as string | null },
+    { label: 'Active Builds', value: activeBuilds as number | string, icon: Hammer, tone: 'text-blue-600 bg-blue-50', to: '/orders', sub: activeBuilds ? 'in progress' : null },
+    { label: 'Pending Orders', value: pendingOrders as number | string, icon: ShoppingCart, tone: 'text-amber-600 bg-amber-50', to: '/orders', sub: null },
+    { label: 'Completed Builds', value: completedBuilds as number | string, icon: CheckCircle2, tone: 'text-emerald-600 bg-emerald-50', to: '/orders', sub: successRate !== null ? `${successRate}% success rate` : null },
+    { label: 'Total Spent', value: (totalSpent > 0 ? formatCurrency(totalSpent, spentCurrency) : '—') as number | string, icon: Wallet, tone: 'text-purple-600 bg-purple-50', to: '/billing', sub: null },
   ]
 
   return (
-    <div className="space-y-5 max-w-6xl">
+    <div className="space-y-6 animate-fade-up">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold text-gray-900">
-              Welcome back, {user?.full_name ?? 'User'}
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-xl font-bold text-ink tracking-tight">
+              Welcome back, {(user?.full_name || 'there').split(' ')[0]}! 👋
             </h1>
             {hasPremium && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200">
-                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                Premium Plan
-              </span>
+              <Badge tone="amber"><Star className="w-3 h-3 fill-amber-500 text-amber-500" /> Premium</Badge>
             )}
           </div>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Manage your apps and track your orders
-          </p>
+          <p className="text-sm text-soft mt-1">Here's what's happening with your apps today.</p>
         </div>
-        <div className="flex gap-2">
-          <Link
-            to="/orders"
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition"
-          >
-            View orders
-          </Link>
-          <Link
-            to="/apps/create"
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            Create app
-          </Link>
-        </div>
+        <Link
+          to="/apps/create"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition shadow-sm self-start"
+        >
+          <Plus className="w-4 h-4" /> Create New App
+        </Link>
       </div>
 
-      {/* Test Mode Banner */}
       {paymentMode?.test_mode && (
-        <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5">
+        <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
           <FlaskConical className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-          <div className="text-xs">
-            <span className="font-medium text-amber-900">Payment test mode active.</span>{' '}
-            <span className="text-amber-700">
-              No real charges will be made. Use test card numbers at checkout.
-            </span>
-          </div>
+          <p className="text-xs"><span className="font-medium text-amber-900">Payment test mode active.</span>{' '}
+            <span className="text-amber-700">No real charges will be made.</span></p>
         </div>
       )}
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24" />)}
+          </div>
+          <div className="grid lg:grid-cols-2 gap-4">
+            <Skeleton className="h-64" /><Skeleton className="h-64" />
+          </div>
         </div>
       ) : isError ? (
-        <div className="rounded-md bg-red-50 border border-red-200 p-3 flex items-center gap-2 text-red-700">
+        <Card className="p-4 flex items-center gap-2 text-red-700 border-red-200">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <p className="text-sm">Failed to load dashboard data. Please refresh the page.</p>
-        </div>
+        </Card>
       ) : (
         <>
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {stats.map(({ label, value, icon: Icon, color, to }) => (
-              <Link
-                key={label}
-                to={to}
-                className="group bg-white rounded-lg border border-gray-200 p-4 hover:border-primary-300 hover:shadow-sm transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-md ${color}`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs text-gray-500">{label}</p>
-                    <p className="text-xl font-semibold text-gray-900 leading-tight tabular-nums">{value}</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all" />
-                </div>
+          {/* Stat cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            {stats.map(({ label, value, icon: Icon, tone, to, sub }) => (
+              <Link key={label} to={to} className="group">
+                <Card className="p-4 h-full hover:border-primary-300 hover:shadow-md transition-all">
+                  <span className={`inline-flex p-2 rounded-lg ${tone}`}><Icon className="w-4 h-4" /></span>
+                  <p className="mt-3 text-xl font-bold text-ink tabular-nums leading-tight">{value}</p>
+                  <p className="text-xs text-soft mt-0.5 flex items-center gap-1">
+                    {label}
+                    <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                  </p>
+                  {sub && <p className="text-[11px] text-emerald-600 font-medium mt-1">{sub}</p>}
+                </Card>
               </Link>
             ))}
           </div>
 
-          {/* All apps */}
-          <div className="mb-6">
+          {/* Activity + Builds overview */}
+          <div className="grid lg:grid-cols-5 gap-4">
+            <Card className="lg:col-span-3">
+              <CardHeader title="Recent Activity" subtitle="Builds, payments and plan changes" action={
+                <Link to="/orders" className="text-xs font-semibold text-primary-600 hover:underline">View all →</Link>
+              } />
+              <div className="px-5 pb-4 divide-y divide-line">
+                {activity.length === 0 ? (
+                  <div className="py-8 text-center">
+                    <ActivityIcon className="w-8 h-8 text-soft/40 mx-auto mb-2" />
+                    <p className="text-sm text-soft">No activity yet — create your first app to get started.</p>
+                  </div>
+                ) : activity.map((e, i) => (
+                  <Link key={i} to={e.to} className="flex items-center gap-3 py-2.5 group">
+                    <span className={`p-1.5 rounded-lg ${e.tone}`}><e.icon className="w-3.5 h-3.5" /></span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm text-ink truncate group-hover:text-primary-600 transition">{e.text}</span>
+                    </span>
+                    <span className="text-xs text-soft shrink-0">{e.sub}</span>
+                  </Link>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="lg:col-span-2">
+              <CardHeader title="Builds Overview" />
+              <div className="px-5 pb-5 flex items-center gap-5">
+                {(() => {
+                  const total = completedBuilds + activeBuilds + failedBuilds || 1
+                  const seg = (n: number) => (n / total) * 100
+                  const c = seg(completedBuilds), a = seg(activeBuilds)
+                  return (
+                    <svg viewBox="0 0 42 42" className="w-28 h-28 shrink-0" role="img" aria-label="Builds by status">
+                      <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--color-gray-100)" strokeWidth="5" />
+                      <circle cx="21" cy="21" r="15.9" fill="none" stroke="#10b981" strokeWidth="5"
+                        strokeDasharray={`${c} ${100 - c}`} strokeDashoffset="25" strokeLinecap="round" />
+                      <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--color-primary-500)" strokeWidth="5"
+                        strokeDasharray={`${a} ${100 - a}`} strokeDashoffset={`${25 - c}`} strokeLinecap="round" />
+                      <text x="21" y="20" textAnchor="middle" fill="var(--color-ink)" style={{ font: '700 8px Inter, sans-serif' }}>
+                        {completedBuilds + activeBuilds + failedBuilds}
+                      </text>
+                      <text x="21" y="27" textAnchor="middle" fill="var(--color-soft)" style={{ font: '4.5px Inter, sans-serif' }}>
+                        total
+                      </text>
+                    </svg>
+                  )
+                })()}
+                <ul className="space-y-2 text-sm w-full">
+                  <li className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Completed <span className="font-semibold text-ink tabular-nums ml-auto pl-3">{completedBuilds}</span></li>
+                  <li className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-primary-500" /> Processing <span className="font-semibold text-ink tabular-nums ml-auto pl-3">{activeBuilds}</span></li>
+                  <li className="flex items-center gap-2"><span className="w-2.5 h-2.5 rounded-full bg-red-400" /> Failed <span className="font-semibold text-ink tabular-nums ml-auto pl-3">{failedBuilds}</span></li>
+                </ul>
+              </div>
+              <div className="border-t border-line px-5 py-4">
+                <p className="text-xs font-semibold text-soft uppercase tracking-wide mb-2">Quick actions</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <Link to="/apps/create" className="flex flex-col items-center gap-1 p-2.5 rounded-xl border border-line hover:border-primary-300 hover:bg-primary-50 transition text-center">
+                    <Plus className="w-4 h-4 text-primary-600" /><span className="text-[11px] font-medium text-ink">Create App</span>
+                  </Link>
+                  <Link to="/orders" className="flex flex-col items-center gap-1 p-2.5 rounded-xl border border-line hover:border-primary-300 hover:bg-primary-50 transition text-center">
+                    <Receipt className="w-4 h-4 text-primary-600" /><span className="text-[11px] font-medium text-ink">View Orders</span>
+                  </Link>
+                  <Link to="/blog/website-to-app-faq" className="flex flex-col items-center gap-1 p-2.5 rounded-xl border border-line hover:border-primary-300 hover:bg-primary-50 transition text-center">
+                    <BookOpen className="w-4 h-4 text-primary-600" /><span className="text-[11px] font-medium text-ink">Docs</span>
+                  </Link>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Your apps */}
+          <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-gray-900">Your apps</h2>
+              <h2 className="text-sm font-semibold text-ink">Your apps</h2>
               <Link to="/apps" className="text-xs font-semibold text-primary-600 hover:underline">Open My Apps →</Link>
             </div>
             <AppList showHeader={false} />
           </div>
 
-          {/* Recent Orders */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-gray-900">Recent orders</h2>
-              {orders.length > 5 && (
-                <Link
-                  to="/orders"
-                  className="text-xs text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1"
-                >
-                  View all <ArrowRight className="w-3 h-3" />
+          {/* Recent orders */}
+          <Card>
+            <CardHeader title="Recent Orders" action={
+              <Link to="/orders" className="text-xs font-semibold text-primary-600 hover:underline">View all →</Link>
+            } />
+            <div className="px-5 pb-4 divide-y divide-line">
+              {recentOrders.length === 0 ? (
+                <p className="py-6 text-sm text-soft text-center">No orders yet.</p>
+              ) : recentOrders.map((o) => (
+                <Link key={o.id} to={`/orders/${o.id}`} className="flex items-center gap-3 py-2.5 group">
+                  <span className="font-mono text-xs text-soft w-28 shrink-0">{o.order_number}</span>
+                  <span className="flex-1 min-w-0 text-sm text-ink truncate group-hover:text-primary-600 transition">{o.app_name || '—'}</span>
+                  <span className="text-sm font-semibold text-ink tabular-nums">{o.amount > 0 ? formatCurrency(o.amount, o.currency) : 'Free'}</span>
+                  <Badge tone={orderTone[o.status] || 'gray'}>{o.status}</Badge>
+                  <span className="hidden sm:block text-xs text-soft w-20 text-right">{formatDate(o.created_at)}</span>
                 </Link>
-              )}
+              ))}
             </div>
-
-            {recentOrders.length === 0 ? (
-              <div className="px-6 py-12 text-center">
-                <div className="inline-flex p-3 rounded-full bg-gray-50 mb-3">
-                  <ShoppingCart className="w-6 h-6 text-gray-400" />
-                </div>
-                <p className="text-sm text-gray-700 font-medium mb-1">No orders yet</p>
-                <p className="text-xs text-gray-500 mb-4">Start by creating your first mobile app</p>
-                <Link
-                  to="/apps/create"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition text-sm font-medium"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  Create app
-                </Link>
-              </div>
-            ) : (
-              <div className="divide-y divide-gray-100">
-                {recentOrders.map((order) => {
-                  const status = statusStyles[order.status] ?? { dot: 'bg-gray-400', text: 'text-gray-600' }
-                  return (
-                    <Link
-                      key={order.id}
-                      to={`/orders/${order.id}`}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 hover:bg-gray-50 transition group gap-1.5 sm:gap-4"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-gray-900 truncate group-hover:text-primary-600 transition">
-                          {order.order_number}
-                        </p>
-                        <p className="text-xs text-gray-500 truncate mt-0.5">
-                          {order.app_name ?? 'App'} · {order.plan_name ?? 'Plan'}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-sm font-medium text-gray-900 tabular-nums">
-                          {formatCurrency(order.amount, order.currency)}
-                        </span>
-                        <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${status.text}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
-                          {order.status}
-                        </span>
-                        <span className="hidden sm:block text-xs text-gray-400 min-w-[72px] text-right tabular-nums">
-                          {formatDate(order.created_at)}
-                        </span>
-                        <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-primary-600 group-hover:translate-x-0.5 transition-all" />
-                      </div>
-                    </Link>
-                  )
-                })}
-              </div>
-            )}
-          </div>
+          </Card>
         </>
       )}
     </div>
