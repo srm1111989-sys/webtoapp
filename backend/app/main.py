@@ -76,6 +76,9 @@ app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(auth.router)
 app.include_router(users.router)
+# app_events before apps: its literal paths (/api/apps/event, /entitlement)
+# must win over apps' /api/apps/{app_id} parameter route.
+app.include_router(app_events.router)
 app.include_router(apps.router)
 app.include_router(orders.router)
 app.include_router(payments.router)
@@ -90,7 +93,6 @@ app.include_router(promo.router)
 app.include_router(client_errors.router)
 app.include_router(support.router)
 app.include_router(chatbot.router)
-app.include_router(app_events.router)
 
 
 # Serve local artifacts when S3 is not configured.
