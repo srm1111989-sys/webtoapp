@@ -254,7 +254,7 @@ async def chat_endpoint(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Please sign in to chat with the AI assistant.",
+            detail="Please sign in to use support chat.",
         )
     if not is_chatbot_enabled():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
