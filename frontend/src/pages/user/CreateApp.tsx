@@ -1650,12 +1650,34 @@ function Step4Rebuild() {
 
 function Step4PlanReview() {
   const wizard = useWizardStore()
-  const navigate = useNavigate()
+  const { data: gateOrders } = useQuery({
+    queryKey: ['orders'],
+    queryFn: () => ordersApi.list(1, 100),
+    select: (res) => res.data,
+    enabled: !!wizard.existingOrderId,
+  })
 
-  // Edit mode: already has a paid/free order — skip payment, show rebuild
+  // Edit mode routing: PAID apps rebuild; FREE apps go to Plan & Review so
+  // "Pay & upgrade" happens right here (builds the premium app with the edits).
   if (wizard.existingOrderId) {
-    return <Step4Rebuild />
+    const existing = (gateOrders?.orders ?? []).find((o) => o.id === wizard.existingOrderId)
+    if (!existing) {
+      return (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+        </div>
+      )
+    }
+    if (existing.amount > 0) {
+      return <Step4Rebuild />
+    }
   }
+  return <Step4PlanSelect />
+}
+
+function Step4PlanSelect() {
+  const wizard = useWizardStore()
+  const navigate = useNavigate()
 
   const { data: plansData, isLoading: plansLoading } = useQuery({
     queryKey: ['plans'],
@@ -2177,6 +2199,10 @@ function Step4PlanReview() {
           ) : paymentMode?.test_mode ? (
             <>
               <FlaskConical className="w-4 h-4" /> Submit (Test Mode)
+            </>
+          ) : wizard.existingOrderId ? (
+            <>
+              <Zap className="w-4 h-4" /> Pay & upgrade
             </>
           ) : (
             <>
