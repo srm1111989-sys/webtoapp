@@ -33,6 +33,7 @@ interface WizardState {
   customKeystorePrivatePassword: string
   selectedPlanId: string | null
   existingOrderId: string | null
+  orderPlaced: boolean
 
   setStep: (step: number) => void
   setAppId: (id: string) => void
@@ -45,6 +46,7 @@ interface WizardState {
   setAdvanced: (data: Partial<Pick<WizardState, 'firebaseConfig' | 'admobConfig' | 'customUserAgent' | 'customKeystoreFile' | 'customKeystoreUrl' | 'customKeystorePassword' | 'customKeystoreAlias' | 'customKeystorePrivatePassword'>>) => void
   setDesktopConfig: (config: Partial<DesktopConfig>) => void
   setPlan: (planId: string) => void
+  setOrderPlaced: (v: boolean) => void
   reset: () => void
 }
 
@@ -127,6 +129,7 @@ const initialState = {
   customKeystorePrivatePassword: '',
   selectedPlanId: null,
   existingOrderId: null,
+  orderPlaced: false,
 }
 
 export const useWizardStore = create<WizardState>()((set) => ({
@@ -134,6 +137,7 @@ export const useWizardStore = create<WizardState>()((set) => ({
   setStep: (step) => set({ step }),
   setAppId: (appId) => set({ appId }),
   setExistingOrderId: (existingOrderId) => set({ existingOrderId }),
+  setOrderPlaced: (orderPlaced) => set({ orderPlaced }),
   setSelectedPlatforms: (selectedPlatforms) => set({ selectedPlatforms }),
   setBasicInfo: (data) => set({
     name: data.name,

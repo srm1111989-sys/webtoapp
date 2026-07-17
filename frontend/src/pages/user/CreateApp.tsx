@@ -581,7 +581,13 @@ export default function CreateApp() {
 
   useEffect(() => {
     return () => {
-      useWizardStore.getState().reset()
+      // Drafts are never kept: leaving the wizard without placing an order
+      // deletes the in-progress config (edit mode is exempt — that app is real).
+      const st = useWizardStore.getState()
+      if (st.appId && !st.existingOrderId && !st.orderPlaced) {
+        appsApi.delete(st.appId).catch(() => {})
+      }
+      st.reset()
     }
   }, [])
 
@@ -1735,6 +1741,7 @@ function Step4PlanReview() {
     },
     onSuccess: async (result) => {
       const { data: order, plan } = result
+      wizard.setOrderPlaced(true)
 
       // Free plan — auto-trigger build immediately so user sees it in Build Status
       if (plan && plan.price_inr === 0 && plan.price_usd === 0) {

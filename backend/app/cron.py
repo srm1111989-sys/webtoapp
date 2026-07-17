@@ -173,7 +173,8 @@ async def sync_active_builds():
 scheduler = AsyncIOScheduler()
 async def cleanup_abandoned_drafts():
     """Delete wizard drafts (app_configs with status='draft' and no orders)
-    older than 48h — drafts are working state, not user-visible apps
+    older than 1h. Drafts exist only while the wizard is open — the frontend
+    deletes them on exit; this sweep catches closed tabs
     (product rule 2026-07-17: we don't keep drafts)."""
     try:
         from datetime import datetime, timedelta, timezone
@@ -181,7 +182,7 @@ async def cleanup_abandoned_drafts():
         from app.models.app_config import AppConfig
         from app.models.order import Order
         async with async_session() as db:
-            cutoff = datetime.now(timezone.utc) - timedelta(hours=48)
+            cutoff = datetime.now(timezone.utc) - timedelta(hours=1)
             result = await db.execute(
                 delete(AppConfig).where(
                     AppConfig.status == "draft",
@@ -195,7 +196,7 @@ async def cleanup_abandoned_drafts():
     except Exception as e:
         logger.error(f"cleanup_abandoned_drafts failed: {e}")
 
-scheduler.add_job(cleanup_abandoned_drafts, 'interval', hours=24)
+scheduler.add_job(cleanup_abandoned_drafts, 'interval', hours=1)
 
 scheduler.add_job(process_pending_build, 'interval', minutes=1)
 scheduler.add_job(sync_active_builds, 'interval', minutes=1)
