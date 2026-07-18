@@ -122,7 +122,15 @@ class GitHubService:
             return response.json().get("jobs", [])
 
     def has_quota(self) -> bool:
-        """Return True if this GitHub account has Actions minutes remaining."""
+        """Return True if this GitHub account can run AND finish a build.
+
+        Checks two independent quotas:
+        1. Actions minutes (billing API).
+        2. Artifact STORAGE — 2026-07-18 incident: builds compiled fine but
+           died at Upload with "Artifact storage quota has been hit", and the
+           dispatcher never cascaded because triggering had succeeded. A
+           storage-full account is effectively out of quota.
+        """
         try:
             username = self.repo.split("/")[0]
             with httpx.Client(timeout=10) as client:
@@ -130,23 +138,38 @@ class GitHubService:
                     f"https://api.github.com/users/{username}/settings/billing/actions",
                     headers=self.headers,
                 )
-            if r.status_code == 404:
-                # Org accounts use a different endpoint — assume available
-                return True
-            if r.status_code != 200:
-                logger.warning(f"GitHub quota check for '{username}' returned {r.status_code}, assuming available")
-                return True
-            data = r.json()
-            used     = data.get("total_minutes_used", 0)
-            included = data.get("included_minutes", 0)
-            if included > 0 and used >= included:
-                logger.info(f"GitHub quota exhausted for '{username}': {used}/{included} minutes used")
-                return False
-            logger.info(f"GitHub quota OK for '{username}': {used}/{included} minutes used")
-            return True
+            if r.status_code == 200:
+                data = r.json()
+                used     = data.get("total_minutes_used", 0)
+                included = data.get("included_minutes", 0)
+                if included > 0 and used >= included:
+                    logger.info(f"GitHub quota exhausted for '{username}': {used}/{included} minutes used")
+                    return False
+                logger.info(f"GitHub quota OK for '{username}': {used}/{included} minutes used")
+            elif r.status_code != 404:  # 404 = org account, different endpoint — fall through
+                logger.warning(f"GitHub quota check for '{username}' returned {r.status_code}, assuming minutes available")
         except Exception as e:
-            logger.warning(f"GitHub quota check failed ({e}), assuming available")
-            return True
+            logger.warning(f"GitHub minutes check failed ({e}), assuming available")
+
+        # Artifact storage: free tier allows ~500MB; GitHub keeps serving the
+        # stale "quota hit" flag for 6-12h after cleanup, so use a conservative
+        # threshold to route builds to the other account meanwhile.
+        try:
+            with httpx.Client(timeout=10) as client:
+                r = client.get(
+                    self._api_url("/actions/artifacts?per_page=100"),
+                    headers=self.headers,
+                )
+            if r.status_code == 200:
+                d = r.json()
+                mb = sum(a.get("size_in_bytes", 0) for a in d.get("artifacts", [])) / 1e6
+                if mb >= 400:
+                    logger.info(f"GitHub artifact storage near quota for '{self.repo}': {mb:.0f}MB — treating as no quota")
+                    return False
+        except Exception as e:
+            logger.warning(f"GitHub artifact storage check failed ({e}), assuming available")
+
+        return True
 
     def get_job_log(self, job_id: int) -> str:
         """Get logs for a specific job."""

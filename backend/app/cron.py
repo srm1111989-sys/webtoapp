@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 import asyncio
 from datetime import datetime, timezone
@@ -49,6 +50,18 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
             ("github1",  github1, lambda: _check_quota_cached("github1",  github1.has_quota)),
             ("github2",  github2, lambda: _check_quota_cached("github2",  github2.has_quota)),
         ]
+
+    # Ops escape hatch: CI_SKIP_PROVIDERS=github1,gitlab hard-excludes providers.
+    # Needed when a provider is broken in a way quota checks can't see — e.g.
+    # GitHub's artifact-storage "quota hit" flag stays stale for 6-12h after a
+    # purge (2026-07-18 incident), failing every run at the Upload step while
+    # dispatch still succeeds. Set in /root/.webtoapp-local.env; REMOVE after.
+    skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
+    if skip:
+        kept = [c for c in candidates if c[0] not in skip]
+        if kept:  # never skip our way into having zero candidates
+            logger.warning(f"CI_SKIP_PROVIDERS active — excluding {sorted(skip)}")
+            candidates = kept
 
     available = [(name, svc) for name, svc, check in candidates if check()]
 
