@@ -93,6 +93,7 @@ jobs:
         with:
           name: desktop-exe
           path: desktop-template/dist/*.exe
+          retention-days: 3
 
       - name: Notify webhook
         if: always()
