@@ -159,16 +159,22 @@ async def health():
     except:
         checks["stuck_builds"] = "unknown"
 
-    # Failed builds (last 24 hours)
+    # Failed builds — 1h window for ALERTING (a resolved incident kept the
+    # 24h counter red all day, spamming email alerts — user 2026-07-18);
+    # the 24h figure stays available for dashboards.
     try:
         from app.database import async_session
         async with async_session() as db:
             result = await db.execute(text(
-                "SELECT count(*) FROM builds WHERE status = 'failed' "
+                "SELECT count(*) FILTER (WHERE created_at > NOW() - INTERVAL '1 hour') AS h1, "
+                "count(*) AS h24 FROM builds WHERE status = 'failed' "
                 "AND created_at > NOW() - INTERVAL '24 hours'"
             ))
-            checks["failed_builds_24h"] = str(result.scalar())
+            row = result.one()
+            checks["failed_builds_1h"] = str(row[0])
+            checks["failed_builds_24h"] = str(row[1])
     except:
+        checks["failed_builds_1h"] = "unknown"
         checks["failed_builds_24h"] = "unknown"
 
     # Disk
