@@ -52,6 +52,9 @@ public class WebViewActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefresh;
+    // Android 15+ screen-recording detection: mutes audio while the app is being
+    // recorded (part of Screen Capture Protection). Held so we can unregister it.
+    private java.util.function.Consumer<Integer> screenRecordMuteCallback;
     private JSONObject config;
     private JSONObject features;
     private String appUrl;
