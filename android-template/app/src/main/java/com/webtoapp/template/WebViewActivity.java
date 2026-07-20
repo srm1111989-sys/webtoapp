@@ -185,6 +185,18 @@ public class WebViewActivity extends AppCompatActivity {
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 
+        // Pull-to-refresh behaviour
+        // (1) Optional: apps can turn it off entirely via the "disable_pull_to_refresh"
+        //     feature — web apps that never need a manual reload don't want the gesture
+        //     firing while the user is simply scrolling.
+        boolean pullToRefreshDisabled = features.optBoolean("disable_pull_to_refresh", false);
+        swipeRefresh.setEnabled(!pullToRefreshDisabled);
+        // (2) When enabled, only arm the gesture when the page is scrolled to the very
+        //     top. This stops a normal downward scroll mid-page from triggering a refresh,
+        //     and keeps SwipeRefreshLayout from intercepting the WebView's touch stream
+        //     mid-gesture (which was making the web content's own swipe/slider handlers
+        //     read the wrong direction).
+        swipeRefresh.setOnChildScrollUpCallback((parent, child) -> webView.getScrollY() > 0);
         swipeRefresh.setOnRefreshListener(() -> webView.reload());
 
         // File upload launcher
