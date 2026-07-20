@@ -138,6 +138,7 @@ const FEATURES = [
   { key: 'advanced_bottom_navigation', label: 'Advanced Bottom Nav', description: 'Enhanced bottom navigation with badges, animations, and advanced customization options.', helpUrl: 'https://m3.material.io/components/navigation-bar', icon: PanelBottom },
   { key: 'firebase_notification', label: 'Firebase Notification', description: 'Firebase Cloud Messaging (FCM) for push notifications with rich media, actions, and deep links.', helpUrl: 'https://firebase.google.com/docs/cloud-messaging/android/client', icon: BellRing },
   { key: 'tap_to_pay', label: 'Tap to Pay', description: 'NFC-based contactless payment support. Accept tap-to-pay transactions using device NFC hardware.', helpUrl: 'https://developer.android.com/develop/connectivity/nfc', icon: Nfc },
+  { key: 'disable_pull_to_refresh', label: 'Disable Pull-to-Refresh', description: 'Turn off the swipe-down-to-reload gesture. Ideal for web apps that never need a manual refresh, so the gesture no longer triggers accidentally while users scroll. When left off, pull-to-refresh only arms at the very top of the page.', helpUrl: 'https://developer.android.com/reference/androidx/swiperefreshlayout/widget/SwipeRefreshLayout', icon: RefreshCw },
 ] as const
 
 // Feature accordion groups (presentation only — keys must cover every FEATURES entry)
@@ -145,7 +146,7 @@ const FEATURE_GROUPS: { title: string; subtitle: string; icon: any; keys: string
   { title: 'Engagement & Retention', subtitle: 'Notifications, reviews, onboarding', icon: Bell, keys: ['push_notifications', 'firebase_notification', 'in_app_update', 'in_app_review', 'onboarding_screen', 'offer_card', 'intercom'] },
   { title: 'Monetization & Growth', subtitle: 'Ads, purchases, attribution', icon: DollarSign, keys: ['admob', 'in_app_purchases', 'revenue_cat', 'tap_to_pay', 'facebook_app_events', 'appsflyer'] },
   { title: 'Security & Sign-in', subtitle: 'Biometrics, passcode, social login', icon: Fingerprint, keys: ['biometric_auth', 'passcode_lock', 'screenshot_prevention', 'social_login'] },
-  { title: 'Navigation & UI', subtitle: 'Menus, shortcuts, deep links', icon: Menu, keys: ['navigation_menu', 'secondary_navigation', 'advanced_bottom_navigation', 'floating_action_menu', 'app_shortcut', 'dynamic_app_icon', 'deep_linking'] },
+  { title: 'Navigation & UI', subtitle: 'Menus, shortcuts, deep links', icon: Menu, keys: ['navigation_menu', 'secondary_navigation', 'advanced_bottom_navigation', 'floating_action_menu', 'app_shortcut', 'dynamic_app_icon', 'deep_linking', 'disable_pull_to_refresh'] },
   { title: 'Device & Hardware', subtitle: 'Camera, location, Bluetooth, files', icon: Camera, keys: ['qr_scanner', 'camera_access', 'file_upload', 'location_services', 'background_location', 'bluetooth_connectivity', 'native_contacts'] },
   { title: 'Data, Media & Background', subtitle: 'Offline, storage, media, services', icon: Database, keys: ['offline_mode', 'native_datastore', 'download_file_manager', 'background_service', 'app_auto_launch', 'js_bridge', 'custom_media_player'] },
 ]
