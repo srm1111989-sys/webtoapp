@@ -37,15 +37,28 @@ for the 500+ imp of `…free` queries sitting at pos 25.
 - [ ] Internal-link the hub from homepage footer + /pricing + the 3 desktop blogs.
 - [ ] CTR pass on `exe to app converter online` (pos 5.9): title/meta of the
       current ranking page must say "online" + "free" explicitly.
-- [ ] NEW (plan-updater, 2026-07-20): dedicated page/section for the reverse
+- [x] DONE (2026-07-20, agent): dedicated page/section for the reverse
       "exe → app" conversion intent — `exe to app` (pos 5.0, 13 imp, 2 clicks)
       and `exe to app converter` (pos 6.6, 12 imp, 1 click) per today's brief.
-      Neither keyword nor an `exe-to-app`-style slug appears anywhere in the
-      current `platforms.ts`/`ConvertPage` data — this is a genuinely
-      different intent from the `website-to-exe` (forward-direction) hub
-      above and from the Mac-direction `.exe to .app` note in the baseline
-      table. Confirm no existing page already absorbs this traffic before
-      building new content.
+      Confirmed via WebSearch that "exe to app converter online" is a
+      genuinely different intent (users wanting to convert an existing
+      compiled .exe into an APK) that no existing page/slug covered — the
+      `/convert/website-to-exe` hub only targets the forward direction.
+      Published blog post `/blog/exe-to-app-converter-guide` (added to
+      `frontend/src/data/blogPosts.ts` + `sitemap.xml`) that explains why
+      literal exe→apk conversion mostly doesn't work, captures the
+      `exe to app` / `exe to app converter` / `exe to app converter online` /
+      `webtoexe` query variants, and pivots readers to WebsiteToApp's
+      website→exe+app dual-build flow. Cross-linked to/from
+      `/convert/website-to-exe` and `/blog/website-to-windows-desktop-app`
+      (added an `exe|desktop|windows` cluster-link rule in `BlogPost.tsx`).
+      Note: task 1 above ("Build /website-to-exe hub page") was found to
+      already be satisfied by the existing live `/convert/website-to-exe`
+      platform page (slug `website-to-exe` in `platforms.ts`, target keyword
+      "website to exe converter") — a second hub at the literal
+      `/website-to-exe` path would have duplicated/competed with it, so this
+      NEW task (genuinely uncovered intent) was executed instead as the
+      higher-value topmost actionable item.
 
 ### P1 — competitor comparison (biggest impression pool)
 - [ ] Expand `/blog/webintoapp-alternative-websitetoapp` — add comparison
