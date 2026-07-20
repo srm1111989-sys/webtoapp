@@ -135,6 +135,19 @@ public class WebViewActivity extends AppCompatActivity {
                     WindowManager.LayoutParams.FLAG_SECURE,
                     WindowManager.LayoutParams.FLAG_SECURE
             );
+            // FLAG_SECURE only blanks the *visual* surface for screenshots/screen
+            // recorders — audio is a separate stream and still gets captured. On
+            // API 29+ opt the whole app out of the MediaProjection AudioPlaybackCapture
+            // path so screen recorders can't grab the sound either (covers WebView /
+            // embedded video audio, since it plays through this app's process).
+            // Note: this cannot stop acoustic mic recording — no platform API can.
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                android.media.AudioManager am =
+                        (android.media.AudioManager) getSystemService(android.content.Context.AUDIO_SERVICE);
+                if (am != null) {
+                    am.setAllowedCapturePolicy(android.media.AudioAttributes.ALLOW_CAPTURE_BY_NONE);
+                }
+            }
         }
     }
 
