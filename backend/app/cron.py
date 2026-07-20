@@ -91,6 +91,17 @@ async def process_pending_build():
             await db.commit()
 
             providers = _build_provider_list(build.platform)
+
+            # Skip providers this build already failed on (e.g. a GitHub account
+            # whose artifact storage was full — see build_service.handle_build_webhook).
+            # Never filter down to zero: a stale failed-list must not wedge the build.
+            failed_providers = set((build.variables or {}).get("_failed_providers", []))
+            if failed_providers:
+                kept = [(n, p) for (n, p) in providers if n not in failed_providers]
+                if kept:
+                    providers = kept
+                    logger.info(f"Build {build.id}: excluding already-failed providers {sorted(failed_providers)}")
+
             errors = {}
 
             for provider_name, provider in providers:

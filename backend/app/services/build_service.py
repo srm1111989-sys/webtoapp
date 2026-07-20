@@ -55,6 +55,22 @@ async def _fetch_pipeline_logs(service, pipeline_id: int) -> str:
         return f"[Failed to fetch pipeline logs: {e}]"
 
 
+def _is_artifact_quota_failure(log: str) -> bool:
+    """True when a GitHub run 'failed' only because the upload-artifact step hit
+    the account's artifact-storage quota — the app actually built fine, so the
+    build should be rerouted to another provider, not reported as a failure.
+    GitHub emits 'Artifact storage quota has been hit' / 'Failed to CreateArtifact'
+    at the Upload step while gradle already reported BUILD SUCCESSFUL."""
+    if not log:
+        return False
+    l = log.lower()
+    return (
+        "artifact storage quota has been hit" in l
+        or "failed to createartifact" in l
+        or ("createartifact" in l and "quota" in l)
+    )
+
+
 async def _validate_image_url(url: str) -> bool:
     """Check if an image URL is reachable and returns a valid image."""
     if not url or not url.startswith("http"):
@@ -389,6 +405,41 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
             
         full_log = await _fetch_pipeline_logs(service, pipeline_id)
         build.log = full_log
+
+        # Self-heal: a GitHub *artifact-storage quota* failure means the app
+        # actually built — only the Upload step failed because that account's
+        # artifact storage is full. Requeue on a provider we haven't tried yet
+        # (mirrors the GitLab ci_quota retry in cron.sync_active_builds), bounded
+        # by _failed_providers so we never ping-pong forever. Root cause 2026-07-20:
+        # github1 storage filled and silently failed a paid customer build with no
+        # reroute — only GitLab quota was self-healed before.
+        if provider in ("github", "github1", "github2") and _is_artifact_quota_failure(full_log):
+            v = dict(build.variables or {})
+            failed = set(v.get("_failed_providers", []))
+            failed.add("github1" if provider == "github" else provider)
+            remaining = {"gitlab", "github1", "github2"} - failed
+            if build.platform == "ios":
+                remaining -= {"gitlab"}  # iOS never builds on GitLab
+            if remaining:
+                v["_failed_providers"] = sorted(failed)
+                v.pop("_build_provider", None)
+                build.variables = v
+                build.status = "pending"
+                build.pipeline_id = None
+                build.started_at = None
+                build.completed_at = None
+                build.error_message = None
+                _save_build_log(str(build.id), full_log)
+                logger.warning(
+                    f"Build {build.id}: {provider} hit artifact-storage quota (app built OK) — "
+                    f"requeuing; remaining providers {sorted(remaining)}"
+                )
+                logger.info(f"Build {build.id} updated to {build.status} (pipeline {pipeline_id})")
+                return
+            logger.error(
+                f"Build {build.id}: {provider} artifact-storage quota but no untried "
+                f"providers left ({sorted(failed)}) — marking failed"
+            )
 
         # Extract error summary from log, stripping internal CI references
         _ci_skip = re.compile(
