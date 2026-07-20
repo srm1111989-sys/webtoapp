@@ -1,3 +1,4 @@
+# Last updated: 2026-07-20 by plan-updater based on SC data
 # WebsiteToApp.app — SEO Plan (created 2026-07-20 from Search Console data)
 
 Nightly-updated by the SEO agent (plan updater appends dated entries; agent
@@ -36,6 +37,15 @@ for the 500+ imp of `…free` queries sitting at pos 25.
 - [ ] Internal-link the hub from homepage footer + /pricing + the 3 desktop blogs.
 - [ ] CTR pass on `exe to app converter online` (pos 5.9): title/meta of the
       current ranking page must say "online" + "free" explicitly.
+- [ ] NEW (plan-updater, 2026-07-20): dedicated page/section for the reverse
+      "exe → app" conversion intent — `exe to app` (pos 5.0, 13 imp, 2 clicks)
+      and `exe to app converter` (pos 6.6, 12 imp, 1 click) per today's brief.
+      Neither keyword nor an `exe-to-app`-style slug appears anywhere in the
+      current `platforms.ts`/`ConvertPage` data — this is a genuinely
+      different intent from the `website-to-exe` (forward-direction) hub
+      above and from the Mac-direction `.exe to .app` note in the baseline
+      table. Confirm no existing page already absorbs this traffic before
+      building new content.
 
 ### P1 — competitor comparison (biggest impression pool)
 - [ ] Expand `/blog/webintoapp-alternative-websitetoapp` — add comparison
@@ -43,20 +53,30 @@ for the 500+ imp of `…free` queries sitting at pos 25.
 - [ ] Push `webintoapp free` (67 imp, pos 7.4): section targeting "free
       WebIntoApp alternative" inside the comparison post.
 
-### P2 — free-intent funnel
+### P2 — free-intent funnel (lower priority — not in today's brief's opportunity range)
 - [ ] `/free-website-to-app-converter` landing (or optimize existing free
       trial page) targeting `website to app converter free` +
-      `convert website to app for free` (≈300 imp at pos 25).
+      `convert website to app for free` (≈300 imp at pos 25). Deprioritized
+      2026-07-20: today's official brief's Push-to-Page-1 range is pos 5-15;
+      these sit at pos ~25.5-25.7, outside it.
 
 ### P2 — brand defense
 - [ ] `webtoapp` (pos 9.8): homepage title tag already has brand; add
       "WebToApp" alias in H1/subtitle + org schema alternateName.
 
-### P3 — niche
+### P3 — niche (lowest priority — not in today's brief either)
 - [ ] `html to app` (pos 15.7): blog post "Turn an HTML site into an Android
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-20 (3, plan-updater): reprioritized against today's daily SC brief.
+  All existing P1 tasks (EXE/desktop hub, `exe to app converter online` CTR
+  pass, webintoapp comparison expand + free push) already target keywords in
+  today's brief — left in place. Added a new P1 task for the `exe to app` /
+  `exe to app converter` reverse-conversion cluster (pos 5.0 / 6.6 per
+  today's brief) — no existing page/slug covers this intent. Deprioritized
+  the free-intent funnel (P2) and `html to app` (P3) tasks — both sit
+  outside today's brief's pos 5-15 opportunity window.
 - 2026-07-20 (2): afternoon GSC re-pull confirms baseline; `webintoapp` grew
   to 1,442 imp (pos 6.7) and `web to exe converter` (14 imp, pos 8.5) joins
   the EXE cluster — priorities unchanged, P1s stand.
