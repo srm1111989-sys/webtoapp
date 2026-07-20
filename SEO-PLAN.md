@@ -57,5 +57,8 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-20 (2): afternoon GSC re-pull confirms baseline; `webintoapp` grew
+  to 1,442 imp (pos 6.7) and `web to exe converter` (14 imp, pos 8.5) joins
+  the EXE cluster — priorities unchanged, P1s stand.
 - 2026-07-20: plan created from GSC 30-day pull (this file); wired into the
   nightly plan updater + seo agent.
