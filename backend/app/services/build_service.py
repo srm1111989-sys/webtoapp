@@ -412,23 +412,13 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         _save_build_log(str(build.id), full_log)
         logger.info(f"Build {build.id} failed — log saved ({len(full_log)} chars)")
 
-        # Send build failure email
-        try:
-            from app.utils.email import send_build_failed_email
-            result = await db.execute(select(Order).where(Order.id == build.order_id))
-            order = result.scalar_one_or_none()
-            if order:
-                from app.models.user import User
-                from app.models.app_config import AppConfig as AC
-                user_result = await db.execute(select(User).where(User.id == order.user_id))
-                user = user_result.scalar_one_or_none()
-                app_result = await db.execute(select(AC).where(AC.id == order.app_config_id))
-                app = app_result.scalar_one_or_none()
-                if user and app:
-                    send_build_failed_email(user.email, app.name, order.order_number, build.error_message or "")
-                    logger.info(f"Build failure email sent to {user.email} for {app.name}")
-        except Exception as e:
-            logger.warning(f"Failed to send build failure email: {e}")
+        # NO customer email on failure (operator decision 2026-07-20): failed
+        # builds are auto-requeued on fallback CI providers and almost always
+        # succeed minutes later — customers were getting a scary raw-CI-error
+        # mail followed by "your app is ready" (Lovasecond, 07-19). Failures
+        # stay visible internally via logs + the admin failed_builds check;
+        # terminal cases are handled by support with the saved build log.
+        logger.info(f"Build {build.id} failed — customer email suppressed (auto-requeue expected)")
 
     elif pipeline_status == "running":
         build.status = "building"
