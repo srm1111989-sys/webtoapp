@@ -61,6 +61,12 @@ public class WebViewActivity extends AppCompatActivity {
     private ValueCallback<Uri[]> fileUploadCallback;
     private ActivityResultLauncher<Intent> fileChooserLauncher;
 
+    // HTML5 fullscreen video (onShowCustomView) — without these the player's
+    // fullscreen button silently does nothing (customer report 2026-07-20).
+    private View fullscreenView;
+    private WebChromeClient.CustomViewCallback fullscreenCallback;
+    private int fullscreenPrevSystemUi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -431,6 +437,31 @@ public class WebViewActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                if (fullscreenView != null) { callback.onCustomViewHidden(); return; }
+                fullscreenView = view;
+                fullscreenCallback = callback;
+                fullscreenPrevSystemUi = getWindow().getDecorView().getSystemUiVisibility();
+                view.setBackgroundColor(Color.BLACK);
+                FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+                decor.addView(view, new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT));
+                getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+            }
+
+            @Override
+            public void onHideCustomView() {
+                hideFullscreenView();
+            }
+
+            @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
                                              FileChooserParams fileChooserParams) {
                 if (fileUploadCallback != null) {
@@ -622,10 +653,28 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // Back exits fullscreen video first, then navigates web history.
+        if (fullscreenView != null) {
+            hideFullscreenView();
+            return;
+        }
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    /** Tear down HTML5 fullscreen video (shared by onHideCustomView + back button). */
+    private void hideFullscreenView() {
+        if (fullscreenView == null) return;
+        FrameLayout decor = (FrameLayout) getWindow().getDecorView();
+        decor.removeView(fullscreenView);
+        fullscreenView = null;
+        getWindow().getDecorView().setSystemUiVisibility(fullscreenPrevSystemUi);
+        if (fullscreenCallback != null) {
+            fullscreenCallback.onCustomViewHidden();
+            fullscreenCallback = null;
         }
     }
 
