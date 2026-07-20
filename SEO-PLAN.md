@@ -37,9 +37,10 @@ for the 500+ imp of `…free` queries sitting at pos 25.
 - [ ] Internal-link the hub from homepage footer + /pricing + the 3 desktop blogs.
 - [ ] CTR pass on `exe to app converter online` (pos 5.9): title/meta of the
       current ranking page must say "online" + "free" explicitly.
-- [x] DONE (2026-07-20, agent): dedicated page/section for the reverse
-      "exe → app" conversion intent — `exe to app` (pos 5.0, 13 imp, 2 clicks)
-      and `exe to app converter` (pos 6.6, 12 imp, 1 click) per today's brief.
+- [ ] BLOCKED ON DEPLOY (2026-07-20, agent): dedicated page/section for the
+      reverse "exe → app" conversion intent — `exe to app` (pos 5.0, 13 imp,
+      2 clicks) and `exe to app converter` (pos 6.6, 12 imp, 1 click) per
+      today's brief.
       Confirmed via WebSearch that "exe to app converter online" is a
       genuinely different intent (users wanting to convert an existing
       compiled .exe into an APK) that no existing page/slug covered — the
@@ -59,6 +60,16 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       `/website-to-exe` path would have duplicated/competed with it, so this
       NEW task (genuinely uncovered intent) was executed instead as the
       higher-value topmost actionable item.
+      DEPLOY STATUS: content committed + pushed to `main` (commit d6ce075),
+      but `/opt/webtoapp/deploy.sh` is root-owned mode 600 (unreadable AND
+      unexecutable from this environment) — deploy could not run. Verified
+      the live site is still serving the JS bundle tagged `43ab2e4` (several
+      commits behind); confirmed the new slug is genuinely absent from that
+      bundle (not just relying on the SPA catch-all's 200 for any path).
+      **Needs a human/ops run of deploy.sh with proper permissions** — once
+      deployed, verify `curl -sI https://websitetoapp.app/blog/exe-to-app-converter-guide`
+      returns 200 AND the served JS bundle contains
+      `exe-to-app-converter-guide`, then flip this line to `[x] DONE`.
 
 ### P1 — competitor comparison (biggest impression pool)
 - [ ] Expand `/blog/webintoapp-alternative-websitetoapp` — add comparison
@@ -82,6 +93,12 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-20 (4, agent): built `/blog/exe-to-app-converter-guide` targeting
+  the `exe to app` / `exe to app converter` reverse-intent cluster; committed
+  + pushed (d6ce075). Deploy blocked — `/opt/webtoapp/deploy.sh` is
+  root-owned mode 600, unreadable/unexecutable here. Live bundle still on
+  `43ab2e4`, confirmed new content NOT yet live. Task left `[ ]` with a
+  BLOCKED ON DEPLOY note; flagged for human ops to run deploy.sh.
 - 2026-07-20 (3, plan-updater): reprioritized against today's daily SC brief.
   All existing P1 tasks (EXE/desktop hub, `exe to app converter online` CTR
   pass, webintoapp comparison expand + free push) already target keywords in
