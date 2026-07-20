@@ -52,6 +52,9 @@ public class WebViewActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefresh;
+    // Android 15+ screen-recording detection: mutes audio while the app is being
+    // recorded (part of Screen Capture Protection). Held so we can unregister it.
+    private java.util.function.Consumer<Integer> screenRecordMuteCallback;
     private JSONObject config;
     private JSONObject features;
     private String appUrl;
@@ -148,7 +151,59 @@ public class WebViewActivity extends AppCompatActivity {
                     am.setAllowedCapturePolicy(android.media.AudioAttributes.ALLOW_CAPTURE_BY_NONE);
                 }
             }
+            // Android 15+ can tell an app when its own windows are being screen
+            // recorded. The system recorder captures internal audio at a level no
+            // app can block (ALLOW_CAPTURE_BY_NONE only stops third-party capture
+            // apps), so the honest defence is: the moment a recording starts, mute
+            // the media stream; unmute when it stops. Result on Android 15+: a
+            // recording of a protected app gets a blank screen AND silence.
+            registerScreenRecordingMute();
         }
+    }
+
+    private void registerScreenRecordingMute() {
+        if (android.os.Build.VERSION.SDK_INT < 35) return;  // API 35 = Android 15
+        try {
+            final android.media.AudioManager am =
+                    (android.media.AudioManager) getSystemService(android.content.Context.AUDIO_SERVICE);
+            if (am == null) return;
+            screenRecordMuteCallback = state -> {
+                boolean recording =
+                        state == android.view.WindowManager.SCREEN_RECORDING_STATE_VISIBLE;
+                am.adjustStreamVolume(
+                        android.media.AudioManager.STREAM_MUSIC,
+                        recording ? android.media.AudioManager.ADJUST_MUTE
+                                  : android.media.AudioManager.ADJUST_UNMUTE,
+                        0);
+            };
+            // Registering returns the current state so we mute immediately if a
+            // recording is already in progress when the app opens.
+            int initial = getWindowManager()
+                    .addScreenRecordingCallback(getMainExecutor(), screenRecordMuteCallback);
+            screenRecordMuteCallback.accept(initial);
+        } catch (Throwable t) {
+            // OEM quirk / API surface missing — fail safe, never crash the app.
+            screenRecordMuteCallback = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (screenRecordMuteCallback != null
+                && android.os.Build.VERSION.SDK_INT >= 35) {
+            try {
+                getWindowManager().removeScreenRecordingCallback(screenRecordMuteCallback);
+                // Leave audio unmuted on exit so we never strand the music stream muted.
+                android.media.AudioManager am =
+                        (android.media.AudioManager) getSystemService(android.content.Context.AUDIO_SERVICE);
+                if (am != null) {
+                    am.adjustStreamVolume(android.media.AudioManager.STREAM_MUSIC,
+                            android.media.AudioManager.ADJUST_UNMUTE, 0);
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        super.onDestroy();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
