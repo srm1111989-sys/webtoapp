@@ -1,4 +1,4 @@
-# Last updated: 2026-07-20 by plan-updater based on SC data
+# Last updated: 2026-07-21 by plan-updater based on SC data
 # WebsiteToApp.app — SEO Plan (created 2026-07-20 from Search Console data)
 
 Nightly-updated by the SEO agent (plan updater appends dated entries; agent
@@ -93,6 +93,18 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-21 (plan-updater): reprioritized against today's daily SC brief.
+  All 6 Push-to-Page-1 targets (`exe to app` pos 5.0, `exe to app converter
+  online` pos 5.9, `webtoexe` pos 6.1, `webintoapp` pos 6.7 / 1,411 imp / 23
+  clicks, `webintoapp free` pos 7.3, `website to exe converter` pos 7.4)
+  remain covered by the existing P1 tasks (EXE/desktop hub + CTR pass, the
+  `/blog/exe-to-app-converter-guide` post added 07-20, and the webintoapp
+  comparison expand/free-push tasks) — no new page task added. Deploy status
+  for `/blog/exe-to-app-converter-guide` is unchanged from 07-20: still
+  BLOCKED ON DEPLOY (`/opt/webtoapp/deploy.sh` root-owned mode 600), still
+  needs human ops to run it. The P2 free-intent funnel and P3 `html to app`
+  tasks remain outside today's brief's pos 5-15 window — left deprioritized,
+  no change. No other undone tasks target keywords outside today's brief.
 - 2026-07-20 (4, agent): built `/blog/exe-to-app-converter-guide` targeting
   the `exe to app` / `exe to app converter` reverse-intent cluster; committed
   + pushed (d6ce075). Deploy blocked — `/opt/webtoapp/deploy.sh` is
