@@ -262,13 +262,30 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     # project_info and causes processReleaseGoogleServices to fail with "Missing project_info object".
     if app_config.firebase_config:
         fc = app_config.firebase_config
-        if isinstance(fc, dict) and "project_info" in fc and "client" in fc:
+        # The config may be stored either as the raw google-services.json (project_info +
+        # client at the top level) OR, as the wizard saves it, wrapped as
+        # {"google_services_json": "<json string>", "server_key": ...}. Accept both and
+        # always pass the raw google-services.json content to CI (it writes it to
+        # app/google-services.json). server_key is legacy/ignored.
+        gs = None
+        if isinstance(fc, dict):
+            if "project_info" in fc and "client" in fc:
+                gs = fc
+            elif fc.get("google_services_json"):
+                raw = fc["google_services_json"]
+                try:
+                    parsed = json.loads(raw) if isinstance(raw, str) else raw
+                    if isinstance(parsed, dict) and "project_info" in parsed and "client" in parsed:
+                        gs = parsed
+                except (json.JSONDecodeError, TypeError):
+                    gs = None
+        if gs:
             variables["FIREBASE_ENABLED"] = "true"
-            variables["FIREBASE_CONFIG"] = json.dumps(fc)
+            variables["FIREBASE_CONFIG"] = json.dumps(gs)
         else:
             logger.warning(
-                f"Skipping Firebase for {app_config.name}: firebase_config missing project_info/client "
-                f"(user likely pasted the web SDK snippet instead of google-services.json)"
+                f"Skipping Firebase for {app_config.name}: firebase_config has no valid google-services.json "
+                f"(missing project_info/client — user likely pasted the web SDK snippet)"
             )
 
     # AdMob
