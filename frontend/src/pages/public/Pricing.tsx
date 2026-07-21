@@ -363,7 +363,14 @@ export default function Pricing() {
 
       {/* Desktop Plans */}
       <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4 bg-gray-50">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Desktop App Plans</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Desktop App Plans</h2>
+        <p className="text-center text-gray-500 text-sm mb-8">
+          Want to turn your website into a Windows .exe? See our{' '}
+          <Link to="/convert/website-to-exe" className="text-primary-600 hover:underline font-medium">
+            free website to EXE converter
+          </Link>{' '}
+          guide.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
           {/* Desktop Free Plan */}
           {desktopFreePlan && (

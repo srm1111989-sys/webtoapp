@@ -30,10 +30,14 @@ export default function ConvertPage() {
   const platform = platforms.find((p) => p.slug === cleanSlug)
 
   useSEO({
-    title: platform
-      ? `Convert ${platform.displayName} Website to App - No Coding Required`
-      : 'Convert Website to App',
-    description: platform?.description,
+    title: !platform
+      ? 'Convert Website to App'
+      : cleanSlug === 'website-to-exe'
+        ? 'Free Website to EXE Converter Online - No Coding Required'
+        : `Convert ${platform.displayName} Website to App - No Coding Required`,
+    description: cleanSlug === 'website-to-exe'
+      ? 'Convert any website to a free downloadable .exe file online. No coding, no Electron setup required — build your Windows desktop app in minutes.'
+      : platform?.description,
     canonical: platform
       ? `https://websitetoapp.app/convert/${cleanSlug}-to-app`
       : undefined,

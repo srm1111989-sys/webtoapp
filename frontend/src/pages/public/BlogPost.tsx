@@ -37,7 +37,7 @@ function getClusterLinks(slug: string, category: string): ClusterLink[] {
   if (/push.?notif/.test(slug)) {
     links.push({ label: 'Push Notifications Guide', href: '/blog/push-notifications-for-mobile-app', type: 'blog' })
   }
-  if (/exe|desktop|windows/.test(slug)) {
+  if (/exe|desktop|windows/.test(slug) || slug === 'website-to-app-converter-complete-guide-2026') {
     links.push({ label: 'Website to EXE Converter', href: '/convert/website-to-exe', type: 'platform' })
     links.push({ label: 'Website to Windows Desktop App', href: '/blog/website-to-windows-desktop-app', type: 'blog' })
   }

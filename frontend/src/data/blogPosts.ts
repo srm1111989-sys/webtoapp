@@ -1061,7 +1061,7 @@ After payment, the Windows build is generated automatically. Download the .exe i
 
 ## Conclusion
 
-Desktop apps aren't going away. With WebsiteToApp, you can offer your users both mobile and desktop experiences from a single website. [Start building your desktop app today](/).
+Desktop apps aren't going away. With WebsiteToApp, you can offer your users both mobile and desktop experiences from a single website. Read our full [website to EXE converter](/convert/website-to-exe) guide, or [start building your desktop app today](/).
 `,
   },
   {
@@ -10471,7 +10471,7 @@ Choose which of the 40+ features to enable:
 
 Select your target platform:
 - **Android** → generates a signed APK + AAB file ready for Google Play
-- **Windows** → generates a .exe installer with system tray, custom window, and offline support
+- **Windows** → generates a .exe installer with system tray, custom window, and offline support. See our dedicated [website to EXE converter](/convert/website-to-exe) guide for the full walkthrough.
 
 ### Step 6: Pay and build
 

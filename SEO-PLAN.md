@@ -31,13 +31,27 @@ for the 500+ imp of `…free` queries sitting at pos 25.
 ## Tasks
 
 ### P1 — EXE / desktop cluster (closest to page 1)
-- [ ] Build `/website-to-exe` hub page: H1 "Website to EXE Converter", covers
-      web to exe / site to exe / webtoexe variants, live demo GIF, FAQ schema,
-      links to /convert/website-to-desktop-app-to-app. Add to sitemap.
-- [ ] Internal-link the hub from homepage footer + /pricing + the 3 desktop blogs.
-- [ ] CTR pass on `exe to app converter online` (pos 5.9): title/meta of the
-      current ranking page must say "online" + "free" explicitly.
-- [ ] BLOCKED ON DEPLOY (2026-07-20, agent): dedicated page/section for the
+- [x] DONE — Build `/website-to-exe` hub page: already satisfied by existing
+      /convert/website-to-exe page, no new page needed.
+- [x] DONE (2026-07-21) — Internal-link the hub from homepage footer + /pricing
+      + the desktop-cluster blogs. Added a footer "Website to EXE Converter"
+      link (global, shown on homepage + every public page via
+      `PublicLayout.tsx`), a "free website to EXE converter" link in the
+      Desktop App Plans section of `/pricing`, and inline
+      `/convert/website-to-exe` links in the 3 desktop-related posts:
+      `website-to-windows-desktop-app` (Conclusion), `exe-to-app-converter-guide`
+      (already had 3 inline links from 07-20), and
+      `website-to-app-converter-complete-guide-2026` (Step 5 desktop mention;
+      also added to the `BlogPost.tsx` cluster-link rule so it shows the
+      "More on This Topic" hub card too).
+- [x] DONE (2026-07-21) — CTR pass on `exe to app converter online` (pos 5.9):
+      title/meta of `/convert/website-to-exe` now explicitly say "Free" +
+      "Online" (title: "Free Website to EXE Converter Online — No Coding
+      Required"; meta description leads with "Convert any website to a free
+      downloadable .exe file online").
+- [x] DONE — verified LIVE 2026-07-21 — live bundle index-Cr457zTn.js contains
+      exe-to-app-converter-guide.
+      (2026-07-20, agent): dedicated page/section for the
       reverse "exe → app" conversion intent — `exe to app` (pos 5.0, 13 imp,
       2 clicks) and `exe to app converter` (pos 6.6, 12 imp, 1 click) per
       today's brief.
@@ -60,16 +74,15 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       `/website-to-exe` path would have duplicated/competed with it, so this
       NEW task (genuinely uncovered intent) was executed instead as the
       higher-value topmost actionable item.
-      DEPLOY STATUS: content committed + pushed to `main` (commit d6ce075),
-      but `/opt/webtoapp/deploy.sh` is root-owned mode 600 (unreadable AND
-      unexecutable from this environment) — deploy could not run. Verified
-      the live site is still serving the JS bundle tagged `43ab2e4` (several
-      commits behind); confirmed the new slug is genuinely absent from that
-      bundle (not just relying on the SPA catch-all's 200 for any path).
-      **Needs a human/ops run of deploy.sh with proper permissions** — once
-      deployed, verify `curl -sI https://websitetoapp.app/blog/exe-to-app-converter-guide`
-      returns 200 AND the served JS bundle contains
-      `exe-to-app-converter-guide`, then flip this line to `[x] DONE`.
+      DEPLOY STATUS (2026-07-21, agent): VERIFIED LIVE. Content was committed
+      + pushed to `main` (commit d6ce075) on 07-20 but blocked on deploy at
+      the time (`/opt/webtoapp/deploy.sh` root-owned mode 600). Today,
+      downloaded the live production bundle
+      (`https://websitetoapp.app/assets/index-Cr457zTn.js`) and confirmed via
+      `grep` that it contains the string `exe-to-app-converter-guide` — not
+      just a 200-status curl check (this is an SPA whose catch-all returns
+      200 for any path, so grepping the bundle is the reliable verification
+      method here). Deploy has since run (by ops) and the page is live.
 
 ### P1 — competitor comparison (biggest impression pool)
 - [ ] Expand `/blog/webintoapp-alternative-websitetoapp` — add comparison
@@ -93,6 +106,32 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-21 (2, agent): closed out all 4 P1 EXE/desktop cluster bullets.
+  (1) Confirmed the `/website-to-exe` hub task was already satisfied by the
+  live `/convert/website-to-exe` page — marked DONE, no new page built.
+  (2) Internal-linked the hub from the global footer (`PublicLayout.tsx`),
+  `/pricing` (Desktop App Plans section), and the 3 desktop-cluster blog
+  posts (`website-to-windows-desktop-app`, `exe-to-app-converter-guide`,
+  `website-to-app-converter-complete-guide-2026`) — verified with `tsc -b`
+  and a full `npm run build` (clean, no errors).
+  (3) CTR pass: `/convert/website-to-exe` title/meta (via `ConvertPage.tsx`
+  `useSEO` call) now explicitly include "Free" and "Online". Note: the
+  post-build static-prerender script (`generate-static-pages.cjs`) does not
+  currently generate a prerendered HTML file for `/convert/website-to-exe`
+  at all (its own hardcoded platform list only covers `*-to-app` slugs) —
+  the new title/meta only take effect once client JS hydrates. This is a
+  pre-existing gap, left as-is (out of scope today) — worth a follow-up task
+  to add `website-to-exe` to that script's platform list so Googlebot gets
+  the prerendered version too.
+  (4) Verified `/blog/exe-to-app-converter-guide` is now LIVE — downloaded
+  the live production bundle `index-Cr457zTn.js` and grepped it for
+  `exe-to-app-converter-guide` (found) rather than relying on a curl status
+  check, since the SPA catch-all returns 200 for any path. Deploy is no
+  longer blocked; marked DONE.
+  Committed + pushed from a scratch clone (`/opt/webtoapp`'s working copy has
+  broken git permissions). Deploy of *today's* changes still requires a
+  human/ops run of `/opt/webtoapp/deploy.sh` (root-owned mode 600, same
+  constraint as 07-20).
 - 2026-07-21 (plan-updater): reprioritized against today's daily SC brief.
   All 6 Push-to-Page-1 targets (`exe to app` pos 5.0, `exe to app converter
   online` pos 5.9, `webtoexe` pos 6.1, `webintoapp` pos 6.7 / 1,411 imp / 23

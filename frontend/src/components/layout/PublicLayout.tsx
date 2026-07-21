@@ -76,6 +76,7 @@ export default function PublicLayout() {
                 <li><Link to="/features" className="hover:text-white">Features</Link></li>
                 <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
                 <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
+                <li><Link to="/convert/website-to-exe" className="hover:text-white">Website to EXE Converter</Link></li>
               </ul>
             </div>
             <div>
