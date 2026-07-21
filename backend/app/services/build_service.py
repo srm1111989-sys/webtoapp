@@ -105,6 +105,99 @@ def _sanitize_package_name(raw: str) -> str:
     return '.'.join(sanitized) if sanitized else 'com.webtoapp.app'
 
 
+def _generate_app_keystore(app_config: AppConfig) -> tuple[str, str, str]:
+    """Generate a UNIQUE Android signing keystore for one app (PKCS12), save it to the
+    artifacts store, and return (public_url, password, alias). Pure-Python via
+    `cryptography` (the server has no keytool). Each app gets its own random key +
+    password so no two apps share a signing identity — this is the fix for the shared
+    master-keystore exposure. Once generated it is reused for every future build of the
+    app so Play Store updates keep the same signing identity. AGP auto-detects PKCS12,
+    which is exactly what modern keytool produces too, so CI signs with it unchanged."""
+    import secrets
+    import datetime as _dt
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.serialization import pkcs12, BestAvailableEncryption
+    from cryptography import x509
+    from cryptography.x509.oid import NameOID
+
+    password = secrets.token_urlsafe(24)
+    alias = "upload"
+    cn = (app_config.name or "WebsiteToApp")[:60]
+
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, cn)])
+    now = _dt.datetime.utcnow()
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(subject)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(now - _dt.timedelta(days=1))
+        # Play requires the signing cert to remain valid far into the future; 30y matches keytool defaults.
+        .not_valid_after(now + _dt.timedelta(days=365 * 30))
+        .sign(key, hashes.SHA256())
+    )
+    blob = pkcs12.serialize_key_and_certificates(
+        name=alias.encode(),
+        key=key,
+        cert=cert,
+        cas=None,
+        encryption_algorithm=BestAvailableEncryption(password.encode()),
+    )
+    dest = Path("/app/storage/artifacts/keystores/auto")
+    dest.mkdir(parents=True, exist_ok=True)
+    path = dest / f"{app_config.id}.jks"
+    path.write_bytes(blob)
+    try:
+        os.chmod(path, 0o640)
+    except OSError:
+        pass
+    url = f"{settings.app_url}/api/artifacts/keystores/auto/{app_config.id}.jks"
+    logger.info(f"Generated per-app keystore for app {app_config.id} ({cn})")
+    return url, password, alias
+
+
+async def _ensure_app_keystore(app_config: AppConfig, order: Order, db: AsyncSession, platform: str) -> None:
+    """Ensure a PAID Android app is signed with its OWN keystore, not the shared master.
+
+    Forward-safe: never re-keys an app that has already shipped a keystore (that would
+    break its published Play listing) — those are left on master and logged for manual
+    per-app migration. New paid apps get a unique keystore that is persisted and reused
+    for all their future builds."""
+    if platform != "android":
+        return
+    is_free = order.amount == 0 and not (order.order_metadata or {}).get("force_premium")
+    if is_free:
+        return  # free builds don't ship a delivered keystore
+    if app_config.custom_keystore_url:
+        return  # already has its own keystore (user-uploaded or previously auto-generated)
+
+    # Safety: if this app already delivered a (master-signed) keystore in a past build,
+    # it may be published — switching its key now would break Play updates. Keep master.
+    prior = await db.execute(
+        select(Build.id)
+        .join(Order, Build.order_id == Order.id)
+        .where(Order.app_config_id == app_config.id, Build.keystore_url.isnot(None))
+        .limit(1)
+    )
+    if prior.first():
+        logger.warning(
+            f"App {app_config.id} already delivered a master-signed keystore — keeping master to "
+            f"preserve its Play signing identity; needs manual per-app keystore migration."
+        )
+        return
+
+    url, password, alias = _generate_app_keystore(app_config)
+    app_config.custom_keystore_url = url
+    app_config.custom_keystore_password = password
+    app_config.custom_keystore_alias = alias
+    app_config.custom_keystore_private_password = password
+    db.add(app_config)
+    await db.flush()
+
+
 async def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str = "android") -> dict:
     """Convert app config to GitLab CI pipeline variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
@@ -254,6 +347,10 @@ async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "
     app_config = result.scalar_one_or_none()
     if not app_config:
         raise ValueError(f"App config for order {order_id} not found")
+
+    # Give each paid app its own signing keystore (never the shared master) before we
+    # compute the pipeline variables, so the existing custom-keystore path picks it up.
+    await _ensure_app_keystore(app_config, order, db, platform)
 
     variables = await build_pipeline_variables(app_config, order, platform)
 
