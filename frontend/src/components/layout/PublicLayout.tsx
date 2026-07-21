@@ -11,11 +11,11 @@ export default function PublicLayout() {
     <div className="min-h-screen flex flex-col">
       <header className="border-b bg-white sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
-          <div className="flex items-center h-16 gap-8">
+          <div className="flex items-center h-16 gap-3 md:gap-8">
             {/* Logo - Left aligned */}
-            <Link to={accessToken ? '/dashboard' : '/'} className="flex items-center gap-2 text-xl font-bold text-primary-600 hover:text-primary-700 transition">
-              <Smartphone className="w-6 h-6" />
-              <span>WebsiteToApp</span>
+            <Link to={accessToken ? '/dashboard' : '/'} className="flex items-center gap-2 text-lg sm:text-xl font-bold text-primary-600 hover:text-primary-700 transition min-w-0 shrink">
+              <Smartphone className="w-6 h-6 shrink-0" />
+              <span className="truncate">WebsiteToApp</span>
             </Link>
 
             {/* Navigation - Center */}
@@ -28,20 +28,21 @@ export default function PublicLayout() {
             {/* Auth buttons - Right aligned */}
             <div className="flex items-center gap-3 ml-auto">
               {accessToken ? (
-                <Link to="/dashboard" className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-2.5 rounded-lg hover:from-primary-700 hover:to-primary-800 font-medium shadow-lg shadow-primary-200 transition-all">
+                <Link to="/dashboard" className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:from-primary-700 hover:to-primary-800 font-medium shadow-lg shadow-primary-200 transition-all whitespace-nowrap shrink-0">
                   Dashboard
                 </Link>
               ) : (
                 <>
                   <Link to="/login" className="hidden sm:inline text-gray-600 hover:text-gray-900 font-medium transition">Login</Link>
-                  <Link to="/register" className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-2.5 rounded-lg hover:from-primary-700 hover:to-primary-800 font-medium shadow-lg shadow-primary-200 transition-all">
+                  <Link to="/register" className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:from-primary-700 hover:to-primary-800 font-medium shadow-lg shadow-primary-200 transition-all whitespace-nowrap shrink-0">
                     Get Started
                   </Link>
                 </>
               )}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 text-gray-600 hover:text-gray-900"
+                aria-label="Toggle menu"
+                className="md:hidden p-2 text-gray-600 hover:text-gray-900 shrink-0"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
