@@ -96,6 +96,14 @@ jobs:
           }
           HEREDOC
 
+          # Firebase: the google-services gms plugin only activates when
+          # app/google-services.json exists (build.gradle: file("google-services.json").exists()).
+          # GitLab CI wrote this file but the GitHub workflows did not, so push was silently disabled.
+          if [ "${{ inputs.FIREBASE_ENABLED }}" = "true" ] && [ -n "$FIREBASE_CFG" ] && [ "$FIREBASE_CFG" != "{}" ]; then
+            printf '%s' "$FIREBASE_CFG" > app/google-services.json
+            echo "Wrote app/google-services.json for Firebase (enabled)"
+          fi
+
       - name: Process keystore
         run: |
           if [ -n "${{ inputs.CUSTOM_KEYSTORE_URL }}" ]; then
