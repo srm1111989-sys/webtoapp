@@ -154,6 +154,7 @@ class AppConfigResponse(BaseModel):
     description: str | None = None
     icon_url: str | None = None
     splash_url: str | None = None
+    notification_icon_url: str | None = None
     primary_color: str
     secondary_color: str
     status_bar_color: str

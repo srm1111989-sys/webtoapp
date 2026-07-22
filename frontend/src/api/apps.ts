@@ -33,6 +33,14 @@ export const appsApi = {
     })
   },
 
+  uploadNotificationIcon: (id: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return client.post<AppConfig>(`/api/apps/${id}/notification-icon`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
+
   uploadKeystore: (id: string, file: File) => {
     const form = new FormData()
     form.append('file', file)

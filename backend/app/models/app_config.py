@@ -17,6 +17,7 @@ class AppConfig(Base):
     description: Mapped[str | None] = mapped_column(Text)
     icon_url: Mapped[str | None] = mapped_column(String(500))
     splash_url: Mapped[str | None] = mapped_column(String(500))
+    notification_icon_url: Mapped[str | None] = mapped_column(String(500))
     primary_color: Mapped[str] = mapped_column(String(7), default="#2563EB")
     secondary_color: Mapped[str] = mapped_column(String(7), default="#1E40AF")
     status_bar_color: Mapped[str] = mapped_column(String(7), default="#1E3A5F")

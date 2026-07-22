@@ -240,6 +240,15 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
         else:
             logger.warning(f"Invalid splash URL for {app_config.name}: {app_config.splash_url} — skipping")
 
+    # Custom notification small-icon (optional). CI drops it at
+    # res/drawable/ic_stat_notification.png; FCMService resolves it at runtime.
+    if app_config.notification_icon_url:
+        notif_icon_url = app_config.notification_icon_url.replace("http://localhost:8000", settings.app_url)
+        if await _validate_image_url(notif_icon_url):
+            variables["NOTIFICATION_ICON_URL"] = notif_icon_url
+        else:
+            logger.warning(f"Invalid notification icon URL for {app_config.name}: {notif_icon_url} — skipping")
+
     # Feature flags
     features = dict(app_config.features or {})
     features["show_watermark"] = show_watermark

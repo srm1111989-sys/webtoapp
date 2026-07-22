@@ -16,6 +16,8 @@ interface WizardState {
   iconPreview: string | null
   splashFile: File | null
   splashPreview: string | null
+  notificationIconFile: File | null
+  notificationIconPreview: string | null
   primaryColor: string
   secondaryColor: string
   statusBarColor: string
@@ -40,7 +42,7 @@ interface WizardState {
   setExistingOrderId: (id: string | null) => void
   setSelectedPlatforms: (platforms: Platform[]) => void
   setBasicInfo: (data: { name: string; url: string; packageName?: string; versionCode?: number | null; description?: string }) => void
-  setVisuals: (data: Partial<Pick<WizardState, 'primaryColor' | 'secondaryColor' | 'statusBarColor' | 'iconFile' | 'iconPreview' | 'splashFile' | 'splashPreview'>>) => void
+  setVisuals: (data: Partial<Pick<WizardState, 'primaryColor' | 'secondaryColor' | 'statusBarColor' | 'iconFile' | 'iconPreview' | 'splashFile' | 'splashPreview' | 'notificationIconFile' | 'notificationIconPreview'>>) => void
   setFeatures: (features: Record<string, boolean>) => void
   setNavigation: (type: 'none' | 'bottom_nav' | 'drawer', items: NavigationItem[]) => void
   setAdvanced: (data: Partial<Pick<WizardState, 'firebaseConfig' | 'admobConfig' | 'customUserAgent' | 'customKeystoreFile' | 'customKeystoreUrl' | 'customKeystorePassword' | 'customKeystoreAlias' | 'customKeystorePrivatePassword'>>) => void
@@ -63,6 +65,8 @@ const initialState = {
   iconPreview: null,
   splashFile: null,
   splashPreview: null,
+  notificationIconFile: null,
+  notificationIconPreview: null,
   primaryColor: '#2563EB',
   secondaryColor: '#1E40AF',
   statusBarColor: '#1E3A5F',

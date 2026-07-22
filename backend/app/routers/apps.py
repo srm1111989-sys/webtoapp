@@ -166,6 +166,22 @@ async def upload_icon(
     return app_config
 
 
+@router.post("/{app_id}/notification-icon", response_model=AppConfigResponse)
+async def upload_notification_icon(
+    app_id: uuid.UUID,
+    file: UploadFile = File(...),
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    app_config = await get_accessible_app(app_id, user, db, write=True)
+
+    contents = await file.read()
+    url = await upload_file(contents, f"notification-icons/{app_id}", file.filename, file.content_type or "image/png")
+    if url:
+        app_config.notification_icon_url = url
+    return app_config
+
+
 @router.post("/{app_id}/splash", response_model=AppConfigResponse)
 async def upload_splash(
     app_id: uuid.UUID,

@@ -949,6 +949,19 @@ function Step1Visuals() {
     [wizard],
   )
 
+  const onNotificationIconDrop = useCallback(
+    (files: File[]) => {
+      const file = files[0]
+      if (file) {
+        wizard.setVisuals({
+          notificationIconFile: file,
+          notificationIconPreview: URL.createObjectURL(file),
+        })
+      }
+    },
+    [wizard],
+  )
+
   const uploadFiles = useMutation({
     mutationFn: async () => {
       if (!wizard.appId) throw new Error('No app ID')
@@ -957,6 +970,9 @@ function Step1Visuals() {
       }
       if (wizard.splashFile && hasAndroid) {
         await appsApi.uploadSplash(wizard.appId, wizard.splashFile)
+      }
+      if (wizard.notificationIconFile && hasAndroid) {
+        await appsApi.uploadNotificationIcon(wizard.appId, wizard.notificationIconFile)
       }
       await appsApi.update(wizard.appId, {
         primary_color: wizard.primaryColor,
@@ -994,6 +1010,15 @@ function Step1Visuals() {
               preview={wizard.splashPreview}
               onDrop={onSplashDrop}
               hint="1080x1920px recommended"
+            />
+          )}
+
+          {hasAndroid && (
+            <ImageDropzone
+              label="Notification Icon (optional)"
+              preview={wizard.notificationIconPreview}
+              onDrop={onNotificationIconDrop}
+              hint="White, transparent PNG. Android shows push icons as a silhouette, so use a simple monochrome shape (not your full-color logo)."
             />
           )}
 
