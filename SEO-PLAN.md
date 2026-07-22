@@ -85,10 +85,37 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       method here). Deploy has since run (by ops) and the page is live.
 
 ### P1 — competitor comparison (biggest impression pool)
-- [ ] Expand `/blog/webintoapp-alternative-websitetoapp` — add comparison
-      table (price, watermark, build time, desktop EXE support), update date.
-- [ ] Push `webintoapp free` (67 imp, pos 7.4): section targeting "free
-      WebIntoApp alternative" inside the comparison post.
+- [ ] BLOCKED ON DEPLOY (2026-07-22, agent) — Expand `/blog/webintoapp-alternative-websitetoapp`
+      — add comparison table (price, watermark, build time, desktop EXE
+      support), update date.
+      Verified via WebFetch of webintoapp.com/plans that WebIntoApp's free
+      tier shows WebIntoApp's own branding/watermark + own AdMob ads, and its
+      unbranded "Dedicated" plan starts at $89 one-time (not the previously
+      stated $5–$49/month) — corrected pricing claims accordingly. Also
+      confirmed WebIntoApp has **no desktop/.exe option at any tier**
+      (Android/iOS only). Expanded the comparison table (added
+      Watermark/branding and Desktop .exe rows), updated the price rows to
+      the verified figures, added a "WebIntoApp Free Plan: What the 'Free'
+      Really Costs You" section, updated Pricing Comparison + Conclusion, and
+      bumped the post date to 2026-07-22.
+      Internal links: added a cluster-link rule in `BlogPost.tsx` so this
+      post now shows the EXE/desktop cluster links; added an explicit link
+      from `/pricing` (below the WebIntoApp comparison table) and from
+      `/convert/website-to-exe` (Related Guides row) to this post — 2 new
+      direct internal links, plus the pre-existing links from 6 other blog
+      posts and `/alternatives/webintoapp`.
+      Committed + pushed from scratch clone (commit `532233f`, branch
+      `main`). `bash /opt/webtoapp/deploy.sh` failed as expected (root-owned,
+      mode 600, permission denied). Checked live status by downloading the
+      live bundle (`index-bZP3n68X.js`) and grepping for new unique strings
+      (`branding-removal`, `Free tier shows`, etc.) — none present; live
+      bundle is still the pre-change build. **Not yet live** — leaving this
+      task unchecked pending the ops deploy run.
+- [ ] BLOCKED ON DEPLOY (2026-07-22, agent) — Push `webintoapp free` (67 imp,
+      pos 7.4): section targeting "free WebIntoApp alternative" inside the
+      comparison post. Done as part of the same edit/commit above (the new
+      "What the 'Free' Really Costs You" section) — same deploy-blocked
+      status, not yet live.
 
 ### P2 — free-intent funnel (lower priority — not in today's brief's opportunity range)
 - [ ] `/free-website-to-app-converter` landing (or optimize existing free
@@ -106,6 +133,17 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-22 (2, agent): executed the topmost undone tasks (P1 competitor
+  comparison — expand `webintoapp-alternative-websitetoapp` + push
+  `webintoapp free`). Verified WebIntoApp's real free-tier watermark/branding
+  and $89 one-time unbranded pricing via WebFetch of webintoapp.com/plans
+  (corrected a stale $5–$49/month claim), and its total lack of a desktop/
+  .exe option, then expanded the comparison table, added a free-intent
+  section, and cross-linked with the EXE/desktop cluster (`BlogPost.tsx`,
+  `/pricing`, `/convert/website-to-exe`). Committed + pushed from scratch
+  clone (`532233f`). Deploy blocked (`deploy.sh` permission denied, as
+  expected) — confirmed NOT yet live via live-bundle grep, marked both tasks
+  BLOCKED ON DEPLOY rather than DONE.
 - 2026-07-22 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`website to exe converter online free` pos 6.0,
   `webtoexe` pos 6.1, `website to exe converter` pos 6.3, `exe to app converter
