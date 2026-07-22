@@ -95,6 +95,7 @@ public class WebViewActivity extends AppCompatActivity {
         setupLayout();
         setupWebView();
         setupFeatures();
+        requestNotificationPermissionIfNeeded();
 
         webView.loadUrl(appUrl);
     }
@@ -563,6 +564,22 @@ public class WebViewActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void requestNotificationPermissionIfNeeded() {
+        // Android 13+ (API 33) blocks ALL notifications until POST_NOTIFICATIONS is
+        // granted at runtime. FCM push silently fails without it — the registration
+        // token still generates, but no notification is ever delivered. Prompt on
+        // launch when this app actually uses push so delivery can work.
+        if (android.os.Build.VERSION.SDK_INT < 33) return;
+        boolean usesPush = features.optBoolean("push_notifications", false)
+                || features.optBoolean("firebase_notification", false);
+        if (!usesPush) return;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+        }
     }
 
     private void setupFeatures() {
