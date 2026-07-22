@@ -240,20 +240,25 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
         else:
             logger.warning(f"Invalid splash URL for {app_config.name}: {app_config.splash_url} — skipping")
 
-    # Custom notification small-icon (optional). CI drops it at
-    # res/drawable/ic_stat_notification.png; FCMService resolves it at runtime.
+    # Custom notification small-icon (optional): validated here, then carried INSIDE
+    # FEATURES_JSON (not a separate CI variable) because GitHub workflow_dispatch caps
+    # inputs at 25 and we're already at the limit. CI extracts the URL from FEATURES_JSON,
+    # drops it at res/drawable/ic_stat_notification.png; FCMService resolves it at runtime.
+    notif_icon_url = None
     if app_config.notification_icon_url:
-        notif_icon_url = app_config.notification_icon_url.replace("http://localhost:8000", settings.app_url)
-        if await _validate_image_url(notif_icon_url):
-            variables["NOTIFICATION_ICON_URL"] = notif_icon_url
+        candidate = app_config.notification_icon_url.replace("http://localhost:8000", settings.app_url)
+        if await _validate_image_url(candidate):
+            notif_icon_url = candidate
         else:
-            logger.warning(f"Invalid notification icon URL for {app_config.name}: {notif_icon_url} — skipping")
+            logger.warning(f"Invalid notification icon URL for {app_config.name}: {candidate} — skipping")
 
     # Feature flags
     features = dict(app_config.features or {})
     features["show_watermark"] = show_watermark
     features["trial_days"] = trial_days
     features["purchase_url"] = purchase_url
+    if notif_icon_url:
+        features["notification_icon_url"] = notif_icon_url
     # Free apps only: carry the order id so the app can send an anonymous
     # 'app_open' analytics ping and check its paid entitlement at launch
     # (paid apps omit it and never phone home).
