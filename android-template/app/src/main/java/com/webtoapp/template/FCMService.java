@@ -54,8 +54,13 @@ public class FCMService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
+        // Custom notification icon if the build shipped one (res/drawable/ic_stat_notification),
+        // otherwise a generic fallback. Resolved at runtime so the drawable stays optional.
+        int smallIcon = getResources().getIdentifier("ic_stat_notification", "drawable", getPackageName());
+        if (smallIcon == 0) smallIcon = android.R.drawable.ic_dialog_info;
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(smallIcon)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
