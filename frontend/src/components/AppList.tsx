@@ -235,7 +235,7 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
                 </Link>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                <div className="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto sm:shrink-0 self-end sm:self-auto">
                   {canEdit && (
                     <Link
                       to={`/apps/${app.id}/edit`}
