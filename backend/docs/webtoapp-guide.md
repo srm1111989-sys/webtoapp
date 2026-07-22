@@ -8,7 +8,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 
 | Plan | Price | Builds |
 |------|-------|--------|
-| Free (Android or Desktop) | $0 | ONE free build per account (lifetime), watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
+| Free (Android or Desktop) | $0 | ONE free build per website, up to 2 websites per account (lifetime), watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
 | Premium Android App | $25 one-time | Modify + rebuild up to 3× per month |
 | Premium Desktop App | $25 one-time | Modify + rebuild up to 3× per month |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
@@ -146,7 +146,7 @@ Without this, Google Play will reject updates due to signature mismatch (differe
 
 ## Build Limits & Rebuilds
 
-* **Free plan**: ONE successful build per account, lifetime (failed builds never count against you). Free apps show a small watermark bar and run for a 15-day trial; after that the installed app pauses with a notice until the app is upgraded from the dashboard — paying unlocks the already-installed app instantly, no reinstall needed.
+* **Free plan**: ONE successful build per website, and up to 2 free websites per account (lifetime; failed builds never count against you). A second build on the same website, or a 3rd free website, requires upgrading. Free apps show a small watermark bar and run for a 15-day trial; after that the installed app pauses with a notice until the app is upgraded from the dashboard — paying unlocks the already-installed app instantly, no reinstall needed.
 * **Paid plans**: edit your app and rebuild up to 3 times per calendar month (the initial build does not count; the counter resets on the 1st). Failed builds never count.
 * Each rebuild generates a freshly signed APK/AAB with your latest settings.
 * Need more rebuilds in a month? Contact support@websitetoapp.app.
