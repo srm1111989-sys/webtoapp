@@ -30,6 +30,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 ### Branding & Appearance
 * Custom app name and package name (bundle ID)
 * Custom launcher icon (uploaded by user)
+* **Custom notification icon** — in the app builder's **Visuals** step, upload a monochrome white-on-transparent PNG as "Notification Icon (optional)" to set the small icon shown on Android push notifications. Android renders notification icons as a silhouette, so use a simple monochrome shape, not a full-color logo. If none is set, a default icon is used. Android only; rebuild the app after uploading.
 * Custom splash screen with animation
 * Custom loading indicator / progress bar
 * Custom primary color / theme
