@@ -86,4 +86,35 @@ public class JavaScriptBridge {
         Intent intent = new Intent(context, QRScannerActivity.class);
         context.startActivity(intent);
     }
+
+    /**
+     * Hand the NATIVE Android FCM registration token to the web page. A WebView
+     * cannot generate a token with the Firebase Web SDK (getToken()), so the page
+     * asks the native layer for the device token and stores it server-side to send
+     * per-user targeted push. Async — the token is delivered to a JS callback:
+     *   window.WebToApp.getFCMToken('onFcmToken');
+     *   window.onFcmToken = function (token, error) { ... };
+     * `error` is empty on success; non-empty (e.g. "firebase_not_available") if
+     * Firebase isn't configured for this app (no google-services.json).
+     */
+    @JavascriptInterface
+    public void getFCMToken(final String callback) {
+        try {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(task -> {
+                        String token = (task.isSuccessful() && task.getResult() != null) ? task.getResult() : "";
+                        String error = task.isSuccessful() ? "" : String.valueOf(task.getException());
+                        deliverToken(callback, token, error);
+                    });
+        } catch (Throwable t) {
+            deliverToken(callback, "", "firebase_not_available");
+        }
+    }
+
+    private void deliverToken(final String callback, String token, String error) {
+        if (callback == null || callback.isEmpty()) return;
+        final String js = "if (typeof " + callback + " === 'function') { "
+                + callback + "(" + JSONObject.quote(token) + ", " + JSONObject.quote(error) + "); }";
+        webView.post(() -> webView.evaluateJavascript(js, null));
+    }
 }
