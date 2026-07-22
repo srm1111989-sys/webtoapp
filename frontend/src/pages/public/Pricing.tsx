@@ -186,7 +186,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
-                  <span className="text-base font-bold">3-Day Free Trial</span>
+                  <span className="text-base font-bold">15-Day Free Trial</span>
                   <span className="text-xs">(upgrade screen after)</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
@@ -222,7 +222,7 @@ export default function Pricing() {
               <ul className="space-y-2 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span><strong>5 rebuilds/month</strong> per website</span>
+                  <span><strong>3 rebuilds/month</strong> per website</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
@@ -287,7 +287,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span><strong>5 rebuilds/month</strong> per website</span>
+                  <span><strong>3 rebuilds/month</strong> per website</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
@@ -429,7 +429,7 @@ export default function Pricing() {
               <ul className="space-y-2 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span><strong>5 rebuilds/month</strong> per website</span>
+                  <span><strong>3 rebuilds/month</strong> per website</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
@@ -532,7 +532,7 @@ export default function Pricing() {
               {[
                 { feature: 'Android App Price', a: '$99–$299/mo', b: '$16–$60/yr', c: '$39–$99/mo', us: '$25 one-time', highlight: true },
                 { feature: 'Desktop App Price', a: 'Not available', b: 'Not available', c: 'Not available', us: '$25 one-time', highlight: true },
-                { feature: '3-Day Free Trial', a: '✗', b: '✗', c: 'Limited', us: '✓ 2 Free Apps', highlight: false },
+                { feature: '15-Day Free Trial', a: '✗', b: '✗', c: 'Limited', us: '✓ 15 Days', highlight: false },
                 { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'Annual sub', c: 'Monthly sub', us: 'One-time only', highlight: false },
                 { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'Add-on ($)', us: '✓ Included', highlight: false },
                 { feature: 'AdMob Integration', a: '✗', b: '✗', c: '✗', us: '✓ Included', highlight: false },

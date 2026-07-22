@@ -9699,7 +9699,6 @@ All paid plans are **one-time payments** — no monthly subscriptions.
 - **Fast builds** — APK/AAB ready in under 10 minutes
 - **All essential features included** — push notifications, offline, biometrics
 - **AAB support** — ready for Google Play Store (Google requires AAB format since 2021)
-- **No watermark on free plan** — even free builds are clean
 
 ### Cons
 
