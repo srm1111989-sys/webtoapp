@@ -569,6 +569,13 @@ export default function Pricing() {
             </tbody>
           </table>
         </div>
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Considering WebIntoApp specifically? Read our full{' '}
+          <Link to="/blog/webintoapp-alternative-websitetoapp" className="text-primary-600 hover:underline font-medium">
+            WebIntoApp alternative comparison
+          </Link>{' '}
+          — including free-tier watermark differences and desktop .exe support.
+        </p>
 
         {/* Savings Highlight Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto mt-10 sm:mt-14">

@@ -224,6 +224,9 @@ export default function ConvertPage() {
                 <Link to="/pricing" className="hover:text-primary-600">View pricing →</Link>
                 <Link to="/features" className="hover:text-primary-600">All features →</Link>
                 <Link to="/blog/website-to-app-faq" className="hover:text-primary-600">FAQ →</Link>
+                {platform.slug === 'website-to-exe' && (
+                  <Link to="/blog/webintoapp-alternative-websitetoapp" className="hover:text-primary-600">WebIntoApp alternative (no desktop support) →</Link>
+                )}
               </div>
             </div>
           </section>
