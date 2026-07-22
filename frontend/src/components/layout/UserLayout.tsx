@@ -172,7 +172,7 @@ export default function UserLayout() {
 
       {/* ── Top bar ── */}
       <header className="sticky top-0 z-30 md:ml-60 bg-surface/90 backdrop-blur border-b border-line">
-        <div className="flex items-center gap-3 h-14 sm:h-16 px-4 lg:px-6 max-w-[1500px]">
+        <div className="flex items-center gap-3 h-14 sm:h-16 px-4 lg:px-6 max-w-[1500px] mx-auto">
           <Link to="/dashboard" className="md:hidden flex items-center gap-1.5 text-primary-600 font-bold">
             <Smartphone className="w-5 h-5" /> WebsiteToApp
           </Link>
@@ -207,13 +207,13 @@ export default function UserLayout() {
 
       {/* ── Main ── */}
       <div className="md:ml-60">
-        <main className="max-w-[1500px] px-4 py-5 lg:px-6 lg:py-8 min-h-[70vh]">
+        <main className="max-w-[1500px] mx-auto px-4 py-5 lg:px-6 lg:py-8 min-h-[70vh]">
           <Outlet />
         </main>
 
         {/* ── Footer ── */}
         <footer className="mt-8 border-t border-line bg-surface">
-          <div className="max-w-[1500px] px-4 lg:px-6 py-6">
+          <div className="max-w-[1500px] mx-auto px-4 lg:px-6 py-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-primary-600 font-bold">
                 <Smartphone className="w-5 h-5" /> WebsiteToApp
