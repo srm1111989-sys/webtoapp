@@ -61,7 +61,7 @@ const ANDROID_FALLBACK = [
   {
     id: '1', name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0,
     billing_type: 'one_time', max_apps: 5, sort_order: 1, is_active: true, platform: 'android',
-    description: 'Build up to 2 apps with watermark & 15-day trial',
+    description: '1 free build per website (up to 2 websites), watermark & 15-day trial',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, file_upload: false, location_services: false, camera_access: false, onboarding_screen: false, app_shortcut: false, secondary_navigation: false, social_login: false, in_app_update: false, background_location: false, facebook_app_events: false, in_app_purchases: false, in_app_review: false, background_service: false, native_contacts: false, appsflyer: false, custom_media_player: false, offer_card: false, intercom: false, dynamic_app_icon: false, bluetooth_connectivity: false, download_file_manager: false, floating_action_menu: false, revenue_cat: false, native_datastore: false, passcode_lock: false, app_auto_launch: false, advanced_bottom_navigation: false, firebase_notification: false, tap_to_pay: false, aab_output: false, pwa: false, priority_support: false },
   },
   {
@@ -88,7 +88,7 @@ const DESKTOP_FALLBACK = [
   {
     id: '4', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0,
     billing_type: 'one_time', max_apps: 5, sort_order: 4, is_active: true, platform: 'desktop',
-    description: 'Build up to 2 apps with watermark & 15-day trial',
+    description: '1 free build per website (up to 2 websites), watermark & 15-day trial',
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: false, custom_window_size: false, auto_updater: false, native_notifications: false, kiosk_mode: false },
   },
   {
@@ -160,7 +160,7 @@ export default function Pricing() {
           {androidFreePlan && (
             <div className="border-2 border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col bg-white">
               <h3 className="text-xl font-bold mb-1">Free Plan</h3>
-              <p className="text-gray-500 text-sm mb-4">Try before you buy - build up to 2 apps</p>
+              <p className="text-gray-500 text-sm mb-4">Try before you buy - 1 free build per website, up to 2 websites</p>
               <div className="mb-4">
                 <span className="text-3xl font-bold">Free</span>
                 <span className="text-gray-500 text-sm ml-1">forever</span>
@@ -174,7 +174,7 @@ export default function Pricing() {
               <ul className="space-y-2 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span>Build up to <strong>2 apps</strong></span>
+                  <span><strong>1 free build</strong> per website (up to 2 sites)</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
@@ -390,7 +390,7 @@ export default function Pricing() {
               <ul className="space-y-2 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span>Build up to <strong>2 apps</strong></span>
+                  <span><strong>1 free build</strong> per website (up to 2 sites)</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />

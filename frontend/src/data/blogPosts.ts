@@ -9000,7 +9000,7 @@ Built-in QR scanner for restaurant menus, event check-ins, product lookups, and 
 
 | Option | Cost | What You Get |
 |--------|------|-------------|
-| **WebsiteToApp Free Plan** | $0 | Basic WebView app, custom icon, splash screen, 5 free builds |
+| **WebsiteToApp Free Plan** | $0 | Basic WebView app, custom icon, splash screen, 1 free build per website (up to 2 websites) |
 | **WebsiteToApp Starter** | $25/app | Push notifications, offline mode, bottom nav, file downloads |
 | **WebsiteToApp Business** | $40/app | Biometric auth, AdMob, QR scanner, deep linking, all features |
 | **PWA + Bubblewrap** | $0 (DIY) | Basic TWA wrapper, requires developer skills |
@@ -9645,7 +9645,7 @@ We tested and compared 7 of the most popular website-to-app converters to help y
 
 | Tool | Price | Free Plan | Push Notifications | Offline Mode | Custom Code | AAB Support | Ease of Use |
 |------|-------|-----------|-------------------|-------------|-------------|------------|-------------|
-| **WebsiteToApp.app** | $25 | 5 free builds | Yes | Yes | No | Yes | Easiest |
+| **WebsiteToApp.app** | $25 | 1 free build/site (2 sites) | Yes | Yes | No | Yes | Easiest |
 | **AppMaker** | $49–$499/yr | Limited | Yes | Basic | Yes | Yes | Easy |
 | **WebViewGold** | $49 one-time | No | Yes | Yes | Yes (source) | Yes | Medium |
 | **GoNative** | $99–$499/mo | No | Yes | Yes | Yes | Yes | Medium |
@@ -9671,7 +9671,7 @@ We tested and compared 7 of the most popular website-to-app converters to help y
 
 | Plan | Price | What You Get |
 |------|-------|-------------|
-| Free | $0 | 1 free build, basic features |
+| Free | $0 | 1 free build per website (up to 2 sites), basic features |
 | Pro | $25 | Unlimited builds, all features |
 
 All paid plans are **one-time payments** — no monthly subscriptions.
@@ -9695,7 +9695,7 @@ All paid plans are **one-time payments** — no monthly subscriptions.
 
 - **Easiest to use** — no coding, no technical knowledge needed
 - **Cheapest option** — $25 one-time payment, no subscription
-- **5 free builds** — try before you pay
+- **1 free build per website** (up to 2 websites) — try before you pay
 - **Fast builds** — APK/AAB ready in under 10 minutes
 - **All essential features included** — push notifications, offline, biometrics
 - **AAB support** — ready for Google Play Store (Google requires AAB format since 2021)
@@ -9709,7 +9709,7 @@ All paid plans are **one-time payments** — no monthly subscriptions.
 
 ### Verdict
 
-WebsiteToApp.app is the best choice for anyone who wants a professional Android app from their website with zero hassle. The one-time pricing model means no monthly drain on your budget, and the 5 free builds let you test everything before paying.
+WebsiteToApp.app is the best choice for anyone who wants a professional Android app from their website with zero hassle. The one-time pricing model means no monthly drain on your budget, and the free build per website lets you test everything before paying.
 
 ---
 
@@ -10008,7 +10008,7 @@ WebsiteToApp.app's one-time pricing saves you dramatically over subscription-bas
 ## Our Recommendation
 
 ### For non-technical users who want the easiest, cheapest option:
-**[WebsiteToApp.app](https://websitetoapp.app)** — 5 free builds, one-time payment of $25, all features included, no coding, app ready in minutes.
+**[WebsiteToApp.app](https://websitetoapp.app)** — free build per website (up to 2 websites), one-time payment of $25, all features included, no coding, app ready in minutes.
 
 ### For developers who want source code control:
 **WebViewGold** — $49 one-time, full Android Studio project, maximum customization.
