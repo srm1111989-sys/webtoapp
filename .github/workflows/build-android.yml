@@ -23,8 +23,6 @@ on:
         default: ""
       SPLASH_URL:
         default: ""
-      NOTIFICATION_ICON_URL:
-        default: ""
       FEATURES_JSON:
         default: "{}"
       NAVIGATION_ITEMS:
@@ -152,8 +150,9 @@ jobs:
 
       - name: Process notification icon
         run: |
-          if [ -n "${{ inputs.NOTIFICATION_ICON_URL }}" ]; then
-            wget -q "${{ inputs.NOTIFICATION_ICON_URL }}" -O /tmp/notif_raw || true
+          NURL=$(grep -oE '"notification_icon_url":[[:space:]]*"[^"]*"' app/src/main/assets/config.json 2>/dev/null | sed -E 's/.*"notification_icon_url":[[:space:]]*"([^"]*)".*/\\1/')
+          if [ -n "$NURL" ]; then
+            wget -q "$NURL" -O /tmp/notif_raw || true
             if [ -s /tmp/notif_raw ] && file /tmp/notif_raw | grep -qi image; then
               mkdir -p app/src/main/res/drawable
               convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png || true
