@@ -23,6 +23,8 @@ on:
         default: ""
       SPLASH_URL:
         default: ""
+      NOTIFICATION_ICON_URL:
+        default: ""
       FEATURES_JSON:
         default: "{}"
       NAVIGATION_ITEMS:
@@ -147,6 +149,16 @@ jobs:
             convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher.png"
             convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
           done
+
+      - name: Process notification icon
+        run: |
+          if [ -n "${{ inputs.NOTIFICATION_ICON_URL }}" ]; then
+            wget -q "${{ inputs.NOTIFICATION_ICON_URL }}" -O /tmp/notif_raw || true
+            if [ -s /tmp/notif_raw ] && file /tmp/notif_raw | grep -qi image; then
+              mkdir -p app/src/main/res/drawable
+              convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png || true
+            fi
+          fi
 
       - name: Process splash screen
         if: inputs.SPLASH_URL != ''
