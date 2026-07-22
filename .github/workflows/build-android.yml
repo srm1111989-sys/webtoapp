@@ -150,7 +150,7 @@ jobs:
 
       - name: Process notification icon
         run: |
-          NURL=$(grep -oE '"notification_icon_url":[[:space:]]*"[^"]*"' app/src/main/assets/config.json 2>/dev/null | sed -E 's/.*"notification_icon_url":[[:space:]]*"([^"]*)".*/\\1/')
+          NURL=$(grep -oE '"notification_icon_url":[[:space:]]*"[^"]*"' app/src/main/assets/config.json 2>/dev/null | grep -oE 'https?://[^"]*' | head -1)
           if [ -n "$NURL" ]; then
             wget -q "$NURL" -O /tmp/notif_raw || true
             if [ -s /tmp/notif_raw ] && file /tmp/notif_raw | grep -qi image; then
