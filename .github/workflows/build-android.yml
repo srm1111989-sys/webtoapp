@@ -151,11 +151,15 @@ jobs:
       - name: Process notification icon
         run: |
           NURL=$(grep -oE '"notification_icon_url":[[:space:]]*"[^"]*"' app/src/main/assets/config.json 2>/dev/null | grep -oE 'https?://[^"]*' | head -1)
+          echo "NOTIFDIAG: pwd=$(pwd) NURL=[$NURL] cfg_exists=$([ -f app/src/main/assets/config.json ] && echo yes || echo no)"
           if [ -n "$NURL" ]; then
-            wget -q "$NURL" -O /tmp/notif_raw || true
+            wget "$NURL" -O /tmp/notif_raw 2>&1 | tail -3 || true
+            echo "NOTIFDIAG: size=$(stat -c%s /tmp/notif_raw 2>/dev/null || echo 0) type=$(file -b /tmp/notif_raw 2>/dev/null)"
             if [ -s /tmp/notif_raw ] && file /tmp/notif_raw | grep -qi image; then
               mkdir -p app/src/main/res/drawable
-              convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png || true
+              convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png && echo "NOTIFDIAG: converted OK -> $(ls -la app/src/main/res/drawable/ic_stat_notification.png)" || echo "NOTIFDIAG: convert FAILED"
+            else
+              echo "NOTIFDIAG: not-an-image, skipping"
             fi
           fi
 
