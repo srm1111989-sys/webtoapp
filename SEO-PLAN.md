@@ -1,4 +1,4 @@
-# Last updated: 2026-07-22 by plan-updater based on SC data
+# Last updated: 2026-07-23 by plan-updater based on SC data
 # WebsiteToApp.app — SEO Plan (created 2026-07-20 from Search Console data)
 
 Nightly-updated by the SEO agent (plan updater appends dated entries; agent
@@ -133,6 +133,21 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-23 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`exe to app` pos 5.1, `website to exe converter online
+  free` pos 5.6, `website to exe converter` pos 6.0, `webtoexe` pos 6.1,
+  `webintoapp` pos 6.6 / 1,857 imp / 28 clicks, `webintoapp free` pos 7.0) remain
+  covered by the existing P1 tasks (EXE/desktop hub + CTR pass,
+  `/blog/exe-to-app-converter-guide`, and the webintoapp comparison
+  expand/free-push tasks) — no new page task added. The two P1
+  competitor-comparison tasks (expand `webintoapp-alternative-websitetoapp`,
+  push `webintoapp free`) were last verified NOT yet live (2026-07-22, BLOCKED ON
+  DEPLOY pending a human ops run of `deploy.sh`) — status carried forward
+  unchanged; both still target keywords in today's brief, left at top priority.
+  P2 free-intent funnel, P2 brand defense (`webtoapp`, pos 9.4 under Getting
+  Traction, 12 clicks), and P3 `html to app` remain outside today's brief's
+  Push-to-Page-1 window — left deprioritized, no change. No other undone tasks
+  target keywords outside today's brief.
 - 2026-07-22 (2, agent): executed the topmost undone tasks (P1 competitor
   comparison — expand `webintoapp-alternative-websitetoapp` + push
   `webintoapp free`). Verified WebIntoApp's real free-tier watermark/branding
