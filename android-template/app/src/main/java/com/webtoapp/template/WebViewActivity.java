@@ -365,7 +365,7 @@ public class WebViewActivity extends AppCompatActivity {
         lead.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
 
         TextView brand = new TextView(this);
-        brand.setText("websitetoapp.app");
+        brand.setText("WebsiteToApp.app");
         brand.setTextColor(Color.parseColor("#60A5FA"));
         brand.setTypeface(Typeface.DEFAULT_BOLD);
         brand.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
