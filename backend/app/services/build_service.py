@@ -424,6 +424,9 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         elif provider == "github2":
             service = GitHubService(platform=build.platform, account=2)
             is_github = True
+        elif provider == "github3":
+            service = GitHubService(platform=build.platform, account=3)
+            is_github = True
         else:
             service = GitLabService(platform=build.platform)
             is_github = False
@@ -528,6 +531,8 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
             service = GitHubService(platform=build.platform, account=1)
         elif provider == "github2":
             service = GitHubService(platform=build.platform, account=2)
+        elif provider == "github3":
+            service = GitHubService(platform=build.platform, account=3)
         else:
             service = GitLabService(platform=build.platform)
             
@@ -541,11 +546,11 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         # by _failed_providers so we never ping-pong forever. Root cause 2026-07-20:
         # github1 storage filled and silently failed a paid customer build with no
         # reroute — only GitLab quota was self-healed before.
-        if provider in ("github", "github1", "github2") and _is_artifact_quota_failure(full_log):
+        if provider in ("github", "github1", "github2", "github3") and _is_artifact_quota_failure(full_log):
             v = dict(build.variables or {})
             failed = set(v.get("_failed_providers", []))
             failed.add("github1" if provider == "github" else provider)
-            remaining = {"gitlab", "github1", "github2"} - failed
+            remaining = {"gitlab", "github1", "github2", "github3"} - failed
             if build.platform == "ios":
                 remaining -= {"gitlab"}  # iOS never builds on GitLab
             if remaining:

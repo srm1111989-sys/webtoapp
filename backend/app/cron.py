@@ -35,6 +35,7 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     """
     github1 = GitHubService(platform=platform, account=1)
     github2 = GitHubService(platform=platform, account=2)
+    github3 = GitHubService(platform=platform, account=3)
 
     # iOS builds only exist on the GitHub runners (macOS); GitLab's pipeline
     # builds Android, so it must never be offered for iOS.
@@ -42,6 +43,7 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
         candidates = [
             ("github1", github1, lambda: _check_quota_cached("github1", github1.has_quota)),
             ("github2", github2, lambda: _check_quota_cached("github2", github2.has_quota)),
+            ("github3", github3, lambda: _check_quota_cached("github3", github3.has_quota)),
         ]
     else:
         gitlab = GitLabService(platform=platform)
@@ -49,6 +51,7 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
             ("gitlab",   gitlab,  lambda: _check_quota_cached("gitlab",   gitlab.has_quota)),
             ("github1",  github1, lambda: _check_quota_cached("github1",  github1.has_quota)),
             ("github2",  github2, lambda: _check_quota_cached("github2",  github2.has_quota)),
+            ("github3",  github3, lambda: _check_quota_cached("github3",  github3.has_quota)),
         ]
 
     # Ops escape hatch: CI_SKIP_PROVIDERS=github1,gitlab hard-excludes providers.
@@ -158,6 +161,8 @@ async def sync_active_builds():
                         service = GitHubService(platform=build.platform, account=1)
                     elif provider_name == "github2":
                         service = GitHubService(platform=build.platform, account=2)
+                    elif provider_name == "github3":
+                        service = GitHubService(platform=build.platform, account=3)
                     else:
                         service = GitLabService(platform=build.platform)
 

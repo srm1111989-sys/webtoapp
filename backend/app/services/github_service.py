@@ -11,7 +11,10 @@ class GitHubService:
     """GitHub Actions fallback for when GitLab CI quota is exceeded."""
 
     def __init__(self, platform: str = "android", account: int = 1):
-        if account == 2:
+        if account == 3:
+            self.token = settings.github_token_3
+            self.repo = settings.github_repo_3
+        elif account == 2:
             self.token = settings.github_token_2
             self.repo = settings.github_repo_2
         else:
