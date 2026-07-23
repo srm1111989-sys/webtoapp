@@ -85,7 +85,12 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       method here). Deploy has since run (by ops) and the page is live.
 
 ### P1 — competitor comparison (biggest impression pool)
-- [ ] BLOCKED ON DEPLOY (2026-07-22, agent) — Expand `/blog/webintoapp-alternative-websitetoapp`
+- [x] DONE — verified LIVE 2026-07-23 — live bundle index-Df-guIAG.js contains
+      `branding-removal`, `89 one-time`, `Dedicated plan`, and the
+      `What the "Free" Really Costs` heading, confirming the 07-22 expand of
+      `/blog/webintoapp-alternative-websitetoapp` deployed successfully at some
+      point between 07-22 and 07-23 (ops ran deploy.sh in the interim).
+      (2026-07-22, agent): Expand `/blog/webintoapp-alternative-websitetoapp`
       — add comparison table (price, watermark, build time, desktop EXE
       support), update date.
       Verified via WebFetch of webintoapp.com/plans that WebIntoApp's free
@@ -111,11 +116,50 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       (`branding-removal`, `Free tier shows`, etc.) — none present; live
       bundle is still the pre-change build. **Not yet live** — leaving this
       task unchecked pending the ops deploy run.
-- [ ] BLOCKED ON DEPLOY (2026-07-22, agent) — Push `webintoapp free` (67 imp,
-      pos 7.4): section targeting "free WebIntoApp alternative" inside the
-      comparison post. Done as part of the same edit/commit above (the new
-      "What the 'Free' Really Costs You" section) — same deploy-blocked
-      status, not yet live.
+- [x] DONE — verified LIVE 2026-07-23 (same bundle grep as above; the "What
+      the 'Free' Really Costs You" section targeting `webintoapp free` shipped
+      in the same 532233f commit). (2026-07-22, agent): Push `webintoapp free`
+      (67 imp, pos 7.4): section targeting "free WebIntoApp alternative"
+      inside the comparison post. Done as part of the same edit/commit above.
+- [ ] BLOCKED ON DEPLOY (2026-07-23, agent) — Refresh `/alternatives/webintoapp`
+      (dedicated comparison landing page, `competitors.ts` `webintoapp` entry)
+      — this page was NOT touched by the 07-22 blog-post expand and still had
+      stale/inaccurate WebIntoApp pricing (`$16–$60/year` subscription model)
+      that contradicted the freshly-verified facts (confirmed again today via
+      WebFetch of webintoapp.com/plans: WebIntoApp has no annual-subscription
+      tier at all — it's Free (watermarked, WebIntoApp's own branding+ads) or
+      a **$89 one-time** Dedicated plan to unbrand). Also fixed a stale "us"
+      price of `$10 one-time` (actual current price is `$25 one-time` per
+      `Pricing.tsx`/the blog post). Rewrote the `webintoapp` entry in
+      `competitors.ts` (pricing, pros/cons, feature table, verdict,
+      switchReasons) with the correct $89-vs-$25 framing, and wrote a new
+      CTR-focused title/meta (`WebIntoApp Alternative (2026): Free Plan
+      Watermark Costs $89 to Remove`) targeting the `webintoapp` query
+      directly — today's brief flagged this keyword's CTR as unusually low
+      (1.5% at pos 6.6, 1,857 imp) despite the good position, so a sharper,
+      concrete-number hook is the goal, not just accuracy. Also synced the
+      same stale `$16-$60/yr` figure on the homepage competitor-tiles
+      (`Landing.tsx`) and 4 WebIntoApp cells in the `/pricing` "How We
+      Compare" table (`Pricing.tsx`) to the corrected `$89`/`Free or $89+`
+      figures, since both pages link into this cluster and were showing
+      contradictory numbers next to the corrected blog post.
+      Internal links: this page was already linked from the homepage
+      competitor tiles, `/pricing`, and cross-links to/from
+      `/blog/webintoapp-alternative-websitetoapp` (`COMPARISON_BLOG_MAP` +
+      the blog's own "Also compare" links) — no new links needed, existing
+      links now just point at accurate content.
+      Verified `npx tsc -b` clean (no type errors) before commit.
+      Bumped `/alternatives/webintoapp`'s sitemap.xml lastmod to 2026-07-23.
+      Committed + pushed from scratch clone. `bash /opt/webtoapp/deploy.sh`
+      expected to fail (root-owned, mode 600) — not run from here. Left
+      unchecked pending ops deploy + a future bundle-grep to confirm live
+      (do not mark DONE until confirmed, per standing instructions — deploy
+      hasn't had time to run yet).
+      Flag for future consideration (out of scope today): the other 4
+      competitor entries in `competitors.ts` (gonative, median, appsgeyser,
+      appmysite) still reference a stale `$10 one-time` WebsiteToApp price
+      (actual current price is `$25 one-time`) — same class of staleness bug,
+      not fixed today since only `webintoapp` is in today's brief.
 
 ### P2 — free-intent funnel (lower priority — not in today's brief's opportunity range)
 - [ ] `/free-website-to-app-converter` landing (or optimize existing free
@@ -133,6 +177,28 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-23 (2, agent): executed today's #1 brief priority (`webintoapp`, pos
+  6.6, 1,857 imp, 1.5% CTR). First confirmed via live-bundle grep
+  (`index-Df-guIAG.js`) that the 07-22 blog-post expand (commit `532233f`) IS
+  now live — ops ran deploy.sh at some point in the last day — marked both P1
+  competitor-comparison tasks DONE. Then found the topmost *remaining*
+  webintoapp-cluster gap: `/alternatives/webintoapp` (the dedicated comparison
+  landing page, driven by `competitors.ts`) was never touched by the 07-22
+  work and still carried stale/inaccurate WebIntoApp pricing (`$16–$60/year`
+  subscription — re-verified via WebFetch of webintoapp.com/plans that this
+  is wrong; WebIntoApp has no subscription tier, only Free-watermarked or
+  $89-one-time-Dedicated) plus a stale `$10` WebsiteToApp price (actual is
+  $25). Rewrote the `webintoapp` competitor entry (pricing/pros/cons/features/
+  verdict/switchReasons) with correct figures and a new CTR-oriented
+  title/meta calling out the concrete $89-vs-$25 branding-removal cost, since
+  the brief flagged this keyword's CTR as anomalously low for its position.
+  Synced the same corrected figures on the homepage (`Landing.tsx`) and
+  `/pricing` comparison table (`Pricing.tsx`), which both link into this
+  cluster and were showing numbers that contradicted the corrected blog post.
+  `npx tsc -b` clean. Committed + pushed from scratch clone; `deploy.sh`
+  not runnable here (root-owned). Left the new task BLOCKED ON DEPLOY (not
+  yet verified live — too soon to check). Noted a same-class stale-`$10`-price
+  issue on the other 4 competitor entries for a future run.
 - 2026-07-23 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`exe to app` pos 5.1, `website to exe converter online
   free` pos 5.6, `website to exe converter` pos 6.0, `webtoexe` pos 6.1,

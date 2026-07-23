@@ -552,7 +552,7 @@ export default function Landing() {
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
             {[
               { name: 'GoNative', slug: 'gonative', price: '$99-$299/mo' },
-              { name: 'WebIntoApp', slug: 'webintoapp', price: '$16-$60/yr' },
+              { name: 'WebIntoApp', slug: 'webintoapp', price: '$89 to unbrand' },
               { name: 'Median.co', slug: 'median', price: '$99-$299/mo' },
               { name: 'AppsGeyser', slug: 'appsgeyser', price: 'Free + $9.99/mo' },
             ].map((c) => (
