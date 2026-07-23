@@ -365,10 +365,12 @@ public class WebViewActivity extends AppCompatActivity {
         lead.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
 
         TextView brand = new TextView(this);
-        brand.setText("websitetoapp.app");
+        brand.setText("WebsiteToApp.app");
         brand.setTextColor(Color.parseColor("#60A5FA"));
         brand.setTypeface(Typeface.DEFAULT_BOLD);
         brand.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
+        // Tappable brand → opens the site (Play-safe: company link, not a checkout).
+        brand.setOnClickListener(v -> openUrl("https://websitetoapp.app"));
 
         TextView chip = new TextView(this);
         chip.setText("Upgrade ›");
