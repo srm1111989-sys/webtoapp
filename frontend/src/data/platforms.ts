@@ -1676,7 +1676,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'Is there a free plan?',
-        answer: 'Yes — the free plan includes 1 app build with basic features. Premium plans start at $9.99 for additional features like push notifications and custom splash screens.'
+        answer: 'Yes — the free plan includes up to 5 app builds (total, across your websites) with basic features. Premium plans start at $9.99 for additional features like push notifications and custom splash screens.'
       }
     ]
   }

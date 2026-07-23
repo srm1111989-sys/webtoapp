@@ -50,7 +50,7 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
   const apps = (appsData?.apps ?? []).filter((a) => a.status !== 'draft')
   const orders = ordersData?.orders ?? []
   const hasPaidOrder = orders.some((o) => o.amount > 0 && o.status === 'paid')
-  // One free SUCCESSFUL build per account, lifetime.
+  // Up to 5 free SUCCESSFUL builds per account, lifetime (across all websites).
   const freeBuildUsed = orders.some(
     (o) => o.amount === 0 && (o.plan_state === 'free_trial' || o.plan_state === 'free_expired')
   )
@@ -98,7 +98,7 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
   })
 
   const confirmDelete = (appId: string, name: string) => {
-    if (window.confirm(`Delete "${name}"?\n\nThis removes the app from your dashboard. Order history is kept, and your used free build does NOT come back.`)) {
+    if (window.confirm(`Delete "${name}"?\n\nThis removes the app from your dashboard. Order history is kept, and any used free builds do NOT come back.`)) {
       deleteApp.mutate(appId)
     }
   }
@@ -116,7 +116,7 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
           {freeBuildUsed && isFreeUser && (
             <p className="mt-1 text-sm text-amber-600 flex items-center gap-1">
               <AlertTriangle className="w-4 h-4" />
-              Your one free build is used — new apps and rebuilds are on paid plans
+              Free plan includes up to 5 builds across your websites — upgrade to remove the watermark and get monthly rebuilds
             </p>
           )}
         </div>

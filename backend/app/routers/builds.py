@@ -102,39 +102,28 @@ async def trigger_build_endpoint(
             detail="A build for this platform is already in progress. Please wait for it to complete."
         )
 
-    # Build limits (2026-07-22 model):
-    #   free — 1 SUCCESSFUL build per WEBSITE (app), and at most 2 distinct free
-    #          websites per owner, lifetime (failures never count)
+    # Build limits (2026-07-23 model):
+    #   free — 5 SUCCESSFUL builds TOTAL per owner, across ALL their websites,
+    #          lifetime (failures never count). Spend them however — rebuilds of
+    #          one site or across several sites (raised from 1/website + 2 sites
+    #          to give non-subscribers room to test before upgrading).
     #   paid — 3 successful REBUILDS per app per calendar month (the order's
     #          first successful build is not a rebuild; failures never count)
+    FREE_BUILD_LIMIT = 5
     is_free = order.amount == 0
     if is_free:
-        # Quota belongs to the order's OWNER (matters when an editor triggers
-        # a build on a shared workspace).
-        # (a) One free successful build per website (app_config): a second one is
-        #     a rebuild and requires upgrading.
-        this_site_success = await db.execute(
+        # Quota belongs to the order's OWNER (matters when an editor triggers a
+        # build on a shared workspace). Count all successful free builds across
+        # every website the owner has.
+        free_builds_used = await db.execute(
             select(func.count(Build.id))
             .join(Order, Build.order_id == Order.id)
-            .where(Order.app_config_id == order.app_config_id, Order.amount == 0, Build.status == "success")
-        )
-        if (this_site_success.scalar() or 0) >= 1:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Your free build for this website is already used. Upgrade to a paid plan to build again.",
-            )
-        # (b) Lifetime cap of 2 free websites per owner. This website has no
-        #     successful build yet (checked above), so if 2 OTHER free sites
-        #     already do, block the third.
-        free_sites_used = await db.execute(
-            select(func.count(func.distinct(Order.app_config_id)))
-            .join(Build, Build.order_id == Order.id)
             .where(Order.user_id == order.user_id, Order.amount == 0, Build.status == "success")
         )
-        if (free_sites_used.scalar() or 0) >= 2:
+        if (free_builds_used.scalar() or 0) >= FREE_BUILD_LIMIT:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="The free plan covers up to 2 websites. Upgrade to a paid plan to build more.",
+                detail=f"You've used all {FREE_BUILD_LIMIT} free builds. Upgrade to a paid plan to keep building.",
             )
     else:
         from datetime import datetime as _dt, timezone as _tz
