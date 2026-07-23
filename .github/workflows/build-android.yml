@@ -157,6 +157,11 @@ jobs:
               mkdir -p app/src/main/res/drawable app/src/main/res/raw
               convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png || true
               printf '%s\n' '<?xml version="1.0" encoding="utf-8"?>' '<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@drawable/ic_stat_notification" />' > app/src/main/res/raw/keep.xml
+              # Register icon for background/quit FCM notifications (system tray uses manifest meta-data, not FCMService)
+              MF=app/src/main/AndroidManifest.xml
+              if [ -f "" ] && ! grep -q default_notification_icon ""; then
+                sed -i 's#</application>#    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" /></application>#' ""
+              fi
             fi
           fi
 
