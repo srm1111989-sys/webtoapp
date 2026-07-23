@@ -152,7 +152,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
 
     private func addWatermarkBanner() {
         let banner = UILabel()
-        banner.text = "⚡ Built with websitetoapp.app"
+        banner.text = "⚡ Built with WebsiteToApp.app"
         banner.font = .systemFont(ofSize: 12)
         banner.textColor = .white
         banner.textAlignment = .center
