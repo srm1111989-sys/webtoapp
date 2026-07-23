@@ -9000,7 +9000,7 @@ Built-in QR scanner for restaurant menus, event check-ins, product lookups, and 
 
 | Option | Cost | What You Get |
 |--------|------|-------------|
-| **WebsiteToApp Free Plan** | $0 | Basic WebView app, custom icon, splash screen, 1 free build per website (up to 2 websites) |
+| **WebsiteToApp Free Plan** | $0 | All app features, custom icon, splash screen, 5 free builds total (watermark + 15-day trial) |
 | **WebsiteToApp Starter** | $25/app | Push notifications, offline mode, bottom nav, file downloads |
 | **WebsiteToApp Business** | $40/app | Biometric auth, AdMob, QR scanner, deep linking, all features |
 | **PWA + Bubblewrap** | $0 (DIY) | Basic TWA wrapper, requires developer skills |
@@ -9645,7 +9645,7 @@ We tested and compared 7 of the most popular website-to-app converters to help y
 
 | Tool | Price | Free Plan | Push Notifications | Offline Mode | Custom Code | AAB Support | Ease of Use |
 |------|-------|-----------|-------------------|-------------|-------------|------------|-------------|
-| **WebsiteToApp.app** | $25 | 1 free build/site (2 sites) | Yes | Yes | No | Yes | Easiest |
+| **WebsiteToApp.app** | $25 | 5 free builds total | Yes | Yes | No | Yes | Easiest |
 | **AppMaker** | $49–$499/yr | Limited | Yes | Basic | Yes | Yes | Easy |
 | **WebViewGold** | $49 one-time | No | Yes | Yes | Yes (source) | Yes | Medium |
 | **GoNative** | $99–$499/mo | No | Yes | Yes | Yes | Yes | Medium |
@@ -9671,7 +9671,7 @@ We tested and compared 7 of the most popular website-to-app converters to help y
 
 | Plan | Price | What You Get |
 |------|-------|-------------|
-| Free | $0 | 1 free build per website (up to 2 sites), basic features |
+| Free | $0 | 5 free builds total across your websites, all features |
 | Pro | $25 | Unlimited builds, all features |
 
 All paid plans are **one-time payments** — no monthly subscriptions.
@@ -9695,7 +9695,7 @@ All paid plans are **one-time payments** — no monthly subscriptions.
 
 - **Easiest to use** — no coding, no technical knowledge needed
 - **Cheapest option** — $25 one-time payment, no subscription
-- **1 free build per website** (up to 2 websites) — try before you pay
+- **5 free builds total** across your websites — try before you pay
 - **Fast builds** — APK/AAB ready in under 10 minutes
 - **All essential features included** — push notifications, offline, biometrics
 - **AAB support** — ready for Google Play Store (Google requires AAB format since 2021)
@@ -9709,7 +9709,7 @@ All paid plans are **one-time payments** — no monthly subscriptions.
 
 ### Verdict
 
-WebsiteToApp.app is the best choice for anyone who wants a professional Android app from their website with zero hassle. The one-time pricing model means no monthly drain on your budget, and the free build per website lets you test everything before paying.
+WebsiteToApp.app is the best choice for anyone who wants a professional Android app from their website with zero hassle. The one-time pricing model means no monthly drain on your budget, and the free builds let you test everything before paying.
 
 ---
 
@@ -10008,7 +10008,7 @@ WebsiteToApp.app's one-time pricing saves you dramatically over subscription-bas
 ## Our Recommendation
 
 ### For non-technical users who want the easiest, cheapest option:
-**[WebsiteToApp.app](https://websitetoapp.app)** — free build per website (up to 2 websites), one-time payment of $25, all features included, no coding, app ready in minutes.
+**[WebsiteToApp.app](https://websitetoapp.app)** — 5 free builds total across your websites, one-time payment of $25, all features included, no coding, app ready in minutes.
 
 ### For developers who want source code control:
 **WebViewGold** — $49 one-time, full Android Studio project, maximum customization.
@@ -10166,7 +10166,7 @@ If you're searching for a **WebIntoApp alternative**, you've likely tried or hea
 | Feature | WebsiteToApp | WebIntoApp |
 |---------|-------------|-----------|
 | Price to remove watermark | $25 one-time | From $89 one-time (Dedicated plan) |
-| Free tier | ✅ 1 free build/website (up to 2 sites), 15-day trial — watermarked | ✅ Free forever — but watermarked with **WebIntoApp's own company name** + WebIntoApp's own AdMob ads |
+| Free tier | ✅ 5 free builds total, all features, 15-day trial — watermarked | ✅ Free forever — but watermarked with **WebIntoApp's own company name** + WebIntoApp's own AdMob ads |
 | Desktop app / .exe output | ✅ Included — build a Windows **.exe** and Mac desktop app from the same URL | ❌ Not available at any price — Android (APK/AAB) and iOS only, no desktop conversion |
 | Push notifications | ✅ Included | ✅ Included |
 | AdMob ads | ✅ Included (your own account) | ✅ Included on Dedicated plan (your own account); free tier uses WebIntoApp's ads |
@@ -10182,7 +10182,7 @@ If you're searching for a **WebIntoApp alternative**, you've likely tried or hea
 A lot of searchers land here looking for a **free WebIntoApp alternative** — so it's worth being precise about what "free" actually gets you on each platform, since both tools gate branding behind a paywall:
 
 - **WebIntoApp free tier**: displays "Our company name" (WebIntoApp's own branding) on the app and loading screen, plus WebIntoApp's own AdMob ads instead of yours. To remove the watermark and get your own branding, you need the **Dedicated plan starting from $89 one-time**.
-- **WebsiteToApp free tier**: 1 free build per website (up to 2 websites) with a 15-day trial — also watermarked while on the free tier, but the full unlock (no watermark, push notifications, AdMob, biometric auth, offline mode, and more) is a flat **$25 one-time** payment — less than a third of WebIntoApp's $89 branding-removal price.
+- **WebsiteToApp free tier**: 5 free builds total across your websites with a 15-day trial — also watermarked while on the free tier, but the full unlock (no watermark, push notifications, AdMob, biometric auth, offline mode, and more) is a flat **$25 one-time** payment — less than a third of WebIntoApp's $89 branding-removal price.
 - **No desktop option at any price on WebIntoApp**: even on the paid Dedicated plan, WebIntoApp only builds Android and iOS apps. There's no way to get a Windows .exe or Mac desktop build from WebIntoApp at all.
 - **WebsiteToApp desktop**: the same $0 free / $25 one-time structure applies to the desktop app plan — try it free (watermarked), then unlock a fully branded Windows **.exe** or Mac desktop build for $25 one-time, no recurring fee. See the [free website to EXE converter](/convert/website-to-exe) for the dedicated desktop flow.
 
