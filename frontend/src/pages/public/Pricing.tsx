@@ -462,9 +462,10 @@ export default function Pricing() {
           <span className="text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-0.5">BETA</span>
         </div>
         <p className="text-center text-gray-500 text-sm mb-8 max-w-2xl mx-auto">
-          Same price as Android. We generate your iOS app and hand you the unsigned build plus the full Xcode
-          source — <strong>you publish it yourself with your own Apple Developer account</strong>. We do not
-          offer App Store publishing support.
+          Build and test your iOS app for <strong>free</strong> (5 free builds total across your websites, all
+          features, watermark &amp; 15-day trial). When you're ready, upgrade to get the unsigned build plus the
+          full Xcode source — <strong>you publish it yourself with your own Apple Developer account</strong>.
+          Same price as Android. We do not offer App Store publishing support.
         </p>
         <div className="max-w-md mx-auto">
           <div className="border-2 border-gray-200 rounded-xl p-6 flex flex-col bg-white">
