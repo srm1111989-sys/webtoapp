@@ -62,7 +62,7 @@ const ANDROID_FALLBACK = [
     id: '1', name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0,
     billing_type: 'one_time', max_apps: 5, sort_order: 1, is_active: true, platform: 'android',
     description: '5 free builds total across your websites, watermark & 15-day trial',
-    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: false, admob: false, biometric_auth: false, deep_linking: false, offline_mode: false, navigation_menu: false, firebase: false, qr_scanner: false, js_bridge: false, screenshot_prevention: false, file_upload: false, location_services: false, camera_access: false, onboarding_screen: false, app_shortcut: false, secondary_navigation: false, social_login: false, in_app_update: false, background_location: false, facebook_app_events: false, in_app_purchases: false, in_app_review: false, background_service: false, native_contacts: false, appsflyer: false, custom_media_player: false, offer_card: false, intercom: false, dynamic_app_icon: false, bluetooth_connectivity: false, download_file_manager: false, floating_action_menu: false, revenue_cat: false, native_datastore: false, passcode_lock: false, app_auto_launch: false, advanced_bottom_navigation: false, firebase_notification: false, tap_to_pay: false, aab_output: false, pwa: false, priority_support: false },
+    features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: false },
   },
   {
     id: '2', name: 'Paid', slug: 'android-paid', price_inr: 207500, price_usd: 2500,
@@ -89,7 +89,7 @@ const DESKTOP_FALLBACK = [
     id: '4', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0,
     billing_type: 'one_time', max_apps: 5, sort_order: 4, is_active: true, platform: 'desktop',
     description: '5 free builds total across your websites, watermark & 15-day trial',
-    features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: false, custom_window_size: false, auto_updater: false, native_notifications: false, kiosk_mode: false },
+    features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: true, custom_window_size: true, auto_updater: true, native_notifications: true, kiosk_mode: true },
   },
   {
     id: '5', name: 'Paid', slug: 'desktop-paid', price_inr: 207500, price_usd: 2500,
@@ -178,7 +178,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span>Basic features (icon, splash, colors)</span>
+                  <span>All app features included (for testing)</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm text-amber-600">
                   <X className="w-4 h-4 text-amber-500 shrink-0" />
@@ -376,7 +376,7 @@ export default function Pricing() {
           {desktopFreePlan && (
             <div className="border-2 border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col bg-white">
               <h3 className="text-xl font-bold mb-1">Free Plan</h3>
-              <p className="text-gray-500 text-sm mb-4">15-day free trial with basic features</p>
+              <p className="text-gray-500 text-sm mb-4">15-day free trial with all features</p>
               <div className="mb-4">
                 <span className="text-3xl font-bold">Free</span>
                 <span className="text-gray-500 text-sm ml-1">15-day trial</span>
