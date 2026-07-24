@@ -16,10 +16,12 @@ public class JavaScriptBridge {
     private final Context context;
     private final WebView webView;
     private final SharedPreferences prefs;
+    private final AdManager adManager;
 
-    public JavaScriptBridge(Context context, WebView webView) {
+    public JavaScriptBridge(Context context, WebView webView, AdManager adManager) {
         this.context = context;
         this.webView = webView;
+        this.adManager = adManager;
         this.prefs = context.getSharedPreferences("webtoapp_bridge", Context.MODE_PRIVATE);
     }
 
@@ -116,5 +118,24 @@ public class JavaScriptBridge {
         final String js = "if (typeof " + callback + " === 'function') { "
                 + callback + "(" + JSONObject.quote(token) + ", " + JSONObject.quote(error) + "); }";
         webView.post(() -> webView.evaluateJavascript(js, null));
+    }
+
+    // ── AdMob: let the web app trigger full-screen ads and get the rewarded callback ──
+
+    /** Show a rewarded ad; the JS callback fires with true only after the reward is
+     *  earned, false otherwise. Needs the AdMob feature + a Rewarded Ad ID. */
+    @JavascriptInterface
+    public void showRewardedAd(final String callback) {
+        if (adManager != null) {
+            adManager.showRewardedAd(callback);
+        } else if (callback != null && !callback.isEmpty()) {
+            final String js = "if (typeof " + callback + " === 'function') { " + callback + "(false); }";
+            webView.post(() -> webView.evaluateJavascript(js, null));
+        }
+    }
+
+    @JavascriptInterface
+    public void showInterstitial() {
+        if (adManager != null) adManager.showInterstitial();
     }
 }
