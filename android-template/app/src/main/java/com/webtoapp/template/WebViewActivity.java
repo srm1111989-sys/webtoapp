@@ -97,7 +97,24 @@ public class WebViewActivity extends AppCompatActivity {
         setupFeatures();
         requestNotificationPermissionIfNeeded();
 
-        webView.loadUrl(appUrl);
+        webView.loadUrl(buildStartUrl());
+    }
+
+    /** Appends a notification deep-link param (e.g. ?courseId=xxx) when the app was
+     *  opened from a push whose data payload carried type + <type>Id (chat, course, ...). */
+    private String buildStartUrl() {
+        try {
+            android.content.Intent it = getIntent();
+            if (it == null) return appUrl;
+            String type = it.getStringExtra("type");
+            String id = (type != null) ? it.getStringExtra(type + "Id") : null;
+            if (type == null) { type = it.getStringExtra("notif_type"); id = it.getStringExtra("notif_id"); }
+            if (type == null || id == null || id.isEmpty()) return appUrl;
+            String param = type + "Id=" + android.net.Uri.encode(id);
+            return appUrl + (appUrl.contains("?") ? "&" : "?") + param;
+        } catch (Exception e) {
+            return appUrl;
+        }
     }
 
     private void loadConfig() {
