@@ -601,10 +601,25 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
+    private AdManager adManager;
+
     private void setupFeatures() {
-        // JS Bridge
-        if (features.optBoolean("js_bridge", false)) {
-            JavaScriptBridge bridge = new JavaScriptBridge(this, webView);
+        // AdMob — wire it up when enabled; each ad type activates only if its unit
+        // ID is set and the APPLICATION_ID meta-data is present (CI injects it).
+        boolean admobOn = features.optBoolean("admob", false);
+        if (admobOn) {
+            try {
+                adManager = new AdManager(this, webView, config.optJSONObject("admob_config"));
+                adManager.initialize();
+            } catch (Throwable t) {
+                adManager = null;
+            }
+        }
+
+        // JS Bridge (also added when AdMob is on, so the web app can call
+        // WebToApp.showRewardedAd(...) / showInterstitial()).
+        if (features.optBoolean("js_bridge", false) || admobOn) {
+            JavaScriptBridge bridge = new JavaScriptBridge(this, webView, adManager);
             webView.addJavascriptInterface(bridge, "WebToApp");
         }
 
