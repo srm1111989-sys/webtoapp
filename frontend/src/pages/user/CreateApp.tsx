@@ -1737,7 +1737,16 @@ function Step4Rebuild() {
       toast.success('Rebuild started! Check Build Status for progress.')
       navigate(`/orders/${wizard.existingOrderId}`)
     } catch (e: any) {
-      toast.error(e?.response?.data?.detail || 'Failed to start rebuild.')
+      const status = e?.response?.status
+      const detail = e?.response?.data?.detail
+      // 429 = free-build limit (5 total) or monthly rebuild cap reached.
+      // For a free app that's out of credits, guide the user to upgrade.
+      if (status === 429) {
+        toast.error(detail || 'Build limit reached.')
+        if (isFreeApp) navigate('/pricing')
+      } else {
+        toast.error(detail || 'Failed to start rebuild.')
+      }
     } finally {
       setRebuilding(false)
     }
@@ -1775,19 +1784,25 @@ function Step4Rebuild() {
       <h2 className="text-2xl font-bold text-gray-900 mb-2">App Updated!</h2>
       <p className="text-gray-600 mb-8">
         {isFreeApp
-          ? 'Your changes are saved. Upgrade to a paid plan and we build your premium app with these changes — no watermark, no trial.'
+          ? 'Your changes are saved. Rebuild to apply them — free builds are included (watermark + 15-day trial). Upgrade any time for a publish-ready app with no watermark or trial.'
           : 'Your app configuration has been saved. Rebuild to apply the changes.'}
       </p>
       <button
-        onClick={isFreeApp ? handleUpgrade : handleRebuild}
+        onClick={handleRebuild}
         disabled={rebuilding}
-        className={`inline-flex items-center gap-2 px-8 py-4 text-white rounded-xl transition font-semibold text-lg shadow-lg disabled:opacity-60 ${
-          isFreeApp ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700' : 'bg-primary-600 hover:bg-primary-700'
-        }`}
+        className="inline-flex items-center gap-2 px-8 py-4 text-white rounded-xl transition font-semibold text-lg shadow-lg disabled:opacity-60 bg-primary-600 hover:bg-primary-700"
       >
         {rebuilding ? <Loader2 className="w-5 h-5 animate-spin" /> : <RefreshCw className="w-5 h-5" />}
-        {rebuilding ? 'Working…' : isFreeApp ? 'Pay & upgrade to build' : 'Rebuild App'}
+        {rebuilding ? 'Working…' : isFreeApp ? 'Rebuild (free)' : 'Rebuild App'}
       </button>
+      {isFreeApp && (
+        <p className="mt-3 text-sm text-gray-500">
+          <button className="text-amber-600 underline" onClick={handleUpgrade} disabled={rebuilding}>
+            Or upgrade to a paid plan
+          </button>{' '}
+          to remove the watermark and trial.
+        </p>
+      )}
       <p className="mt-4 text-sm text-gray-400">
         You can also rebuild later from your{' '}
         <button className="text-primary-600 underline" onClick={() => navigate(`/orders/${wizard.existingOrderId}`)}>
