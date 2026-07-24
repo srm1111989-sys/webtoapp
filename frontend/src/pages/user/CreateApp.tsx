@@ -1451,6 +1451,11 @@ function Step3Advanced() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Interstitial Ad ID</label>
           <input className={inputClass} value={admobInterstitialId} onChange={(e) => setAdmobInterstitialId(e.target.value)} placeholder="ca-app-pub-xxxxx/xxxxx" />
         </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Rewarded Ad ID</label>
+          <input className={inputClass} value={admobRewardedId} onChange={(e) => setAdmobRewardedId(e.target.value)} placeholder="ca-app-pub-xxxxx/xxxxx" />
+          <p className="mt-1 text-xs text-gray-500">Call <code>WebToApp.showRewardedAd('yourJsCallback')</code> from your site; the callback fires with <code>true</code> only after the reward is earned.</p>
+        </div>
       </CollapsibleSection>
       )}
 
