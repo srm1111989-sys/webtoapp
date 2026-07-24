@@ -173,6 +173,18 @@ jobs:
             convert '/tmp/splash_raw[0]' -resize "1440x2560>" PNG:app/src/main/res/drawable/splash_image.png || true
           fi
 
+      - name: Configure AdMob manifest
+        if: inputs.ADMOB_ENABLED == 'true'
+        run: |
+          MF=app/src/main/AndroidManifest.xml
+          APP_ID=$(printf '%s' '${{ inputs.ADMOB_CONFIG }}' | grep -oE 'ca-app-pub-[0-9]+~[0-9]+' | head -1)
+          if [ -n "$APP_ID" ] && ! grep -q "com.google.android.gms.ads.APPLICATION_ID" "$MF"; then
+            sed -i "s#</application>#    <meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$APP_ID\" /></application>#" "$MF"
+            echo "AdMob APPLICATION_ID set: $APP_ID"
+          else
+            echo "AdMob: no valid app_id (ca-app-pub-...~...) or already set"
+          fi
+
       - name: Build APK
         run: |
           chmod +x ./gradlew
