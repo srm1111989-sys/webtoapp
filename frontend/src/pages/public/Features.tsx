@@ -223,7 +223,7 @@ const allFeatures = [
   {
     icon: Code,
     title: 'JavaScript Bridge',
-    desc: 'Communicate between your website and native app features. Access device info, share content, trigger vibration, and more.',
+    desc: 'Communicate between your website and native app features. Show rewarded/interstitial ads, access device info, share content, trigger vibration, and more.',
     category: 'Advanced',
   },
   {

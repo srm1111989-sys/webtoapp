@@ -8,7 +8,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 
 | Plan | Price | Builds |
 |------|-------|--------|
-| Free (Android or Desktop) | $0 | ONE free build per website, up to 2 websites per account (lifetime), watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
+| Free (Android or Desktop) | $0 | 5 free builds total across all your websites (lifetime), ALL app features included, watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
 | Premium Android App | $25 one-time | Modify + rebuild up to 3× per month |
 | Premium Desktop App | $25 one-time | Modify + rebuild up to 3× per month |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
@@ -57,7 +57,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 
 ### Integrations & APIs
 * **Push Notifications** — Firebase Cloud Messaging (FCM). Requires `google-services.json` from Firebase.
-* **AdMob Ads** — Banner, interstitial, and rewarded ads. Requires AdMob App ID and Ad Unit IDs.
+* **AdMob Ads** — Banner, interstitial, and rewarded ads. Requires AdMob App ID and the matching Ad Unit IDs (App ID + Banner / Interstitial / Rewarded fields in the builder). Rewarded ads are triggered from your website via the JavaScript Bridge: call `WebToApp.showRewardedAd('yourCallback')`, and your global JS function is called with `true` only after the reward is earned (`false` otherwise) — so points are granted only on a completed view. `WebToApp.showInterstitial()` is also available. For tamper-proof reward granting, use AdMob Server-Side Verification (SSV) in addition to the in-app callback.
 * **Firebase Configuration** — Server key and google-services.json for FCM.
 * Camera access
 * Location services (GPS)
@@ -67,7 +67,7 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 * NFC support
 * Bluetooth access
 * Deep linking (custom URL scheme / intent filters)
-* JavaScript Bridge (call native Android functions from web JS)
+* JavaScript Bridge (call native Android functions from web JS — e.g. `WebToApp.showRewardedAd('cb')`, `WebToApp.showInterstitial()`, share, vibrate, device info, storage, QR scan, FCM token)
 * Social sharing
 * Rate app prompt
 * Analytics integration
