@@ -36,6 +36,9 @@ public class AdManager {
     private boolean initialized = false;
     private InterstitialAd interstitialAd;
     private RewardedAd rewardedAd;
+    // Last rewarded-load failure reason, surfaced to the web app so integrators can
+    // tell "not ready yet" from "no fill" / "wrong id" instead of a bare false.
+    private String rewardedError = "";
 
     public AdManager(Activity activity, WebView webView, JSONObject admobConfig) {
         this.activity = activity;
@@ -100,50 +103,67 @@ public class AdManager {
 
     private void preloadRewarded() {
         final String id = admobConfig.optString("rewarded_id", "");
-        if (id.isEmpty()) return;
+        if (id.isEmpty()) { rewardedError = "no_rewarded_id"; return; }
         try {
             RewardedAd.load(activity, id, new AdRequest.Builder().build(),
                     new RewardedAdLoadCallback() {
-                        @Override public void onAdLoaded(@NonNull RewardedAd ad) { rewardedAd = ad; }
-                        @Override public void onAdFailedToLoad(@NonNull LoadAdError e) { rewardedAd = null; }
+                        @Override public void onAdLoaded(@NonNull RewardedAd ad) { rewardedAd = ad; rewardedError = ""; }
+                        @Override public void onAdFailedToLoad(@NonNull LoadAdError e) {
+                            rewardedAd = null;
+                            rewardedError = e != null ? ("load_failed(" + e.getCode() + "): " + e.getMessage()) : "load_failed";
+                            Log.w(TAG, "Rewarded onAdFailedToLoad: " + rewardedError);
+                        }
                     });
         } catch (Throwable e) {
+            rewardedError = "load_exception: " + e.getMessage();
             Log.w(TAG, "Rewarded load failed: " + e.getMessage());
         }
     }
 
+    /** True only when a rewarded ad is loaded and ready to show right now. Lets the
+     *  web app gate its "Watch Ad" button: WebToApp.isRewardedReady(). */
+    public boolean isRewardedReady() {
+        return initialized && rewardedAd != null;
+    }
+
     /**
      * Show a rewarded ad and call back into the web app. The JS callback (a global
-     * function name) is invoked with `true` ONLY after AdMob's onUserEarnedReward
-     * fires, otherwise `false` (not ready / dismissed without reward / failed).
-     * Example JS:  WebToApp.showRewardedAd('onAdReward')
+     * function name) is invoked as callback(rewarded, reason):
+     *   - rewarded === true ONLY after AdMob's onUserEarnedReward fires;
+     *   - otherwise false, with `reason` explaining why (not_initialized / no_rewarded_id
+     *     / not_ready / load_failed(code): msg / dismissed_no_reward / show_failed: msg).
+     * `reason` is "" on success. Existing callbacks that read only the first argument
+     * keep working. Example JS:  WebToApp.showRewardedAd('onAdReward')
      */
     public void showRewardedAd(final String callback) {
         activity.runOnUiThread(() -> {
             if (!initialized || rewardedAd == null) {
+                String reason = !initialized ? "not_initialized"
+                        : (rewardedError.isEmpty() ? "not_ready" : rewardedError);
                 preloadRewarded();
-                invokeJs(callback, false);
+                invokeJs(callback, false, reason);
                 return;
             }
             final boolean[] earned = {false};
             rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                 @Override public void onAdDismissedFullScreenContent() {
                     rewardedAd = null; preloadRewarded();
-                    invokeJs(callback, earned[0]);
+                    invokeJs(callback, earned[0], earned[0] ? "" : "dismissed_no_reward");
                 }
                 @Override public void onAdFailedToShowFullScreenContent(@NonNull AdError e) {
                     rewardedAd = null; preloadRewarded();
-                    invokeJs(callback, false);
+                    invokeJs(callback, false, "show_failed: " + (e != null ? e.getMessage() : ""));
                 }
             });
             rewardedAd.show(activity, rewardItem -> earned[0] = true);
         });
     }
 
-    private void invokeJs(final String callback, final boolean rewarded) {
+    private void invokeJs(final String callback, final boolean rewarded, final String reason) {
         if (callback == null || callback.trim().isEmpty() || webView == null) return;
         final String js = "if (typeof " + callback + " === 'function') { "
-                + callback + "(" + (rewarded ? "true" : "false") + "); }";
+                + callback + "(" + (rewarded ? "true" : "false") + ", "
+                + JSONObject.quote(reason == null ? "" : reason) + "); }";
         activity.runOnUiThread(() -> {
             try { webView.evaluateJavascript(js, null); } catch (Throwable ignored) { }
         });
