@@ -38,7 +38,7 @@ public class FCMService extends FirebaseMessagingService {
                     ? remoteMessage.getNotification().getBody() : body;
         }
 
-        showNotification(title, body);
+        showNotification(title, body, remoteMessage.getData());
     }
 
     @Override
@@ -48,9 +48,16 @@ public class FCMService extends FirebaseMessagingService {
         // Send token to server if needed
     }
 
-    private void showNotification(String title, String body) {
+    private void showNotification(String title, String body, java.util.Map<String, String> data) {
         Intent intent = new Intent(this, LauncherActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // Carry the FCM data payload so a tap deep-links into the web app
+        // (LauncherActivity forwards these extras to WebViewActivity).
+        if (data != null) {
+            for (java.util.Map.Entry<String, String> de : data.entrySet()) {
+                intent.putExtra(de.getKey(), de.getValue());
+            }
+        }
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
