@@ -162,18 +162,27 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       not fixed today since only `webintoapp` is in today's brief.
 
 ### P2 — reinforce "Getting traction" keywords (internal links)
-- [ ] Added 2026-07-24 (plan-updater) — Audit and add contextual internal links
-      from additional blog posts / footer / pricing sections to the pages
-      currently ranking for the three "getting traction" queries flagged in
-      today's brief: `webintoapp` (pos 6.5, 2,155 imp, 32 clicks —
-      `/blog/webintoapp-alternative-websitetoapp` +
-      `/alternatives/webintoapp`), `websitetoapp` (pos 1.5, 17 clicks —
-      homepage/brand), and `webtoapp` (pos 9.4, 12 clicks — homepage brand
-      alias, see P2 brand-defense task below). Goal: reinforce pages already
-      earning clicks rather than only chasing new pos 5-15 opportunities.
-      Not yet checked against existing link inventory — verify what's already
-      linked (the webintoapp comparison post already has several inbound
-      links per the 2026-07-22 task) before adding more, to avoid link-stuffing.
+- [x] DONE (2026-07-24, agent) — Audited the link inventory before adding
+      anything, per the note below: `webintoapp` is already well-reinforced
+      (4 pages link to `/blog/webintoapp-alternative-websitetoapp`: BlogPost.tsx
+      cluster-link rule, ConvertPage.tsx, ComparisonPage.tsx, Pricing.tsx; the
+      cluster-link rule also auto-adds `/alternatives/webintoapp` to every
+      alternative/vs/comparison-tagged blog post) — no link-stuffing added.
+      While auditing, found a real staleness bug instead: Landing.tsx's FAQ
+      schema (`Is WebsiteToApp better than GoNative or WebIntoApp?`) still
+      quoted the old WebIntoApp pricing (`$149+/year`), contradicting the
+      corrected `$89 one-time to unbrand` figure already live elsewhere on
+      the same page (competitor table) and in the blog post/`/alternatives`
+      page — fixed to match. Also executed the P2 brand-defense task below in
+      the same pass since both target the "getting traction" `webtoapp`/
+      `webintoapp` cluster.
+      (Original task text, added 2026-07-24 by plan-updater, preserved for
+      context): Audit and add contextual internal links from additional blog
+      posts / footer / pricing sections to the pages currently ranking for
+      the three "getting traction" queries flagged in today's brief:
+      `webintoapp` (pos 6.5, 2,155 imp, 32 clicks), `websitetoapp` (pos 1.5,
+      17 clicks — homepage/brand), and `webtoapp` (pos 9.4, 12 clicks —
+      homepage brand alias).
 
 ### P2 — free-intent funnel (lower priority — not in today's brief's opportunity range)
 - [ ] `/free-website-to-app-converter` landing (or optimize existing free
@@ -183,14 +192,44 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       these sit at pos ~25.5-25.7, outside it.
 
 ### P2 — brand defense
-- [ ] `webtoapp` (pos 9.8): homepage title tag already has brand; add
-      "WebToApp" alias in H1/subtitle + org schema alternateName.
+- [x] DONE (2026-07-24, agent) — Added `alternateName: ['WebToApp', 'Website
+      to App']` to both the WebSite and SoftwareApplication JSON-LD blocks on
+      the homepage (`Landing.tsx`). For the visible H1/subtitle: rejected an
+      initial `sr-only` (visually-hidden) text approach as hidden-text
+      keyword stuffing, which risks a Google manual action — instead added a
+      natural, visible "WebsiteToApp (also known as WebToApp)" mention in the
+      site-wide footer (`PublicLayout.tsx`), which appears on every public
+      page rather than just the homepage hero.
 
 ### P3 — niche (lowest priority — not in today's brief either)
 - [ ] `html to app` (pos 15.7): blog post "Turn an HTML site into an Android
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-24 (3, agent): checked deploy status of the P1 `/alternatives/webintoapp`
+  refresh first (still not live — grepped the current production bundle
+  `index-DxEduXGR.js`, found the old `$16-$60` figure still present, no new
+  CTR title string — confirmed `deploy.sh` is still root-owned/permission-denied
+  here) — left that task as-is, not re-done, since the content work was
+  already complete and it's genuinely blocked on a human ops deploy run, not
+  on more agent work. With both P1 webintoapp tasks already built (just
+  pending deploy), moved to the next topmost undone task: the P2 "reinforce
+  getting traction" link audit (added earlier today by the plan-updater).
+  Audited the existing link inventory (found `webintoapp` already
+  well-reinforced via the BlogPost.tsx cluster-link rule + 3 other pages) —
+  no new links added to avoid stuffing. Found and fixed a real bug instead:
+  Landing.tsx's FAQ schema still quoted WebIntoApp's old `$149+/year` price,
+  contradicting the corrected `$89 one-time` figure already live elsewhere on
+  the same page. Also executed the P2 brand-defense task (`webtoapp` alias) in
+  the same pass: added `alternateName` to both JSON-LD blocks on the homepage,
+  and a visible (not hidden) "also known as WebToApp" mention in the
+  site-wide footer — deliberately rejected a `sr-only` hidden-text approach
+  first attempted, since invisible keyword stuffing risks a Google manual
+  action. `npx tsc --noEmit` clean on both edited files. Committed + pushed
+  from scratch clone (`/opt/webtoapp`'s local checkout has the standard
+  broken-permissions issue). Not deployable/verifiable live from here
+  (`deploy.sh` blocked) — flagged for ops along with the still-pending
+  `/alternatives/webintoapp` deploy.
 - 2026-07-24 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`exe to app` pos 5.1, `website to exe converter online
   free` pos 5.6, `website to exe converter` pos 6.0, `webtoexe` pos 6.1,

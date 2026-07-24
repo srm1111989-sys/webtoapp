@@ -103,7 +103,7 @@ export default function PublicLayout() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm">
-            &copy; {new Date().getFullYear()} WebsiteToApp. All rights reserved.
+            &copy; {new Date().getFullYear()} WebsiteToApp (also known as WebToApp). All rights reserved.
           </div>
         </div>
       </footer>

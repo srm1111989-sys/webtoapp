@@ -148,7 +148,7 @@ const faqs = [
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you support iOS apps?', a: 'Yes, in beta. We generate an unsigned .ipa plus the complete Xcode source project. You sign and publish it with your own Apple Developer account ($99/yr) — we don\'t provide App Store publishing support. Same price as Android.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
-  { q: 'Is WebsiteToApp better than GoNative or WebIntoApp?', a: 'WebsiteToApp offers 40+ features at a one-time price from $25 - vs GoNative ($99/month) and WebIntoApp ($149+/year). You get more features for less, with no recurring subscription.' },
+  { q: 'Is WebsiteToApp better than GoNative or WebIntoApp?', a: 'WebsiteToApp offers 40+ features at a one-time price from $25 - vs GoNative ($99/month) and WebIntoApp (free with watermark, or $89 one-time to remove branding). You get more features for less, with no recurring subscription.' },
   { q: 'What websites can I convert to an app?', a: 'Any website works - Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebsiteToApp.' },
   { q: 'Will my app be approved by Google Play?', a: 'Yes. We generate a properly signed AAB that meets Google Play guidelines. We also include a compliance checklist to help you submit without rejections.' },
 ]
@@ -169,6 +169,7 @@ export default function Landing() {
           '@id': 'https://websitetoapp.app/#website',
           url: 'https://websitetoapp.app/',
           name: 'WebsiteToApp',
+          alternateName: ['WebToApp', 'Website to App'],
           description: 'Convert any website to a native Android or Windows app in minutes.',
           potentialAction: {
             '@type': 'SearchAction',
@@ -187,6 +188,7 @@ export default function Landing() {
         {
           '@type': 'SoftwareApplication',
           name: 'WebsiteToApp',
+          alternateName: ['WebToApp', 'Website to App'],
           applicationCategory: 'DeveloperApplication',
           operatingSystem: 'Android, Windows',
           offers: { '@type': 'Offer', price: '10', priceCurrency: 'USD' },
