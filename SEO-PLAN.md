@@ -1,4 +1,4 @@
-# Last updated: 2026-07-23 by plan-updater based on SC data
+# Last updated: 2026-07-24 by plan-updater based on SC data
 # WebsiteToApp.app — SEO Plan (created 2026-07-20 from Search Console data)
 
 Nightly-updated by the SEO agent (plan updater appends dated entries; agent
@@ -161,6 +161,20 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       (actual current price is `$25 one-time`) — same class of staleness bug,
       not fixed today since only `webintoapp` is in today's brief.
 
+### P2 — reinforce "Getting traction" keywords (internal links)
+- [ ] Added 2026-07-24 (plan-updater) — Audit and add contextual internal links
+      from additional blog posts / footer / pricing sections to the pages
+      currently ranking for the three "getting traction" queries flagged in
+      today's brief: `webintoapp` (pos 6.5, 2,155 imp, 32 clicks —
+      `/blog/webintoapp-alternative-websitetoapp` +
+      `/alternatives/webintoapp`), `websitetoapp` (pos 1.5, 17 clicks —
+      homepage/brand), and `webtoapp` (pos 9.4, 12 clicks — homepage brand
+      alias, see P2 brand-defense task below). Goal: reinforce pages already
+      earning clicks rather than only chasing new pos 5-15 opportunities.
+      Not yet checked against existing link inventory — verify what's already
+      linked (the webintoapp comparison post already has several inbound
+      links per the 2026-07-22 task) before adding more, to avoid link-stuffing.
+
 ### P2 — free-intent funnel (lower priority — not in today's brief's opportunity range)
 - [ ] `/free-website-to-app-converter` landing (or optimize existing free
       trial page) targeting `website to app converter free` +
@@ -177,6 +191,28 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-24 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`exe to app` pos 5.1, `website to exe converter online
+  free` pos 5.6, `website to exe converter` pos 6.0, `webtoexe` pos 6.1,
+  `webintoapp` pos 6.5 / 2,155 imp / 32 clicks, `webintoapp free` pos 7.0)
+  remain covered by existing tasks — the EXE/desktop cluster + CTR pass and
+  `/blog/exe-to-app-converter-guide` (both DONE/verified live) cover `exe to
+  app`, `website to exe converter`, `website to exe converter online free`,
+  and `webtoexe`; the webintoapp comparison expand + free-push (DONE, verified
+  live 07-23) and the still-open `/alternatives/webintoapp` refresh (BLOCKED ON
+  DEPLOY, 2026-07-23, still the topmost undone task) cover `webintoapp` (by far
+  today's biggest opportunity at 2,155 imp) and `webintoapp free` — no new page
+  task added, no duplicate created. Added a new P2 task to audit/add internal
+  links reinforcing the three "Getting traction" queries (`webintoapp`,
+  `websitetoapp`, `webtoapp`) called out in today's brief, since no existing
+  task explicitly bundled all three for link reinforcement (distinct from the
+  `webtoapp` brand-defense schema/H1 task, which stays as-is). P2 free-intent
+  funnel, P2 brand defense (`webtoapp`), and P3 `html to app` target keywords
+  outside today's brief's Push-to-Page-1 window (or, for `webtoapp`, are
+  already under Getting Traction rather than Push-to-Page-1) — left
+  deprioritized in their existing P2/P3 slots, no reordering needed since they
+  were already below P1. No other undone tasks target keywords outside
+  today's brief.
 - 2026-07-23 (2, agent): executed today's #1 brief priority (`webintoapp`, pos
   6.6, 1,857 imp, 1.5% CTR). First confirmed via live-bundle grep
   (`index-Df-guIAG.js`) that the 07-22 blog-post expand (commit `532233f`) IS
