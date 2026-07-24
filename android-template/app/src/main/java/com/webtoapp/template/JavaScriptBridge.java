@@ -122,16 +122,26 @@ public class JavaScriptBridge {
 
     // ── AdMob: let the web app trigger full-screen ads and get the rewarded callback ──
 
-    /** Show a rewarded ad; the JS callback fires with true only after the reward is
-     *  earned, false otherwise. Needs the AdMob feature + a Rewarded Ad ID. */
+    /** Show a rewarded ad; the JS callback fires as callback(rewarded, reason):
+     *  rewarded is true only after the reward is earned, false otherwise, with
+     *  `reason` explaining a false (e.g. not_ready / load_failed / no_rewarded_id).
+     *  Needs the AdMob feature + a Rewarded Ad ID. */
     @JavascriptInterface
     public void showRewardedAd(final String callback) {
         if (adManager != null) {
             adManager.showRewardedAd(callback);
         } else if (callback != null && !callback.isEmpty()) {
-            final String js = "if (typeof " + callback + " === 'function') { " + callback + "(false); }";
+            final String js = "if (typeof " + callback + " === 'function') { "
+                    + callback + "(false, " + JSONObject.quote("ads_unavailable") + "); }";
             webView.post(() -> webView.evaluateJavascript(js, null));
         }
+    }
+
+    /** True only when a rewarded ad is loaded and ready to show right now. Use this to
+     *  enable/disable the "Watch Ad" button: if (WebToApp.isRewardedReady()) { ... }. */
+    @JavascriptInterface
+    public boolean isRewardedReady() {
+        return adManager != null && adManager.isRewardedReady();
     }
 
     @JavascriptInterface
