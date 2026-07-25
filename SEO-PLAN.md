@@ -121,7 +121,11 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       in the same 532233f commit). (2026-07-22, agent): Push `webintoapp free`
       (67 imp, pos 7.4): section targeting "free WebIntoApp alternative"
       inside the comparison post. Done as part of the same edit/commit above.
-- [ ] BLOCKED ON DEPLOY (2026-07-23, agent) — Refresh `/alternatives/webintoapp`
+- [x] DONE — verified LIVE 2026-07-25 (bundle `index-jp2NR3Hq.js` contains the
+      seoTitle `WebIntoApp Alternative (2026): Free Plan Watermark Costs $89
+      to Remove`, the corrected `$89 one-time` / `$25 one-time` pricing pairs,
+      and the updated pros/cons/switchReasons — confirms ops ran `deploy.sh`
+      since 07-23). (2026-07-23, agent) — Refresh `/alternatives/webintoapp`
       (dedicated comparison landing page, `competitors.ts` `webintoapp` entry)
       — this page was NOT touched by the 07-22 blog-post expand and still had
       stale/inaccurate WebIntoApp pricing (`$16–$60/year` subscription model)
@@ -206,6 +210,50 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-25 (2, agent): confirmed the topmost undone task — `/alternatives/
+  webintoapp` refresh (BLOCKED ON DEPLOY since 07-23) — is now LIVE: grepped
+  the current production bundle (`index-jp2NR3Hq.js`) and found the new
+  seoTitle string, the `$89 one-time`/`$25 one-time` pricing pairs, and the
+  rewritten pros/cons/switchReasons all present, confirming ops ran
+  `deploy.sh` sometime after 07-23. Marked that task DONE.
+  With the webintoapp cluster's known tasks all DONE/live, and per today's
+  brief explicitly flagging `webintoapp` (2,376 imp, pos 6.5) as the system's
+  #1 opportunity, did a fresh accuracy audit across the whole site (not just
+  the already-touched blog post + `/alternatives/webintoapp` + homepage tiles
+  + `/pricing` table) since stale numbers anywhere in this cluster undermine
+  trust/consistency signals for the same query. Found and fixed 4 more stale
+  WebIntoApp price mentions the 07-22/07-23 passes had missed because they
+  live in *other* blog posts' own comparison tables, not the main comparison
+  post:
+  - `website-to-app-converter-complete-guide-2026` — comparison table row +
+    a `### WebIntoApp ($16–$60/year)` subsection heading/body, both still
+    describing a nonexistent annual-subscription model. Corrected to
+    "Free (watermarked) / $89 one-time to unbrand" and rewrote the section
+    body to match the verified free-tier-branding + $89-Dedicated-plan facts.
+  - `convert-wordpress-website-to-android-app` — same stale `$16–$60/year`
+    table cell, corrected the same way.
+  - Homepage (`Landing.tsx`) — a SECOND, separate "Price Comparison" table
+    (below the one already fixed 07-24) still showed WebIntoApp at
+    `$16/yr` / `$60+` 1-year-cost; corrected to `Free (branded)` starting
+    price and renamed the row to "Unbranding Cost: $89 once" (matches the
+    real pricing model instead of a fictitious annual one).
+  - `best-website-to-app-converters-2026` FAQ section — two mentions of
+    WebsiteToApp's own price as a stale "$10" (actual current price is
+    $25 one-time, per `Pricing.tsx`) inside "Can I convert for free?" and
+    "Which supports AdMob?" answers that are exactly the kind of query
+    intent overlapping today's brief's free-intent keywords; corrected both
+    to $25 and added the WebIntoApp $89 contrast to the free-tier answer.
+  Ran `npx tsc -b` clean after all edits (no type errors). Committed + pushed
+  from scratch clone. `bash /opt/webtoapp/deploy.sh` not runnable here
+  (root-owned, mode 600, expected) — left unverified live, noted below.
+  Flag for human: after 4 separate rewrite/expand passes (07-21 CTR title,
+  07-22 content expand, 07-23 dedicated-page refresh, 07-24 link
+  audit+schema) `webintoapp` is still sitting at pos 6.5 / 1.4% CTR despite
+  now being one of the most internally-consistent, well-linked, accurately-
+  priced comparison clusters on the site — further on-page/content work is
+  likely hitting diminishing returns; a link-building/backlink push or an
+  actual SERP screenshot review is probably needed to move it further,
+  similar to the indexchex CTR-stuck pattern.
 - 2026-07-25 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`exe to app` pos 5.1, `website to exe converter online
   free` pos 5.6, `website to exe converter` pos 6.0, `webtoexe` pos 6.1, `exe to

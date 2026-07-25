@@ -5714,13 +5714,13 @@ If you need both Android and iOS with a one-time payment, WebsiteToApp.design co
 A website-to-app converter is a tool that takes your existing website URL and packages it into a mobile app (Android APK/AAB or iOS IPA). Most converters use WebView technology to display your website inside a native app wrapper, adding features like push notifications, offline support, and app store distribution.
 
 ### Can I convert my website to an app for free?
-Yes. WebIntoApp.com offers a free tier, and WebsiteToApp.app offers a free trial. However, free options typically include branding watermarks and limited features. For a production-quality app, expect to pay at least $10.
+Yes. WebIntoApp.com offers a free tier, and WebsiteToApp.app offers a free trial. However, free options typically include branding watermarks and limited features. For a production-quality, unbranded app, expect to pay at least $25 (WebsiteToApp) — WebIntoApp's unbranded Dedicated plan starts at $89.
 
 ### Do I need coding skills to use these tools?
 Most tools on this list (WebsiteToApp.app, Appilix, Appy Pie, AppMySite, BuildFire) require zero coding skills. WebViewGold is the exception, as it provides source code that you need to build using Android Studio or Xcode.
 
 ### Which converter supports AdMob ads?
-WebsiteToApp.app, WebViewGold, WebsiteToApp.design, and Appy Pie all support AdMob integration. WebsiteToApp.app is the most affordable option with full AdMob support (banner, interstitial, and rewarded ads) starting at $10.
+WebsiteToApp.app, WebViewGold, WebsiteToApp.design, and Appy Pie all support AdMob integration. WebsiteToApp.app is the most affordable option with full AdMob support (banner, interstitial, and rewarded ads) starting at $25 one-time.
 
 ### Should I choose a one-time payment or subscription?
 One-time payment tools (WebsiteToApp.app, WebViewGold, WebsiteToApp.design) are more cost-effective long-term. Subscription tools (Appilix, Appy Pie, BuildFire) may offer more features but cost hundreds or thousands of dollars over time. For most small businesses, a one-time payment tool is the smarter financial choice.
@@ -10417,11 +10417,11 @@ Not all converters are equal. Here is an honest comparison of the major players:
 |---|---|---|---|---|
 | **WebsiteToApp** | $25 one-time | 40+ | Yes | Yes (Windows) |
 | GoNative | $99–$299/month | ~20 | Partial | No |
-| WebIntoApp | $16–$60/year | ~15 | Yes | No |
+| WebIntoApp | Free (watermarked) / $89 one-time to unbrand | ~15 | Yes | No |
 | Median.co | $99–$299/month | ~20 | Partial (JS) | No |
 | AppsGeyser | Free + $25 one-time | ~8 | Yes | No |
 
-**Key takeaway:** WebsiteToApp is the only platform offering a one-time payment model with 40+ features and Windows desktop app support. Competitors charge monthly or yearly subscriptions for fewer features.
+**Key takeaway:** WebsiteToApp is the only platform offering a one-time payment model with 40+ features and Windows desktop app support. Competitors charge monthly or yearly subscriptions — or a steep one-time unbranding fee — for fewer features.
 
 ### GoNative ($99–$299/month)
 
@@ -10430,9 +10430,9 @@ GoNative is a developer-focused platform with a powerful JavaScript bridge. It w
 **Best for:** Development agencies building apps for clients.
 **Not ideal for:** Small business owners, solo entrepreneurs, non-developers.
 
-### WebIntoApp ($16–$60/year)
+### WebIntoApp (Free, watermarked / $89 one-time to unbrand)
 
-WebIntoApp is a simple, affordable option for basic app conversions. The annual pricing is reasonable but push notifications are a paid add-on, the free/lower tier shows their watermark, and the total feature count caps at ~15.
+WebIntoApp's free tier never expires, but it ships with WebIntoApp's own branding and ads on your app — not yours. Removing that watermark requires the Dedicated plan starting at $89 one-time. Push notifications are a paid add-on, and the total feature count caps at ~15.
 
 **Best for:** Budget-conscious users who need a basic Android app.
 **Not ideal for:** Anyone who needs push notifications, biometric auth, or AdMob.
@@ -10756,7 +10756,7 @@ Google reviews new apps in 1–3 days. Once approved, your WordPress app is live
 |---|---|---|---|---|
 | **WebsiteToApp** | **$25 one-time** | ✓ Full | ✓ Included | ✓ Yes |
 | GoNative | $99–$299/month | ✓ | ✓ | Partial |
-| WebIntoApp | $16–$60/year | ✓ | Add-on ($) | ✓ Yes |
+| WebIntoApp | Free (watermarked) / $89 one-time to unbrand | ✓ | Add-on ($) | ✓ Yes |
 | Median.co | $99–$299/month | ✓ | JS Bridge | No |
 | AppsGeyser | Free + $25 one-time | Limited | Add-on ($) | ✓ Yes |
 

@@ -494,14 +494,14 @@ export default function Landing() {
               </thead>
               <tbody>
                 {([
-                  { feature: 'Starting Price', a: '$99/mo', b: '$16/yr', c: '$99/mo', us: '$25 once', bold: true },
-                  { feature: '1-Year Total Cost', a: '$1,188+', b: '$60+', c: '$1,188+', us: '$25', bold: true },
+                  { feature: 'Starting Price', a: '$99/mo', b: 'Free (branded)', c: '$99/mo', us: '$25 once', bold: true },
+                  { feature: 'Unbranding Cost', a: 'Included', b: '$89 once', c: 'Included', us: '$25', bold: true },
                   { feature: 'Android App', a: 'Yes', b: 'Yes', c: 'Yes', us: 'Yes', bold: false },
                   { feature: 'Windows Desktop App', a: 'No', b: 'No', c: 'No', us: 'Yes', bold: false },
                   { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: 'Yes Included', bold: false },
                   { feature: 'Biometric Auth', a: 'JS Bridge', b: 'No', c: 'JS Bridge', us: 'Yes Included', bold: false },
                   { feature: 'AdMob / Monetization', a: 'No', b: 'No', c: 'No', us: 'Yes Included', bold: false },
-                  { feature: 'No Watermark', a: 'Yes', b: 'Paid tier', c: 'Yes', us: 'Yes Always', bold: false },
+                  { feature: 'No Watermark', a: 'Yes', b: '$89 one-time', c: 'Yes', us: 'Yes Always', bold: false },
                   { feature: 'No-Code Setup', a: 'Partial', b: 'Yes', c: 'Dev skills', us: 'Yes Wizard', bold: false },
                   { feature: 'Total Features', a: '~20', b: '~15', c: '~20', us: '40+', bold: false },
                 ]).map((row, idx) => (
