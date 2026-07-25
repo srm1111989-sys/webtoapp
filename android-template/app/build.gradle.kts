@@ -93,10 +93,10 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:24.0.0")
 
     // ML Kit for QR scanning
-    implementation("com.google.mlkit:barcode-scanning:17.2.0")
-    implementation("androidx.camera:camera-camera2:1.3.1")
-    implementation("androidx.camera:camera-lifecycle:1.3.1")
-    implementation("androidx.camera:camera-view:1.3.1")
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
+    implementation("androidx.camera:camera-camera2:1.4.1")
+    implementation("androidx.camera:camera-lifecycle:1.4.1")
+    implementation("androidx.camera:camera-view:1.4.1")
 
     // Location
     implementation("com.google.android.gms:play-services-location:21.1.0")
