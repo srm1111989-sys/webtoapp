@@ -65,6 +65,14 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    // 16 KB page size (Google Play): keep native libs uncompressed so
+    // AGP 8.5+/build-tools 35 zipalign them to 16 KB.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
 }
 
 dependencies {
@@ -77,12 +85,12 @@ dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
 
     // Firebase (always included; only active with google-services.json)
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
 
     // AdMob (always included; only active with config)
-    implementation("com.google.android.gms:play-services-ads:23.0.0")
+    implementation("com.google.android.gms:play-services-ads:24.0.0")
 
     // ML Kit for QR scanning
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
