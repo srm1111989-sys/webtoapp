@@ -233,3 +233,25 @@ class GitHubService:
 
             logger.warning(f"Artifact '{artifact_name}' not found in run {run_id}")
             return ""
+
+    async def delete_run_artifacts(self, run_id: int) -> int:
+        """Delete all of a run's artifacts from GitHub to free the account's
+        ~500 MB artifact storage. MUST be called only AFTER the artifacts are
+        downloaded to our server, so builds never fail at Upload on a full acct."""
+        deleted = 0
+        try:
+            async with httpx.AsyncClient(timeout=60) as client:
+                r = await client.get(self._api_url(f"/actions/runs/{run_id}/artifacts"), headers=self.headers)
+                r.raise_for_status()
+                for a in r.json().get("artifacts", []):
+                    try:
+                        d = await client.delete(self._api_url(f"/actions/artifacts/{a['id']}"), headers=self.headers)
+                        if d.status_code in (200, 204):
+                            deleted += 1
+                    except Exception:
+                        pass
+        except Exception as e:
+            logger.warning(f"Could not list/delete artifacts for run {run_id} on {self.repo}: {e}")
+        if deleted:
+            logger.info(f"Deleted {deleted} GitHub artifact(s) for run {run_id} on {self.repo} (freed storage)")
+        return deleted

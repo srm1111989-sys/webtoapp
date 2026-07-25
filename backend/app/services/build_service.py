@@ -491,6 +491,15 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         except Exception as e:
             logger.error(f"Failed to download artifacts for pipeline {pipeline_id}: {e}")
 
+        # After the artifacts are safely on our server, delete them from GitHub to
+        # free the account's ~500 MB artifact storage (otherwise later builds fail
+        # at the Upload step on a full account — see the GH-fallback2 quota alert).
+        if is_github and (build.apk_url or build.aab_url or build.exe_url):
+            try:
+                await service.delete_run_artifacts(pipeline_id)
+            except Exception as e:
+                logger.warning(f"Post-download artifact cleanup failed for pipeline {pipeline_id}: {e}")
+
         # Mark app as active and send build completion email
         try:
             from app.utils.email import send_build_complete_email
