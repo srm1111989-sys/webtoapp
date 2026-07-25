@@ -459,6 +459,27 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
+    /** OAuth / social-login provider hosts that must stay in the WebView (not be
+     *  punted to the system browser) so the sign-in redirect can return into the
+     *  same session. Covers Google/Firebase, Apple, Facebook and common IdPs. */
+    private boolean isAuthHost(String host) {
+        if (host == null) return false;
+        host = host.toLowerCase();
+        return host.equals("accounts.google.com")
+                || host.equals("accounts.youtube.com")
+                || host.equals("apis.google.com")
+                || host.equals("content.googleapis.com")
+                || host.endsWith(".googleusercontent.com")
+                || host.endsWith(".firebaseapp.com")
+                || host.endsWith(".web.app")
+                || host.equals("appleid.apple.com")
+                || host.endsWith(".facebook.com")
+                || host.endsWith(".fbcdn.net")
+                || host.endsWith(".auth0.com")
+                || host.endsWith(".okta.com")
+                || host.endsWith(".microsoftonline.com");
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private void setupWebView() {
         WebSettings settings = webView.getSettings();
@@ -477,6 +498,16 @@ public class WebViewActivity extends AppCompatActivity {
         String customUA = features.optString("custom_user_agent", "");
         if (!customUA.isEmpty()) {
             settings.setUserAgentString(customUA);
+        } else {
+            // OAuth providers (Google especially) BLOCK embedded WebViews — an
+            // Android WebView's default UA carries a "; wv" marker and Google
+            // returns "disallowed_useragent" / "The requested action is invalid"
+            // for Sign-In. Strip the marker so the auth pages treat us as normal
+            // Chrome and allow the flow to complete inside the app.
+            String ua = settings.getUserAgentString();
+            if (ua != null && ua.contains("; wv")) {
+                settings.setUserAgentString(ua.replace("; wv", ""));
+            }
         }
 
         // Offline mode
@@ -491,6 +522,16 @@ public class WebViewActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String host = request.getUrl().getHost();
                 if (host != null && (host.contains(appBaseDomain) || host.contains(appHost))) {
+                    return false; // Load in WebView
+                }
+                // Keep OAuth / social-login provider pages INSIDE the WebView.
+                // Previously any external host was punted to the system browser,
+                // which broke the sign-in round-trip: the provider redirected back
+                // to <project>.firebaseapp.com/__/auth/handler in a SEPARATE browser
+                // with no link to the WebView session -> "The requested action is
+                // invalid." Loading them here keeps one continuous session so the
+                // redirect returns and Firebase getRedirectResult() completes.
+                if (isAuthHost(host)) {
                     return false; // Load in WebView
                 }
                 // External links open in browser
