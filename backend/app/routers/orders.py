@@ -210,7 +210,7 @@ async def list_orders(
         latest_build = {r[0]: r for r in latest_rows}
 
     TRIAL_DAYS = 15
-    REBUILDS_PER_MONTH = 3
+    REBUILDS_PER_MONTH = 5
     order_responses = []
     for order in orders:
         resp = OrderResponse.model_validate(order)

@@ -107,7 +107,7 @@ async def trigger_build_endpoint(
     #          lifetime (failures never count). Spend them however — rebuilds of
     #          one site or across several sites (raised from 1/website + 2 sites
     #          to give non-subscribers room to test before upgrading).
-    #   paid — 3 successful REBUILDS per app per calendar month (the order's
+    #   paid — 5 successful REBUILDS per app per calendar month (the order's
     #          first successful build is not a rebuild; failures never count)
     FREE_BUILD_LIMIT = 5
     is_free = order.amount == 0
@@ -137,10 +137,10 @@ async def trigger_build_endpoint(
         month_success, first_success = stats[0] or 0, stats[1]
         if first_success is not None and first_success >= month_start:
             month_success = max(0, month_success - 1)  # initial build isn't a rebuild
-        if month_success >= 3:
+        if month_success >= 5:
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Monthly rebuild limit reached (3 rebuilds per app per month). It resets on the 1st.",
+                detail="Monthly rebuild limit reached (5 rebuilds per app per month). It resets on the 1st.",
             )
 
     build = await trigger_build(order_id, db, platform=platform)

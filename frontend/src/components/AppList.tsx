@@ -227,7 +227,7 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
                       <div className="flex items-center gap-1.5 mt-1 text-xs text-soft">
                         <Hammer className="w-3 h-3 shrink-0" />
                         <span className={appOrder.rebuilds_left_this_month === 0 ? 'text-red-600 font-semibold' : ''}>
-                          {appOrder.rebuilds_left_this_month ?? 3} rebuild{(appOrder.rebuilds_left_this_month ?? 3) !== 1 ? 's' : ''} left this month
+                          {appOrder.rebuilds_left_this_month ?? 5} rebuild{(appOrder.rebuilds_left_this_month ?? 5) !== 1 ? 's' : ''} left this month
                         </span>
                       </div>
                     )}

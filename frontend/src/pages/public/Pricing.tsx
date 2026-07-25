@@ -222,7 +222,7 @@ export default function Pricing() {
               <ul className="space-y-2 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span><strong>3 rebuilds/month</strong> per website</span>
+                  <span><strong>5 free builds/month</strong> per website</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
@@ -287,7 +287,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span><strong>3 rebuilds/month</strong> per website</span>
+                  <span><strong>5 free builds/month</strong> per website</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
@@ -429,7 +429,7 @@ export default function Pricing() {
               <ul className="space-y-2 flex-1">
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />
-                  <span><strong>3 rebuilds/month</strong> per website</span>
+                  <span><strong>5 free builds/month</strong> per website</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="w-4 h-4 text-green-500 shrink-0" />

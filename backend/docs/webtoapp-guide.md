@@ -9,8 +9,8 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 | Plan | Price | Builds |
 |------|-------|--------|
 | Free (Android or Desktop) | $0 | 5 free builds total across all your websites (lifetime), ALL app features included, watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
-| Premium Android App | $25 one-time | Modify + rebuild up to 3× per month |
-| Premium Desktop App | $25 one-time | Modify + rebuild up to 3× per month |
+| Premium Android App | $25 one-time | Modify + rebuild up to 5× per month |
+| Premium Desktop App | $25 one-time | Modify + rebuild up to 5× per month |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
 | Android App + Play Store Bundle | $40 one-time | Premium Android + Play Store listing |
 
