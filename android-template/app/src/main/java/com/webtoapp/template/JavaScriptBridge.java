@@ -90,6 +90,35 @@ public class JavaScriptBridge {
     }
 
     /**
+     * NATIVE Google sign-in: pops the device's own Google account chooser
+     * (instead of the manual email/password page a WebView gets) and returns a
+     * Google ID TOKEN to the page, which finishes login with Firebase:
+     *
+     *   window.onGoogleToken = function (idToken, error) {
+     *     if (idToken) {
+     *       const cred = firebase.auth.GoogleAuthProvider.credential(idToken);
+     *       signInWithCredential(getAuth(), cred);
+     *     }
+     *   };
+     *   window.WebToApp.googleSignIn('onGoogleToken');
+     *
+     * `error` is "" on success; "cancelled" if the user closed the chooser;
+     * "google_signin_not_available" when the app was built without Firebase.
+     */
+    @JavascriptInterface
+    public void googleSignIn(final String callback) {
+        GoogleSignInActivity.setCallback((idToken, error) -> {
+            if (callback == null || callback.isEmpty()) return;
+            final String js = "if (typeof " + callback + " === 'function') { "
+                    + callback + "(" + JSONObject.quote(idToken == null ? "" : idToken)
+                    + ", " + JSONObject.quote(error == null ? "" : error) + "); }";
+            webView.post(() -> webView.evaluateJavascript(js, null));
+        });
+        Intent intent = new Intent(context, GoogleSignInActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
      * Hand the NATIVE Android FCM registration token to the web page. A WebView
      * cannot generate a token with the Firebase Web SDK (getToken()), so the page
      * asks the native layer for the device token and stores it server-side to send

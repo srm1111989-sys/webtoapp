@@ -100,4 +100,8 @@ dependencies {
 
     // Location
     implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    // Native Google sign-in (device account chooser) — used by the JS bridge's
+    // googleSignIn(); returns an ID token the web page feeds to Firebase.
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }
