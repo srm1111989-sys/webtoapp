@@ -98,6 +98,52 @@ async def list_apps(
     return AppConfigListResponse(apps=apps, total=len(apps))
 
 
+@router.get("/{app_id}/signing")
+async def get_app_signing(
+    app_id: uuid.UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """SHA-1 / SHA-256 fingerprints of the key this Android app is signed with —
+    needed for Firebase Auth (Google Sign-In), Google Maps/APIs, etc. Reads the
+    per-app keystore if one is set, otherwise the shared WebToApp key."""
+    from pathlib import Path
+    from cryptography.hazmat.primitives.serialization import pkcs12
+    from cryptography.hazmat.primitives import hashes
+    from app.config import settings
+
+    app_config = await get_accessible_app(app_id, user, db)
+
+    if app_config.custom_keystore_url:
+        marker = "/api/artifacts/"
+        url = app_config.custom_keystore_url
+        rel = url.split(marker, 1)[1] if marker in url else None
+        path = Path("/app/storage/artifacts") / rel if rel else None
+        password = app_config.custom_keystore_password or ""
+        source = "custom"
+    else:
+        path = Path("/app/storage/artifacts/master/webtoapp-master.jks")
+        password = settings.master_keystore_password or ""
+        source = "shared"
+
+    if not path or not path.exists() or not password:
+        return {"available": False, "source": source,
+                "note": "Signing fingerprints become available after your first build."}
+    try:
+        _key, cert, _add = pkcs12.load_key_and_certificates(path.read_bytes(), password.encode())
+        return {
+            "available": True,
+            "source": source,  # 'shared' = WebToApp key, 'custom' = this app's own key
+            "sha1": cert.fingerprint(hashes.SHA1()).hex(":").upper(),
+            "sha256": cert.fingerprint(hashes.SHA256()).hex(":").upper(),
+            "note": ("If you publish via Google Play App Signing, also add the App signing key "
+                     "SHA fingerprints shown in your Play Console — Google re-signs the app for the Store."),
+        }
+    except Exception:
+        return {"available": False, "source": source,
+                "note": "Could not read the signing certificate for this app."}
+
+
 @router.get("/{app_id}", response_model=AppConfigResponse)
 async def get_app(
     app_id: uuid.UUID,

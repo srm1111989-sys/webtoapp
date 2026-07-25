@@ -11,6 +11,9 @@ export const appsApi = {
   get: (id: string) =>
     client.get<AppConfig>(`/api/apps/${id}`),
 
+  getSigning: (id: string) =>
+    client.get<{ available: boolean; source?: string; sha1?: string; sha256?: string; note?: string }>(`/api/apps/${id}/signing`),
+
   update: (id: string, data: Partial<AppConfig>) =>
     client.put<AppConfig>(`/api/apps/${id}`, data),
 

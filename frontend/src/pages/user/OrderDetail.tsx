@@ -7,6 +7,7 @@ import { createRazorpayOrder } from '@/api/razorpay-proxy'
 import { formatCurrency, formatDateTime } from '@/utils/format'
 import { Card, Badge, Skeleton, Button } from '@/components/ui'
 import BuildPipeline from '@/components/BuildPipeline'
+import SigningFingerprints from '@/components/SigningFingerprints'
 import type { Build } from '@/types'
 import toast from 'react-hot-toast'
 import {
@@ -453,6 +454,9 @@ export default function OrderDetail() {
                         <Download className="w-4 h-4" />
                         Download .exe
                       </a>
+                    )}
+                    {(build.apk_url || build.aab_url) && order.app_config_id && (
+                      <SigningFingerprints appId={order.app_config_id} />
                     )}
                   </div>
                 )}
