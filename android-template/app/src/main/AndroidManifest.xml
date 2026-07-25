@@ -70,6 +70,12 @@
             android:name=".QRScannerActivity"
             android:screenOrientation="portrait" />
 
+        <!-- Native Google sign-in helper (transparent; shows the device account chooser) -->
+        <activity
+            android:name=".GoogleSignInActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!-- FCM Service -->
         <service
             android:name=".FCMService"
