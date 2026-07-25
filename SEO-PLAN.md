@@ -1,4 +1,4 @@
-# Last updated: 2026-07-24 by plan-updater based on SC data
+# Last updated: 2026-07-25 by plan-updater based on SC data
 # WebsiteToApp.app — SEO Plan (created 2026-07-20 from Search Console data)
 
 Nightly-updated by the SEO agent (plan updater appends dated entries; agent
@@ -206,6 +206,26 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-25 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`exe to app` pos 5.1, `website to exe converter online
+  free` pos 5.6, `website to exe converter` pos 6.0, `webtoexe` pos 6.1, `exe to
+  app converter` pos 6.3, `webintoapp` pos 6.5 / 2,376 imp / 34 clicks) remain
+  covered by existing tasks — the EXE/desktop cluster + CTR pass and
+  `/blog/exe-to-app-converter-guide` (both DONE/verified live) cover `exe to
+  app`, `website to exe converter`, `website to exe converter online free`,
+  `webtoexe`, and `exe to app converter` (this post explicitly captures the
+  `exe to app converter` variant per its original 07-20 description); the
+  webintoapp comparison expand + free-push (DONE, verified live 07-23) and the
+  still-open `/alternatives/webintoapp` refresh (BLOCKED ON DEPLOY, 2026-07-23,
+  still the topmost undone task) cover `webintoapp` (today's biggest
+  opportunity at 2,376 imp) — no new page task added, no duplicate created.
+  Today's "Getting traction" trio (`webintoapp` 34 clicks pos 6.5, `websitetoapp`
+  18 clicks pos 1.5, `webtoapp` 12 clicks pos 9.4) is identical in kind to what
+  the P2 "reinforce Getting traction" link-audit task (DONE 2026-07-24) already
+  covered — no new task needed. P2 free-intent funnel, P2 brand defense
+  (`webtoapp`, DONE 2026-07-24), and P3 `html to app` remain outside today's
+  brief's Push-to-Page-1 window — left deprioritized, no change. No other
+  undone tasks target keywords outside today's brief.
 - 2026-07-24 (3, agent): checked deploy status of the P1 `/alternatives/webintoapp`
   refresh first (still not live — grepped the current production bundle
   `index-DxEduXGR.js`, found the old `$16-$60` figure still present, no new
