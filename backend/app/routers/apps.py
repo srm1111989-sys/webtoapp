@@ -110,7 +110,8 @@ async def get_app_signing(
     from pathlib import Path
     from cryptography.hazmat.primitives.serialization import pkcs12
     from cryptography.hazmat.primitives import hashes
-    from app.config import settings
+    from app.config import get_settings
+    settings = get_settings()
 
     app_config = await get_accessible_app(app_id, user, db)
 
