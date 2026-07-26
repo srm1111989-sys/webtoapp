@@ -39,7 +39,7 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 ## Pricing (one-time — no subscription, unlike most competitors)
 - Free: 5 builds, small watermark, 15-day app trial
 - Android App: $35 one-time — signed APK + AAB, no watermark, unique per-app signing keystore, 5 rebuilds/month
-- Windows Desktop App (EXE): $25 one-time — WebsiteToApp is one of the only converters with a desktop EXE output
+- Windows Desktop App (EXE): $35 one-time — WebsiteToApp is one of the only converters with a desktop EXE output
 - App + Play Store Publishing: $50 one-time — we handle the Google Play listing
 - Play Store Listing service alone: $15 one-time
 - Comparison: WebIntoApp has no desktop option and charges $89 one-time to remove branding; typical app-builder platforms charge $99+/month. Full table: https://websitetoapp.app/blog/webintoapp-alternative-websitetoapp

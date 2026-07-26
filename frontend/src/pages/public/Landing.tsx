@@ -148,7 +148,7 @@ const faqs = [
   { q: 'Can I create both Android and Windows apps?', a: 'Yes! You can select one or both platforms in the wizard. Each platform generates its own build.' },
   { q: 'Do you support iOS apps?', a: 'Yes, in beta. We generate an unsigned .ipa plus the complete Xcode source project. You sign and publish it with your own Apple Developer account ($99/yr) — we don\'t provide App Store publishing support. Same price as Android.' },
   { q: 'Do you offer refunds?', a: 'Yes. If you are not satisfied with the output, contact support within 7 days for a full refund.' },
-  { q: 'Is WebsiteToApp better than GoNative or WebIntoApp?', a: 'WebsiteToApp offers 40+ features at a one-time price from $25 - vs GoNative ($99/month) and WebIntoApp (free with watermark, or $89 one-time to remove branding). You get more features for less, with no recurring subscription.' },
+  { q: 'Is WebsiteToApp better than GoNative or WebIntoApp?', a: 'WebsiteToApp offers 40+ features at a one-time price from $35 - vs GoNative ($99/month) and WebIntoApp (free with watermark, or $89 one-time to remove branding). You get more features for less, with no recurring subscription.' },
   { q: 'What websites can I convert to an app?', a: 'Any website works - Shopify, WordPress, WooCommerce, React apps, custom sites, LMS platforms, booking systems, and more. If it runs in a browser, it runs in WebsiteToApp.' },
   { q: 'Will my app be approved by Google Play?', a: 'Yes. We generate a properly signed AAB that meets Google Play guidelines. We also include a compliance checklist to help you submit without rejections.' },
 ]
@@ -281,7 +281,7 @@ export default function Landing() {
             Turn Your Website Into a <span className="text-primary-600">Play-Store-Ready App</span> in Minutes
           </h1>
           <p className="text-sm sm:text-lg text-gray-600 mb-2 sm:mb-3 max-w-3xl mx-auto text-center">
-            No coding required. One-time payment from <strong>$25</strong>. Get an Android APK/AAB or Windows installer with branding, push notifications, and Play Store signing support without a monthly platform fee.
+            No coding required. One-time payment from <strong>$35</strong>. Get an Android APK/AAB or Windows installer with branding, push notifications, and Play Store signing support without a monthly platform fee.
           </p>
           <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 text-center flex items-center justify-center gap-1.5">
             <MessageCircle className="w-4 h-4 text-green-500" />
@@ -494,8 +494,8 @@ export default function Landing() {
               </thead>
               <tbody>
                 {([
-                  { feature: 'Starting Price', a: '$99/mo', b: 'Free (branded)', c: '$99/mo', us: '$25 once', bold: true },
-                  { feature: 'Unbranding Cost', a: 'Included', b: '$89 once', c: 'Included', us: 'From $25', bold: true },
+                  { feature: 'Starting Price', a: '$99/mo', b: 'Free (branded)', c: '$99/mo', us: '$35 once', bold: true },
+                  { feature: 'Unbranding Cost', a: 'Included', b: '$89 once', c: 'Included', us: '$35 once', bold: true },
                   { feature: 'Android App', a: 'Yes', b: 'Yes', c: 'Yes', us: 'Yes', bold: false },
                   { feature: 'Windows Desktop App', a: 'No', b: 'No', c: 'No', us: 'Yes', bold: false },
                   { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: 'Yes Included', bold: false },
@@ -867,7 +867,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
               <p className="text-gray-600 mb-4">
-                Pay once, own forever. Android: $35. Desktop: $25. No subscriptions.
+                Pay once, own forever. Android: $35. Desktop: $35. No subscriptions.
                 <span className="font-semibold text-green-600"> 90% cheaper than competitors!</span>
               </p>
               <Link to="/pricing" className="text-green-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
@@ -1051,7 +1051,7 @@ export default function Landing() {
             One-time payment. No subscription. 7-day money-back guarantee. Join thousands of businesses already on mobile.
           </p>
           <Link to={isLoggedIn ? '/apps/create' : '/register'} className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 inline-flex items-center gap-2">
-            {isLoggedIn ? 'Create New App' : 'Convert My Website - From $25'} <ArrowRight className="w-5 h-5" />
+            {isLoggedIn ? 'Create New App' : 'Convert My Website - From $35'} <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>

@@ -92,7 +92,7 @@ const DESKTOP_FALLBACK = [
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: true, custom_window_size: true, auto_updater: true, native_notifications: true, kiosk_mode: true },
   },
   {
-    id: '5', name: 'Paid', slug: 'desktop-paid', price_inr: 207500, price_usd: 2500,
+    id: '5', name: 'Paid', slug: 'desktop-paid', price_inr: 290500, price_usd: 3500,
     billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop',
     description: 'Full desktop app, one-time',
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: false, trial_days: false, system_tray: true, custom_window_size: true, auto_updater: true, native_notifications: true, kiosk_mode: true, custom_title_bar: true, multi_window: true, tray_menu: true, startup_launch: true },
@@ -532,7 +532,7 @@ export default function Pricing() {
             <tbody>
               {[
                 { feature: 'Android App Price', a: '$99–$299/mo', b: 'Free (branded) or $89+ once', c: '$39–$99/mo', us: '$35 one-time', highlight: true },
-                { feature: 'Desktop App Price', a: 'Not available', b: 'Not available', c: 'Not available', us: '$25 one-time', highlight: true },
+                { feature: 'Desktop App Price', a: 'Not available', b: 'Not available', c: 'Not available', us: '$35 one-time', highlight: true },
                 { feature: '15-Day Free Trial', a: '✗', b: '✗', c: 'Limited', us: '✓ 15 Days', highlight: false },
                 { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'Free (branded) or one-time', c: 'Monthly sub', us: 'One-time only', highlight: false },
                 { feature: 'Push Notifications', a: 'Included', b: 'Paid tier only', c: 'Add-on ($)', us: '✓ Included', highlight: false },
@@ -543,7 +543,7 @@ export default function Pricing() {
                 { feature: 'Firebase Integration', a: 'Extra', b: '✗', c: 'Extra', us: '✓ Included', highlight: false },
                 { feature: 'Total Features', a: '~20', b: '~15', c: '~18', us: '50+', highlight: false },
                 { feature: 'Builds Per Month', a: '5–unlimited', b: '3–10', c: '5–20', us: '2 (free) / 5/mo', highlight: false },
-                { feature: 'Annual Cost (entry)', a: '$1,188+', b: '$89 to unbrand', c: '$468+', us: '$25 one-time', highlight: true },
+                { feature: 'Annual Cost (entry)', a: '$1,188+', b: '$89 to unbrand', c: '$468+', us: '$35 one-time', highlight: true },
                 { feature: 'No-code Setup', a: 'Dev skills needed', b: '✓', c: '✓', us: '✓ Wizard', highlight: false },
                 { feature: 'Support', a: 'Email', b: 'Email', c: 'Email', us: '✓ WhatsApp + Email', highlight: false },
               ].map((row, idx) => (
