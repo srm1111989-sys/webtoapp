@@ -254,6 +254,21 @@ public class WebViewActivity extends AppCompatActivity {
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 
+        // targetSdk 35 (Android 15) draws the app edge-to-edge, so without inset
+        // handling the web content slides under the status bar / camera cutout
+        // and setStatusBarColor is ignored (customer report 2026-07-26, punch-hole
+        // devices). Pad the root by the system-bar + display-cutout insets so
+        // content starts below the status bar, and paint the root (the padded
+        // strips) with the configured status-bar color.
+        root.setBackgroundColor(Color.parseColor(config.optString("status_bar_color", "#1E3A5F")));
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            androidx.core.graphics.Insets bars = insets.getInsets(
+                    androidx.core.view.WindowInsetsCompat.Type.systemBars()
+                            | androidx.core.view.WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return androidx.core.view.WindowInsetsCompat.CONSUMED;
+        });
+
         // Pull-to-refresh behaviour
         // (1) Optional: apps can turn it off entirely via the "disable_pull_to_refresh"
         //     feature — web apps that never need a manual reload don't want the gesture
