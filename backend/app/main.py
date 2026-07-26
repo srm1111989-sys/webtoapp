@@ -9,7 +9,7 @@ from starlette.responses import FileResponse
 from app.config import get_settings
 from app.middleware.logging import RequestLoggingMiddleware
 from app.rate_limit import limiter
-from app.routers import auth, users, apps, orders, payments, builds, webhooks, admin, plans, blog, seo, promo, client_errors, support, chatbot, app_events, team
+from app.routers import auth, users, apps, orders, payments, builds, webhooks, admin, plans, blog, seo, promo, client_errors, support, chatbot, app_events, team, subscriptions
 from app.utils.email import send_admin_payment_notification as _admin_notify
 
 settings = get_settings()
@@ -102,6 +102,7 @@ app.include_router(client_errors.router)
 app.include_router(support.router)
 app.include_router(chatbot.router)
 app.include_router(team.router)
+app.include_router(subscriptions.router)
 
 
 # Serve local artifacts when S3 is not configured.
