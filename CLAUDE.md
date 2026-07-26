@@ -9,3 +9,6 @@ Steps:
 2. Commit and push to GitLab so the next `deploy.sh` (which does `git pull`) doesn't revert the change.
 
 This applies to ALL projects on that server (webtoapp, IndexFlow, etc.).
+
+## Deployment gate (2026-07-27)
+Before ANY deploy/release, walk `D:\Projects\.ai\DEPLOYMENT-CHECKLIST.md` — port-map lookup before probing (never assume ports), UI/endpoint parity in the same commit + route-exists tests, suite green (check the pytest summary, not exit code), manual smoke of the changed flow on the live artifact, telemetry on handled errors, version/KB consistency, live verify.
