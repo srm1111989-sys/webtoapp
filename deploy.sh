@@ -93,6 +93,18 @@ echo "[4/6] Building frontend..."
   VITE_ASK_AI_ENABLED=true BUILD_VERSION="$BUILD_VERSION" npm run build
 )
 
+echo "[4b/6] Preserving previous hashed assets..."
+# Every build replaces dist/ and PURGES the old hashed css/js. Two victims:
+# (1) a user who loaded index.html seconds before the deploy fetches a css
+#     that no longer exists -> unstyled page; (2) Microsoft Clarity replays
+#     fetch the recorded asset URLs, so every pre-deploy session replays
+#     blank (t91, 2026-07-26). Keep the last 30 days of hashed assets around.
+ASSET_KEEP="/opt/webtoapp/frontend/dist-asset-archive"
+mkdir -p "$ASSET_KEEP"
+cp -n "$FRONTEND_DIR/dist/assets/"* "$ASSET_KEEP/" 2>/dev/null || true
+find "$ASSET_KEEP" -type f -mtime +30 -delete
+cp -n "$ASSET_KEEP/"* "$FRONTEND_DIR/dist/assets/" 2>/dev/null || true
+
 python3 - <<PY
 from pathlib import Path
 import re
