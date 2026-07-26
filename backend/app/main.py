@@ -36,6 +36,14 @@ async def startup_event():
         for sql in [
             "ALTER TABLE app_configs ADD COLUMN IF NOT EXISTS version_code INTEGER",
             "ALTER TABLE users ADD COLUMN IF NOT EXISTS signup_attribution JSONB",
+            # Trial-upgrade drip tracking (t80): one row per (user, stage) ever sent.
+            """CREATE TABLE IF NOT EXISTS drip_emails (
+                id SERIAL PRIMARY KEY,
+                user_id UUID NOT NULL,
+                stage VARCHAR(20) NOT NULL,
+                sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+                UNIQUE (user_id, stage)
+            )""",
             # Free-app telemetry (open events). Idempotent create on every boot.
             """CREATE TABLE IF NOT EXISTS app_events (
                 id UUID PRIMARY KEY,

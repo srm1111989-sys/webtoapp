@@ -226,6 +226,98 @@ async def cleanup_abandoned_drafts():
         logger.error(f"cleanup_abandoned_drafts failed: {e}")
 
 scheduler.add_job(cleanup_abandoned_drafts, 'interval', hours=1)
+
+
+# ── Trial-upgrade email drip (t80) ──────────────────────────────────────────
+# Free apps carry a 15-day trial + watermark. Users who built one get three
+# nudges keyed to the age of their FIRST successful free build: day 3 (tips +
+# what paid unlocks), day 8 (midway), day 13 (trial ends in ~2 days). One send
+# per (user, stage) ever — recorded in drip_emails — and paid users are always
+# excluded. Capped per run + spaced out because Zoho throttles burst sends.
+_DRIP_STAGES = [("day3", 3, 5), ("day8", 8, 10), ("day13", 13, 15)]
+_DRIP_MAX_PER_RUN = 30
+
+def _drip_email_html(stage: str, name: str) -> tuple[str, str]:
+    first = (name or "there").split(" ")[0]
+    if stage == "day3":
+        return ("How is your app coming along?", f"""
+<p>Hi {first},</p>
+<p>You built your app with WebsiteToApp a few days ago — how is it looking on your phone?</p>
+<p>A few things people often miss: you can change the app icon, splash screen and colors
+anytime from your dashboard and rebuild, and features like push notifications and the
+QR scanner are one toggle away.</p>
+<p>When you're ready to share the app with real users, the paid plan removes the trial
+limit and watermark, signs the app with its own private keystore, and includes
+5 rebuilds every month — it's a one-time payment, not a subscription:
+<a href="https://websitetoapp.app/pricing">see plans</a>.</p>
+<p>Stuck on anything? Just reply to this email.</p>
+<p>— WebsiteToApp Support</p>""")
+    if stage == "day8":
+        return ("Your app trial is halfway through", f"""
+<p>Hi {first},</p>
+<p>Your free app's 15-day trial is about halfway through. After it ends, the app shows
+a trial-expired notice on launch until it's upgraded.</p>
+<p>Upgrading is a one-time payment (no subscription): the watermark disappears, the
+trial limit is removed, your app gets its own unique signing keystore (required for a
+clean Google Play listing you control), and you get 5 rebuilds per month for updates.</p>
+<p><a href="https://websitetoapp.app/pricing">Upgrade your app</a> — it takes about two
+minutes and your existing app settings carry over as-is.</p>
+<p>— WebsiteToApp Support</p>""")
+    return ("Your app trial ends in about 2 days", f"""
+<p>Hi {first},</p>
+<p>A quick heads-up: your free app's 15-day trial ends in about two days. After that,
+people who open the app will see a trial-expired notice instead of your website.</p>
+<p>To keep the app running without interruption, upgrade once and own it forever —
+one-time payment, watermark removed, your own signing keystore, and 5 rebuilds a month:
+<a href="https://websitetoapp.app/pricing">upgrade now</a>.</p>
+<p>If the trial already lapsed, upgrading unlocks the installed app live — no rebuild
+or reinstall needed.</p>
+<p>— WebsiteToApp Support</p>""")
+
+async def send_trial_drips():
+    try:
+        from sqlalchemy import text
+        from app.utils.email import send_email
+        async with async_session() as db:
+            rows = (await db.execute(text("""
+                SELECT u.id, u.email, COALESCE(u.full_name, '') AS name,
+                       EXTRACT(EPOCH FROM (now() - MIN(b.created_at))) / 86400.0 AS age_days
+                FROM users u
+                JOIN orders o ON o.user_id = u.id AND o.amount = 0 AND o.status = 'paid'
+                JOIN builds b ON b.order_id = o.id AND b.status = 'success'
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM orders p
+                    WHERE p.user_id = u.id AND p.amount > 0 AND p.status = 'paid'
+                )
+                GROUP BY u.id, u.email, u.full_name
+            """))).all()
+            sent = 0
+            for uid, email, name, age_days in rows:
+                if sent >= _DRIP_MAX_PER_RUN:
+                    break
+                stage = next((s for s, lo, hi in _DRIP_STAGES if lo <= (age_days or 0) < hi), None)
+                if not stage or not email:
+                    continue
+                already = (await db.execute(text(
+                    "SELECT 1 FROM drip_emails WHERE user_id = :u AND stage = :s"
+                ), {"u": str(uid), "s": stage})).first()
+                if already:
+                    continue
+                subject, html = _drip_email_html(stage, name)
+                ok = await asyncio.to_thread(send_email, email, subject, html)
+                # Record the attempt either way so a hard-bouncing address is
+                # never retried daily forever; email_sends.jsonl logs failures.
+                await db.execute(text(
+                    "INSERT INTO drip_emails (user_id, stage) VALUES (:u, :s) ON CONFLICT DO NOTHING"
+                ), {"u": str(uid), "s": stage})
+                await db.commit()
+                logger.info(f"trial drip {stage} -> {email} (sent={ok})")
+                sent += 1
+                await asyncio.sleep(2)  # Zoho dislikes bursts
+    except Exception as e:
+        logger.error(f"send_trial_drips failed: {e}")
+
+scheduler.add_job(send_trial_drips, 'cron', hour=5, minute=7)  # 10:37 IST daily
 async def cleanup_abandoned_pending_orders():
     """Delete unpaid pending orders older than 24h (payment never completed)
     plus their app configs when nothing else references them — an abandoned
