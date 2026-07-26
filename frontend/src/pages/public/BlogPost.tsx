@@ -51,6 +51,9 @@ function getClusterLinks(slug: string, category: string): ClusterLink[] {
     links.push({ label: 'App Cost Breakdown', href: '/blog/website-to-app-cost-breakdown-2026', type: 'blog' })
     links.push({ label: 'View Pricing', href: '/pricing', type: 'guide' })
   }
+  if (/free/.test(slug) && slug !== 'website-to-app-converter-free') {
+    links.push({ label: "What's Actually Free? (Guide)", href: '/blog/website-to-app-converter-free', type: 'blog' })
+  }
   if (/alternative|vs-|comparison/.test(slug) || category === 'Comparison') {
     links.push({ label: 'vs GoNative', href: '/alternatives/gonative', type: 'comparison' })
     links.push({ label: 'vs WebIntoApp', href: '/alternatives/webintoapp', type: 'comparison' })

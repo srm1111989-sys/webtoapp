@@ -189,11 +189,53 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       homepage brand alias).
 
 ### P2 — free-intent funnel (lower priority — not in today's brief's opportunity range)
-- [ ] `/free-website-to-app-converter` landing (or optimize existing free
-      trial page) targeting `website to app converter free` +
-      `convert website to app for free` (≈300 imp at pos 25). Deprioritized
-      2026-07-20: today's official brief's Push-to-Page-1 range is pos 5-15;
-      these sit at pos ~25.5-25.7, outside it.
+- [x] DONE (2026-07-26, agent) — Built `/blog/website-to-app-converter-free`
+      targeting `website to app converter free` (242 imp, pos 25.7) and
+      `convert website to app for free` (52 imp, pos 25.5). First checked for
+      overlap per the task brief: grepped `blogPosts.ts`/`platforms.ts` for
+      the exact phrases — no page used either phrase verbatim, though 3
+      adjacent posts already existed (`website-to-apk-converter-free-vs-paid-2026`,
+      `free-vs-paid-website-to-app-converters-2026`,
+      `convert-website-to-android-app-free-2026` — all multi-tool
+      roundup/comparison posts, none a direct "what's actually free here"
+      funnel page), so a new, distinct post was justified rather than a
+      duplicate (same reasoning precedent as the 07-20 exe-to-app-converter
+      decision). Verified current pricing directly from `Pricing.tsx` instead
+      of trusting older blog copy — found and avoided a real staleness trap:
+      `Pricing.tsx` now shows Android/Desktop premium at **$35 one-time**
+      (raised from $25 via commits `1d1ad16`/`a8f9bec`, "t80: raise Android
+      pricing to $35"), but the still-live `webintoapp-alternative-websitetoapp`
+      post and a few others still quote the old **$25** figure — that's a
+      pre-existing staleness bug in already-shipped webintoapp content, which
+      is explicitly out of scope today (webintoapp work is DONE/frozen per
+      today's brief), so left as-is and flagged here for a future pass. The
+      new post uses only verified-current numbers ($35 Android/Desktop, $25
+      iOS beta unsigned+Xcode, $15 Play Store Listing add-on, $50 bundle, $9/mo
+      optional Pro Monthly) and is honest about the free plan's real
+      limitations (watermark, 15-day trial window, 5-build lifetime cap
+      shared across all sites, no Android keystore download) alongside what's
+      genuinely free (all 50+ features unlocked to test, Android/Desktop/iOS
+      beta builds, no card required).
+      Added to `frontend/src/data/blogPosts.ts` (auto-listed on `/blog` and
+      picked up by `BlogPost.tsx`'s existing `related`/prev-next logic — no
+      route changes needed, `/blog/:slug` is already generic) and to
+      `frontend/public/sitemap.xml` (lastmod 2026-07-26).
+      Cross-links: added a new `/free/` cluster-link rule in `BlogPost.tsx`
+      (mirroring the existing `exe|desktop|windows` rule pattern) so every
+      post with "free" in its slug — the 3 adjacent posts above, plus this
+      one — now surfaces a link to this guide automatically, rather than
+      manually stuffing links into just 1-2 posts. Also added a direct link
+      from `/pricing`'s free-plan section (the site's existing "free trial"
+      page) to the new post, since that's the natural place someone
+      evaluating the free tier would look next. Did not touch any
+      webintoapp-related content (page, blog, or pricing mentions), per
+      today's explicit instruction that cluster is DONE and frozen pending
+      human backlink/SERP review.
+      Ran `npm install` (node_modules wasn't present in the scratch clone)
+      then `npx tsc -b` — clean, exit 0, no type errors.
+      Committed + pushed from scratch clone. `bash /opt/webtoapp/deploy.sh`
+      not runnable here (root-owned) — not claiming live, left for ops to
+      deploy; a future pass should bundle-grep to confirm.
 
 ### P2 — brand defense
 - [x] DONE (2026-07-24, agent) — Added `alternateName: ['WebToApp', 'Website
@@ -210,6 +252,21 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-26 (2, agent): executed the topmost still-open task outside today's
+  narrow brief window — the P2 free-intent funnel item (`website to app
+  converter free` + `convert website to app for free`, ~300 combined imp at
+  pos ~25.5-25.7). Deliberately did NOT touch anything webintoapp-related
+  (page, blog, or pricing mentions) — that cluster is DONE/verified-live and
+  flagged for human backlink/SERP review after 4 rewrite passes moved neither
+  CTR nor position, so further on-page work there is diminishing returns; this
+  site's single biggest impression pool otherwise sits idle without a genuine
+  next task, so this legitimate, real-search-volume P2 item was built instead.
+  Full details of what was built/verified are logged under the P2 task
+  checkbox itself. Summary: new post `/blog/website-to-app-converter-free`
+  (added to `blogPosts.ts` + `sitemap.xml`), cross-linked via a new `/free/`
+  cluster-link rule in `BlogPost.tsx` plus a direct link from `/pricing`'s
+  free-plan section, `npx tsc -b` clean, committed + pushed from scratch
+  clone. Not yet verified live (deploy is ops-only from here).
 - 2026-07-26 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`exe to app` pos 5.3, `website to exe converter online
   free` pos 5.4, `website to exe converter` pos 5.8, `webtoexe` pos 6.1, `exe to

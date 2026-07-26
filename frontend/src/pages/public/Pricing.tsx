@@ -155,6 +155,12 @@ export default function Pricing() {
       {/* Android Plans */}
       <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
         <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Android App Plans</h2>
+        <p className="text-center text-gray-500 text-sm -mt-4 mb-8">
+          Want the full breakdown of what's free vs. paid? Read our{' '}
+          <Link to="/blog/website-to-app-converter-free" className="text-primary-600 hover:underline font-medium">
+            website to app converter free guide
+          </Link>.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
           {/* Android Free Plan */}
           {androidFreePlan && (
