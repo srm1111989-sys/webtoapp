@@ -495,7 +495,7 @@ export default function Landing() {
               <tbody>
                 {([
                   { feature: 'Starting Price', a: '$99/mo', b: 'Free (branded)', c: '$99/mo', us: '$25 once', bold: true },
-                  { feature: 'Unbranding Cost', a: 'Included', b: '$89 once', c: 'Included', us: '$25', bold: true },
+                  { feature: 'Unbranding Cost', a: 'Included', b: '$89 once', c: 'Included', us: 'From $25', bold: true },
                   { feature: 'Android App', a: 'Yes', b: 'Yes', c: 'Yes', us: 'Yes', bold: false },
                   { feature: 'Windows Desktop App', a: 'No', b: 'No', c: 'No', us: 'Yes', bold: false },
                   { feature: 'Push Notifications', a: 'Included', b: 'Add-on ($)', c: 'JS Bridge', us: 'Yes Included', bold: false },
@@ -867,7 +867,7 @@ export default function Landing() {
               </div>
               <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
               <p className="text-gray-600 mb-4">
-                Pay once, own forever. Android: $25. Desktop: $25. No subscriptions.
+                Pay once, own forever. Android: $35. Desktop: $25. No subscriptions.
                 <span className="font-semibold text-green-600"> 90% cheaper than competitors!</span>
               </p>
               <Link to="/pricing" className="text-green-600 font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">

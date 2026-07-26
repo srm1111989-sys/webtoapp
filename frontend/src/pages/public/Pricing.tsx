@@ -65,7 +65,7 @@ const ANDROID_FALLBACK = [
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: false },
   },
   {
-    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 207500, price_usd: 2500,
+    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 290500, price_usd: 3500,
     billing_type: 'one_time', max_apps: 1, sort_order: 2, is_active: true, platform: 'android',
     description: 'All features, one-time payment',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: true },
@@ -77,7 +77,7 @@ const ANDROID_FALLBACK = [
     features: { play_store_listing: true },
   },
   {
-    id: '10', name: 'App + Play Store', slug: 'android-both', price_inr: 332000, price_usd: 4000,
+    id: '10', name: 'App + Play Store', slug: 'android-both', price_inr: 415000, price_usd: 5000,
     billing_type: 'one_time', max_apps: 1, sort_order: 4, is_active: true, platform: 'android',
     description: 'App build + Play Store Listing bundle',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: true, play_store_listing: true },
@@ -531,7 +531,7 @@ export default function Pricing() {
             </thead>
             <tbody>
               {[
-                { feature: 'Android App Price', a: '$99–$299/mo', b: 'Free (branded) or $89+ once', c: '$39–$99/mo', us: '$25 one-time', highlight: true },
+                { feature: 'Android App Price', a: '$99–$299/mo', b: 'Free (branded) or $89+ once', c: '$39–$99/mo', us: '$35 one-time', highlight: true },
                 { feature: 'Desktop App Price', a: 'Not available', b: 'Not available', c: 'Not available', us: '$25 one-time', highlight: true },
                 { feature: '15-Day Free Trial', a: '✗', b: '✗', c: 'Limited', us: '✓ 15 Days', highlight: false },
                 { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'Free (branded) or one-time', c: 'Monthly sub', us: 'One-time only', highlight: false },
