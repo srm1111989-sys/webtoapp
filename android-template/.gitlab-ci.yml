@@ -28,8 +28,8 @@ prepare:
     - export PATH=$JAVA_HOME/bin:$PATH
     - java -version
 
-    # Install SDK 35 (required by compileSdk/targetSdk 35)
-    - yes | sdkmanager "platforms;android-35" > /dev/null 2>&1 || true
+    # Install SDK 36 (required by compileSdk/targetSdk 36)
+    - yes | sdkmanager "platforms;android-36" > /dev/null 2>&1 || true
 
     # Bootstrap Gradle wrapper if not present
     - |
