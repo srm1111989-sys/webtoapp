@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { appsApi } from '@/api/apps'
-import { ordersApi, plansApi } from '@/api/orders'
+import { ordersApi, plansApi, subscriptionsApi } from '@/api/orders'
 import { getUserCurrency } from '@/utils/format'
 import type { Order, Plan } from '@/types'
 import { AppWindow, Plus, Globe, Loader2, AlertCircle, Smartphone, Monitor, ArrowRight, AlertTriangle, Pencil, Hammer, Clock, Zap, Trash2 } from 'lucide-react'
@@ -35,6 +35,11 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
     select: (res) => res.data,
   })
 
+  const { data: activeSub } = useQuery({
+    queryKey: ['active-subscription'],
+    queryFn: () => subscriptionsApi.getActive().then((r) => r.data),
+    retry: false,
+  })
   const { data: ordersData } = useQuery({
     queryKey: ['orders'],
     queryFn: () => ordersApi.list(1, 100),
@@ -103,8 +108,26 @@ export default function AppList({ showHeader = true }: { showHeader?: boolean })
     }
   }
 
+  const firstPaidOrder = orders.find((o) => o.amount > 0 && o.status === 'paid')
+
   return (
     <div>
+      {/* Pro Monthly discovery banner (t86) — the subscribe flow lives on the
+          paid app's order page, which users weren't finding. */}
+      {firstPaidOrder && !activeSub && (
+        <div className="mb-5 border border-indigo-200 bg-indigo-50/70 rounded-xl px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
+          <p className="text-sm text-gray-700">
+            <span className="font-semibold text-indigo-700">Pro Monthly — $9/mo:</span>{' '}
+            get <strong>20 rebuilds/month</strong> (instead of 5) and priority builds for your app.
+          </p>
+          <Link
+            to={`/orders/${firstPaidOrder.id}`}
+            className="shrink-0 text-sm font-medium px-4 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
+          >
+            Subscribe on your order page
+          </Link>
+        </div>
+      )}
       {showHeader && (<>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">

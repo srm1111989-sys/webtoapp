@@ -467,8 +467,8 @@ export default function Pricing() {
                 Cancel anytime. Subscribe from your app's order page in the dashboard after purchase.
               </p>
             </div>
-            <Link to="/login" className="shrink-0 py-2 px-5 rounded-lg font-medium bg-indigo-600 text-white hover:bg-indigo-700">
-              Go to Dashboard
+            <Link to="/apps" className="shrink-0 py-2 px-5 rounded-lg font-medium bg-indigo-600 text-white hover:bg-indigo-700">
+              Go to My Apps
             </Link>
           </div>
         </div>
