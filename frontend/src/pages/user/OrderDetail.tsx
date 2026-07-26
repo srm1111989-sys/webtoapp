@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ordersApi, buildsApi, paymentsApi } from '@/api/orders'
+import { ordersApi, buildsApi, paymentsApi, subscriptionsApi } from '@/api/orders'
 import { useNavigate } from 'react-router-dom'
 import { createRazorpayOrder } from '@/api/razorpay-proxy'
 import { formatCurrency, formatDateTime } from '@/utils/format'
@@ -96,6 +96,49 @@ export default function OrderDetail() {
       queryClient.invalidateQueries({ queryKey: ['builds', id] })
     },
   })
+
+  // ── Pro Monthly subscription (t80): 20 rebuilds/month for this app ──
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const { data: proPlan } = useQuery({
+    queryKey: ['pro-plan'],
+    queryFn: () => subscriptionsApi.proPlan().then((r) => r.data),
+    retry: false,
+  })
+  const { data: activeSub } = useQuery({
+    queryKey: ['active-subscription'],
+    queryFn: () => subscriptionsApi.getActive().then((r) => r.data),
+    retry: false,
+  })
+
+  const handleSubscribePro = async () => {
+    if (!proPlan || !order) return
+    setIsSubscribing(true)
+    try {
+      const res = await subscriptionsApi.create({
+        plan_id: proPlan.id,
+        app_config_id: order.app_config_id,
+        currency: 'INR',
+      })
+      const sub = res.data
+      const options = {
+        key: sub.razorpay_key_id,
+        subscription_id: sub.gateway_subscription_id,
+        name: 'WebsiteToApp Pro Monthly',
+        description: '20 rebuilds/month + priority builds for this app',
+        handler: async () => {
+          toast.success('Subscription started! It activates within a minute of payment.')
+          queryClient.invalidateQueries({ queryKey: ['active-subscription'] })
+          setIsSubscribing(false)
+        },
+        modal: { ondismiss: () => setIsSubscribing(false) },
+      }
+      const rzp = new (window as any).Razorpay(options)
+      rzp.open()
+    } catch (e: any) {
+      toast.error(e?.response?.data?.detail ?? 'Could not start the subscription.')
+      setIsSubscribing(false)
+    }
+  }
 
   const handleRazorpay = (
     data: { razorpay_order_id: string; razorpay_key_id: string; amount: number; currency: string; order_id: string },
@@ -248,6 +291,27 @@ export default function OrderDetail() {
           </div>
         </div>
       </Card>
+
+      {/* Pro Monthly upsell — paid apps only, hidden once a subscription is active */}
+      {order.status === 'paid' && order.amount > 0 && proPlan && !activeSub && (
+        <Card className="p-6 border-indigo-200 bg-indigo-50/50">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h2 className="text-base font-semibold text-ink">
+                Pro Monthly — ${Math.round(proPlan.price_usd / 100)}/mo
+              </h2>
+              <p className="text-sm text-soft mt-1">
+                Shipping updates often? Get <strong>20 rebuilds/month</strong> (instead of 5) and
+                priority build queue for this app. Cancel anytime.
+              </p>
+            </div>
+            <Button onClick={handleSubscribePro} disabled={isSubscribing}>
+              {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
+              Subscribe
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {/* Build Status */}
       <Card className="p-6">

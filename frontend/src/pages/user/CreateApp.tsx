@@ -1705,12 +1705,12 @@ function Step3Advanced() {
 
 const ANDROID_PLANS_FALLBACK: Plan[] = [
   { id: 'android-free', name: 'Free', slug: 'android-free', price_inr: 0, price_usd: 0, billing_type: 'one_time', max_apps: 2, sort_order: 1, is_active: true, platform: 'android', description: 'One free build with watermark & 15-day trial', features: {} },
-  { id: 'android-paid', name: 'Paid', slug: 'android-paid', price_inr: 207500, price_usd: 2500, billing_type: 'one_time', max_apps: 1, sort_order: 2, is_active: true, platform: 'android', description: 'All features, one-time payment', features: {} },
+  { id: 'android-paid', name: 'Paid', slug: 'android-paid', price_inr: 290500, price_usd: 3500, billing_type: 'one_time', max_apps: 1, sort_order: 2, is_active: true, platform: 'android', description: 'All features, one-time payment', features: {} },
 ]
 
 const DESKTOP_PLANS_FALLBACK: Plan[] = [
   { id: 'desktop-free', name: 'Free', slug: 'desktop-free', price_inr: 0, price_usd: 0, billing_type: 'one_time', max_apps: 2, sort_order: 4, is_active: true, platform: 'desktop', description: 'One free build with watermark & 15-day trial', features: {} },
-  { id: 'desktop-paid', name: 'Paid', slug: 'desktop-paid', price_inr: 207500, price_usd: 2500, billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop', description: 'Full desktop app, one-time', features: {} },
+  { id: 'desktop-paid', name: 'Paid', slug: 'desktop-paid', price_inr: 290500, price_usd: 3500, billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop', description: 'Full desktop app, one-time', features: {} },
 ]
 
 function Step4Rebuild() {

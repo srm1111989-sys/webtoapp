@@ -137,11 +137,27 @@ async def trigger_build_endpoint(
         month_success, first_success = stats[0] or 0, stats[1]
         if first_success is not None and first_success >= month_start:
             month_success = max(0, month_success - 1)  # initial build isn't a rebuild
-        if month_success >= 5:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Monthly rebuild limit reached (5 rebuilds per app per month). It resets on the 1st.",
+        # Pro Monthly (t80): an active subscription on this app raises the
+        # rebuild cap 5 -> 20 for the month.
+        rebuild_cap = 5
+        from app.models.subscription import Subscription
+        pro = (await db.execute(
+            select(Subscription.id).where(
+                Subscription.app_config_id == order.app_config_id,
+                Subscription.status == "active",
+                Subscription.current_period_end > _dt.now(_tz.utc),
             )
+        )).first()
+        if pro:
+            rebuild_cap = 20
+        if month_success >= rebuild_cap:
+            detail = (
+                f"Monthly rebuild limit reached ({rebuild_cap} rebuilds per app per month). It resets on the 1st."
+                if pro else
+                "Monthly rebuild limit reached (5 rebuilds per app per month). "
+                "Upgrade to Pro Monthly for 20 rebuilds/month, or wait for the 1st."
+            )
+            raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=detail)
 
     build = await trigger_build(order_id, db, platform=platform)
     return build

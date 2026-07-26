@@ -59,6 +59,11 @@ export const plansApi = {
 }
 
 export const subscriptionsApi = {
+  proPlan: () =>
+    client.get<{ id: string; name: string; description: string; price_inr: number; price_usd: number }>(
+      '/api/subscriptions/pro-plan'
+    ),
+
   create: (data: { plan_id: string; currency: string; app_config_id: string }) =>
     client.post<SubscriptionCreateResponse>('/api/subscriptions/', data),
 

@@ -14,6 +14,21 @@ from app.services import subscription_service
 router = APIRouter(prefix="/api/subscriptions", tags=["subscriptions"])
 
 
+@router.get("/pro-plan")
+async def get_pro_plan(db: AsyncSession = Depends(get_db)):
+    """The Pro Monthly plan (t80). Deliberately is_active=false so it never
+    appears in the one-time wizard plan picker — the subscribe flow fetches
+    it here by slug instead."""
+    from sqlalchemy import select
+    from app.models.plan import Plan
+    result = await db.execute(select(Plan).where(Plan.slug == "pro-monthly"))
+    plan = result.scalar_one_or_none()
+    if not plan:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pro plan not configured")
+    return {"id": str(plan.id), "name": plan.name, "description": plan.description,
+            "price_inr": plan.price_inr, "price_usd": plan.price_usd}
+
+
 @router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED)
 async def create_subscription(
     data: SubscriptionCreate,
