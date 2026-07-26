@@ -9,13 +9,14 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 | Plan | Price | Builds |
 |------|-------|--------|
 | Free (Android or Desktop) | $0 | 5 free builds total across all your websites (lifetime), ALL app features included, watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
-| Premium Android App | $25 one-time | Modify + rebuild up to 5× per month |
-| Premium Desktop App | $25 one-time | Modify + rebuild up to 5× per month |
+| Premium Android App | $35 one-time | Modify + rebuild up to 5× per month |
+| Premium Desktop App | $35 one-time | Modify + rebuild up to 5× per month |
 | Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
-| Android App + Play Store Bundle | $40 one-time | Premium Android + Play Store listing |
+| Android App + Play Store Bundle | $50 one-time | Premium Android + Play Store listing |
+| Pro Monthly (add-on) | $9/month per app | For paid apps: 20 rebuilds/month (instead of 5) + priority build queue; cancel anytime; subscribe from the app's order page in the dashboard |
 
 * All paid plans are **one-time payments** — no subscriptions, no renewals, no hidden charges.
-* Indian users pay in INR (₹2075 for $25 equivalent plans).
+* Indian users pay in INR (₹2905 for $35 equivalent plans; Pro Monthly is ₹747/month).
 * Promo/discount codes can be applied at checkout.
 * **APK and AAB files are included on ALL plans, including Free.** The AAB (Android App Bundle) is the format Google Play requires. Download buttons for APK, AAB and the signing keystore appear on the Orders page once a build completes, and the links are also in the build-complete email.
 
@@ -118,7 +119,7 @@ After payment the build is triggered automatically. Users receive an email with 
 1. Go to **My Apps** and click the pencil icon on any app card.
 2. The wizard pre-loads all your existing settings (URL, icon, colors, features, etc.).
 3. Make your changes and click through the steps.
-4. On the final step, paid users see a **Rebuild App** button — click it to trigger a new build with the updated settings. No additional payment required (uses one of your 3 monthly rebuilds). Free apps can be edited too — the changes take effect when you upgrade, since the paid build uses your latest settings.
+4. On the final step, paid users see a **Rebuild App** button — click it to trigger a new build with the updated settings. No additional payment required (uses one of your 5 monthly rebuilds (20 with Pro Monthly)). Free apps can be edited too — the changes take effect when you upgrade, since the paid build uses your latest settings.
 
 ---
 
@@ -148,9 +149,9 @@ Without this, Google Play will reject updates due to signature mismatch (differe
 ## Build Limits & Rebuilds
 
 * **Free plan**: ONE successful build per website, and up to 2 free websites per account (lifetime; failed builds never count against you). A second build on the same website, or a 3rd free website, requires upgrading. Free apps show a small watermark bar and run for a 15-day trial; after that the installed app pauses with a notice until the app is upgraded from the dashboard — paying unlocks the already-installed app instantly, no reinstall needed.
-* **Paid plans**: edit your app and rebuild up to 3 times per calendar month (the initial build does not count; the counter resets on the 1st). Failed builds never count.
+* **Paid plans**: edit your app and rebuild up to 5 times per calendar month (20 with the Pro Monthly add-on) (the initial build does not count; the counter resets on the 1st). Failed builds never count.
 * Each rebuild generates a freshly signed APK/AAB with your latest settings.
-* Need more rebuilds in a month? Contact support@websitetoapp.app.
+* Need more rebuilds in a month? Subscribe to Pro Monthly ($9/month, 20 rebuilds) from your app's order page, or contact support@websitetoapp.app.
 
 ### My Apps Dashboard
 
