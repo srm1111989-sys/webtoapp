@@ -455,6 +455,25 @@ export default function Pricing() {
         </div>
       </section>
 
+      {/* Pro Monthly add-on (t80) — subscribed from a paid app's order page */}
+      <section className="py-8 max-w-7xl mx-auto px-4">
+        <div className="max-w-3xl mx-auto border-2 border-indigo-200 bg-indigo-50/60 rounded-xl p-6 sm:p-8">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Pro Monthly <span className="text-indigo-600">— $9/mo per app</span></h2>
+              <p className="text-sm text-gray-600 mt-2 max-w-xl">
+                An optional add-on for <strong>paid apps that ship updates often</strong>: get{' '}
+                <strong>20 rebuilds per month</strong> (instead of 5) and priority build queue.
+                Cancel anytime. Subscribe from your app's order page in the dashboard after purchase.
+              </p>
+            </div>
+            <Link to="/login" className="shrink-0 py-2 px-5 rounded-lg font-medium bg-indigo-600 text-white hover:bg-indigo-700">
+              Go to Dashboard
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* iOS Plan (Beta) */}
       <section className="py-8 sm:py-16 max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-center gap-2 mb-2">
