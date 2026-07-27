@@ -118,7 +118,7 @@ export const competitors: Competitor[] = [
       'Windows desktop app / .exe build included (WebIntoApp has no desktop option at any price)',
       'Biometric auth and offline mode included — WebIntoApp offers neither',
       "Your own AdMob ads from the start, not WebIntoApp's ads on your free app",
-      'More features in one $25 plan than WebIntoApp\'s most expensive tier',
+      'More features in one $35 plan than WebIntoApp\'s most expensive tier',
     ],
     seoTitle: 'WebIntoApp Alternative (2026): Free Plan Watermark Costs $89 to Remove',
     seoDescription:

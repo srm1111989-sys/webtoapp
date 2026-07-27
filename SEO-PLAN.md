@@ -252,6 +252,44 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-27 (2, agent): Built the topmost still-uncovered EXE-cluster gap —
+  `website to exe converter online free` was the one query in today's brief's
+  6-keyword EXE/desktop list not explicitly addressed by any existing
+  page/FAQ (checked `/convert/website-to-exe` FAQs and
+  `/blog/exe-to-app-converter-guide`'s FAQ — neither answers the "is it free
+  AND online" combined intent). Published `/blog/website-to-exe-converter-online-free`
+  (added to `blogPosts.ts` + `sitemap.xml`, lastmod 2026-07-27). Picks up
+  automatic cross-links via the existing `exe|desktop|windows` and `free`
+  cluster-link rules in `BlogPost.tsx` (slug matches both patterns) — no
+  manual link-wiring needed. The other 5 brief keywords (`exe to app`,
+  `website to exe converter`, `webtoexe`, `exe to app converter`, `exe to app
+  converter converter online`) remain covered by existing DONE tasks per
+  yesterday's reprioritization — no duplicate pages created.
+  Separately, per today's explicit factual-accuracy task: verified the
+  CURRENT real price directly from `Pricing.tsx` (`price_usd: 3500` = **$35
+  one-time** for Android/Desktop premium — confirmed this is already the
+  live/correct figure per the `t80`/`t97` commit history, NOT $25 as the task
+  brief assumed). Audited all `webintoapp`-adjacent comparison content
+  (`webintoapp-alternative-websitetoapp`, `competitors.ts`'s `webintoapp`
+  entry, `best-website-to-app-converters-2026`, `website-to-apk-free`,
+  `website-to-app-converter-complete-guide-2026`,
+  `convert-wordpress-website-to-android-app`, `median-co-alternative`) and
+  found the site-wide `$35` raise had missed several WebsiteToApp
+  self-price mentions still quoting the pre-raise **$25** (or an even older
+  **$10**) figure, inconsistent with the correct $35 already shown elsewhere
+  in the same posts — fixed ~13 stale mentions across 7 files/posts to $35.
+  Did NOT touch any `webintoapp` title/meta for CTR purposes (only the
+  `description` field's stale dollar figure on
+  `website-to-app-converter-complete-guide-2026` was corrected, which is a
+  factual fix, not a CTR rewrite) — per standing instruction, that cluster's
+  position/CTR stays flagged for human backlink/SERP review, not further
+  autopilot content passes.
+  Flag for a future pass (out of scope today): `best-website-to-app-converters-2026`
+  still shows *WebIntoApp's own* price as a stale `Free-$25` / `$0-$25` in
+  two places (should reflect the verified current `Free (watermarked) or $89
+  one-time` model) — this is WebIntoApp's price, not ours, so left as a
+  separate flagged issue rather than expanding today's scope.
+  `npx tsc -b` clean after all edits. Committed + pushed from scratch clone.
 - 2026-07-27 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`exe to app` pos 5.4, `website to exe converter` pos
   5.7, `webtoexe` pos 6.1, `website to exe converter online free` pos 6.1, `exe
