@@ -411,10 +411,27 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
     now = datetime.now(timezone.utc)
 
+    # Idempotency guard. sync_active_builds polls every minute and selects rows
+    # still marked "building"; the success path below then spends MINUTES
+    # downloading artifacts before anything is committed. The next tick therefore
+    # picked up the same row and ran the whole path again — which is why
+    # customers received duplicate "ready to download" emails seconds apart
+    # (Ali got ~20 for one app and told us to stop). A CI webhook racing the
+    # poller causes the same thing. Once a build is terminal, never re-process it.
+    if build.status in ("success", "failed"):
+        logger.info(
+            f"Build {build.id} (pipeline {pipeline_id}) already {build.status} — "
+            f"ignoring duplicate {pipeline_status} notification"
+        )
+        return
+
     if pipeline_status == "success":
         build.status = "success"
         build.progress = 100
         build.completed_at = now
+        # Claim the row BEFORE the slow artifact download so a concurrent poll
+        # tick sees a terminal status and skips it.
+        await db.commit()
 
         # Download artifacts and save build log
         provider = (build.variables or {}).get("_build_provider", "gitlab")
@@ -533,6 +550,9 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.status = "failed"
         build.progress = 0
         build.completed_at = now
+        # Same reason as the success path: claim the row before the slow log
+        # fetch so a concurrent poll tick cannot re-send the failure email.
+        await db.commit()
 
         # Fetch pipeline job logs for failure analysis (same provider routing as the success path)
         provider = (build.variables or {}).get("_build_provider", "gitlab")
