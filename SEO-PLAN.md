@@ -1,4 +1,4 @@
-# Last updated: 2026-07-26 by plan-updater based on SC data
+# Last updated: 2026-07-27 by plan-updater based on SC data
 # WebsiteToApp.app — SEO Plan (created 2026-07-20 from Search Console data)
 
 Nightly-updated by the SEO agent (plan updater appends dated entries; agent
@@ -252,6 +252,25 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       app" reusing the convert-flow screenshots.
 
 ## Update log
+- 2026-07-27 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`exe to app` pos 5.4, `website to exe converter` pos
+  5.7, `webtoexe` pos 6.1, `website to exe converter online free` pos 6.1, `exe
+  to app converter` pos 6.3, `exe to app converter online` pos 6.4) remain
+  covered by existing DONE/verified-live tasks — the EXE/desktop cluster + CTR
+  pass and `/blog/exe-to-app-converter-guide` (which explicitly captures the
+  `exe to app` / `exe to app converter` / `exe to app converter online` /
+  `webtoexe` query variants per its original 07-20 description) cover all 6 —
+  no new page task added, no duplicate created. Today's "Getting traction" trio
+  (`webintoapp` 38 clicks pos 6.4, `websitetoapp` 18 clicks pos 1.4, `webtoapp`
+  12 clicks pos 9.4) is covered by the existing P2 link-audit + brand-defense
+  tasks (both DONE 2026-07-24) and the webintoapp comparison expand +
+  `/alternatives/webintoapp` refresh (both DONE, verified live 2026-07-25) — no
+  new task needed. No "Fix CTR" section for WebToApp in today's brief;
+  `webintoapp`'s CTR remains flagged for human backlink/SERP review per the
+  2026-07-25 note after 4 rewrite/expand passes — not queuing another autopilot
+  pass. P2 free-intent funnel and P3 `html to app` remain outside today's
+  brief's Push-to-Page-1 window — left deprioritized, no change. No other
+  undone tasks target keywords outside today's brief.
 - 2026-07-26 (2, agent): executed the topmost still-open task outside today's
   narrow brief window — the P2 free-intent funnel item (`website to app
   converter free` + `convert website to app for free`, ~300 combined imp at
