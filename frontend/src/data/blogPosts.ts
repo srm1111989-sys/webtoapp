@@ -2481,7 +2481,7 @@ Converting your WordPress site to an Android app in 2026 is **easier and more af
 3. Test on your Android device
 4. Publish to Google Play Store
 
-Your WordPress app awaits! 🚀
+Your WordPress app awaits!
 `,
   },
   {
@@ -2742,7 +2742,7 @@ The system detects:
 3. **Configure notification types:**
 
 **Flash Sales:**
-- Send: "🔥 24-Hour Sale! 40% Off Everything!"
+- Send: "24-Hour Sale! 40% Off Everything!"
 - Include: Deep link to sale collection
 - Timing: 9am (when people check phones)
 
@@ -2886,9 +2886,9 @@ Shop [Your Brand] on the go! Fast checkout, exclusive app deals, push notificati
 
 Shop our full collection of [product type] directly from your phone. Faster, smoother, and more convenient than ever.
 
-✨ WHY YOU'LL LOVE THIS APP:
+WHY YOU'LL LOVE THIS APP:
 
-🚀 Lightning-Fast Shopping
+Lightning-Fast Shopping
 • Browse thousands of products instantly
 • 1-click checkout with saved payment info
 • 3x faster than mobile website
@@ -2913,7 +2913,7 @@ Shop our full collection of [product type] directly from your phone. Faster, smo
 • Stripe & PayPal supported
 • Your payment info is always safe
 
-🎁 EXCLUSIVE APP BENEFITS:
+EXCLUSIVE APP BENEFITS:
 • 10% off your first app purchase
 • Early access to new collections
 • App-only flash sales
@@ -3089,7 +3089,7 @@ Your cart is about to expire. Use code APP10 for 10% off.
 
 **Message:**
 
-🔥 FLASH SALE: 40% Off Sitewide!
+FLASH SALE: 40% Off Sitewide!
 
 24 hours only. Shop now before it's gone!
 
@@ -3128,7 +3128,7 @@ Redeem for $35 off your next purchase. Limited time!
 
 **Holiday Strategy:**
 - Black Friday: "Early access for app users!"
-- Christmas: "Gift guide inside 🎁"
+- Christmas: "Gift guide inside"
 - Valentine's: "Last-minute gifts delivered by Feb 14"
 
 **Back to School, Summer Sale, etc.**
