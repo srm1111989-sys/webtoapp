@@ -103,18 +103,18 @@ export const competitors: Competitor[] = [
       { name: 'Android App', them: '✓', us: '✓', usBetter: false },
       { name: 'Windows Desktop App', them: '✗ Not available at any price', us: '✓', usBetter: true },
       { name: 'Push Notifications', them: '✓ (paid tier)', us: '✓ Included', usBetter: false },
-      { name: 'No Watermark', them: 'From $89 one-time', us: '$25 one-time', usBetter: true },
+      { name: 'No Watermark', them: 'From $89 one-time', us: '$35 one-time', usBetter: true },
       { name: 'Biometric Auth', them: '✗', us: '✓ Included', usBetter: true },
       { name: 'AdMob Integration', them: 'Own account on paid tier only', us: '✓ Included', usBetter: true },
       { name: 'Offline Mode', them: '✗', us: '✓ Included', usBetter: true },
-      { name: 'Pricing model', them: 'Free (branded) or $89+ one-time', us: '$25 one-time', usBetter: true },
-      { name: 'Branding removal cost', them: '$89 one-time', us: '$25 one-time', usBetter: true },
+      { name: 'Pricing model', them: 'Free (branded) or $89+ one-time', us: '$35 one-time', usBetter: true },
+      { name: 'Branding removal cost', them: '$89 one-time', us: '$35 one-time', usBetter: true },
       { name: 'Total features', them: '~15', us: '40+', usBetter: true },
     ],
     verdict:
-      "WebIntoApp's free plan looks tempting, but it ships with WebIntoApp's own name and ads on your app — not yours. Removing that branding costs $89 one-time on the Dedicated plan, and even then you still don't get a desktop/.exe build, biometric auth, or offline mode. WebsiteToApp removes the watermark for $25 one-time — less than a third of WebIntoApp's price — and includes a Windows desktop build, biometric auth, and offline mode WebIntoApp doesn't offer at any tier.",
+      "WebIntoApp's free plan looks tempting, but it ships with WebIntoApp's own name and ads on your app — not yours. Removing that branding costs $89 one-time on the Dedicated plan, and even then you still don't get a desktop/.exe build, biometric auth, or offline mode. WebsiteToApp removes the watermark for $35 one-time — less than a third of WebIntoApp's price — and includes a Windows desktop build, biometric auth, and offline mode WebIntoApp doesn't offer at any tier.",
     switchReasons: [
-      '$25 one-time vs $89 one-time to remove branding — less than a third of the price',
+      '$35 one-time vs $89 one-time to remove branding — less than a third of the price',
       'Windows desktop app / .exe build included (WebIntoApp has no desktop option at any price)',
       'Biometric auth and offline mode included — WebIntoApp offers neither',
       "Your own AdMob ads from the start, not WebIntoApp's ads on your free app",
@@ -122,7 +122,7 @@ export const competitors: Competitor[] = [
     ],
     seoTitle: 'WebIntoApp Alternative (2026): Free Plan Watermark Costs $89 to Remove',
     seoDescription:
-      "WebIntoApp's \"free\" app shows WebIntoApp's own branding + ads — removing it costs $89 one-time. WebsiteToApp removes the watermark for $25 one-time and adds a desktop .exe build. Compare pricing, features & verdict.",
+      "WebIntoApp's \"free\" app shows WebIntoApp's own branding + ads — removing it costs $89 one-time. WebsiteToApp removes the watermark for $35 one-time and adds a desktop .exe build. Compare pricing, features & verdict.",
   },
   {
     slug: 'median',
