@@ -72,8 +72,6 @@ export default function Contact() {
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Business Information</h2>
         <div className="text-gray-700 space-y-2">
           <p className="font-semibold">Stark Enterprises</p>
-          <p>9/A, Panjab Bank Apart, Police Line Road</p>
-          <p>Sangli, Maharashtra 416416, India</p>
           <p className="mt-4">
             Email: <a href="mailto:support@websitetoapp.app" className="text-blue-600 hover:underline">support@websitetoapp.app</a>
           </p>

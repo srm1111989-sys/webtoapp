@@ -93,8 +93,6 @@ export default function RefundPolicy() {
           </p>
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <p className="font-semibold text-gray-900">Stark Enterprises</p>
-            <p className="text-gray-700">9/A, Panjab Bank Apart, Police Line Road</p>
-            <p className="text-gray-700">Sangli, Maharashtra 416416, India</p>
           </div>
         </section>
       </div>
