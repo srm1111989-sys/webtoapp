@@ -10,8 +10,8 @@ import { createRazorpayOrder, verifyRazorpayPayment } from '@/api/razorpay-proxy
 const STEPS = [
   {
     num: '01',
-    title: 'Fill the Form & Pay $10',
-    desc: 'Enter your app details and complete the one-time $10 payment. Secure checkout via Razorpay.',
+    title: 'Fill the Form & Pay $15',
+    desc: 'Enter your app details and complete the one-time $15 payment. Secure checkout via Razorpay.',
   },
   {
     num: '02',
@@ -56,7 +56,7 @@ const FAQS = [
   },
   {
     q: 'Can you also update an existing app?',
-    a: 'Yes! We handle both new app submissions and updates to existing published apps for the same $10 flat fee.',
+    a: 'Yes! We handle both new app submissions and updates to existing published apps for the same $15 flat fee.',
   },
   {
     q: 'What happens after I pay?',
@@ -66,9 +66,9 @@ const FAQS = [
 
 export default function PlayStorePage() {
   useSEO({
-    title: 'Publish App on Google Play Store — We Do It For You | $10 Flat',
+    title: 'Publish App on Google Play Store — We Do It For You | $15 Flat',
     description:
-      'Struggling with Google Play Store submission? Our experts handle your entire Android app publishing — store listing, screenshots, metadata & submission. One-time $10. Fast & professional.',
+      'Struggling with Google Play Store submission? Our experts handle your entire Android app publishing — store listing, screenshots, metadata & submission. One-time $15. Fast & professional.',
     canonical: 'https://websitetoapp.app/publish-app',
   })
 
@@ -141,17 +141,17 @@ export default function PlayStorePage() {
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Skip the confusing Play Console setup. Our experts handle your entire app submission —
-            store listing, screenshots, metadata, and publishing. <strong>$10 flat, one-time.</strong>
+            store listing, screenshots, metadata, and publishing. <strong>$15 flat, one-time.</strong>
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {['$10 flat fee', '24h turnaround', '100% ownership', 'Expert team'].map((b) => (
+            {['$15 flat fee', '24h turnaround', '100% ownership', 'Expert team'].map((b) => (
               <span key={b} className="flex items-center gap-1.5 bg-white border border-indigo-200 text-indigo-800 text-sm font-medium px-4 py-2 rounded-full shadow-sm">
                 <CheckCircle2 className="w-4 h-4 text-indigo-500" /> {b}
               </span>
             ))}
           </div>
           <a href="#get-started" className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-semibold px-8 py-4 rounded-xl shadow-lg transition-all">
-            Get Started — $10 <ArrowRight className="w-5 h-5" />
+            Get Started — $15 <ArrowRight className="w-5 h-5" />
           </a>
           <p className="mt-3 text-sm text-gray-500">One-time payment. No subscription. You keep full ownership.</p>
         </div>
@@ -177,7 +177,7 @@ export default function PlayStorePage() {
       <section className="py-14 sm:py-20 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Everything Included for $10</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Everything Included for $15</h2>
             <p className="text-gray-600 max-w-xl mx-auto">
               No hidden fees, no upsells. One payment covers your complete Google Play Store submission.
             </p>
@@ -248,7 +248,7 @@ export default function PlayStorePage() {
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 rounded-full px-4 py-2 mb-4">
                   <Store className="w-5 h-5" />
-                  <span className="font-semibold">Submit Your App — $10 One-Time</span>
+                  <span className="font-semibold">Submit Your App — $15 One-Time</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Ready to Go Live?</h2>
                 <p className="text-gray-600 mt-2">Fill in your details and our team takes it from there.</p>
@@ -319,7 +319,7 @@ export default function PlayStorePage() {
                   disabled={loading || !form.name || !form.email || !form.appName}
                   className="w-full py-4 rounded-xl font-bold text-white text-base bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
                 >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Store className="w-5 h-5" /> Pay $10 & Submit</>}
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Store className="w-5 h-5" /> Pay $15 & Submit</>}
                 </button>
                 <p className="text-center text-xs text-gray-500">Secure payment via Razorpay · 100% money-back if we can't publish</p>
               </form>
@@ -363,7 +363,7 @@ export default function PlayStorePage() {
             Ready to Publish Your App?
           </h2>
           <p className="text-indigo-200 mb-8">
-            Join thousands of app owners who skipped the hassle. $10 flat, one-time.
+            Join thousands of app owners who skipped the hassle. $15 flat, one-time.
           </p>
           <a
             href="#get-started"

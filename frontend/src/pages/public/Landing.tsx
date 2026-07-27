@@ -320,10 +320,10 @@ export default function Landing() {
               <div className="flex-1 min-w-0 text-center sm:text-left">
                 <p className="text-xs text-indigo-500 font-semibold uppercase tracking-wider mb-0.5">Already have an Android build?</p>
                 <p className="text-base sm:text-lg font-bold text-indigo-900 leading-tight">Publish Your App on Google Play Store</p>
-                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup - $25 flat</p>
+                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup - $15 flat</p>
               </div>
               <div className="shrink-0 bg-indigo-600 group-hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                Get Started - $25 <ArrowRight className="w-4 h-4" />
+                Get Started - $15 <ArrowRight className="w-4 h-4" />
               </div>
             </Link>
           </div>
@@ -621,7 +621,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  Launch Offer - Save $25
+                  Launch Offer - Save $15
                 </div>
               </div>
 
@@ -687,7 +687,7 @@ export default function Landing() {
                 {/* You Save Badge */}
                 <div className="mt-3 inline-flex items-center gap-1.5 bg-green-100 text-green-800 px-3 py-1.5 rounded-lg text-sm font-bold border border-green-200">
                   <Check className="w-4 h-4" />
-                  Launch Offer - Save $25
+                  Launch Offer - Save $15
                 </div>
               </div>
 

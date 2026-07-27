@@ -98,14 +98,14 @@ export default function ComparisonPage() {
             The Best {competitor.name} Alternative in 2026
           </h1>
           <p className="text-xl text-primary-100 mb-8 max-w-3xl mx-auto">
-            {competitor.name} costs {competitor.pricing.label}. WebsiteToApp gives you the same — and more — for a <strong className="text-white">one-time $25 payment</strong>. No subscriptions. No renewals.
+            {competitor.name} costs {competitor.pricing.label}. WebsiteToApp gives you the same — and more — for a <strong className="text-white">one-time $35 payment</strong>. No subscriptions. No renewals.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
               className="bg-white text-primary-700 px-8 py-4 rounded-lg font-semibold inline-flex items-center justify-center gap-2 hover:bg-gray-100 text-lg"
             >
-              Switch to WebsiteToApp — $25 One-Time <ArrowRight className="w-5 h-5" />
+              Switch to WebsiteToApp — $35 One-Time <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               to="/pricing"
@@ -148,7 +148,7 @@ export default function ComparisonPage() {
                 <Zap className="w-6 h-6 text-green-600 shrink-0" />
                 <h2 className="text-xl font-bold text-gray-900">WebsiteToApp</h2>
               </div>
-              <p className="text-3xl font-extrabold text-green-700 mb-1">$25 one-time</p>
+              <p className="text-3xl font-extrabold text-green-700 mb-1">$35 one-time</p>
               <p className="text-sm text-gray-600 mb-4">
                 Pay once. Own forever. All 40+ features included. No subscription, no renewal.
               </p>
@@ -369,13 +369,13 @@ export default function ComparisonPage() {
             Ready to Switch from {competitor.name}?
           </h2>
           <p className="text-primary-100 mb-8 text-lg">
-            One-time $25 payment. 40+ features. No subscriptions. 7-day money-back guarantee.
+            One-time $35 payment. 40+ features. No subscriptions. 7-day money-back guarantee.
           </p>
           <Link
             to="/register"
             className="bg-white text-primary-700 px-8 py-4 rounded-lg font-semibold inline-flex items-center gap-2 hover:bg-gray-100 text-lg"
           >
-            Get Started — $25 One-Time <ArrowRight className="w-5 h-5" />
+            Get Started — $35 One-Time <ArrowRight className="w-5 h-5" />
           </Link>
           <p className="text-primary-200 text-sm mt-4">No credit card required to start</p>
         </div>
