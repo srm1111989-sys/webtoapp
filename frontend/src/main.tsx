@@ -75,7 +75,11 @@ function AppProviders() {
 // Capture browser console errors and send to backend for logging
 function sendClientError(payload: object) {
   try {
-    navigator.sendBeacon('/api/client-errors', JSON.stringify(payload))
+    // sendBeacon with a raw string sends Content-Type: text/plain, which FastAPI
+    // rejects with 422 — every crash report was being silently discarded. A Blob
+    // lets us set the JSON content type. Trailing slash avoids the 307 redirect.
+    const body = new Blob([JSON.stringify(payload)], { type: 'application/json' })
+    navigator.sendBeacon('/api/client-errors/', body)
   } catch (_) {}
 }
 window.onerror = (message, source, line, col, error) => {
