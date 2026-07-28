@@ -69,7 +69,7 @@ export default function PublicLayout() {
       </main>
       <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             <div>
               <h3 className="text-white font-semibold mb-3">Product</h3>
               <ul className="space-y-2 text-sm">
@@ -92,6 +92,15 @@ export default function PublicLayout() {
                 <li><Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="hover:text-white">Terms of Service</Link></li>
                 <li><Link to="/refund-policy" className="hover:text-white">Refund Policy</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-3">Also from us</h3>
+              <ul className="space-y-2 text-sm">
+                <li><a href="https://ownstore.app" className="hover:text-white">OwnStore</a></li>
+                <li><a href="https://indexflow.net" className="hover:text-white">IndexFlow</a></li>
+                <li><a href="https://modbussimulator.com" className="hover:text-white">Modbus Simulator</a></li>
+                <li><a href="https://eudyamaadhaar.com" className="hover:text-white">eUdyam Aadhaar</a></li>
               </ul>
             </div>
             <div>
