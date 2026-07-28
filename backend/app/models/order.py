@@ -21,6 +21,9 @@ class Order(Base):
     gateway_order_id: Mapped[str | None] = mapped_column(String(255))
     gateway_payment_id: Mapped[str | None] = mapped_column(String(255))
     order_metadata: Mapped[dict | None] = mapped_column("metadata", JSONB)
+    # Set when a referral code was applied at checkout — the referring user
+    # earns bonus rebuilds when this order is paid (first paid order only).
+    referred_by_user_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

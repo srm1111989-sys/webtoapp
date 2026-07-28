@@ -61,6 +61,7 @@ async def create_order(
 
     # Apply promo code if provided
     promo_applied = None
+    referred_by_id = None
     if data.promo_code and amount > 0:
         from datetime import datetime, timezone
         from sqlalchemy import func as sqlfunc
@@ -82,6 +83,16 @@ async def create_order(
                 amount = max(0, amount - discount)
                 promo.current_uses += 1
                 promo_applied = promo.code.upper()
+        if not promo_applied:
+            # Not a promo code — maybe another user's referral code (REF-XXXXXX):
+            # friend gets 10% off, referrer earns bonus rebuilds when this pays.
+            from app.services.referrals import find_referrer_by_code, REFERRAL_DISCOUNT_PERCENT
+            referrer = await find_referrer_by_code(db, data.promo_code)
+            if referrer and referrer.id != user.id:
+                discount = int(amount * REFERRAL_DISCOUNT_PERCENT / 100)
+                amount = max(0, amount - discount)
+                promo_applied = referrer.referral_code
+                referred_by_id = referrer.id
 
     # If frontend requested Stripe but it is not configured, fall back to Razorpay
     gateway = data.payment_gateway
@@ -107,6 +118,7 @@ async def create_order(
         amount=amount,
         currency=data.currency,
         payment_gateway=gateway,
+        referred_by_user_id=referred_by_id,
     )
 
     # Free plan: mark as paid immediately

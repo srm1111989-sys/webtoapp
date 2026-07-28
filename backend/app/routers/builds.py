@@ -150,6 +150,9 @@ async def trigger_build_endpoint(
         )).first()
         if pro:
             rebuild_cap = 20
+        # Referral rewards: +5 rebuilds per converted referral this month (t121)
+        from app.services.referrals import bonus_rebuilds_for_month
+        rebuild_cap += await bonus_rebuilds_for_month(db, order.user_id)
         if month_success >= rebuild_cap:
             detail = (
                 f"Monthly rebuild limit reached ({rebuild_cap} rebuilds per app per month). It resets on the 1st."

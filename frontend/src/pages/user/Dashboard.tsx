@@ -55,6 +55,10 @@ export default function Dashboard() {
     queryKey: ['payment-mode'],
     queryFn: () => paymentsApi.getPaymentMode().then((r) => r.data),
   })
+  const { data: referrals } = useQuery({
+    queryKey: ['referrals-me'],
+    queryFn: () => import('@/api/client').then((m) => m.default.get('/api/referrals/me')).then((r) => r.data),
+  })
 
   const orders = ordersData?.orders ?? []
   const apps = (appsData?.apps ?? []).filter((a) => a.status !== 'draft')
@@ -146,6 +150,29 @@ export default function Dashboard() {
               </Link>
             ))}
           </div>
+
+          {/* Referral program */}
+          {referrals?.code && (
+            <Card className="p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-ink">Give {referrals.discount_percent}%, get {referrals.reward_rebuilds_each} rebuilds</p>
+                  <p className="text-xs text-soft mt-0.5">
+                    Friends get {referrals.discount_percent}% off any paid plan with your code; you earn +{referrals.reward_rebuilds_each} rebuilds
+                    the month each referral buys. {referrals.converted_referrals > 0 && `${referrals.converted_referrals} converted so far`}
+                    {referrals.bonus_rebuilds_this_month > 0 && ` · +${referrals.bonus_rebuilds_this_month} bonus rebuilds active this month`}
+                  </p>
+                </div>
+                <button
+                  onClick={() => { navigator.clipboard?.writeText(referrals.code); }}
+                  className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-primary-200 bg-primary-50 text-primary-700 font-mono font-bold text-sm hover:bg-primary-100 transition"
+                  title="Click to copy"
+                >
+                  {referrals.code}
+                </button>
+              </div>
+            </Card>
+          )}
 
           {/* Activity + Builds overview */}
           <div className="grid lg:grid-cols-5 gap-4">

@@ -23,6 +23,20 @@ async def validate_promo_code(
     promo = result.scalar_one_or_none()
 
     if not promo:
+        # Referral codes (REF-XXXXXX) validate through the same checkout field
+        from app.services.referrals import find_referrer_by_code, REFERRAL_DISCOUNT_PERCENT
+        referrer = await find_referrer_by_code(db, code)
+        if referrer:
+            discount_amount = int(plan_price_usd * REFERRAL_DISCOUNT_PERCENT / 100)
+            return {
+                "valid": True,
+                "code": referrer.referral_code,
+                "discount_percent": REFERRAL_DISCOUNT_PERCENT,
+                "original_price_usd": plan_price_usd,
+                "discount_amount_usd": discount_amount,
+                "discounted_price_usd": max(0, plan_price_usd - discount_amount),
+                "message": f"Referral applied — {REFERRAL_DISCOUNT_PERCENT}% off!",
+            }
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid promo code")
 
     # Check expiry

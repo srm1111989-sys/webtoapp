@@ -229,6 +229,10 @@ async def verify_razorpay_payment(
     # 2026-07-16: keystore guard raised, verify 500'd, order stayed pending).
     await db.commit()
 
+    # Referral reward (best-effort, never raises into the payment path)
+    from app.services.referrals import grant_reward_for_paid_order
+    await grant_reward_for_paid_order(db, order)
+
     build_error = None
     try:
         await trigger_build(order.id, db)
@@ -344,6 +348,9 @@ async def test_payment(
         ac.status = "active"
 
     await db.commit()
+
+    from app.services.referrals import grant_reward_for_paid_order
+    await grant_reward_for_paid_order(db, order)
 
     try:
         await trigger_build(order.id, db)

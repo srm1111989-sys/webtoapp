@@ -19,6 +19,9 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     signup_attribution: Mapped[dict | None] = mapped_column(JSONB)
+    # Personal referral code (e.g. REF-7K2M9Q) — friends enter it at checkout
+    # for 10% off; the owner earns bonus rebuilds per converted referral.
+    referral_code: Mapped[str | None] = mapped_column(String(20), unique=True, index=True)
     verification_token: Mapped[str | None] = mapped_column(String(255))
     reset_token: Mapped[str | None] = mapped_column(String(255))
     reset_token_expires: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
