@@ -64,11 +64,37 @@ export default function ComparisonPage() {
     if (!competitor) return
     const schema = {
       '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: competitor.seoTitle,
-      description: competitor.seoDescription,
-      author: { '@type': 'Organization', name: 'WebsiteToApp' },
-      publisher: { '@type': 'Organization', name: 'WebsiteToApp', url: 'https://websitetoapp.app' },
+      '@graph': [
+        {
+          '@type': 'Article',
+          headline: competitor.seoTitle,
+          description: competitor.seoDescription,
+          author: { '@type': 'Organization', name: 'WebsiteToApp' },
+          publisher: { '@type': 'Organization', name: 'WebsiteToApp', url: 'https://websitetoapp.app' },
+        },
+        {
+          // FAQ rich-result eligibility for competitor-brand queries (t127 P1).
+          // Answers come from the page's own verdict/pricing data — no new claims.
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: `What is the best ${competitor.name} alternative?`,
+              acceptedAnswer: { '@type': 'Answer', text: competitor.verdict },
+            },
+            {
+              '@type': 'Question',
+              name: `How much does ${competitor.name} cost compared to WebsiteToApp?`,
+              acceptedAnswer: { '@type': 'Answer', text: `${competitor.name}: ${competitor.pricing.detail} WebsiteToApp is a one-time payment from $35 with all 40+ features included and no subscription.` },
+            },
+            {
+              '@type': 'Question',
+              name: `Why switch from ${competitor.name} to WebsiteToApp?`,
+              acceptedAnswer: { '@type': 'Answer', text: competitor.switchReasons.join(' ') },
+            },
+          ],
+        },
+      ],
     }
     let el = document.getElementById('comparison-jsonld')
     if (!el) {

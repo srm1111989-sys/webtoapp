@@ -71,7 +71,7 @@ export const competitors: Competitor[] = [
       'Windows desktop app included (GoNative has no desktop support)',
       'App stays live forever after one payment — no subscription dependency',
     ],
-    seoTitle: 'GoNative Alternative — Same Features, 99% Cheaper',
+    seoTitle: 'GoNative Alternative: $35 One-Time vs $99/mo — Same Features (2026)',
     seoDescription:
       'GoNative charges $99–$299/month. WebsiteToApp costs $10 one-time with 40+ features and no coding. See the full comparison and switch today.',
   },
@@ -120,7 +120,7 @@ export const competitors: Competitor[] = [
       "Your own AdMob ads from the start, not WebIntoApp's ads on your free app",
       'More features in one $35 plan than WebIntoApp\'s most expensive tier',
     ],
-    seoTitle: 'WebIntoApp Alternative (2026): Free Plan Watermark Costs $89 to Remove',
+    seoTitle: 'WebIntoApp Alternative: $35 Once, No Watermark, 40+ Features (2026)',
     seoDescription:
       "WebIntoApp's \"free\" app shows WebIntoApp's own branding + ads — removing it costs $89 one-time. WebsiteToApp removes the watermark for $35 one-time and adds a desktop .exe build. Compare pricing, features & verdict.",
   },
@@ -168,7 +168,7 @@ export const competitors: Competitor[] = [
       'Ready in 5 minutes — not hours of JS Bridge configuration',
       'One payment, app lives forever — no subscription lock-in',
     ],
-    seoTitle: 'Median.co Alternative — No Coding, No Monthly Fee',
+    seoTitle: 'Median.co Alternative: No Coding, $35 Once Instead of $99/mo (2026)',
     seoDescription:
       'Median.co costs $99–$299/month and requires JavaScript coding for features. WebsiteToApp is $10 one-time with no coding needed. Full comparison inside.',
   },

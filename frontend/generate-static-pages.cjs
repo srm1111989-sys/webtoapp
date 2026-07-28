@@ -43,6 +43,7 @@ const platforms = [
   { slug: 'nextjs', name: 'Next.js', desc: 'Convert Next.js app to Android. SSR and static pages work perfectly in mobile.' },
   { slug: 'angular', name: 'Angular', desc: 'Convert Angular web app to Android APK. Full SPA support.' },
   { slug: 'vue', name: 'Vue.js', desc: 'Convert Vue.js app to Android. Single-page app converts to native mobile.' },
+  { slug: 'website-to-exe', name: 'Website to EXE', title: 'Free Website to EXE Converter Online - Windows Desktop Apps | WebToApp', desc: 'Convert any website to a downloadable Windows .exe desktop app. No coding, no Electron setup - build your EXE in minutes.' },
   { slug: 'notion', name: 'Notion', desc: 'Convert Notion page to Android app. Turn your Notion workspace into a mobile app.' },
   { slug: 'google-sites', name: 'Google Sites', desc: 'Convert Google Sites to Android app. Simple conversion with no coding.' },
   { slug: 'carrd', name: 'Carrd', desc: 'Convert Carrd site to Android app. Turn your one-page site into a mobile app.' },
@@ -329,7 +330,7 @@ for (const p of platforms) {
   const dir = path.join(distDir, 'convert', slug);
   fs.mkdirSync(dir, { recursive: true });
 
-  const title = `Convert ${p.name} Website to Android App — No Coding | WebToApp`;
+  const title = p.title || `Convert ${p.name} Website to Android App — No Coding | WebToApp`;
   const desc = p.desc;
   const canonical = `https://websitetoapp.app/convert/${slug}`;
   const keyword = `convert ${p.name.toLowerCase()} to app, ${p.name.toLowerCase()} to android app, ${p.name.toLowerCase()} website to apk`;
