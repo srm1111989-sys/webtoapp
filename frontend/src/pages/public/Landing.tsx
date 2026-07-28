@@ -1028,6 +1028,15 @@ export default function Landing() {
                 <p className="text-gray-600 text-sm">{f.a}</p>
               </div>
             ))}
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <h3 className="font-semibold mb-2">My app is live — how do people find my website on Google?</h3>
+              <p className="text-gray-600 text-sm">
+                Your app links back to your website, so getting those pages into Google matters. If new pages are slow to
+                appear in search, a dedicated indexing tool like{' '}
+                <a href="https://indexflow.net" className="text-primary-600 font-medium hover:underline">IndexFlow</a>{' '}
+                can push them to Google's Indexing API and get them crawled within hours instead of weeks.
+              </p>
+            </div>
           </div>
         </div>
       </section>

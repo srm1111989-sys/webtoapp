@@ -95,15 +95,6 @@ export default function PublicLayout() {
               </ul>
             </div>
             <div>
-              <h3 className="text-white font-semibold mb-3">Also from us</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="https://ownstore.app" className="hover:text-white">OwnStore</a></li>
-                <li><a href="https://indexflow.net" className="hover:text-white">IndexFlow</a></li>
-                <li><a href="https://modbussimulator.com" className="hover:text-white">Modbus Simulator</a></li>
-                <li><a href="https://eudyamaadhaar.com" className="hover:text-white">eUdyam Aadhaar</a></li>
-              </ul>
-            </div>
-            <div>
               <h3 className="text-white font-semibold mb-3">Support</h3>
               <ul className="space-y-2 text-sm">
                 <li><a href="mailto:support@websitetoapp.app" className="hover:text-white">support@websitetoapp.app</a></li>
