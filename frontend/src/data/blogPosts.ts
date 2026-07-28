@@ -6460,7 +6460,7 @@ Both tools support full AdMob integration with all ad formats (banner, interstit
 
 ### What if I need iOS support?
 
-Currently, WebsiteToApp.app only supports Android. If you need iOS apps, WebViewGold is your best option at $89 for both platforms. However, if you're only targeting Android users, WebsiteToApp.app provides better value at just $25.
+Currently, WebsiteToApp.app only supports Android. WebsiteToApp.app now offers iOS apps in beta at $35 (unsigned .ipa plus full Xcode source). For Android-only users, WebsiteToApp.app provides better value at just $35 one-time.
 
 ### Can I build Progressive Web Apps (PWA) instead?
 

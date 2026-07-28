@@ -199,7 +199,7 @@ WebToApp includes a **live phone-frame preview** — no install needed:
 
 ## iOS support
 
-iOS is **not available yet**. Reasons: Apple requires each publisher to have their own Apple Developer account ($99/year), and Apple's App Store review (guideline 4.2) rejects simple website-wrapper apps, so an iOS product needs a richer native shell. An **iOS waitlist** is available in the app wizard — joining it helps us prioritize. Alternatives today: your website can be installed as a PWA on iPhone (Share → Add to Home Screen), and Android + Desktop apps are fully supported.
+iOS is available in **beta** at **$35 one-time** (same price as Android). You receive an unsigned .ipa plus the complete Xcode source project; you sign and publish it with your own Apple Developer account ($99/year) — we do not provide App Store publishing support. Note Apple's App Store review (guideline 4.2) can reject simple website-wrapper apps, so plan your listing accordingly. Your website can also be installed as a PWA on iPhone (Share → Add to Home Screen); Android + Desktop apps are fully supported.
 
 ## TV devices (Fire TV Stick, Android TV, Google TV)
 

@@ -500,7 +500,7 @@ export default function Pricing() {
               <span className="text-3xl font-bold">
                 {iosBetaPlan
                   ? formatPlanPrice(iosBetaPlan.price_inr, iosBetaPlan.price_usd)
-                  : formatPlanPrice(207500, 2500)}
+                  : formatPlanPrice(290500, 3500)}
               </span>
               <span className="text-gray-500 text-sm ml-1">one-time</span>
             </div>
