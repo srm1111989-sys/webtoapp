@@ -274,42 +274,111 @@ export default function Landing() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="bg-gradient-to-b from-white via-primary-50 to-white py-6 sm:py-8 lg:py-10">
+      {/* Hero — two-column: copy + URL input left, phone mockup + feature chips right */}
+      <section className="bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 sm:py-12 lg:py-14 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-gray-900 text-center">
-            Turn Your Website Into a <span className="text-primary-600">Play-Store-Ready App</span> in Minutes
-          </h1>
-          <p className="text-sm sm:text-lg text-gray-600 mb-2 sm:mb-3 max-w-3xl mx-auto text-center">
-            No coding required. One-time payment from <strong>$35</strong>. Get an Android APK/AAB or Windows installer with branding, push notifications, and Play Store signing support without a monthly platform fee.
-          </p>
-          <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4 text-center flex items-center justify-center gap-1.5">
-            <MessageCircle className="w-4 h-4 text-green-500" />
-            <span>Live support available - average response time under 5 minutes</span>
-          </p>
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-6 items-center mb-8">
+            {/* Left: copy + URL input */}
+            <div>
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.9rem] font-extrabold mb-4 leading-[1.15] text-gray-900">
+                Turn Your Website Into a <span className="text-primary-600">Play-Store Ready App</span> in <span className="text-purple-600">Minutes</span>
+              </h1>
+              <p className="text-base sm:text-lg text-gray-600 mb-5 max-w-xl">
+                No coding. No developers. Just your website. One-time payment from <strong>$35</strong> — Android APK/AAB or Windows installer with branding, push notifications, and Play Store signing support. No monthly platform fee.
+              </p>
 
-          {/* URL Input Box */}
-          <div className="max-w-4xl mb-0 mx-auto">
-            <div className="flex flex-col sm:flex-row gap-3 bg-white rounded-xl p-2 sm:p-3 shadow-xl border-2 border-primary-100">
-              <div className="flex-1 flex items-center bg-gray-50 rounded-lg px-4 border border-gray-200">
-                <Globe className="w-5 h-5 text-gray-400 shrink-0" />
-                <input
-                  type="url"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  placeholder="Enter your website URL (e.g. https://yoursite.com)"
-                  className="w-full py-3.5 px-3 text-gray-800 placeholder-gray-400 outline-none bg-transparent text-base sm:text-lg"
-                  onKeyDown={(e) => e.key === 'Enter' && handleGetStarted()}
-                />
+              {/* URL Input Box */}
+              <div className="flex flex-col sm:flex-row gap-3 bg-white rounded-xl p-2 sm:p-2.5 shadow-xl border-2 border-primary-100 max-w-xl">
+                <div className="flex-1 flex items-center bg-gray-50 rounded-lg px-4 border border-gray-200">
+                  <Globe className="w-5 h-5 text-gray-400 shrink-0" />
+                  <input
+                    type="url"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="Enter your website URL"
+                    className="w-full py-3.5 px-3 text-gray-800 placeholder-gray-400 outline-none bg-transparent text-base"
+                    onKeyDown={(e) => e.key === 'Enter' && handleGetStarted()}
+                  />
+                </div>
+                <button
+                  onClick={handleGetStarted}
+                  className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-7 py-3.5 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition-all shadow-lg whitespace-nowrap"
+                >
+                  {isLoggedIn ? 'Create App' : 'Build My App Now'} <ArrowRight className="w-5 h-5" />
+                </button>
               </div>
-              <button
-                onClick={handleGetStarted}
-                className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-10 py-3.5 rounded-lg font-semibold text-lg flex items-center justify-center gap-2 transition-all shadow-lg whitespace-nowrap"
-              >
-                {isLoggedIn ? 'Create App' : 'Build My App'} <ArrowRight className="w-5 h-5" />
-              </button>
+
+              {/* Trust markers */}
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-xs sm:text-sm text-gray-600">
+                <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-500" /> No Credit Card Required</span>
+                <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-500" /> 7-Day Money-Back Guarantee</span>
+                <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-500" /> 2,400+ Apps Built</span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mt-3 flex items-center gap-1.5">
+                <MessageCircle className="w-4 h-4 text-green-500" />
+                <span>Live support available - average response time under 5 minutes</span>
+              </p>
             </div>
-            {/* Publish App CTA â€” below URL box */}
+
+            {/* Right: phone mockup + floating feature chips (desktop only) */}
+            <div className="relative hidden lg:flex items-center justify-center" aria-hidden="true">
+              <div className="w-[270px] rounded-[2.6rem] border-[10px] border-gray-900 bg-gray-900 shadow-2xl shrink-0">
+                <div className="rounded-[2rem] overflow-hidden bg-white">
+                  <div className="flex justify-center pt-2 pb-1 bg-white">
+                    <div className="w-20 h-1.5 rounded-full bg-gray-200" />
+                  </div>
+                  <div className="px-5 pt-3 pb-2 flex items-center gap-2 border-b border-gray-100">
+                    <div className="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center">
+                      <Smartphone className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="font-bold text-sm text-gray-900">WebsiteToApp</span>
+                  </div>
+                  <div className="px-5 py-5">
+                    <p className="text-lg font-bold text-gray-900 leading-snug mb-1">Your Website,<br />Now an Android App</p>
+                    <p className="text-xs text-gray-500 mb-4">Fast. Reliable. Native.</p>
+                    <span className="inline-block bg-primary-600 text-white text-xs font-semibold px-5 py-2.5 rounded-full">Get Started</span>
+                    <div className="mt-5 rounded-xl border border-gray-100 shadow-sm p-4">
+                      <p className="text-xs font-bold text-gray-900 mb-3">Why Choose Us?</p>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center">
+                          <Zap className="w-4 h-4 text-primary-600" />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-semibold text-gray-900">Seamless Experience</p>
+                          <p className="text-[10px] text-gray-400">Optimized for mobile users</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="h-6" />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 ml-6">
+                {[
+                  { icon: Zap, title: 'Lightning Fast', sub: 'Convert in minutes', tint: 'bg-purple-100 text-purple-600' },
+                  { icon: Shield, title: 'Secure & Reliable', sub: 'Signed release builds', tint: 'bg-green-100 text-green-600' },
+                  { icon: Smartphone, title: 'Native Experience', sub: 'Feels like a real app', tint: 'bg-orange-100 text-orange-600' },
+                  { icon: Store, title: 'Play Store Ready', sub: 'Publish with ease', tint: 'bg-blue-100 text-blue-600' },
+                ].map((chip) => {
+                  const Icon = chip.icon
+                  return (
+                    <div key={chip.title} className="flex items-center gap-3 bg-white/95 border border-gray-100 rounded-xl px-4 py-3 shadow-md w-56">
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${chip.tint}`}>
+                        <Icon className="w-[18px] h-[18px]" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 leading-tight">{chip.title}</p>
+                        <p className="text-xs text-gray-400">{chip.sub}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="max-w-4xl mb-0 mx-auto">
+            {/* Publish App CTA â€” below hero */}
             <Link
               to="/publish-app"
               className="mt-5 flex flex-col sm:flex-row items-center gap-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 rounded-2xl px-5 py-4 sm:py-5 hover:border-indigo-400 hover:shadow-md transition-all group no-underline"
