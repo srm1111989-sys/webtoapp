@@ -248,8 +248,21 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       page rather than just the homepage hero.
 
 ### P3 — niche (lowest priority — not in today's brief either)
-- [ ] `html to app` (pos 15.7): blog post "Turn an HTML site into an Android
-      app" reusing the convert-flow screenshots.
+- [x] DONE (2026-07-28, agent) — Published `/blog/turn-html-site-into-android-app`
+      targeting `html to app` (pos 15.7), covering the no-framework/no-CMS
+      static-HTML intent distinctly from the existing `/convert/html-website`
+      platform page (commercial conversion-flow page vs. this new
+      informational blog explainer). This was the only undone task anywhere
+      in the plan today — the EXE cluster and webintoapp cluster are both
+      fully covered/frozen per the 07-28 plan-updater reconciliation above.
+      Cross-linked to `/convert/html-website`,
+      `/blog/website-to-app-converter-complete-guide-2026`, and
+      `/blog/best-website-to-app-converters-2026`; picks up automatic
+      cluster links via `BlogPost.tsx`'s core-links block. Added to
+      `blogPosts.ts` + `sitemap.xml` (lastmod 2026-07-28). `npx tsc -b`
+      clean. Did NOT touch any `webintoapp`-related content — that cluster
+      remains flagged for human backlink/SERP review after 4+ rewrite
+      passes with no CTR movement.
 
 ## Update log
 - 2026-07-28 (plan-updater): reprioritized against today's daily SC brief. All 6
