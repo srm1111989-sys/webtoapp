@@ -68,5 +68,13 @@ Week 4 — evergreen/how-to + AI-visibility plays:
 3. 2–3 days later: import to Medium, repost on Hashnode.
 4. Log the URL in this file's ## Published log (below) so nothing repeats.
 
+## Daily posting via Chrome extension (the actual workflow, t130)
+1. Operator stays logged in to dev.to (+ Medium/Hashnode) in Chrome.
+2. Say "post dev.to article N" in the Claude session - Claude writes the article,
+   opens dev.to/new via the Chrome extension, fills title/tags/body/canonical and
+   publishes, then logs the URL below. ~3 minutes end to end.
+3. Two days later: "repost article N on Medium/Hashnode" - same flow via their
+   import/new-story pages (canonical handled by import).
+
 ## Published log
-- (none yet)
+- 2026-07-29 - Article 1 (Website to EXE, no Electron): https://dev.to/srm1101/how-i-turned-a-website-into-a-windows-exe-in-10-minutes-no-electron-3336 (tags webdev/windows/productivity/tutorial, canonical -> /convert/website-to-exe-to-app)
