@@ -4,7 +4,8 @@ Ready-to-paste copy for the directories LLMs and buyers actually read. These are
 sources behind "ChatGPT recommends Median/Appilix" — being listed is the fix (t127).
 Post via the Chrome extension while logged in; say "post the AlternativeTo listing".
 
-## AlternativeTo (alternativeto.net — submit at /manage-item/)
+## AlternativeTo — POSTED 2026-07-29, pending admin approval (~24h weekdays)
+Listing: https://alternativeto.net/software/websitetoapp/ — icon (512px from favicon.svg), 2 screenshots (landing+pricing), Freemium+Purchase $35-50, tags mobile-app-builder/no-code-app-builder/webview/no-coding, 8 alternatives linked (WebIntoApp, Convertify, Twinr, Web2Apk, webtoapp.design, AppConvertly, WebViewGold*, WeSetupYourWebViewApp).
 
 - **Name**: WebsiteToApp
 - **URL**: https://websitetoapp.app
