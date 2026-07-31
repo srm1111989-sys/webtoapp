@@ -1,3 +1,4 @@
+# Last updated: 2026-07-31 by plan-updater based on SC data
 # Last updated: 2026-07-30 by plan-updater based on SC data
 # Last updated: 2026-07-28 by plan-updater based on SC data
 # WebsiteToApp.app — SEO Plan (created 2026-07-20 from Search Console data)
@@ -266,6 +267,28 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       passes with no CTR movement.
 
 ## Update log
+- 2026-07-31 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`website to exe converter online free` pos 5.2,
+  `exe to app` pos 5.4, `website to exe converter` pos 5.4, `exe to app
+  converter` pos 6.0, `exe to app converter online` pos 6.1, `webintoapp` pos
+  6.4 / 3,056 imp / 39 clicks) remain covered by existing DONE/verified-live
+  tasks — the EXE/desktop cluster + CTR pass,
+  `/blog/exe-to-app-converter-guide`, and
+  `/blog/website-to-exe-converter-online-free` cover all 5 EXE-cluster
+  keywords; the webintoapp comparison expand/free-push and the
+  `/alternatives/webintoapp` refresh (both DONE, verified live) cover
+  `webintoapp` — no new page task added, no duplicate created. No "Fix CTR"
+  section for WebToApp in today's brief; `webintoapp`'s CTR (1.3%) remains
+  flagged for human backlink/SERP review per the 2026-07-25 note after 4+
+  rewrite/expand passes with no sustained movement — not queuing another
+  autopilot pass. Today's "Getting traction" trio (`webintoapp` 39 clicks pos
+  6.4, `websitetoapp` 19 clicks pos 1.3, `webtoapp` 12 clicks pos 9.5) is
+  covered by the existing P2 link-audit + brand-defense tasks (both DONE
+  2026-07-24) — no new task needed. P2 free-intent funnel and P3 `html to
+  app` remain outside today's brief's Push-to-Page-1 window — left
+  deprioritized, no change. No undone tasks remain anywhere in this plan
+  (all P1/P2/P3 checkboxes are DONE) — no reprioritization action needed
+  beyond this log entry.
 - 2026-07-30 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`website to exe converter online free` pos 5.3,
   `website to exe converter` pos 5.4, `exe to app converter online` pos 5.5,
