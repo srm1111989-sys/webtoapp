@@ -15,6 +15,7 @@ export default function Blog() {
   useSEO({
     title: 'Blog - Guides, Tutorials & Tips',
     description: 'Learn how to convert websites into Android and Windows apps. Tutorials on push notifications, AdMob, app store publishing, offline mode, and more.',
+    canonical: 'https://websitetoapp.app/blog',
   })
 
   const featured = blogPosts[0]

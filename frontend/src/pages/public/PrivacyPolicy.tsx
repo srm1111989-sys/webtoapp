@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useSEO } from '@/hooks/useSEO'
 
 export default function PrivacyPolicy() {
-  useSEO({ title: 'Privacy Policy' })
+  useSEO({ title: 'Privacy Policy', canonical: 'https://websitetoapp.app/privacy-policy' })
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-2">Privacy Policy</h1>

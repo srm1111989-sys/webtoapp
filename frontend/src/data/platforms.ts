@@ -8,6 +8,12 @@ export interface Platform {
   benefits: string[]
   targetKeyword: string
   monthlySearches: number
+  /**
+   * Answer-first opening (t147 GEO): shown as the first paragraph under the H1.
+   * Must directly answer the query ("Can I turn a website into an .exe?")
+   * before any marketing copy. Facts must match /pricing.
+   */
+  answerFirst?: string
   faqs: Array<{
     question: string
     answer: string
@@ -1434,6 +1440,8 @@ export const platforms: Platform[] = [
     description: 'Convert your website into a Windows desktop application (.exe) with system tray, auto-updates, and offline support',
     targetKeyword: 'convert website to desktop app',
     monthlySearches: 1900,
+    answerFirst:
+      'Yes — you can convert any website into a Windows desktop app. Paste your URL into WebsiteToApp, choose Windows Desktop as the platform, customize the name, icon, and window settings, and download a .exe installer in minutes. It is free to try (watermarked, 15-day trial) and $35 one-time for the full unbranded build — no coding and no Electron setup required.',
     features: [
       'Windows .exe installer generation',
       'System tray integration',
@@ -1482,6 +1490,8 @@ export const platforms: Platform[] = [
     description: 'Turn your website into a native Windows application with .exe installer, taskbar icon, and auto-updates',
     targetKeyword: 'convert website to windows app',
     monthlySearches: 1300,
+    answerFirst:
+      'Yes — you can turn any website into a Windows app. Enter your URL on WebsiteToApp, pick Windows Desktop as the platform, and download a .exe installer that works on Windows 10 and 11 — the whole process takes under 5 minutes. Free to try (watermarked, 15-day trial); the full unbranded build is $35 one-time with no subscription.',
     features: [
       'Native Windows .exe application',
       'Taskbar and Start menu integration',
@@ -1530,6 +1540,8 @@ export const platforms: Platform[] = [
     description: 'Convert any website to a downloadable .exe file for Windows. No coding, no Electron setup required',
     targetKeyword: 'website to exe converter',
     monthlySearches: 2400,
+    answerFirst:
+      'Yes — you can convert a website into a Windows .exe file. Enter your website URL on WebsiteToApp, select Windows Desktop as the platform, customize your app name and icon, and download the .exe installer — no coding, no Node.js, and no Electron setup. It is free to try (watermarked, 15-day trial), and the full unbranded .exe is $35 one-time; the generated file is typically 50–80 MB and works on Windows 10 and 11.',
     features: [
       'One-click .exe generation',
       'Custom icon and splash screen',

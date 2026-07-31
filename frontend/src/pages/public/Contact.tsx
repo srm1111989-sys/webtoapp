@@ -2,7 +2,7 @@ import { Mail, MessageSquare } from 'lucide-react'
 import { useSEO } from '@/hooks/useSEO'
 
 export default function Contact() {
-  useSEO({ title: 'Contact Us', description: 'Get in touch with WebsiteToApp for support, refunds, or business inquiries.' })
+  useSEO({ title: 'Contact Us', description: 'Get in touch with WebsiteToApp for support, refunds, or business inquiries.', canonical: 'https://websitetoapp.app/contact' })
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-2">Contact Us</h1>

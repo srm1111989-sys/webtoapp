@@ -58,6 +58,19 @@ export default function ConvertPage() {
     })),
   }
 
+  // HowTo schema (t147 GEO): steps mirror the "3 Steps" section rendered below.
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: `How to Convert ${platform.displayName} to App`,
+    description: `Convert your ${platform.displayName} website into an app with WebsiteToApp — no coding required.`,
+    step: [
+      { '@type': 'HowToStep', position: 1, name: 'Enter Your URL', text: `Paste your ${platform.displayName} website URL into WebsiteToApp.` },
+      { '@type': 'HowToStep', position: 2, name: 'Customize Your App', text: 'Set your app name, icon, splash screen, and enable features like push notifications and offline mode.' },
+      { '@type': 'HowToStep', position: 3, name: 'Build & Download', text: 'Get your APK/AAB file ready for Google Play Store, or a Windows .exe installer for desktop apps.' },
+    ],
+  }
+
   return (
     <div>
       {/* FAQ Schema */}
@@ -65,13 +78,30 @@ export default function ConvertPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      {/* HowTo Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
 
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-20">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-            Convert {platform.displayName} Website to Android App
+            {cleanSlug === 'website-to-exe'
+              ? 'Convert Website to EXE — Windows Desktop App'
+              : cleanSlug === 'website-to-desktop-app'
+                ? 'Convert Website to Desktop App (.exe)'
+                : cleanSlug === 'website-to-windows-app'
+                  ? 'Convert Website to Windows App (.exe)'
+                  : `Convert ${platform.displayName} Website to Android App`}
           </h1>
+          {/* Answer-first opening (t147 GEO): direct answer before marketing */}
+          {platform.answerFirst && (
+            <p className="text-lg text-white/95 mb-6 max-w-3xl mx-auto text-left bg-white/10 rounded-xl px-6 py-4">
+              {platform.answerFirst}
+            </p>
+          )}
           <p className="text-xl text-primary-100 mb-8 max-w-3xl mx-auto">
             {platform.description}. No coding required. Get your app ready for Google Play in minutes.
           </p>

@@ -111,7 +111,11 @@ import re
 
 version = "${BUILD_VERSION}"
 root = Path("/opt/webtoapp/frontend/dist")
-pattern = re.compile(r'(?P<attr>\b(?:src|href))=(?P<q>["\'])/(?P<path>(?!/)[^"\']+?)(?:\?v=[^"\']*)?(?P=q)')
+# Only version-stamp STATIC ASSET references (js/css/images/fonts). The old
+# pattern matched every root-relative src/href, which appended ?v=<hash> to
+# internal PAGE links (<a href="/blog/...">) in the prerendered HTML — crawlers
+# then indexed ?v= duplicates of every page and split citation signals (t147).
+pattern = re.compile(r'(?P<attr>\b(?:src|href))=(?P<q>["\'])/(?P<path>(?!/)[^"\']+?\.(?:js|mjs|css|png|jpe?g|gif|webp|svg|ico|woff2?|ttf))(?:\?v=[^"\']*)?(?P=q)')
 
 for html in root.rglob("*.html"):
     text = html.read_text()

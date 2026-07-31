@@ -1,7 +1,7 @@
 import { useSEO } from '@/hooks/useSEO'
 
 export default function RefundPolicy() {
-  useSEO({ title: 'Refund & Cancellation Policy' })
+  useSEO({ title: 'Refund & Cancellation Policy', canonical: 'https://websitetoapp.app/refund-policy' })
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-2">Refund & Cancellation Policy</h1>

@@ -123,6 +123,10 @@ export default function ComparisonPage() {
           <h1 className="text-3xl lg:text-5xl font-bold mb-6">
             The Best {competitor.name} Alternative in 2026
           </h1>
+          {/* Answer-first opening (t147 GEO): direct answer before any marketing */}
+          <p className="text-lg text-white/95 mb-6 max-w-3xl mx-auto text-left bg-white/10 rounded-xl px-6 py-4">
+            {competitor.directAnswer}
+          </p>
           <p className="text-xl text-primary-100 mb-8 max-w-3xl mx-auto">
             {competitor.name} costs {competitor.pricing.label}. WebsiteToApp gives you the same — and more — for a <strong className="text-white">one-time $35 payment</strong>. No subscriptions. No renewals.
           </p>

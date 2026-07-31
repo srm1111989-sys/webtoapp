@@ -3,7 +3,7 @@
 
   <!-- Core pages -->
   <url><loc>https://websitetoapp.app/</loc><lastmod>2026-05-31</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://websitetoapp.app/pricing</loc><lastmod>2026-05-31</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://websitetoapp.app/pricing</loc><lastmod>2026-07-31</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://websitetoapp.app/features</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://websitetoapp.app/blog</loc><lastmod>2026-05-31</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url><loc>https://websitetoapp.app/contact</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -11,7 +11,11 @@
   <url><loc>https://websitetoapp.app/terms</loc><lastmod>2026-05-31</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://websitetoapp.app/refund-policy</loc><lastmod>2026-05-31</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 
-  <!-- Blog articles — 54 posts -->
+  <!-- Blog articles — 58 posts -->
+  <url><loc>https://websitetoapp.app/blog/free-vs-paid-website-to-exe-2026</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://websitetoapp.app/blog/convert-shopify-store-to-mobile-app</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://websitetoapp.app/blog/convert-wix-site-to-android-app</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://websitetoapp.app/blog/ios-app-from-website-without-mac</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://websitetoapp.app/blog/turn-html-site-into-android-app</loc><lastmod>2026-07-28</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://websitetoapp.app/blog/website-to-exe-converter-online-free</loc><lastmod>2026-07-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://websitetoapp.app/blog/website-to-app-converter-free</loc><lastmod>2026-07-26</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -67,12 +71,12 @@
   <url><loc>https://websitetoapp.app/blog/no-code-app-builder-for-website</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://websitetoapp.app/blog/webview-app-performance-optimization</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <!-- Comparison pages (Phase 4) -->
-  <url><loc>https://websitetoapp.app/alternatives/gonative</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://websitetoapp.app/alternatives/webintoapp</loc><lastmod>2026-07-23</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://websitetoapp.app/alternatives/median</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://websitetoapp.app/alternatives/appsgeyser</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://websitetoapp.app/alternatives/appmysite</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Comparison pages (Phase 4; refreshed answer-first + prerendered 2026-07-31, t147) -->
+  <url><loc>https://websitetoapp.app/alternatives/gonative</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://websitetoapp.app/alternatives/webintoapp</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://websitetoapp.app/alternatives/median</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://websitetoapp.app/alternatives/appsgeyser</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://websitetoapp.app/alternatives/appmysite</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
   <!-- Programmatic SEO: Platform converter pages -->
   <url><loc>https://websitetoapp.app/convert/wordpress-to-app</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
@@ -115,9 +119,9 @@
   <url><loc>https://websitetoapp.app/convert/news-website-to-app</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://websitetoapp.app/convert/small-business-to-app</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://websitetoapp.app/convert/no-code-website-app-converter</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://websitetoapp.app/convert/website-to-desktop-app</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://websitetoapp.app/convert/website-to-windows-app</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://websitetoapp.app/convert/website-to-exe</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://websitetoapp.app/convert/website-to-desktop-app</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://websitetoapp.app/convert/website-to-windows-app</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://websitetoapp.app/convert/website-to-exe</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- Phase 2: /convert-* SEO URLs -->
   <url><loc>https://websitetoapp.app/convert-wordpress-website-to-app</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>

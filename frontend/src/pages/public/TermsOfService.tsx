@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useSEO } from '@/hooks/useSEO'
 
 export default function TermsOfService() {
-  useSEO({ title: 'Terms of Service' })
+  useSEO({ title: 'Terms of Service', canonical: 'https://websitetoapp.app/terms' })
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-2">Terms of Service</h1>

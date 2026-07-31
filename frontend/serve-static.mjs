@@ -49,11 +49,40 @@ async function resolveFilePath(requestPath) {
   }
 }
 
+// Canonical URL hygiene (t147): page URLs (extensionless paths) must resolve to
+// exactly one URL. 301 trailing-slash variants to the non-trailing form (the
+// site-wide convention used by sitemap.xml and every canonical tag), and strip
+// the legacy ?v= cache-buster from page URLs so crawlers consolidate signals.
+// Static assets (paths with an extension) are never redirected.
+function canonicalRedirect(rawUrl) {
+  const [pathname, query = ''] = rawUrl.split('?')
+  if (path.extname(pathname)) return null // asset — leave untouched
+  let targetPath = pathname
+  if (targetPath.length > 1 && targetPath.endsWith('/')) {
+    targetPath = targetPath.replace(/\/+$/, '') || '/'
+  }
+  const params = new URLSearchParams(query)
+  if (params.has('v')) params.delete('v')
+  const targetQuery = params.toString()
+  const target = targetPath + (targetQuery ? `?${targetQuery}` : '')
+  const originalWithoutV = pathname + (query ? `?${query}` : '')
+  return target !== originalWithoutV ? target : null
+}
+
 const server = createServer(async (req, res) => {
   try {
     if (!req.url) {
       res.statusCode = 400
       res.end('Bad request')
+      return
+    }
+
+    const redirectTo = canonicalRedirect(req.url)
+    if (redirectTo) {
+      res.statusCode = 301
+      res.setHeader('Location', redirectTo)
+      res.setHeader('Cache-Control', 'no-cache')
+      res.end()
       return
     }
 

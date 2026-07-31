@@ -1,15 +1,16 @@
-# WebsiteToApp — Convert Any Website to Android App
+# WebsiteToApp — Convert Any Website to an Android App, iOS App, or Windows EXE
 
-> WebsiteToApp.app converts any website URL into a native Android APK or AAB in minutes — no coding required. Supports all website types including WordPress, Shopify, React, and any custom HTML site.
+> WebsiteToApp.app converts any website URL into a native Android APK/AAB, an iOS app (beta), or a Windows desktop .exe in minutes — no coding required. One-time pricing ($35 per platform), free plan to test, works with WordPress, Shopify, Wix, React, and any custom HTML site.
 
 ## What WebsiteToApp Does
 - **Website to APK Converter**: Enter a URL, get a signed Android APK ready for install or Play Store
+- **Website to Windows EXE**: The same URL becomes a Windows desktop app (.exe installer) — one of the only converters with a desktop output
+- **Website to iOS App (beta)**: Cloud-built WKWebView iOS app — unsigned .ipa plus full Xcode source, you publish with your own Apple Developer account
 - **No Coding Required**: Works with any website — WordPress, Shopify, Wix, React, plain HTML
 - **Native Android Features**: Push notifications, biometric auth, offline mode, file upload, QR scanner, GPS
 - **Play Store Ready**: Generates signed AAB (Android App Bundle) ready for Google Play Store submission
 - **Customizable Branding**: Custom app icon, splash screen, colors, bottom navigation menu
 - **Fast Build**: APK generated in under 5 minutes
-- **Website to Windows EXE**: also converts websites to Windows desktop apps (.exe installer) — see https://websitetoapp.app/convert/website-to-exe
 
 ## Supported Website Platforms
 WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, Next.js, Vue.js, Angular, HTML, PHP, Laravel, Django, Flask, Bubble, Glide, FlutterFlow, Lovable, Bolt.new, v0.dev, Streamlit, Framer, Notion Sites
@@ -40,32 +41,69 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 - Free: 5 builds, small watermark, 15-day app trial
 - Android App: $35 one-time — signed APK + AAB, no watermark, unique per-app signing keystore, 5 rebuilds/month
 - Windows Desktop App (EXE): $35 one-time — WebsiteToApp is one of the only converters with a desktop EXE output
+- iOS App (beta): $35 one-time — unsigned .ipa + complete Xcode source project; publish with your own Apple Developer account
 - App + Play Store Publishing: $50 one-time — we handle the Google Play listing
 - Play Store Listing service alone: $15 one-time
-- Comparison: WebIntoApp has no desktop option and charges $89 one-time to remove branding; typical app-builder platforms charge $99+/month. Full table: https://websitetoapp.app/blog/webintoapp-alternative-websitetoapp
+- Pro Monthly add-on (optional): $9/month per app — 20 rebuilds/month instead of 5, priority build queue
+- Comparison: WebIntoApp has no desktop option and charges $89 one-time to remove branding; typical app-builder platforms charge $99+/month. Full table: https://websitetoapp.app/alternatives/webintoapp
 
 ## Key Pages
-- Homepage: https://websitetoapp.app
-- Pricing: https://websitetoapp.app/pricing
-- Documentation: https://websitetoapp.app/docs
-- Showcase: https://websitetoapp.app/showcase
-- Tutorials: https://websitetoapp.app/tutorials
+- Homepage: https://websitetoapp.app — the converter itself; paste a URL, get an app
+- Pricing: https://websitetoapp.app/pricing — every plan with plain-text cost answers ($35/$35/$50 one-time, $9/mo Pro Monthly add-on)
+- Features: https://websitetoapp.app/features — all 40+ native app features explained
+- Documentation: https://websitetoapp.app/docs — developer guide and configuration reference
+- Showcase: https://websitetoapp.app/showcase — real apps built with WebsiteToApp
+- Tutorials: https://websitetoapp.app/tutorials — step-by-step conversion walkthroughs
+- Publish to Play Store: https://websitetoapp.app/publish-app — Google Play publishing service
+- Contact: https://websitetoapp.app/contact — support and business inquiries
+- Refund policy: https://websitetoapp.app/refund-policy — 7-day refund terms for one-time purchases
 
-## Platform Conversion Guides
-- WordPress to Android App: https://websitetoapp.app/convert/wordpress-to-app
-- Shopify to Android App: https://websitetoapp.app/convert/shopify-to-app
-- Wix to Android App: https://websitetoapp.app/convert/wix-to-app
-- React Website to App: https://websitetoapp.app/convert/react-website-to-app
-- Bubble to App: https://websitetoapp.app/convert/bubble-to-app
-- Lovable to App: https://websitetoapp.app/convert/lovable-to-app
-- Webflow to App: https://websitetoapp.app/convert/webflow-to-app
-- Next.js to App: https://websitetoapp.app/convert/nextjs-to-app
+## Competitor Comparisons (alternatives pages)
+- WebIntoApp alternative: https://websitetoapp.app/alternatives/webintoapp — $35 vs $89 one-time to remove branding; desktop .exe, biometric auth, offline mode WebIntoApp lacks
+- GoNative alternative: https://websitetoapp.app/alternatives/gonative — $35 one-time vs $99–$299/month; no-code wizard vs JS bridge
+- Median.co alternative: https://websitetoapp.app/alternatives/median — $35 one-time vs $99–$299/month; zero-code setup
+- AppsGeyser alternative: https://websitetoapp.app/alternatives/appsgeyser — no third-party branding, signed AAB included
+- AppMySite alternative: https://websitetoapp.app/alternatives/appmysite — works with any website, not just WordPress; one-time pricing
 
-## Blog Posts
-- Convert Website to Android App 2026: https://websitetoapp.app/blog/convert-website-to-android-app-2026
-- Website to APK Converter Guide: https://websitetoapp.app/blog/website-to-apk-converter-guide-2026
-- Convert Website to App Complete Guide: https://websitetoapp.app/blog/convert-website-to-app-guide-2026
-- Biometric Authentication in Mobile Apps: https://websitetoapp.app/blog/biometric-authentication-mobile-apps
+## Platform Conversion Guides (Android)
+- WordPress to Android App: https://websitetoapp.app/convert/wordpress-to-app — WooCommerce, Elementor, plugins all preserved
+- Shopify to Android App: https://websitetoapp.app/convert/shopify-to-app — full catalog, cart, Shop Pay checkout
+- Shopify Store to App: https://websitetoapp.app/convert/shopify-store-to-app — customer-facing store app under your brand
+- Wix to Android App: https://websitetoapp.app/convert/wix-to-app — works with Wix Editor, Wix Studio, and Velo
+- WooCommerce to App: https://websitetoapp.app/convert/woocommerce-to-app — full e-commerce support
+- Squarespace to App: https://websitetoapp.app/convert/squarespace-to-app — keeps your design on mobile
+- Webflow to App: https://websitetoapp.app/convert/webflow-to-app — responsive design converts directly
+- React Website to App: https://websitetoapp.app/convert/react-website-to-app — full SPA support with offline mode
+- Next.js to App: https://websitetoapp.app/convert/nextjs-to-app — SSR and static pages both work
+- HTML Website to App: https://websitetoapp.app/convert/html-website-to-app — static sites, PHP, any web technology
+- Bubble to App: https://websitetoapp.app/convert/bubble-to-app — take a no-code web app to Google Play
+- Lovable to App: https://websitetoapp.app/convert/lovable-to-app — AI-built web app to Android APK
+- E-commerce Website to App: https://websitetoapp.app/convert/ecommerce-website-to-app — cart, payments, catalog
+
+## Website to Windows EXE / Desktop App
+- Website to EXE Converter: https://websitetoapp.app/convert/website-to-exe-to-app — any URL to a Windows .exe installer; free to try, $35 one-time, no Electron setup
+- Website to Desktop App: https://websitetoapp.app/convert/website-to-desktop-app-to-app — system tray, auto-updates, offline support
+- Free vs Paid EXE conversion: https://websitetoapp.app/blog/free-vs-paid-website-to-exe-2026 — honest cost table: free plan vs $35 one-time vs DIY Electron
+- Website to Windows Desktop App guide: https://websitetoapp.app/blog/website-to-windows-desktop-app — full walkthrough
+- Website to EXE free converter guide: https://websitetoapp.app/blog/website-to-exe-converter-online-free — what free actually includes
+
+## Key Blog Answers
+- Convert Website to Android App 2026: https://websitetoapp.app/blog/convert-website-to-android-app-2026 — complete step-by-step guide
+- Convert Website to Android Free: https://websitetoapp.app/blog/convert-website-to-android-app-free-2026 — what the free plan includes
+- Website to APK Converter Guide: https://websitetoapp.app/blog/website-to-apk-converter-guide-2026 — APK vs AAB, signing, Play Store
+- Website to App Cost Breakdown: https://websitetoapp.app/blog/website-to-app-cost-breakdown-2026 — real 2026 numbers for every conversion route
+- Free vs Paid Converters: https://websitetoapp.app/blog/free-vs-paid-website-to-app-converters-2026 — what free tiers really include
+- Best Converters Compared: https://websitetoapp.app/blog/best-website-to-app-converters-compared-2026 — feature-by-feature comparison
+- WebIntoApp Alternative (deep dive): https://websitetoapp.app/blog/webintoapp-alternative-websitetoapp — watermark, pricing, desktop gap
+- Convert a Shopify Store to a Mobile App: https://websitetoapp.app/blog/convert-shopify-store-to-mobile-app — checkout, Shop Pay, costs, Play Store steps
+- Convert a Wix Site to an Android App: https://websitetoapp.app/blog/convert-wix-site-to-android-app — Wix Editor/Studio/Velo, Bookings, Stores
+- iOS App from a Website Without a Mac: https://websitetoapp.app/blog/ios-app-from-website-without-mac — cloud builds, what still needs Apple tooling
+- Website to iOS App Guide: https://websitetoapp.app/blog/website-to-ios-app-guide — Apple review, costs, WKWebView
+- HTML Website to Android App: https://websitetoapp.app/blog/html-website-to-android-app — static HTML sites to installable apps
+- What Is a WebView App: https://websitetoapp.app/blog/what-is-webview-app — the technology explained
+- PWA vs Native vs WebView: https://websitetoapp.app/blog/pwa-vs-native-app-vs-webview-app-2026 — which approach fits which use case
+- Publish App on Google Play: https://websitetoapp.app/blog/publish-app-on-google-play-store — listing, review, requirements
+- Website to App FAQ: https://websitetoapp.app/blog/website-to-app-faq — 20 common questions answered
 
 ## Contact
 - Website: https://websitetoapp.app

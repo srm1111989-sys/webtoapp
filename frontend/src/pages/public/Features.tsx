@@ -338,6 +338,7 @@ export default function Features() {
   useSEO({
     title: 'Features - 40+ Premium App Features',
     description: 'Push notifications, biometric auth, offline mode, AdMob, QR scanner, deep linking, custom navigation, and 40+ more features. All included in one plan.',
+    canonical: 'https://websitetoapp.app/features',
   })
 
   return (

@@ -43,14 +43,21 @@ const platforms = [
   { slug: 'nextjs', name: 'Next.js', desc: 'Convert Next.js app to Android. SSR and static pages work perfectly in mobile.' },
   { slug: 'angular', name: 'Angular', desc: 'Convert Angular web app to Android APK. Full SPA support.' },
   { slug: 'vue', name: 'Vue.js', desc: 'Convert Vue.js app to Android. Single-page app converts to native mobile.' },
-  { slug: 'website-to-exe', name: 'Website to EXE', title: 'Free Website to EXE Converter Online - Windows Desktop Apps | WebToApp', desc: 'Convert any website to a downloadable Windows .exe desktop app. No coding, no Electron setup - build your EXE in minutes.' },
+  { slug: 'website-to-exe', name: 'Website to EXE', title: 'Free Website to EXE Converter Online - Windows Desktop Apps | WebToApp', desc: 'Convert any website to a downloadable Windows .exe desktop app. No coding, no Electron setup - build your EXE in minutes.', answerFirst: 'Yes — you can convert a website into a Windows .exe file. Enter your website URL on WebsiteToApp, select Windows Desktop as the platform, customize your app name and icon, and download the .exe installer — no coding, no Node.js, and no Electron setup. It is free to try (watermarked, 15-day trial), and the full unbranded .exe is $35 one-time; the generated file is typically 50–80 MB and works on Windows 10 and 11.' },
   { slug: 'notion', name: 'Notion', desc: 'Convert Notion page to Android app. Turn your Notion workspace into a mobile app.' },
   { slug: 'google-sites', name: 'Google Sites', desc: 'Convert Google Sites to Android app. Simple conversion with no coding.' },
   { slug: 'carrd', name: 'Carrd', desc: 'Convert Carrd site to Android app. Turn your one-page site into a mobile app.' },
   { slug: 'framer', name: 'Framer', desc: 'Convert Framer website to Android app. Your Framer design as a native app.' },
   { slug: 'woocommerce', name: 'WooCommerce', desc: 'Convert WooCommerce store to Android app. Full e-commerce support.' },
-  { slug: 'website-to-desktop-app', name: 'Desktop App', desc: 'Convert any website to Windows desktop app (EXE). Run websites as native desktop applications.' },
+  { slug: 'website-to-desktop-app', name: 'Desktop App', desc: 'Convert any website to Windows desktop app (EXE). Run websites as native desktop applications.', answerFirst: 'Yes — you can convert any website into a Windows desktop app. Paste your URL into WebsiteToApp, choose Windows Desktop as the platform, customize the name, icon, and window settings, and download a .exe installer in minutes. It is free to try (watermarked, 15-day trial) and $35 one-time for the full unbranded build — no coding and no Electron setup required.' },
 ];
+
+// Replace the homepage canonical baked into the built index.html template with
+// the page's own canonical. Every prerendered page previously ADDED a second
+// <link rel="canonical">, leaving two conflicting canonicals per page (t147).
+function setCanonical(html, canonical) {
+  return html.replace(/<link rel="canonical"[^>]*\/?>/, `<link rel="canonical" href="${canonical}" />`)
+}
 
 // ── Blog posts: parse blogPosts.ts and emit one prerendered HTML per post.
 // Without this, Googlebot sees the homepage HTML at every /blog/<slug> URL,
@@ -73,30 +80,82 @@ function loadBlogPosts() {
   return posts;
 }
 
-// Minimal markdown → HTML for SEO (headings, lists, paragraphs, bold).
+// Minimal markdown → HTML for SEO (headings, lists, tables, paragraphs, bold).
 // Not a full parser — we only need readable text Googlebot can index.
 function mdToHtml(md) {
   const lines = md.split('\n');
   const out = [];
   let inList = false;
+  let tableRows = null; // collects consecutive | rows; rendered on flush
+  const flushList = () => { if (inList) { out.push('</ul>'); inList = false; } };
+  const flushTable = () => {
+    if (!tableRows) return;
+    const rows = tableRows.filter((r) => !/^\|[\s\-:|]+\|$/.test(r));
+    if (rows.length) {
+      const cells = (r) => r.replace(/^\||\|$/g, '').split('|').map((c) => inline(c.trim()));
+      const [head, ...body] = rows;
+      out.push('<table><thead><tr>' + cells(head).map((c) => `<th>${c}</th>`).join('') + '</tr></thead><tbody>'
+        + body.map((r) => '<tr>' + cells(r).map((c) => `<td>${c}</td>`).join('') + '</tr>').join('')
+        + '</tbody></table>');
+    }
+    tableRows = null;
+  };
   for (let raw of lines) {
     const line = raw.trim();
-    if (!line) { if (inList) { out.push('</ul>'); inList = false; } continue; }
-    if (/^### /.test(line)) { if (inList) { out.push('</ul>'); inList = false; } out.push(`<h3>${esc(line.replace(/^### /, ''))}</h3>`); }
-    else if (/^## /.test(line)) { if (inList) { out.push('</ul>'); inList = false; } out.push(`<h2>${esc(line.replace(/^## /, ''))}</h2>`); }
-    else if (/^# /.test(line)) { if (inList) { out.push('</ul>'); inList = false; } out.push(`<h2>${esc(line.replace(/^# /, ''))}</h2>`); }
+    if (/^\|.*\|$/.test(line)) { flushList(); if (!tableRows) tableRows = []; tableRows.push(line); continue; }
+    flushTable();
+    if (!line) { flushList(); continue; }
+    if (/^### /.test(line)) { flushList(); out.push(`<h3>${esc(line.replace(/^### /, ''))}</h3>`); }
+    else if (/^## /.test(line)) { flushList(); out.push(`<h2>${esc(line.replace(/^## /, ''))}</h2>`); }
+    else if (/^# /.test(line)) { flushList(); out.push(`<h2>${esc(line.replace(/^# /, ''))}</h2>`); }
     else if (/^[-*] /.test(line)) {
       if (!inList) { out.push('<ul>'); inList = true; }
       out.push(`<li>${inline(line.replace(/^[-*] /, ''))}</li>`);
     }
-    else { if (inList) { out.push('</ul>'); inList = false; } out.push(`<p>${inline(line)}</p>`); }
+    else { flushList(); out.push(`<p>${inline(line)}</p>`); }
   }
+  flushTable();
   if (inList) out.push('</ul>');
   return out.join('\n');
 }
 
+// Strip markdown syntax to plain text (for JSON-LD answer bodies).
+function mdToText(md) {
+  return md
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Extract "### Question / answer" pairs from a post's "## Frequently Asked
+// Questions" section so prerendered posts carry FAQPage JSON-LD (t147 GEO).
+function extractFaqs(md) {
+  const m = md.match(/^##\s+Frequently Asked Questions\s*$/m);
+  if (!m) return [];
+  let section = md.slice(m.index + m[0].length);
+  const end = section.search(/^##\s|^---\s*$/m);
+  if (end !== -1) section = section.slice(0, end);
+  const faqs = [];
+  const parts = section.split(/^###\s+/m).slice(1);
+  for (const part of parts) {
+    const nl = part.indexOf('\n');
+    if (nl === -1) continue;
+    const question = mdToText(part.slice(0, nl));
+    const answer = mdToText(part.slice(nl + 1));
+    if (question && answer) faqs.push({ question, answer });
+  }
+  return faqs;
+}
+
 function esc(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Escape for use inside double-quoted HTML attributes (meta content="...").
+function attr(s) {
+  return esc(s).replace(/"/g, '&quot;');
 }
 
 function inline(s) {
@@ -139,9 +198,24 @@ for (const post of blogPosts) {
     mainEntityOfPage: canonical,
   };
 
+  // FAQPage schema from the post's own FAQ section (no new claims) — t147 GEO.
+  const postFaqs = extractFaqs(post.content);
+  const faqSchemaTag = postFaqs.length
+    ? `<script type="application/ld+json">${JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: postFaqs.map((f) => ({
+          '@type': 'Question',
+          name: f.question,
+          acceptedAnswer: { '@type': 'Answer', text: f.answer },
+        })),
+      })}</script>`
+    : '';
+
+  html = setCanonical(html, canonical);
+
   const seo = `
-    <link rel="canonical" href="${canonical}" />
-    <script type="application/ld+json">${JSON.stringify(articleSchema)}</script>
+    <script type="application/ld+json">${JSON.stringify(articleSchema)}</script>${faqSchemaTag}
     <!--seo-prerender-->
     <article id="seo-prerender" class="seo-static-content">
       <h1>${esc(post.title)}</h1>
@@ -149,7 +223,7 @@ for (const post of blogPosts) {
       ${mdToHtml(post.content)}
       <p><a href="https://websitetoapp.app/register">Convert your website to an app — start free →</a></p>
     </article>
-    <style>#seo-prerender.seo-static-content{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}#seo-prerender h1{font-size:2em;margin-bottom:16px}#seo-prerender h2{font-size:1.4em;margin-top:24px;margin-bottom:12px}#seo-prerender h3{font-size:1.15em;margin-top:18px;margin-bottom:8px}#seo-prerender ul,#seo-prerender ol{padding-left:20px;margin-bottom:16px}#seo-prerender li{margin-bottom:8px;line-height:1.6}#seo-prerender p{line-height:1.7;margin-bottom:12px}#seo-prerender a{color:#1366d6}</style>
+    <style>#seo-prerender.seo-static-content{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}#seo-prerender h1{font-size:2em;margin-bottom:16px}#seo-prerender h2{font-size:1.4em;margin-top:24px;margin-bottom:12px}#seo-prerender h3{font-size:1.15em;margin-top:18px;margin-bottom:8px}#seo-prerender ul,#seo-prerender ol{padding-left:20px;margin-bottom:16px}#seo-prerender li{margin-bottom:8px;line-height:1.6}#seo-prerender p{line-height:1.7;margin-bottom:12px}#seo-prerender a{color:#1366d6}#seo-prerender table{width:100%;margin:12px 0;border-collapse:collapse}#seo-prerender th,#seo-prerender td{border:1px solid #ddd;padding:8px;text-align:left}</style>
     <!--/seo-prerender-->`;
 
   html = html.replace('<div id="root">', seo + '\n    <div id="root">');
@@ -348,13 +422,50 @@ for (const p of platforms) {
     .replace(/<meta property="twitter:description"[^>]*>/, `<meta property="twitter:description" content="${desc}" />`)
     .replace(/<meta property="twitter:url"[^>]*>/, `<meta property="twitter:url" content="${canonical}" />`);
 
-  // Add canonical link + pre-rendered content for Googlebot (before <div id="root">)
+  html = setCanonical(html, canonical);
+
+  // HowTo + FAQPage JSON-LD (t147 GEO): steps and answers mirror the
+  // prerendered content below — no new claims.
+  const isDesktop = p.slug === 'website-to-exe' || p.slug === 'website-to-desktop-app';
+  const convertSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'HowTo',
+        name: `How to Convert ${p.name} to App`,
+        description: desc,
+        step: [
+          { '@type': 'HowToStep', position: 1, name: 'Enter your URL', text: `Paste your ${p.name} website address into WebToApp.` },
+          { '@type': 'HowToStep', position: 2, name: 'Customize your app', text: 'Set your app name, icon, splash screen, and enable features like push notifications and offline mode.' },
+          { '@type': 'HowToStep', position: 3, name: 'Build and download', text: isDesktop ? 'Get your Windows .exe installer, ready to distribute.' : 'Get your APK or AAB file ready to publish on Google Play Store.' },
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: [
+          { '@type': 'Question', name: `How long does it take to convert ${p.name} to an app?`, acceptedAnswer: { '@type': 'Answer', text: `The conversion takes approximately 10-15 minutes from start to finish. You enter your ${p.name} URL, customize your app settings, and WebToApp builds the app automatically.` } },
+          { '@type': 'Question', name: `Do I need coding skills to convert ${p.name} to an app?`, acceptedAnswer: { '@type': 'Answer', text: `No coding required. WebToApp handles all the technical work. You only need your ${p.name} website URL and a few minutes to set up your app name, icon, and features.` } },
+          { '@type': 'Question', name: `Will my ${p.name} website work properly in the app?`, acceptedAnswer: { '@type': 'Answer', text: `Yes. All ${p.name} features work in the app — your existing theme, plugins, forms, login, and checkout all function as expected. WebToApp wraps your site in a native shell without modifying any code.` } },
+          { '@type': 'Question', name: 'How much does it cost?', acceptedAnswer: { '@type': 'Answer', text: 'WebToApp offers a free plan for basic conversion (watermarked, 15-day trial). Premium plans start at $35 one-time payment and include push notifications, offline mode, AdMob monetization, and Google Play AAB file.' } },
+        ],
+      },
+    ],
+  };
+
+  const convertH1 = p.slug === 'website-to-exe'
+    ? 'Convert Website to EXE — Windows Desktop App (No Coding Required)'
+    : p.slug === 'website-to-desktop-app'
+      ? 'Convert Website to Desktop App (.exe) — No Coding Required'
+      : `Convert ${p.name} Website to Android App — No Coding Required`;
+
+  // Pre-rendered content for Googlebot (before <div id="root">)
   // Visible to bots, hidden visually after JS hydration via CSS class
   const seoContent = `
-    <link rel="canonical" href="${canonical}" />
+    <script type="application/ld+json">${JSON.stringify(convertSchema)}</script>
     <!--seo-prerender-->
     <div id="seo-prerender" class="seo-static-content">
-      <h1>Convert ${p.name} Website to Android App — No Coding Required</h1>
+      <h1>${convertH1}</h1>
+      ${p.answerFirst ? `<p><strong>${p.answerFirst}</strong></p>` : ''}
       <p>${desc} Turn your ${p.name} site into a fully functional Android app in minutes — no coding, no SDK, no app store experience needed.</p>
 
       <h2>How to Convert ${p.name} to App in 3 Steps</h2>
@@ -415,6 +526,72 @@ for (const p of platforms) {
   generated++;
 }
 
+// ── /pricing prerender (t147 GEO): /pricing is the #1 ChatGPT landing page but
+// previously shipped with NO body content in the static HTML (the plans render
+// client-side). The answers below must match src/pages/public/Pricing.tsx
+// (PRICING_FAQS + plan fallbacks) — keep in sync when prices change.
+const pricingFaqs = [
+  {
+    question: 'How much does it cost to convert a website to an app?',
+    answer:
+      'With WebsiteToApp, converting a website to an Android app costs $35 one-time (no subscription). A Windows desktop app (.exe) is also $35 one-time, and an iOS app (beta) is $35 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the App + Play Store bundle is $50 one-time, or the Play Store listing service alone is $15 one-time.',
+  },
+  {
+    question: 'Is there a free plan, and does it have a watermark?',
+    answer:
+      'Yes. The free plan includes 5 free builds total across your websites with all app features enabled for testing. Free builds show a WebsiteToApp watermark and run as a 15-day trial (an upgrade screen appears after). The $35 one-time paid plan removes the watermark and the trial limit permanently.',
+  },
+  {
+    question: 'How many rebuilds do I get when my website changes?',
+    answer:
+      'Paid apps include 5 rebuilds per month per website. If you ship updates often, the optional Pro Monthly add-on ($9/month per app) raises this to 20 rebuilds per month and adds a priority build queue — cancel anytime. Note: your app loads your live website, so content changes appear without any rebuild; rebuilds are only needed for app-level changes like icon, name, or features.',
+  },
+  {
+    question: 'Is the pricing monthly or one-time?',
+    answer:
+      'App builds are one-time payments: $35 for Android, $35 for Windows desktop (.exe), $35 for iOS (beta), $50 for the App + Play Store bundle. There are no recurring fees to keep your app working. The only monthly product is the optional $9/month Pro Monthly rebuild add-on.',
+  },
+  {
+    question: 'Can I get a refund?',
+    answer:
+      'Yes — one-time purchases have a full refund within 7 days of purchase if the app build has not been downloaded, and a full refund if a build fails due to a platform issue. Pro Monthly subscriptions can be refunded in full within 48 hours of first subscribing if no builds were triggered. See the refund policy page for the complete terms.',
+  },
+];
+
+const pricingSeoBlock = `
+    <script type="application/ld+json">${JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: pricingFaqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      })),
+    })}</script>
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content">
+      <h1>WebsiteToApp Pricing — Simple One-Time Plans</h1>
+      <p><strong>How much does it cost to convert a website to an app? With WebsiteToApp it's $35 one-time for an Android app, $35 one-time for a Windows desktop app (.exe), and $50 one-time for the App + Play Store publishing bundle — no subscriptions. A free plan (5 builds, watermarked, 15-day trial) lets you test everything first.</strong></p>
+      <h2>All Plans</h2>
+      <table>
+        <thead><tr><th>Plan</th><th>Price</th><th>What you get</th></tr></thead>
+        <tbody>
+          <tr><td>Free</td><td>$0</td><td>5 free builds total across your websites, all features for testing, WebsiteToApp watermark, 15-day trial</td></tr>
+          <tr><td>Android Premium</td><td>$35 one-time</td><td>Signed APK + AAB, no watermark, no trial limit, keystore download, all 50+ features, 5 rebuilds/month per website</td></tr>
+          <tr><td>Windows Desktop (.exe) Premium</td><td>$35 one-time</td><td>Unbranded Windows .exe installer, system tray, auto-updater, kiosk mode, custom window, no trial limit</td></tr>
+          <tr><td>App + Play Store bundle</td><td>$50 one-time</td><td>App build plus we create and submit your Google Play listing</td></tr>
+          <tr><td>Play Store Listing only</td><td>$15 one-time</td><td>We publish your existing app build to Google Play on your behalf (requires Android Premium)</td></tr>
+          <tr><td>iOS App (beta)</td><td>$35 one-time</td><td>Unsigned .ipa + complete Xcode source project; you publish with your own Apple Developer account</td></tr>
+          <tr><td>Pro Monthly (optional add-on)</td><td>$9/month per app</td><td>20 rebuilds per month (instead of 5) and priority build queue; cancel anytime</td></tr>
+        </tbody>
+      </table>
+      <h2>Pricing Questions, Answered Plainly</h2>
+      ${pricingFaqs.map((f) => `<h3>${esc(f.question)}</h3>\n      <p>${esc(f.answer)}</p>`).join('\n      ')}
+      <p><a href="https://websitetoapp.app/register">Start free — no credit card required →</a> · <a href="https://websitetoapp.app/refund-policy">Full refund policy</a></p>
+    </div>
+    <style>#seo-prerender.seo-static-content{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}#seo-prerender h1{font-size:2em;margin-bottom:16px}#seo-prerender h2{font-size:1.4em;margin-top:24px;margin-bottom:12px}#seo-prerender h3{font-size:1.15em;margin-top:18px;margin-bottom:8px}#seo-prerender p{line-height:1.7;margin-bottom:12px}#seo-prerender a{color:#1366d6}#seo-prerender table{width:100%;margin:12px 0;border-collapse:collapse}#seo-prerender th,#seo-prerender td{border:1px solid #ddd;padding:8px;text-align:left}</style>
+    <!--/seo-prerender-->`;
+
 // Generate static pages
 for (const p of staticPages) {
   const dir = path.join(distDir, p.path);
@@ -432,7 +609,12 @@ for (const p of staticPages) {
     .replace(/<meta property="twitter:title"[^>]*>/, `<meta property="twitter:title" content="${p.title}" />`)
     .replace(/<meta property="twitter:description"[^>]*>/, `<meta property="twitter:description" content="${p.desc}" />`);
 
-  html = html.replace('<div id="root">', `<link rel="canonical" href="${canonical}" />\n    <div id="root">`);
+  html = setCanonical(html, canonical);
+
+  // /pricing gets real prerendered content + FAQPage schema (t147 GEO)
+  if (p.path === 'pricing') {
+    html = html.replace('<div id="root">', pricingSeoBlock + '\n    <div id="root">');
+  }
 
   // Don't overwrite if file already exists (e.g., privacy-policy.html)
   const indexPath = path.join(dir, 'index.html');
@@ -440,6 +622,120 @@ for (const p of staticPages) {
     fs.writeFileSync(indexPath, html);
     generated++;
   }
+}
+
+// ── /alternatives/* prerender (t147 GEO P1): competitor-alternative pages are
+// the proven top performer in both Google and ChatGPT, but until now they were
+// SPA-only — crawlers fetching /alternatives/<slug> got the homepage HTML with
+// a homepage canonical. Data comes from src/data/competitors.ts (single source
+// of truth — the array literal is evaluated, not duplicated).
+function loadCompetitors() {
+  const src = fs.readFileSync(path.join(__dirname, 'src/data/competitors.ts'), 'utf-8');
+  const marker = 'export const competitors';
+  const start = src.indexOf('[', src.indexOf(marker));
+  const end = src.lastIndexOf(']');
+  if (start === -1 || end === -1) throw new Error('generate-static-pages: could not parse competitors.ts');
+  // The array is a plain JS literal (no TS-only syntax inside), so it can be
+  // evaluated directly. This keeps prerendered pages in lockstep with the SPA.
+  return new Function(`return ${src.slice(start, end + 1)}`)();
+}
+
+const competitors = loadCompetitors();
+for (const c of competitors) {
+  const dir = path.join(distDir, 'alternatives', c.slug);
+  fs.mkdirSync(dir, { recursive: true });
+
+  const title = `${c.seoTitle} | WebsiteToApp`;
+  const canonical = `https://websitetoapp.app/alternatives/${c.slug}`;
+
+  let html = template
+    .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
+    .replace(/<meta name="title"[^>]*>/, `<meta name="title" content="${attr(c.seoTitle)}" />`)
+    .replace(/<meta name="description"[^>]*>/, `<meta name="description" content="${attr(c.seoDescription)}" />`)
+    .replace(/<meta property="og:title"[^>]*>/, `<meta property="og:title" content="${attr(c.seoTitle)}" />`)
+    .replace(/<meta property="og:description"[^>]*>/, `<meta property="og:description" content="${attr(c.seoDescription)}" />`)
+    .replace(/<meta property="og:url"[^>]*>/, `<meta property="og:url" content="${canonical}" />`)
+    .replace(/<meta property="og:type"[^>]*>/, `<meta property="og:type" content="article" />`)
+    .replace(/<meta property="twitter:title"[^>]*>/, `<meta property="twitter:title" content="${attr(c.seoTitle)}" />`)
+    .replace(/<meta property="twitter:description"[^>]*>/, `<meta property="twitter:description" content="${attr(c.seoDescription)}" />`)
+    .replace(/<meta property="twitter:url"[^>]*>/, `<meta property="twitter:url" content="${canonical}" />`);
+
+  html = setCanonical(html, canonical);
+
+  // Mirrors the JSON-LD built client-side in ComparisonPage.tsx — same answers.
+  const altSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Article',
+        headline: c.seoTitle,
+        description: c.seoDescription,
+        author: { '@type': 'Organization', name: 'WebsiteToApp' },
+        publisher: { '@type': 'Organization', name: 'WebsiteToApp', url: 'https://websitetoapp.app' },
+        mainEntityOfPage: canonical,
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: [
+          { '@type': 'Question', name: `What is the best ${c.name} alternative?`, acceptedAnswer: { '@type': 'Answer', text: c.verdict } },
+          { '@type': 'Question', name: `How much does ${c.name} cost compared to WebsiteToApp?`, acceptedAnswer: { '@type': 'Answer', text: `${c.name}: ${c.pricing.detail} WebsiteToApp is a one-time payment from $35 with all 40+ features included and no subscription.` } },
+          { '@type': 'Question', name: `Why switch from ${c.name} to WebsiteToApp?`, acceptedAnswer: { '@type': 'Answer', text: c.switchReasons.join(' ') } },
+        ],
+      },
+    ],
+  };
+
+  const others = competitors.filter((o) => o.slug !== c.slug);
+  const altBlock = `
+    <script type="application/ld+json">${JSON.stringify(altSchema)}</script>
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content">
+      <h1>The Best ${esc(c.name)} Alternative in 2026</h1>
+      <p><strong>${esc(c.directAnswer)}</strong></p>
+      <h2>${esc(c.name)} Pricing vs WebsiteToApp</h2>
+      <p>${esc(c.name)} pricing: ${esc(c.pricing.label)}. ${esc(c.pricing.detail)}</p>
+      <p>WebsiteToApp: $35 one-time for a full unbranded Android or Windows desktop app — all features included, no subscription, free plan to test first.</p>
+      <h2>WebsiteToApp vs ${esc(c.name)}: Feature Comparison</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>${esc(c.name)}</th><th>WebsiteToApp</th></tr></thead>
+        <tbody>
+          ${c.features.map((f) => `<tr><td>${esc(f.name)}</td><td>${esc(f.them)}</td><td>${esc(f.us)}</td></tr>`).join('\n          ')}
+        </tbody>
+      </table>
+      <h2>${esc(c.name)} — Honest Pros &amp; Cons</h2>
+      <h3>What ${esc(c.name)} does well</h3>
+      <ul>
+        ${c.pros.map((x) => `<li>${esc(x)}</li>`).join('\n        ')}
+      </ul>
+      <h3>Where ${esc(c.name)} falls short</h3>
+      <ul>
+        ${c.cons.map((x) => `<li>${esc(x)}</li>`).join('\n        ')}
+      </ul>
+      <h2>Our Verdict</h2>
+      <p>${esc(c.verdict)}</p>
+      <h2>Reasons to Switch from ${esc(c.name)} to WebsiteToApp</h2>
+      <ul>
+        ${c.switchReasons.map((x) => `<li>${esc(x)}</li>`).join('\n        ')}
+      </ul>
+      <h2>Frequently Asked Questions</h2>
+      <h3>What is the best ${esc(c.name)} alternative?</h3>
+      <p>${esc(c.verdict)}</p>
+      <h3>How much does ${esc(c.name)} cost compared to WebsiteToApp?</h3>
+      <p>${esc(c.name)}: ${esc(c.pricing.detail)} WebsiteToApp is a one-time payment from $35 with all 40+ features included and no subscription.</p>
+      <h3>Why switch from ${esc(c.name)} to WebsiteToApp?</h3>
+      <p>${esc(c.switchReasons.join(' '))}</p>
+      <h2>More Comparisons</h2>
+      <ul>
+        ${others.map((o) => `<li><a href="https://websitetoapp.app/alternatives/${o.slug}">WebsiteToApp vs ${esc(o.name)}</a> — ${esc(o.pricing.label)}</li>`).join('\n        ')}
+      </ul>
+      <p><a href="https://websitetoapp.app/register">Switch to WebsiteToApp — $35 one-time, free plan to start →</a> · <a href="https://websitetoapp.app/pricing">View pricing</a></p>
+    </div>
+    <style>#seo-prerender.seo-static-content{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}#seo-prerender h1{font-size:2em;margin-bottom:16px}#seo-prerender h2{font-size:1.4em;margin-top:24px;margin-bottom:12px}#seo-prerender h3{font-size:1.15em;margin-top:18px;margin-bottom:8px}#seo-prerender ul{padding-left:20px;margin-bottom:16px}#seo-prerender li{margin-bottom:8px;line-height:1.6}#seo-prerender p{line-height:1.7;margin-bottom:12px}#seo-prerender a{color:#1366d6}#seo-prerender table{width:100%;margin:12px 0;border-collapse:collapse}#seo-prerender th,#seo-prerender td{border:1px solid #ddd;padding:8px;text-align:left}</style>
+    <!--/seo-prerender-->`;
+
+  html = html.replace('<div id="root">', altBlock + '\n    <div id="root">');
+  fs.writeFileSync(path.join(dir, 'index.html'), html);
+  generated++;
 }
 
 console.log(`Generated ${generated} static HTML pages for SEO`);

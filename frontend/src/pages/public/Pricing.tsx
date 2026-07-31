@@ -117,10 +117,41 @@ const desktopFeatureLabels: Record<string, string> = {
   startup_launch: 'Startup Launch',
 }
 
+// Plain-text pricing answers (t147 GEO): every fact below comes from the plans
+// rendered on this page and /refund-policy — keep them in sync when prices change.
+const PRICING_FAQS = [
+  {
+    question: 'How much does it cost to convert a website to an app?',
+    answer:
+      'With WebsiteToApp, converting a website to an Android app costs $35 one-time (no subscription). A Windows desktop app (.exe) is also $35 one-time, and an iOS app (beta) is $35 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the App + Play Store bundle is $50 one-time, or the Play Store listing service alone is $15 one-time.',
+  },
+  {
+    question: 'Is there a free plan, and does it have a watermark?',
+    answer:
+      'Yes. The free plan includes 5 free builds total across your websites with all app features enabled for testing. Free builds show a WebsiteToApp watermark and run as a 15-day trial (an upgrade screen appears after). The $35 one-time paid plan removes the watermark and the trial limit permanently.',
+  },
+  {
+    question: 'How many rebuilds do I get when my website changes?',
+    answer:
+      'Paid apps include 5 rebuilds per month per website. If you ship updates often, the optional Pro Monthly add-on ($9/month per app) raises this to 20 rebuilds per month and adds a priority build queue — cancel anytime. Note: your app loads your live website, so content changes appear without any rebuild; rebuilds are only needed for app-level changes like icon, name, or features.',
+  },
+  {
+    question: 'Is the pricing monthly or one-time?',
+    answer:
+      'App builds are one-time payments: $35 for Android, $35 for Windows desktop (.exe), $35 for iOS (beta), $50 for the App + Play Store bundle. There are no recurring fees to keep your app working. The only monthly product is the optional $9/month Pro Monthly rebuild add-on.',
+  },
+  {
+    question: 'Can I get a refund?',
+    answer:
+      'Yes — one-time purchases have a full refund within 7 days of purchase if the app build has not been downloaded, and a full refund if a build fails due to a platform issue. Pro Monthly subscriptions can be refunded in full within 48 hours of first subscribing if no builds were triggered. See the refund policy page for the complete terms.',
+  },
+]
+
 export default function Pricing() {
   useSEO({
     title: 'Pricing - Simple One-Time Plans',
     description: 'Convert your website to an Android or Windows app. Simple one-time pricing, no subscriptions. Android from $0, Desktop from $0.',
+    canonical: 'https://websitetoapp.app/pricing',
   })
   trackViewPricing()
   const { data: plans } = useQuery({
@@ -143,11 +174,34 @@ export default function Pricing() {
   const desktopPaidPlan = allDesktopPlans.find((p: any) => p.price_inr > 0)
   const iosBetaPlan = plans && (plans as any[]).find((p: any) => p.slug === 'ios-beta')
 
+  const pricingFaqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: PRICING_FAQS.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  }
+
   return (
     <div>
+      {/* Pricing FAQ Schema (t147 GEO) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqSchema) }}
+      />
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">Simple, One-Time Pricing</h1>
+          {/* Answer-first opening (t147 GEO): plain-text cost answer before anything else */}
+          <p className="text-white/95 text-base sm:text-lg max-w-3xl mx-auto mb-3 text-left sm:text-center">
+            How much does it cost to convert a website to an app? With WebsiteToApp it's{' '}
+            <strong>$35 one-time</strong> for an Android app, <strong>$35 one-time</strong> for a Windows
+            desktop app (.exe), and <strong>$50 one-time</strong> for the App + Play Store publishing
+            bundle — no subscriptions. A free plan (5 builds, watermarked, 15-day trial) lets you test
+            everything first.
+          </p>
           <p className="text-primary-100 text-base sm:text-lg">Start free, upgrade when you're ready. No subscriptions.</p>
         </div>
       </section>
@@ -636,6 +690,29 @@ Up to $270
             <p className="text-sm text-purple-600 mt-1 font-medium">All included in one price</p>
             <p className="text-xs text-gray-500 mt-2">Others charge extra for push notifications, ads, biometric &amp; more</p>
           </div>
+        </div>
+
+        {/* Pricing FAQ — plain-text answers (t147 GEO) */}
+        <div className="max-w-3xl mx-auto mt-14 sm:mt-20">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
+            Pricing Questions, Answered Plainly
+          </h2>
+          <div className="space-y-4">
+            {PRICING_FAQS.map((faq, i) => (
+              <details key={faq.question} className="bg-white border rounded-xl p-6 group" open={i === 0}>
+                <summary className="font-semibold text-gray-900 cursor-pointer list-none flex justify-between items-center">
+                  {faq.question}
+                  <span className="text-primary-500 group-open:rotate-45 transition-transform text-2xl">+</span>
+                </summary>
+                <p className="text-gray-600 mt-4 leading-relaxed">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p className="text-sm text-gray-500 mt-4 text-center">
+            Full refund terms are on the{' '}
+            <Link to="/refund-policy" className="text-primary-600 hover:underline font-medium">refund policy</Link>{' '}
+            page.
+          </p>
         </div>
 
         {/* CTA */}
