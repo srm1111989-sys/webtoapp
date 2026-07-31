@@ -715,6 +715,17 @@ Up to $270
           </p>
         </div>
 
+        {/* Custom development cross-sell */}
+        <div className="mt-10 sm:mt-14 bg-gray-50 border rounded-xl p-6 sm:p-8 text-center">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Need something fully custom?</h3>
+          <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
+            Beyond converting your website, our team also builds <strong>custom web apps, native Android &amp; iOS apps, and Windows desktop software</strong> to your requirement — with a fixed quote up front.
+          </p>
+          <Link to="/custom-app-development" className="inline-block text-primary-600 hover:underline font-semibold">
+            Explore custom app development →
+          </Link>
+        </div>
+
         {/* CTA */}
         <div className="text-center mt-10 sm:mt-14">
           <p className="text-gray-600 mb-5">Start with our free plan. No credit card required.</p>

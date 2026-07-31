@@ -241,6 +241,7 @@ const staticPages = [
   { path: 'features', title: 'Features — WebToApp Website to App Converter', desc: 'WebToApp features: push notifications, offline mode, AdMob monetization, custom icons, splash screens, and more.' },
   { path: 'pricing', title: 'Pricing — WebToApp Plans & Pricing', desc: 'WebToApp pricing. Free plan available. Premium plans for custom branding, push notifications, and Play Store publishing.' },
   { path: 'contact', title: 'Contact — WebToApp Support', desc: 'Contact WebToApp support team. Get help with website to app conversion.' },
+  { path: 'custom-app-development', title: 'Custom App Development — Web, Android, iOS & Windows | WebsiteToApp', desc: 'Custom app development by the WebsiteToApp team: custom web apps, native Android and iOS apps, and Windows desktop software. Tell us your requirement, get a fixed quote within 24 hours.' },
 ];
 
 // ── Deep content for high-priority platforms (CLAUDE.md flagged WordPress,
@@ -614,6 +615,44 @@ for (const p of staticPages) {
   // /pricing gets real prerendered content + FAQPage schema (t147 GEO)
   if (p.path === 'pricing') {
     html = html.replace('<div id="root">', pricingSeoBlock + '\n    <div id="root">');
+  }
+
+  // /custom-app-development prerender (t166): the service must be visible to
+  // crawlers/AI assistants, not just SPA visitors. Content mirrors
+  // src/pages/public/CustomDevPage.tsx — keep in sync.
+  if (p.path === 'custom-app-development') {
+    const customDevBlock = `
+    <script type="application/ld+json">${JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: 'Custom App Development',
+      provider: { '@type': 'Organization', name: 'WebsiteToApp', url: 'https://websitetoapp.app' },
+      serviceType: 'Custom software development',
+      description: 'Custom web applications, native Android and iOS apps, and Windows desktop software built to requirement with a fixed quote.',
+      areaServed: 'Worldwide',
+      url: 'https://websitetoapp.app/custom-app-development',
+    })}</script>
+    <div id="seo-content" style="max-width:800px;margin:0 auto;padding:20px">
+      <h1>Custom App Development — Web, Android, iOS &amp; Windows</h1>
+      <p>Beyond the self-serve website-to-app converter, the WebsiteToApp team builds fully custom software to your requirement: custom web applications (dashboards, portals, SaaS tools, booking systems), native Android apps, native iOS apps, and Windows desktop software. Send your requirement and receive a fixed quote, usually within 24 hours on business days.</p>
+      <h2>What We Build</h2>
+      <ul>
+        <li><strong>Custom Web Apps</strong> — dashboards, portals, SaaS tools, booking systems, built with modern web stacks and hosted for you.</li>
+        <li><strong>Native Android Apps</strong> — true native apps with offline features, device APIs, background services, ready for Google Play.</li>
+        <li><strong>Native iOS Apps</strong> — iPhone/iPad apps built to Apple guidelines, ready for App Store submission.</li>
+        <li><strong>Windows Desktop Apps</strong> — installers, offline data, hardware integration, kiosk modes.</li>
+      </ul>
+      <h2>How It Works</h2>
+      <ol>
+        <li>Send your requirement via the form at websitetoapp.app/custom-app-development (rough ideas are fine).</li>
+        <li>Receive a fixed quote with price and timeline within 24 hours on business days.</li>
+        <li>We build with regular progress updates and working builds to review.</li>
+        <li>On completion you own everything: the app, the source code, and store listings.</li>
+      </ol>
+      <p>Typical small projects ship in 1–3 weeks; larger products in 4–8 weeks. If you only need your existing website as an app, the self-serve converter does that from $35 one-time at websitetoapp.app/pricing.</p>
+      <p>Contact: support@websitetoapp.app</p>
+    </div>`;
+    html = html.replace('<div id="root">', customDevBlock + '\n    <div id="root">');
   }
 
   // Don't overwrite if file already exists (e.g., privacy-policy.html)

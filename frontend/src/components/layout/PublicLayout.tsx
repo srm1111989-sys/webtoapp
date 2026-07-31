@@ -22,6 +22,7 @@ export default function PublicLayout() {
             <nav className="hidden md:flex items-center gap-8 flex-1">
               <Link to="/features" className="text-gray-600 hover:text-gray-900 font-medium transition">Features</Link>
               <Link to="/pricing" className="text-gray-600 hover:text-gray-900 font-medium transition">Pricing</Link>
+              <Link to="/custom-app-development" className="text-gray-600 hover:text-gray-900 font-medium transition">Custom Apps</Link>
               <Link to="/blog" className="text-gray-600 hover:text-gray-900 font-medium transition">Blog</Link>
             </nav>
 
@@ -56,6 +57,7 @@ export default function PublicLayout() {
             <nav className="flex flex-col px-4 py-3 space-y-1">
               <Link to="/features" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Features</Link>
               <Link to="/pricing" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Pricing</Link>
+              <Link to="/custom-app-development" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Custom Apps</Link>
               <Link to="/blog" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">Blog</Link>
               {!accessToken && (
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 text-sm sm:hidden">Login</Link>
@@ -76,6 +78,7 @@ export default function PublicLayout() {
                 <li><Link to="/features" className="hover:text-white">Features</Link></li>
                 <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
                 <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
+                <li><Link to="/custom-app-development" className="hover:text-white">Custom App Development</Link></li>
                 <li><Link to="/convert/website-to-exe-to-app" className="hover:text-white">Website to EXE Converter</Link></li>
                 <li><Link to="/blog/convert-website-to-app-guide-2026" className="hover:text-white">Website to App Guide</Link></li>
               </ul>

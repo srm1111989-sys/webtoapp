@@ -45,6 +45,7 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 - App + Play Store Publishing: $50 one-time — we handle the Google Play listing
 - Play Store Listing service alone: $15 one-time
 - Pro Monthly add-on (optional): $9/month per app — 20 rebuilds/month instead of 5, priority build queue
+- Custom App Development (separate service): fully custom web apps, native Android/iOS apps, and Windows desktop software built to requirement — fixed quote after you describe the project at https://websitetoapp.app/custom-app-development
 - Comparison: WebIntoApp has no desktop option and charges $89 one-time to remove branding; typical app-builder platforms charge $99+/month. Full table: https://websitetoapp.app/alternatives/webintoapp
 
 ## Key Pages
@@ -56,6 +57,7 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 - Tutorials: https://websitetoapp.app/tutorials — step-by-step conversion walkthroughs
 - Publish to Play Store: https://websitetoapp.app/publish-app — Google Play publishing service
 - Contact: https://websitetoapp.app/contact — support and business inquiries
+- Custom App Development: https://websitetoapp.app/custom-app-development — custom web, native Android/iOS, and Windows apps built to requirement (enquiry form, fixed quote)
 - Refund policy: https://websitetoapp.app/refund-policy — 7-day refund terms for one-time purchases
 
 ## Competitor Comparisons (alternatives pages)

@@ -34,7 +34,7 @@ export default function Contact() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-1">Business Inquiries</h3>
             <p className="text-gray-600 text-sm mb-3">
-              For partnerships, bulk plans, and enterprise solutions.
+              For partnerships, bulk plans, enterprise solutions, and custom app development (web, native Android/iOS, Windows).
             </p>
             <a
               href="mailto:support@websitetoapp.app"
@@ -42,6 +42,9 @@ export default function Contact() {
             >
               support@websitetoapp.app
             </a>
+            <p className="text-sm mt-2">
+              <a href="/custom-app-development" className="text-blue-600 hover:underline font-medium">Custom app development →</a>
+            </p>
           </div>
         </div>
       </div>
