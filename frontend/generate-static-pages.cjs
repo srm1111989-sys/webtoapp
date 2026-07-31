@@ -632,7 +632,8 @@ for (const p of staticPages) {
       areaServed: 'Worldwide',
       url: 'https://websitetoapp.app/custom-app-development',
     })}</script>
-    <div id="seo-content" style="max-width:800px;margin:0 auto;padding:20px">
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content" style="max-width:800px;margin:0 auto;padding:20px">
       <h1>Custom App Development — Web, Android, iOS &amp; Windows</h1>
       <p>Beyond the self-serve website-to-app converter, the WebsiteToApp team builds fully custom software to your requirement: custom web applications (dashboards, portals, SaaS tools, booking systems), native Android apps, native iOS apps, and Windows desktop software. Send your requirement and receive a fixed quote, usually within 24 hours on business days.</p>
       <h2>What We Build</h2>
@@ -651,7 +652,8 @@ for (const p of staticPages) {
       </ol>
       <p>Typical small projects ship in 1–3 weeks; larger products in 4–8 weeks. If you only need your existing website as an app, the self-serve converter does that from $35 one-time at websitetoapp.app/pricing.</p>
       <p>Contact: support@websitetoapp.app</p>
-    </div>`;
+    </div>
+    <!--/seo-prerender-->`;
     html = html.replace('<div id="root">', customDevBlock + '\n    <div id="root">');
   }
 
