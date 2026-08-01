@@ -1,4 +1,4 @@
-image: jangrewe/gitlab-ci-android
+﻿image: jangrewe/gitlab-ci-android
 
 stages:
   - prepare
@@ -35,10 +35,10 @@ prepare:
     - |
       if [ ! -f ./gradlew ]; then
         echo "Downloading Gradle to generate wrapper..."
-        curl -sL "https://services.gradle.org/distributions/gradle-8.4-bin.zip" -o /tmp/gradle.zip
+        curl -sL "https://services.gradle.org/distributions/gradle-8.11.1-bin.zip" -o /tmp/gradle.zip
         unzip -q /tmp/gradle.zip -d /tmp/
-        /tmp/gradle-8.4/bin/gradle wrapper --gradle-version 8.4
-        rm -rf /tmp/gradle.zip /tmp/gradle-8.4
+        /tmp/gradle-8.11.1/bin/gradle wrapper --gradle-version 8.11.1
+        rm -rf /tmp/gradle.zip /tmp/gradle-8.11.1
       fi
     - chmod +x ./gradlew
 
@@ -100,7 +100,7 @@ prepare:
           file /tmp/icon_raw | grep -qi "image" && cp /tmp/icon_raw /tmp/icon.png || ICON_OK=false
         fi
         if [ "$ICON_OK" = "false" ]; then
-          echo "WARNING: Icon URL invalid or unreachable ($ICON_URL) — using default icon"
+          echo "WARNING: Icon URL invalid or unreachable ($ICON_URL) â€” using default icon"
           rm -f /tmp/icon_raw
         fi
       fi
@@ -136,7 +136,7 @@ prepare:
         echo "$FIREBASE_CONFIG" > app/google-services.json
       fi
 
-    # Configure AdMob — inject meta-data and re-enable provider only when configured
+    # Configure AdMob â€” inject meta-data and re-enable provider only when configured
     - |
       if [ "$ADMOB_ENABLED" = "true" ] && [ -n "$ADMOB_CONFIG" ]; then
         ADMOB_APP_ID=$(echo "$ADMOB_CONFIG" | python3 -c "import sys,json; print(json.load(sys.stdin).get('app_id',''))" 2>/dev/null || echo "")
@@ -241,3 +241,4 @@ webhook_notify:
           -d "{\"object_kind\":\"pipeline\",\"object_attributes\":{\"id\":$CI_PIPELINE_ID,\"status\":\"$CI_PIPELINE_STATUS\"},\"project\":{\"id\":$CI_PROJECT_ID}}"
       fi
   when: always
+
