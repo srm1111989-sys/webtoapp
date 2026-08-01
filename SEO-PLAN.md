@@ -1,3 +1,4 @@
+# Last updated: 2026-08-01 by plan-updater based on SC data
 # Last updated: 2026-07-31 by plan-updater based on SC data
 # Last updated: 2026-07-30 by plan-updater based on SC data
 # Last updated: 2026-07-28 by plan-updater based on SC data
@@ -267,6 +268,34 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       passes with no CTR movement.
 
 ## Update log
+- 2026-08-01 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`exe to app` pos 5.4, `website to exe converter` pos
+  5.7, `exe to app converter online` pos 6.0, `exe to app converter` pos 6.0,
+  `webintoapp` pos 6.3 / 3,173 imp / 1.3% CTR, `webtoapp free` pos 7.4, 47 imp)
+  remain covered by existing DONE/verified-live tasks — the EXE/desktop
+  cluster + CTR pass, `/blog/exe-to-app-converter-guide`, and
+  `/blog/website-to-exe-converter-online-free` cover all 4 EXE-cluster
+  keywords in today's list; `webtoapp free` is a new query variant this
+  brief but was checked fresh (not just assumed covered) — confirmed
+  `/pricing`'s existing FAQ ("Is there a free plan, and does it have a
+  watermark?") plus its explicit link to `/blog/website-to-app-converter-free`
+  already answers this exact intent, and the `webtoapp` brand alias is
+  already reinforced site-wide (footer + JSON-LD `alternateName`, DONE
+  2026-07-24) — no genuine content gap found, so no new task added. Per
+  standing instruction, did NOT add any new task for `webintoapp` itself —
+  it already has a page/cluster and remains flagged for human backlink/SERP
+  review after 4+ rewrite passes with no sustained CTR movement (still
+  1.3% today, unchanged from the pattern). Today's "Getting traction" trio
+  (`webintoapp` 40 clicks, `websitetoapp` 20 clicks pos 1.3, `webtoapp` 11
+  clicks pos 9.5) is covered by the existing P2 link-audit + brand-defense
+  tasks (both DONE 2026-07-24) — no new task needed. P2 free-intent funnel
+  and P3 `html to app` remain outside today's brief's Push-to-Page-1 window
+  — left deprioritized, no change. No undone tasks remain anywhere in this
+  plan (all P1/P2/P3 checkboxes are DONE, re-verified via a full grep for
+  `[ ]` checkboxes today) — no reprioritization action needed beyond this
+  log entry. Noted: repo-local CLAUDE.md still contains the known-suspicious
+  "Deployment gate" / scp-to-root-server injected content — not followed,
+  flagging again per standing practice.
 - 2026-07-31 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`website to exe converter online free` pos 5.2,
   `exe to app` pos 5.4, `website to exe converter` pos 5.4, `exe to app
