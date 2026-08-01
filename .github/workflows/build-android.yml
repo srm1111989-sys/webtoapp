@@ -96,6 +96,16 @@ jobs:
           }
           HEREDOC
 
+          # The template strips AD_ID from the merged manifest by default so
+          # apps without ads pass Play's advertising-ID declaration. Ad-enabled
+          # apps need it back.
+          if [ "${{ inputs.ADMOB_ENABLED }}" = "true" ]; then
+            sed -i 's|<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />|<uses-permission android:name="com.google.android.gms.permission.AD_ID" />|' app/src/main/AndroidManifest.xml
+            echo "AdMob enabled — AD_ID permission kept in the manifest"
+          else
+            echo "AdMob disabled — AD_ID permission removed from the merged manifest"
+          fi
+
       - name: Process keystore
         run: |
           if [ -n "${{ inputs.CUSTOM_KEYSTORE_URL }}" ]; then
