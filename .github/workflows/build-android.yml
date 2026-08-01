@@ -184,6 +184,9 @@ jobs:
           else
             echo "AdMob: no valid app_id (ca-app-pub-...~...) or already set"
           fi
+          # Ads are on, so the app really does use the advertising ID.
+          sed -i 's|<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />|<uses-permission android:name="com.google.android.gms.permission.AD_ID" />|' "$MF"
+          echo "AdMob enabled - AD_ID permission kept in the manifest"
 
       - name: Build APK
         run: |

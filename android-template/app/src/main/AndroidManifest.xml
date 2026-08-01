@@ -16,7 +16,12 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Android 15+ Screen Capture Protection: detect when the app is being screen-recorded to mute audio -->
     <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    <!-- AD_ID is stripped from the merged manifest unless AdMob is enabled: the
+         play-services-ads library declares it itself, and its presence in an app
+         that declares "no advertising ID" in Play Console blocks the release
+         ("Incomplete Advertising ID declaration"). CI drops the tools:node
+         attribute when ADMOB_ENABLED=true. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
