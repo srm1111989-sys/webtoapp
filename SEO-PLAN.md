@@ -1,3 +1,4 @@
+# Last updated: 2026-08-02 by plan-updater based on SC data
 # Last updated: 2026-08-01 by plan-updater based on SC data
 # Last updated: 2026-07-31 by plan-updater based on SC data
 # Last updated: 2026-07-30 by plan-updater based on SC data
@@ -268,6 +269,31 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       passes with no CTR movement.
 
 ## Update log
+- 2026-08-02 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`exe to app` pos 5.4, `website to exe converter` pos
+  6.0, `url to exe converter` pos 6.0, `exe to app converter online` pos 6.0,
+  `exe to app converter` pos 6.2, `webintoapp` pos 6.3 / 3,248 imp / 43 clicks
+  / 1.3% CTR) remain covered by existing DONE/verified-live tasks. `url to exe
+  converter` is a new query variant in today's brief but was checked fresh,
+  not just assumed covered — `/convert/website-to-exe`'s existing
+  `answerFirst` copy already explicitly walks through entering a website
+  *URL* to generate the .exe (`platforms.ts`, `website-to-exe` entry), so this
+  is the same underlying intent as `website to exe converter`, not a distinct
+  gap — same reasoning precedent as `app.indexchex`/`indexchex` on the
+  IndexFlow plan and `own store`/`ownstore` on the OwnStore plan. No new page
+  task added. Per standing instruction, did NOT add any new task for
+  `webintoapp` itself — CTR (1.3%) remains unchanged from the pattern and
+  stays flagged for human backlink/SERP review after 4+ rewrite passes with
+  no sustained movement. Today's "Getting traction" trio (`webintoapp` 43
+  clicks, `websitetoapp` 25 clicks pos 1.3, `website to exe converter online
+  free` 10 clicks pos 4.1) is covered by the existing P2 link-audit +
+  brand-defense tasks (both DONE 2026-07-24) and the EXE-cluster CTR pass —
+  no new task needed. No undone tasks remain anywhere in this plan (all
+  P1/P2/P3 checkboxes are DONE, re-verified via a full grep for `[ ]`
+  checkboxes today) — no reprioritization action needed beyond this log
+  entry. Local checkout at `/opt/webtoapp` remains root-owned (`.git/index`
+  unreadable, HEAD unresolvable) — this update was made from a fresh scratch
+  clone of origin/main.
 - 2026-08-01 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`exe to app` pos 5.4, `website to exe converter` pos
   5.7, `exe to app converter online` pos 6.0, `exe to app converter` pos 6.0,
