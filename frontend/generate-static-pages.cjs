@@ -768,6 +768,71 @@ for (const p of staticPages) {
     html = html.replace('<div id="root">', customDevBlock + '\n    <div id="root">');
   }
 
+  // /features, /contact and /blog prerender (t182, second pass). These were the
+  // remaining pages the audit measured at 7–11 words. /blog lists real posts, which
+  // also gives crawlers a route into the blog instead of leaving those posts to be
+  // found only through the sitemap.
+  if (p.path === 'features') {
+    html = html.replace('<div id="root">', `
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content" style="max-width:800px;margin:0 auto;padding:20px">
+      <h1>WebsiteToApp Features — All Included in Every Paid Plan</h1>
+      <p>Every feature below is included in the one-time paid plan. There are no feature tiers to compare and nothing is charged as an add-on — the $35 Android plan and the desktop plan both unlock the full set.</p>
+      <h2>Platforms</h2>
+      <p>Android app (signed APK and AAB, ready for the Play Store), Windows desktop app, and an iOS build in beta.</p>
+      <h2>Engagement</h2>
+      <p>Push notifications, social sharing, a rate-the-app dialog, and pull to refresh.</p>
+      <h2>Security</h2>
+      <p>Biometric authentication, screenshot and screen-capture protection, SSL pinning, and Content Security Policy support.</p>
+      <h2>Device Features</h2>
+      <p>QR code scanner, camera access, location services, vibration, battery status and device information.</p>
+      <h2>Navigation</h2>
+      <p>Custom navigation, deep linking, an in-app browser, hardware back-button handling and exit confirmation.</p>
+      <h2>Branding</h2>
+      <p>Full branding control, custom fonts, user-agent control, orientation locking, full-screen modes and keep-screen-on.</p>
+      <h2>Content Handling</h2>
+      <p>File upload, a download manager, offline mode, cookie and cache management, a JavaScript bridge, custom headers, hardware acceleration, mixed-content support, WebView configuration, media playback and audio focus.</p>
+      <p>Because the app loads your live website, content changes appear without rebuilding — a rebuild is only needed for app-level changes such as the icon, name or feature set.</p>
+      <p><a href="/pricing">Pricing</a> &middot; <a href="/">Home</a> &middot; <a href="/custom-app-development">Custom development</a> &middot; <a href="/contact">Contact</a></p>
+    </div>
+    <!--/seo-prerender-->` + '\n    <div id="root">');
+  }
+
+  if (p.path === 'contact') {
+    html = html.replace('<div id="root">', `
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content" style="max-width:800px;margin:0 auto;padding:20px">
+      <h1>Contact WebsiteToApp</h1>
+      <p>We'd love to hear from you — reach out for support, feedback or business inquiries. Email <strong>support@websitetoapp.app</strong> and we usually reply within 24 hours on business days.</p>
+      <h2>What We Can Help With</h2>
+      <ul>
+        <li><strong>Support</strong> — a build that failed, a feature that is not behaving, or help getting your app onto the Play Store.</li>
+        <li><strong>Billing and refunds</strong> — see the <a href="/refund-policy">refund and cancellation policy</a> for the terms and how to request one.</li>
+        <li><strong>Business inquiries</strong> — bulk builds, reseller arrangements, or <a href="/custom-app-development">custom app development</a> where a wrapped website is not enough.</li>
+      </ul>
+      <h2>Business Information</h2>
+      <p>Stark Enterprises — support@websitetoapp.app</p>
+      <p><a href="/">Home</a> &middot; <a href="/pricing">Pricing</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/privacy-policy">Privacy Policy</a> &middot; <a href="/refund-policy">Refund Policy</a></p>
+    </div>
+    <!--/seo-prerender-->` + '\n    <div id="root">');
+  }
+
+  if (p.path === 'blog') {
+    const recent = blogPosts.slice(0, 24);
+    html = html.replace('<div id="root">', `
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content" style="max-width:800px;margin:0 auto;padding:20px">
+      <h1>WebsiteToApp Blog — Guides to Converting a Website into an App</h1>
+      <p>Tutorials and comparisons on turning a website into an Android app or a Windows desktop application: platform-specific guides for WordPress, Shopify, Wix and others, honest comparisons with other app builders, and practical notes on publishing to the Play Store.</p>
+      <h2>Articles</h2>
+      <ul>
+        ${recent.map((post) => `<li><a href="https://websitetoapp.app/blog/${post.slug}">${esc(post.title)}</a></li>`).join('\n        ')}
+      </ul>
+      <p><a href="/">Home</a> &middot; <a href="/pricing">Pricing</a> &middot; <a href="/features">Features</a> &middot; <a href="/contact">Contact</a></p>
+    </div>
+    <!--/seo-prerender-->` + '\n    <div id="root">');
+  }
+
   // Legal pages prerender (t182). Text mirrors src/pages/public/TermsOfService.tsx,
   // PrivacyPolicy.tsx and RefundPolicy.tsx — KEEP IN SYNC when the policies change;
   // a prerendered policy that disagrees with the one users see is worse than none.
