@@ -897,4 +897,56 @@ for (const c of competitors) {
   generated++;
 }
 
+// ── Homepage prerender (t182 / growth-plan fix-0 + fix-1, both HIGH). Every other
+// page type here got a prerendered body at some point, but the homepage — the page
+// that actually ranks — never did: a crawler fetching / received 11 words of text and
+// 12 scripts. The audit reported it as "very thin content" AND "relies heavily on
+// JavaScript"; those were one problem, not two.
+//
+// The block is removed from view by src/main.tsx (it hides #seo-prerender as soon as
+// React mounts), so this is crawler-only and does not change what visitors see.
+// Content mirrors src/pages/public/Landing.tsx — keep in sync.
+{
+  const homeBlock = `
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content" style="max-width:800px;margin:0 auto;padding:20px">
+      <h1>WebsiteToApp — Convert Your Website into an Android App</h1>
+      <p>WebsiteToApp turns any existing website into a native Android app, and any website into a Windows desktop application, without writing code. You enter your URL, choose your app name, icon and splash screen, pick the features you want, and an automated build pipeline returns a signed APK and AAB ready for the Google Play Store. Over 2,400 apps have been built with it.</p>
+      <h2>What You Get</h2>
+      <ul>
+        <li><strong>Signed APK and AAB</strong> — Play-Store-ready builds, with your own keystore available to download so you keep control of your app identity.</li>
+        <li><strong>Push notifications</strong> — send messages to your users from the dashboard, including automatic promotion of existing web push.</li>
+        <li><strong>Offline caching</strong> so your app still opens without a connection, and a native splash screen and app icon.</li>
+        <li><strong>Monetization and analytics</strong> — AdMob banner and interstitial support, plus usage analytics.</li>
+        <li><strong>Native behaviour</strong> — hardware back button, pull-to-refresh, deep linking, biometric login and file uploads.</li>
+      </ul>
+      <h2>Pricing</h2>
+      <p>The free plan gives you 5 builds in total across your websites with every feature enabled for testing; free builds carry a WebsiteToApp watermark and run as a 15-day trial. The Android premium plan is <strong>$35 one-time</strong> per website — signed APK and AAB, no watermark, no trial limit, keystore download, all 50+ features and 5 rebuilds per month. An optional Pro Monthly add-on at $9 per month raises that to 20 rebuilds per month with a priority build queue. There is no subscription requirement and a 7-day money-back guarantee. Payments are handled by Razorpay over 256-bit SSL, with UPI, card and NetBanking supported.</p>
+      <h2>Works With Any Website</h2>
+      <p>WebsiteToApp wraps your live site, so whatever runs in a mobile browser runs in the app: WordPress and WooCommerce, Shopify, Wix, Squarespace, React and Next.js, Webflow, Laravel, or a hand-built site. Because the app loads your live website, content changes appear immediately without rebuilding — a rebuild is only needed for app-level changes such as the icon, name or feature set.</p>
+      <h2>Publishing to Google Play</h2>
+      <p>If you would rather not handle the store submission yourself, we will publish the app for you and set up the full store listing for a flat $15.</p>
+      <h2>Need Something Custom?</h2>
+      <p>If a wrapped website is not enough, our team also builds custom web applications, native Android and iOS apps and Windows desktop software to requirement, with a fixed quote within 24 hours.</p>
+      <p>
+        <a href="/pricing">Pricing</a> &middot;
+        <a href="/features">Features</a> &middot;
+        <a href="/custom-app-development">Custom app development</a> &middot;
+        <a href="/blog">Blog</a> &middot;
+        <a href="/contact">Contact</a> &middot;
+        <a href="/terms">Terms</a> &middot;
+        <a href="/privacy-policy">Privacy</a> &middot;
+        <a href="/refund-policy">Refunds</a>
+      </p>
+    </div>
+    <!--/seo-prerender-->`;
+
+  const homePath = path.join(distDir, 'index.html');
+  const homeHtml = fs.readFileSync(homePath, 'utf-8');
+  if (!homeHtml.includes('id="seo-prerender"')) {
+    fs.writeFileSync(homePath, homeHtml.replace('<div id="root">', homeBlock + '\n    <div id="root">'));
+    generated++;
+  }
+}
+
 console.log(`Generated ${generated} static HTML pages for SEO`);
