@@ -232,6 +232,108 @@ for (const post of blogPosts) {
 }
 
 // Static pages (non-convert)
+// ── Legal-page prerender bodies (t182). These pages are legally and commercially
+// load-bearing — Razorpay and the Play Store both expect a reachable policy — yet
+// crawlers were served the homepage instead. Wording is copied from the matching
+// component so the prerendered text and the SPA text cannot drift apart in substance.
+const legalWrap = (inner) =>
+  `
+    <!--seo-prerender-->
+    <div id="seo-prerender" class="seo-static-content" style="max-width:800px;margin:0 auto;padding:20px">
+${inner}
+      <p><a href="/">WebsiteToApp home</a> &middot; <a href="/pricing">Pricing</a> &middot; <a href="/terms">Terms of Service</a> &middot; <a href="/privacy-policy">Privacy Policy</a> &middot; <a href="/refund-policy">Refund Policy</a> &middot; <a href="/contact">Contact</a></p>
+    </div>
+    <!--/seo-prerender-->`;
+
+const legalPrerender = {
+  terms: legalWrap(`      <h1>Terms of Service</h1>
+      <p>Last updated: February 22, 2026</p>
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using WebsiteToApp (websitetoapp.app), you agree to be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
+      <h2>2. Description of Service</h2>
+      <p>WebsiteToApp provides a platform to convert websites into Android mobile apps and Windows desktop applications. Our service includes a web-based configuration wizard, automated app building via a CI/CD pipeline, APK, AAB (App Bundle) and .exe builds, and feature integration such as push notifications and analytics.</p>
+      <h2>3. User Accounts</h2>
+      <ul>
+        <li>You must provide accurate and complete registration information.</li>
+        <li>You are responsible for maintaining the security of your account.</li>
+        <li>You must be at least 18 years old to create an account.</li>
+        <li>One person or legal entity may not maintain more than one free account.</li>
+      </ul>
+      <h2>4. Pricing &amp; Payments</h2>
+      <ul>
+        <li>Prices are displayed in INR or USD based on your location.</li>
+        <li>All payments are processed securely through Razorpay.</li>
+        <li>One-time plans grant lifetime access to the purchased features for that app.</li>
+        <li>Monthly plans are billed recurring until cancelled.</li>
+        <li>Prices may change with prior notice; existing subscriptions are honoured.</li>
+      </ul>
+      <h2>5. Refund Policy</h2>
+      <p>Please refer to our <a href="/refund-policy">Refund Policy</a> page for detailed information about refunds, cancellations and dispute resolution.</p>
+      <h2>6. Acceptable Use</h2>
+      <p>You agree not to use our service to convert websites you do not own or have permission to convert; to create apps containing malware, spyware or malicious code; to create apps that infringe intellectual property rights; to create apps containing illegal, harmful or offensive content; to reverse-engineer, decompile or hack our platform; or to resell or redistribute our service without authorization.</p>
+      <h2>7. Intellectual Property</h2>
+      <ul>
+        <li>You retain ownership of your website content and branding.</li>
+        <li>Apps generated with the Free plan include "Powered by WebsiteToApp" branding.</li>
+        <li>Paid plans (Basic and above) remove all WebsiteToApp branding.</li>
+        <li>The WebsiteToApp platform, code and brand remain our intellectual property.</li>
+      </ul>
+      <h2>8. Service Availability</h2>
+      <p>We strive for maximum uptime but do not guarantee uninterrupted service. We may perform maintenance and updates or experience downtime, and we are not liable for losses resulting from service interruptions.</p>
+      <h2>9. Limitation of Liability</h2>
+      <p>WebsiteToApp is provided "as is". See the full terms on this page in the app for the complete limitation of liability, termination and governing-law clauses.</p>
+      <h2>10. Contact</h2>
+      <p>Questions about these terms: support@websitetoapp.app (Stark Enterprises).</p>`),
+
+  'privacy-policy': legalWrap(`      <h1>Privacy Policy</h1>
+      <p>Last updated: February 22, 2026</p>
+      <h2>1. Introduction</h2>
+      <p>WebsiteToApp ("we", "our", or "us") operates the website websitetoapp.app. This Privacy Policy explains how we collect, use, disclose and safeguard your information when you visit our website and use our services.</p>
+      <h2>2. Information We Collect</h2>
+      <p><strong>Personal information</strong> — name and email address, phone number (optional), payment and billing information (processed securely via Razorpay), and the website URL provided for app conversion.</p>
+      <p><strong>Automatically collected</strong> — IP address and browser type, device information and operating system, usage data (pages visited, time spent, clicks), and cookies and similar tracking technologies.</p>
+      <h2>3. How We Use Your Information</h2>
+      <p>To provide and maintain our services; to process orders and payments; to build and deliver your apps (Android APK, AAB, Windows .exe); to send order updates and build status notifications; to respond to support requests; to improve our platform; and to comply with legal obligations.</p>
+      <h2>4. Payment Processing</h2>
+      <p>All payments are processed securely through Razorpay, a PCI-DSS compliant payment gateway. We do not store your credit or debit card details on our servers; payment data is handled directly by Razorpay in accordance with their privacy policy.</p>
+      <h2>5. Data Sharing</h2>
+      <p>We do not sell your personal information. We may share data with payment processors (Razorpay) to process transactions, cloud service providers to host and deliver our services, and law enforcement if required by law or legal proceedings.</p>
+      <h2>6. Data Security</h2>
+      <p>We implement industry-standard security measures including SSL encryption, secure authentication and regular security updates. However, no method of transmission over the Internet is 100% secure.</p>
+      <h2>7. Cookies</h2>
+      <p>We use cookies to maintain your session, remember your preferences and improve our service. You can control cookie settings through your browser.</p>
+      <h2>8. Your Rights</h2>
+      <p>You have the right to access the personal data we hold about you, request correction of inaccurate data, request deletion of your account and data, and opt out of marketing communications.</p>
+      <h2>9. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time and will notify you of any changes by posting the new policy on this page.</p>
+      <h2>10. Contact Us</h2>
+      <p>Privacy questions: support@websitetoapp.app.</p>`),
+
+  'refund-policy': legalWrap(`      <h1>Refund &amp; Cancellation Policy</h1>
+      <p>Last updated: February 22, 2026</p>
+      <h2>1. Overview</h2>
+      <p>At WebsiteToApp we want you to be completely satisfied with your purchase. This policy outlines the terms for refunds and cancellations for our app building services.</p>
+      <h2>2. Refund Eligibility</h2>
+      <p><strong>One-time plans (Basic)</strong> — full refund within 7 days of purchase if the app build has not been downloaded. If a build fails due to a platform issue (not user configuration), a full refund is issued. No refund after the build has been downloaded or once 7 days have passed.</p>
+      <p><strong>Monthly plans (Pro, Business)</strong> — you may cancel at any time; cancellation takes effect at the end of the current billing period. There are no partial refunds for unused days in the current cycle. A full refund is available within 48 hours of first subscribing if no builds have been triggered.</p>
+      <p><strong>Free plan</strong> — the Free plan has no charges, so no refunds apply.</p>
+      <h2>3. Non-Refundable Scenarios</h2>
+      <ul>
+        <li>Builds that fail due to incorrect user-provided configuration (wrong URL, invalid Firebase keys, and similar).</li>
+        <li>Requests made after the refund window (7 days for one-time, 48 hours for monthly).</li>
+        <li>Issues caused by third-party services (Google Play rejections, website downtime).</li>
+        <li>Change of mind after downloading the app build.</li>
+      </ul>
+      <h2>4. How to Request a Refund</h2>
+      <p>Email support@websitetoapp.app with the subject line "Refund Request", including your registered email address and order ID and a brief reason. We review requests within 2–3 business days.</p>
+      <h2>5. Refund Processing</h2>
+      <p>Approved refunds are processed via Razorpay to the original payment method and typically appear within 5–7 business days. Bank processing times may vary and are outside our control.</p>
+      <h2>6. Cancellation of Monthly Plans</h2>
+      <p>You can cancel from your Dashboard. Access continues until the end of the current billing period, previously generated builds remain available for download after cancellation, and you can resubscribe at any time.</p>
+      <h2>7. Contact</h2>
+      <p>For refund-related queries: support@websitetoapp.app (Stark Enterprises).</p>`),
+};
+
 const staticPages = [
   { path: 'about', title: 'About WebToApp — Website to App Converter', desc: 'Learn about WebToApp, the easiest way to convert any website to an Android app. No coding required.' },
   { path: 'docs', title: 'Documentation — WebToApp Developer Guide', desc: 'WebToApp documentation. Learn how to convert websites to Android apps, customize settings, and publish to Google Play.' },
@@ -241,7 +343,16 @@ const staticPages = [
   { path: 'features', title: 'Features — WebToApp Website to App Converter', desc: 'WebToApp features: push notifications, offline mode, AdMob monetization, custom icons, splash screens, and more.' },
   { path: 'pricing', title: 'Pricing — WebToApp Plans & Pricing', desc: 'WebToApp pricing. Free plan available. Premium plans for custom branding, push notifications, and Play Store publishing.' },
   { path: 'contact', title: 'Contact — WebToApp Support', desc: 'Contact WebToApp support team. Get help with website to app conversion.' },
-  { path: 'custom-app-development', title: 'Custom App Development — Web, Android, iOS & Windows | WebsiteToApp', desc: 'Custom app development by the WebsiteToApp team: custom web apps, native Android and iOS apps, and Windows desktop software. Tell us your requirement, get a fixed quote within 24 hours.' },
+  // Title shortened from "Custom App Development — Web, Android, iOS & Windows |
+  // WebsiteToApp" (67 chars): Google truncates past ~60 (t182 / growth-plan fix-4).
+  { path: 'custom-app-development', title: 'Custom App Development — Android, iOS & Web | WebsiteToApp', desc: 'Custom app development by the WebsiteToApp team: custom web apps, native Android and iOS apps, and Windows desktop software. Tell us your requirement, get a fixed quote within 24 hours.' },
+  // t182: the three legal pages had NO generated file, so nginx fell back to the SPA
+  // shell — /terms, /privacy-policy and /refund-policy each returned the HOMEPAGE
+  // byte-for-byte, complete with the homepage's canonical. The growth-plan audit saw
+  // this as "canonical points to a different URL" on exactly these three URLs.
+  { path: 'terms', title: 'Terms of Service — WebsiteToApp', desc: 'WebsiteToApp terms of service: accounts, pricing and payments, acceptable use, intellectual property, service availability and limitation of liability.' },
+  { path: 'privacy-policy', title: 'Privacy Policy — WebsiteToApp', desc: 'How WebsiteToApp collects, uses and protects your data: what we collect, payment processing via Razorpay, data sharing, security, cookies and your rights.' },
+  { path: 'refund-policy', title: 'Refund & Cancellation Policy — WebsiteToApp', desc: 'WebsiteToApp refund and cancellation policy: 7-day refunds on one-time plans, 48-hour refunds on monthly plans, non-refundable cases and how to request a refund.' },
 ];
 
 // ── Deep content for high-priority platforms (CLAUDE.md flagged WordPress,
@@ -655,6 +766,13 @@ for (const p of staticPages) {
     </div>
     <!--/seo-prerender-->`;
     html = html.replace('<div id="root">', customDevBlock + '\n    <div id="root">');
+  }
+
+  // Legal pages prerender (t182). Text mirrors src/pages/public/TermsOfService.tsx,
+  // PrivacyPolicy.tsx and RefundPolicy.tsx — KEEP IN SYNC when the policies change;
+  // a prerendered policy that disagrees with the one users see is worse than none.
+  if (legalPrerender[p.path]) {
+    html = html.replace('<div id="root">', legalPrerender[p.path] + '\n    <div id="root">');
   }
 
   // Don't overwrite if file already exists (e.g., privacy-policy.html)

@@ -13472,7 +13472,7 @@ You can build and test for free. See [current pricing](/pricing) for unbranded/P
   },
   {
     slug: 'free-vs-paid-website-to-exe-2026',
-    title: 'Free vs Paid: Converting a Website to a Windows EXE (2026)',
+    title: 'Free vs Paid: Website to Windows EXE (2026)',
     description: 'Can you convert a website to a Windows .exe for free? Yes — here is exactly what free gets you, what paid costs ($35 one-time), and an honest cost table comparing DIY Electron vs a no-code converter.',
     date: '2026-07-31',
     readTime: '7 min read',
