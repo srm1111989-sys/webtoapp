@@ -34,10 +34,32 @@ Listing: https://alternativeto.net/software/websitetoapp/ — icon (512px from f
 - **First comment (maker)**: honest build story — one-time pricing rationale, the
   referral program, and the new website-to-EXE converter. Keep it personal.
 
-## SaaSHub (saashub.com/submit)
+## SaaSHub (saashub.com/submit) — READY TO PASTE (drafted 2026-08-02, not yet posted)
 
-- Name/URL/short description as AlternativeTo. Category: App Development / No-Code.
-- Alternatives to claim: GoNative, Median, WebIntoApp, Appy Pie.
+Prices below verified against `backend/docs/webtoapp-guide.md` (2026-08-02).
+
+- **Name**: WebsiteToApp
+- **Website**: https://websitetoapp.app
+- **Tagline** (short description, keep under ~100 chars): Convert any website into an
+  Android, iOS or Windows app — one-time payment, no coding.
+- **Description**:
+  WebsiteToApp turns any website URL into a native app in minutes — no code, no build
+  tooling. Paste your URL, customize the app name, icon, splash screen and colors, then
+  pick from 50+ features: push notifications (Firebase FCM), biometric/PIN lock, offline
+  mode, AdMob, pull-to-refresh, bottom navigation, side drawer, screenshot block, SSL
+  pinning and custom keystore (.jks) upload for Play Store updates. Download a signed APK
+  and AAB, a Windows .exe installer, or an iOS build (beta).
+  Pricing is one-time, not subscription: the free plan gives 5 lifetime builds with every
+  feature included (watermark banner, 15-day trial), and a paid Android or Desktop app is
+  $35 once. A Play Store publishing add-on is $15, or $50 for the app + listing bundle.
+  APK and AAB are included on every plan, including free.
+- **Pricing model**: Freemium — free plan available; paid from $35 one-time
+- **Categories**: App Development / No-Code / Mobile Development / Developer Tools
+- **Platforms**: Web-based (builds for Android, Windows, iOS beta)
+- **Alternatives to claim**: GoNative (Median), WebIntoApp, Appilix, Appy Pie,
+  AppsGeyser, Nativefier, WebViewGold, Twinr
+- **Assets**: logo 512px from `frontend/public/favicon.svg`; screenshots — landing hero,
+  builder wizard, build-success/download screen (grab at 1280×800)
 
 ## G2 + Capterra (need vendor accounts — operator action)
 
@@ -46,8 +68,67 @@ Listing: https://alternativeto.net/software/websitetoapp/ — icon (512px from f
   hero, the wizard, and the build-success screen (grab fresh ones at 1280×800).
 - Worth it: G2/Capterra pages rank for "X alternatives" queries and feed LLM answers.
 
+## Other products (drafted 2026-08-02, none posted yet)
+
+Same copy works for both AlternativeTo and SaaSHub — they ask for the same fields.
+Post one product per Sunday slot; AlternativeTo first (no account barrier).
+
+### IndexFlow — https://indexflow.net
+Pricing verified against `IndexFlow/frontend/src/app/pricing/page.tsx` (2026-08-02).
+
+- **Tagline**: Check, submit and monitor Google indexing for your URLs — in bulk.
+- **Description**: IndexFlow tells you which of your pages Google has actually indexed,
+  submits the ones that aren't, and keeps watching them afterwards. Bulk index checking,
+  multi-channel submission, automated re-checks with status history, CSV export, an API
+  with webhooks, and per-client campaigns for agencies. Most indexing tools only submit
+  URLs and never tell you whether it worked — IndexFlow closes that loop by verifying
+  index status before and after.
+- **Pricing model**: Freemium — free plan (50 credits/month, no card); Starter $12/mo
+  (1,500 credits), Pro $29/mo (5,000), Agency $79/mo (20,000). One-time credit packs:
+  500 for $5, 2,000 for $15, 10,000 for $49.
+- **Categories**: SEO / Marketing / Developer Tools
+- **Alternatives to claim**: Omega Indexer, Rapid URL Indexer, IndexMeNow,
+  Indexification, ColinkRI, SpeedyIndex, Linklicious, One Hour Indexing
+
+### ModbusSimulator — https://modbussimulator.com
+- **Tagline**: Modbus master and slave simulator in one app — TCP, RTU, ASCII and UDP.
+- **Description**: A Windows Modbus simulator that runs as both master (poll a device)
+  and slave (emulate one) in a single application, over Modbus TCP, RTU, ASCII and UDP.
+  Built for PLC and HMI engineers who need to test register maps, exercise an HMI
+  against simulated slaves, or debug a field device without hauling hardware to the
+  desk. 30-day free trial with all features unlocked, no registration and no card;
+  one-time license after that, with no subscription.
+- **Pricing model**: Free trial (30 days), then paid one-time.
+  ⚠️ **OPERATOR: confirm the price before posting.** The repo disagrees with itself —
+  the desktop app UI (`src/renderer/App.tsx`) and several blog/comparison pages say $99,
+  while the license-server site (`public/index.html`, `download.html`,
+  `free-modbus-simulator.html`) says $59, and `api/chatbot.ts` says $49. This is a
+  release-consistency defect worth fixing on the site regardless of the listing.
+- **Categories**: Development / Industrial Automation / Network Tools
+- **Alternatives to claim**: Modbus Poll, Modbus Slave (Witte Software), QModMaster,
+  ModbusMechanic, Simply Modbus, EasyModbus, CAS Modbus Scanner, modpoll/diagslave
+
+### OwnStore — https://ownstore.app
+- **Tagline**: GST billing and an online storefront for small Indian businesses.
+- **Description**: OwnStore gives a small Indian shop or service business GST-compliant
+  billing and its own online store without a developer. Create a GST invoice in seconds,
+  import an existing product list, take UPI payments, and publish a storefront or
+  landing page from templates. Built for kirana stores, boutiques, trades and local
+  service providers rather than for developers.
+- **Pricing model**: ⚠️ **OPERATOR: confirm live plans and prices before posting.** The
+  ₹249/mo Pro and ₹499/mo Pro+ tiers in `mystore/SERVICE-PROVIDER-PLAN.md` are a
+  proposal doc for the service-provider wedge, not confirmed live pricing — don't
+  publish them to a directory until checked against the live pricing page.
+- **Categories**: Accounting / Invoicing / eCommerce / Small Business
+- **Alternatives to claim**: Vyapar, myBillBook, Zoho Invoice, Khatabook, Dukaan,
+  Tally, Instamojo
+
 ## Cadence
 
-Day 1: AlternativeTo (no account barrier, biggest LLM footprint) — via Chrome.
-Day 2: SaaSHub. Day 3-5: Product Hunt (pick a Tuesday, prep maker comment).
+Day 1: AlternativeTo (no account barrier, biggest LLM footprint) — via Chrome. DONE
+2026-07-29 for WebsiteToApp.
+Day 2: SaaSHub for WebsiteToApp — copy ready above, blocked on a browser session.
+Day 3-5: Product Hunt (pick a Tuesday, prep maker comment).
 Week 2: G2 + Capterra vendor signups (operator), then profiles.
+Then: one other product per Sunday — IndexFlow first (copy ready, no blockers), then
+ModbusSimulator and OwnStore once the operator confirms their prices.
