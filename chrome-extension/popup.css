@@ -158,19 +158,85 @@ body {
 
 .check-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   font-size: 12px;
-  padding: 6px 8px;
+  padding: 7px 9px;
   background: #0f172a;
   border-radius: 6px;
 }
 
-.check-icon { flex-shrink: 0; width: 16px; height: 16px; }
+.check-item.pass { border-left: 2px solid #10b981; }
+.check-item.warn { border-left: 2px solid #eab308; }
+.check-item.fail { border-left: 2px solid #ef4444; }
+
+.check-icon { flex-shrink: 0; width: 16px; height: 16px; margin-top: 1px; }
 .check-pass { color: #10b981; }
 .check-fail { color: #ef4444; }
 .check-warn { color: #eab308; }
-.check-text { color: #cbd5e1; }
+
+.check-body { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.check-text { color: #e2e8f0; font-weight: 600; }
+.check-detail { color: #94a3b8; font-size: 11px; line-height: 1.4; }
+
+/* Header extras */
+.tagline { font-size: 11px; color: #94a3b8; display: block; }
+.header h1 { line-height: 1.2; }
+
+/* Notice */
+.notice {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: 8px;
+  color: #fde68a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* App details */
+.app-details { margin-top: 12px; display: flex; flex-direction: column; gap: 3px; }
+.app-details:empty { display: none; }
+
+.app-details .label {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 9px;
+  background: #0f172a;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.detail-row .dk { color: #94a3b8; flex-shrink: 0; }
+.detail-row .dv { color: #e2e8f0; text-align: right; word-break: break-all; }
+
+/* Ghost button */
+.btn-ghost {
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px 12px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost:hover { background: #1e293b; border-color: #3b82f6; color: #60a5fa; }
 
 .footer {
   display: flex;

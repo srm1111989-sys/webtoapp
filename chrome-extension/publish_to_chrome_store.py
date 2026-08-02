@@ -19,38 +19,48 @@ SCREENSHOT2 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "screensh
 
 CWS_URL = "https://chrome.google.com/webstore/devconsole"
 
-DESCRIPTION = """Mobile Readiness Analyzer — Check if any website is ready for app conversion.
+EDGE_PATHS = [
+    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+]
 
-This extension analyzes the current website and gives it a mobile-readiness score based on 8 technical checks. It helps developers and business owners understand how well a website would work as a mobile app.
 
-HOW IT WORKS:
-1. Browse to any website
-2. Click the WebToApp extension icon
-3. Click "Analyze for App Conversion" to get your readiness score
-4. View detailed results: viewport, HTTPS, responsive design, PWA, service worker, favicon, images
-5. If the score is good, click the link to visit WebsiteToApp.app to start the conversion process
+def edge_path():
+    for path in EDGE_PATHS:
+        if os.path.exists(path):
+            return path
+    raise SystemExit("Microsoft Edge not found - add this machine's path to EDGE_PATHS.")
 
-WHAT IT CHECKS (8-point analysis):
-- HTTPS enabled (secure connection)
-- Mobile viewport meta tag present
-- Responsive design detected
-- Favicon available (used as app icon)
-- Web App Manifest found
-- Service Worker registered (offline support)
-- Images loading correctly
-- No mixed content issues
+DESCRIPTION = """Mobile Readiness Analyzer — see how well a website would work as a mobile app.
 
-Each check shows a pass/fail indicator with a final percentage score.
+Open the site you want to check, click the extension, and it measures the page you are on. Nothing is uploaded: every result is worked out inside your own browser.
+
+WHAT IT CHECKS (12 points):
+- HTTPS — plain HTTP is blocked by default inside an Android app
+- Mobile viewport — whether width=device-width is actually set
+- Fits the screen — measures the real page width against the window and flags sideways scrolling
+- Responsive CSS — counts the width-based media queries the page's own stylesheets use
+- Readable text size — the computed body font size
+- App icon — the largest icon declared, from apple-touch-icon or the web app manifest
+- Web app manifest — read and parsed for the app name, short name, display mode and start URL
+- Service worker — whether one is registered for offline support
+- Theme colour — used for the status bar in the app
+- Mixed content — lists resources still loaded over plain HTTP that would be blocked
+- Images — how many failed to load
+- Language attribute
+
+Every check shows a pass, warning or problem with a short explanation of why it matters, and the score reflects all of them. A summary panel shows the app name, short name, display mode, start URL, largest icon and theme colour an app would pick up from the site. "Copy report" puts the whole result on your clipboard.
 
 USEFUL FOR:
 - Web developers checking mobile readiness before app conversion
-- Business owners evaluating if their website is app-ready
+- Business owners evaluating whether their website is app-ready
 - Freelancers assessing client websites for mobile app projects
 - QA testers validating mobile compatibility
 
-The extension only reads the current page's HTML to perform analysis. No data is collected or transmitted. Results are displayed locally in the popup.
+The extension reads only the tab you are on, and only when you click it. It requests no host permissions and stores nothing.
 
-Visit https://websitetoapp.app for website to app conversion service."""
+Visit https://websitetoapp.app to turn a website into an Android app."""
 
 PRIVACY_POLICY = "https://websitetoapp.app/privacy-policy"
 
@@ -61,7 +71,7 @@ async def run():
     async with async_playwright() as p:
         browser = await p.chromium.launch_persistent_context(
             PROFILE_DIR,
-            executable_path="/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+            executable_path=edge_path(),
             headless=False,
             viewport={"width": 1400, "height": 900},
             slow_mo=80,
@@ -313,7 +323,12 @@ async def run():
         # Single purpose description (required by Chrome Web Store)
         purpose_field = page.locator('textarea[aria-label*="single purpose"], textarea[name*="justification"]').first
         if await purpose_field.is_visible(timeout=2000):
-            await purpose_field.fill("This extension converts the current website into an Android app by opening WebsiteToApp.app with the current URL pre-filled.")
+            await purpose_field.fill(
+                "This extension analyses the page in the active tab for mobile app readiness "
+                "(viewport, responsive CSS, icons, web app manifest, service worker, mixed content) "
+                "and shows the result in its popup. It uses activeTab and scripting only, requests no "
+                "host permissions, and sends no data anywhere."
+            )
             print("  Single purpose justification filled")
 
         await page.wait_for_timeout(2000)

@@ -10,26 +10,32 @@
   <div class="container">
     <div class="header">
       <img src="icons/icon48.png" alt="WebToApp" class="logo">
-      <h1>Website to App</h1>
+      <div>
+        <h1>Website to App</h1>
+        <span class="tagline">Mobile readiness check</span>
+      </div>
     </div>
 
     <div class="current-site" id="currentSite">
       <span class="label">Current website</span>
-      <span class="url" id="siteUrl">Loading...</span>
+      <span class="url" id="siteUrl">Loading&hellip;</span>
     </div>
 
     <button class="btn-primary" id="analyzeBtn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
-      Analyze for App Conversion
+      Analyze this website
     </button>
 
     <!-- Loading -->
     <div id="loading" class="loading hidden">
       <div class="spinner"></div>
-      <span>Analyzing website...</span>
+      <span>Checking the page&hellip;</span>
     </div>
+
+    <!-- Error / blocked -->
+    <div id="blocked" class="notice hidden"></div>
 
     <!-- Analysis Results -->
     <div id="analysisResults" class="analysis hidden">
@@ -38,12 +44,14 @@
           <span id="scoreValue">--</span>
         </div>
         <div class="score-text">
-          <span class="score-label" id="scoreLabel">App Readiness Score</span>
-          <span class="score-desc" id="scoreDesc">Analyzing...</span>
+          <span class="score-label" id="scoreLabel">App readiness</span>
+          <span class="score-desc" id="scoreDesc">Analyzing&hellip;</span>
         </div>
       </div>
 
       <div class="checks" id="checksList"></div>
+
+      <div id="appDetails" class="app-details"></div>
     </div>
 
     <!-- Convert button (shown after analysis) -->
@@ -52,11 +60,13 @@
         <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
         <line x1="12" y1="18" x2="12" y2="18"/>
       </svg>
-      Get Android App on WebToApp.app
+      Build an Android app from this site
     </button>
 
+    <button class="btn-ghost hidden" id="copyBtn">Copy report</button>
+
     <div class="footer">
-      <a href="https://websitetoapp.app" target="_blank">websitetoapp.app</a>
+      <a href="https://websitetoapp.app" target="_blank" rel="noopener">websitetoapp.app</a>
       <span class="separator">|</span>
       <span class="free-tag">Free plan available</span>
     </div>

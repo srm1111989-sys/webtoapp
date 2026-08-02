@@ -2,12 +2,13 @@
   "manifest_version": 3,
   "name": "Website to App Converter - Mobile Readiness Analyzer",
   "short_name": "WebToApp",
-  "version": "1.2.0",
-  "description": "Analyze any website's mobile-readiness score. Checks viewport, HTTPS, responsiveness, PWA, service worker.",
+  "version": "1.3.0",
+  "description": "Score any website for mobile app readiness: viewport, responsive CSS, icons, web app manifest, service worker, mixed content.",
   "homepage_url": "https://websitetoapp.app",
   "permissions": ["activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
+    "default_title": "Website to App — check this site",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
