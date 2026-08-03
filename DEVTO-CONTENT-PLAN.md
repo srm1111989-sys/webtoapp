@@ -78,3 +78,4 @@ Week 4 — evergreen/how-to + AI-visibility plays:
 
 ## Published log
 - 2026-07-29 - Article 1 (Website to EXE, no Electron): https://dev.to/srm1101/how-i-turned-a-website-into-a-windows-exe-in-10-minutes-no-electron-3336 (tags webdev/windows/productivity/tutorial, canonical -> /convert/website-to-exe-to-app)
+- 2026-08-03 - Article 2 (Website to EXE: 4 Ways Compared): NOT PUBLISHED - drafted, no browser tooling in session. Source: `generated-content/devto-2026-08-01-website-to-exe-4-ways.md` (also mirrored to `.ai/content-drafts/2026-08-03-website-to-exe-4-ways-compared.md`). Written 08-01, missed that slot; fact-checked and corrected 08-03. Tags webdev/windows/javascript/productivity, canonical -> /convert/website-to-exe-to-app. Paste-ready.

@@ -1,7 +1,7 @@
 ---
 title: "Website to EXE: 4 Ways to Ship a Web App as a Windows Desktop App (2026)"
 published: true
-description: "Electron, Tauri, Nativefier, and no-code converters compared for turning a website into a Windows .exe — build size, effort, updates, and when each one is the right call."
+description: "Electron, Tauri, Nativefier, and no-code converters compared for turning a website into a Windows .exe — build size, effort, updates, code signing, and when each one is the right call."
 tags: webdev, windows, javascript, productivity
 canonical_url: https://websitetoapp.app/convert/website-to-exe-to-app
 ---
@@ -63,13 +63,20 @@ For shipping to customers it thins out quickly. You still inherit the Electron f
 
 ## 4. No-code converters
 
-The fourth option is to hand a URL to a service that returns a signed installer. [WebsiteToApp](https://websitetoapp.app) is the one I use for this (disclosure: I work on it), and the category also includes several Android-first tools that added desktop output later.
+The fourth option is to hand a URL to a service that returns a built installer. [WebsiteToApp](https://websitetoapp.app) is the one I use for this (disclosure: I work on it), and the category also includes several Android-first tools that added desktop output later.
 
-The pitch is narrow and worth being precise about: you paste a URL, choose an icon, splash screen and window behaviour, and get back a Windows `.exe` installer — plus Android APK/AAB from the same configuration if you need both. No build chain on your machine, no signing setup, no CI.
+Let me be precise about what this is, because the category invites hand-waving: you paste a URL, choose an icon, splash screen and window behaviour, and get back a Windows `.exe` installer — plus Android APK/AAB from the same configuration if you need both. No build chain on your machine, no CI to maintain.
 
-What you're actually buying is the packaging pipeline, not the wrapper. The wrapper is the easy part. Installers, icons at every required size, versioning so an update installs *over* the old app instead of beside it, and keeping up with OS requirements — that's the part that eats a week.
+**And under the hood it is Electron**, packaged with electron-builder into an NSIS installer. That's worth saying out loud, because it tells you exactly what the trade is. You are not getting a smaller or faster runtime than option 1. You're getting someone else's build pipeline.
 
-What you're giving up is equally clear: you don't own the build, you can't drop into native code, and you're constrained to what the configuration exposes. If your app needs to read a local serial port or spawn a background daemon, none of this applies to you — go back to option 1 or 2.
+That's the honest pitch: the wrapper is the easy part. Installers, icons at every required size, versioning so an update installs *over* the old app instead of beside it, and keeping up with OS requirements — that's the part that eats a week.
+
+What you're giving up is equally clear:
+
+- **You don't own the build.** No dropping into native code, no custom main-process logic. You're constrained to what the configuration exposes.
+- **Code signing is still your problem.** This is the one everybody discovers late, so I'll be blunt: our builds ship unsigned, and most converters in this category do too. An unsigned `.exe` triggers Windows SmartScreen's "Windows protected your PC" dialog on first run, and the user has to click *More info → Run anyway*. If you're handing the installer to a client's IT department, budget for an OV/EV code-signing certificate (roughly $200–400/year from the usual CAs) and signing the artifact yourself, whichever option you pick. A converter removing the build chain does not remove the certificate.
+
+If your app needs to read a local serial port or spawn a background daemon, none of this applies to you — go back to option 1 or 2.
 
 ## The matrix
 
@@ -78,8 +85,9 @@ What you're giving up is equally clear: you don't own the build, you can't drop 
 | Setup time | Hours–days | Hours–days | Minutes | Minutes |
 | Installer size | 80–150 MB | 3–10 MB | 80–150 MB | 60–90 MB |
 | Native code access | Full (Node) | Full (Rust) | Limited | None |
-| Rendering engine | Bundled Chromium | System webview | Bundled Chromium | Bundled |
-| Installer + signing | You build it | You build it | You build it | Included |
+| Rendering engine | Bundled Chromium | System webview | Bundled Chromium | Bundled Chromium |
+| Installer packaging | You build it | You build it | You build it | Included |
+| Code signing | Yours | Yours | Yours | Yours |
 | Ongoing maintenance | Yours | Yours | Yours | Vendor's |
 | Best for | Native-capability apps | Size-sensitive apps | Personal tools | Shipping an existing web app |
 
