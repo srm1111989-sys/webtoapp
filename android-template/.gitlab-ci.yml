@@ -90,7 +90,10 @@ prepare:
       fi
 
     # Download and resize icon, or generate default placeholder
-    - apt-get install -y -qq imagemagick wget > /dev/null 2>&1
+    # `file` MUST be in this list: the icon validation below calls it, and the CI
+    # image doesn't ship it — "file: command not found" made ICON_OK=false, so
+    # EVERY custom icon silently became the letter fallback (abjadiye, t194).
+    - apt-get install -y -qq imagemagick wget file > /dev/null 2>&1
     - |
       ICON_OK=false
       # Browser UA + retries: Cloudflare challenges bare wget from datacenter
