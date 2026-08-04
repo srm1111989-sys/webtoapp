@@ -180,6 +180,46 @@ Common issues:
 * "Server key not visible" — the legacy API is disabled; enable it via the three-dot menu as above.
 * Notifications not arriving — check the package name matches and the device has notification permission (Android 13+ prompts at first app launch).
 
+### Per-device targeted push (FCM token via the JS Bridge)
+
+Push is NOT limited to broadcast campaigns. With the **JS Bridge** feature enabled (plus Push Notifications and your own `google-services.json`), your web page can read the device's own FCM registration token and store it on your server, then send fully targeted per-device or per-user pushes from your backend or the Firebase console — with your own Firebase credentials.
+
+* Function: `window.WebToApp.getFCMToken('yourCallbackName')` — **manual trigger**, it does not fire automatically; call it whenever your page loads or after your user logs in.
+* The token arrives **asynchronously** in your named global callback: `window.yourCallbackName = function (token, error) { ... }`. On success `error` is an empty string; if Firebase isn't configured for the app you get `"firebase_not_available"`.
+* Integration example:
+
+```html
+<script>
+  window.onFcmToken = function (token, error) {
+    if (token) {
+      // send the token to your server along with the signed-in user id
+      fetch('/api/save-push-token', { method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ token: token }) });
+    }
+  };
+  if (window.WebToApp && window.WebToApp.getFCMToken) {
+    window.WebToApp.getFCMToken('onFcmToken');
+  }
+</script>
+```
+
+* Tokens can rotate (app reinstall, data clear) — call `getFCMToken` on every app launch and upsert server-side.
+
+## JavaScript Bridge API reference (window.WebToApp)
+
+Available in apps built with the **JS Bridge** feature enabled. All functions live on `window.WebToApp` (check for its existence first — it is absent when the site is opened in a normal browser):
+
+* `showToast(message)` — native Android toast.
+* `vibrate(durationMs)` — vibrate the device.
+* `shareText(title, text)` — open the native share sheet.
+* `openExternalUrl(url)` — open a link in the system browser.
+* `setItem(key, value)` / `getItem(key)` / `removeItem(key)` — native key-value storage that survives WebView data clears.
+* `getDeviceInfo()` — returns a JSON string with device model, Android version and app version.
+* `scanQR()` — open the built-in QR/barcode scanner (needs the QR Scanner feature).
+* `googleSignIn(callbackName)` — native Google account chooser; the callback receives `(idToken, error)`; feed the idToken to Firebase Auth's signInWithCredential on your page.
+* `getFCMToken(callbackName)` — per-device push token, see the section above.
+* `showRewardedAd(callbackName)` / `isRewardedReady()` / `showInterstitial()` — AdMob ads (needs the AdMob feature + ad unit IDs); the rewarded callback receives `(rewarded, reason)`.
+
 ## Splash Screen configuration
 
 * Upload the splash image in step 2 (Visuals) of the wizard. Any common image format works (PNG/JPG/WebP) — it is converted automatically.

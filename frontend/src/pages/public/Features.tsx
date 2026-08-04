@@ -223,7 +223,7 @@ const allFeatures = [
   {
     icon: Code,
     title: 'JavaScript Bridge',
-    desc: 'Communicate between your website and native app features. Show rewarded/interstitial ads, access device info, share content, trigger vibration, and more.',
+    desc: 'Communicate between your website and native app features. Get the device\'s FCM push token for per-device targeted notifications, show rewarded/interstitial ads, native Google sign-in, access device info, share content, trigger vibration, and more.',
     category: 'Advanced',
   },
   {
