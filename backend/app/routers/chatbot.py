@@ -406,12 +406,17 @@ async def chat_endpoint(
                 else:
                     result = f"Error: Unknown tool '{name}'"
 
-                # Send response back to Gemini
+                # Send response back to Gemini. google-generativeai 0.7.x has no
+                # genai.types.Part — that attribute error 500'd EVERY function-call
+                # turn (any question about the user's own apps/builds) with
+                # "AI assistant temporarily unavailable" (found via arizk31, t194).
                 response = chat.send_message(
-                    genai.types.Part.from_function_response(
-                        name=name,
-                        response={"result": result}
-                    )
+                    genai.protos.Content(parts=[genai.protos.Part(
+                        function_response=genai.protos.FunctionResponse(
+                            name=name,
+                            response={"result": result},
+                        )
+                    )])
                 )
             else:
                 break
