@@ -93,14 +93,19 @@ prepare:
     - apt-get install -y -qq imagemagick wget > /dev/null 2>&1
     - |
       ICON_OK=false
+      # Browser UA + retries: Cloudflare challenges bare wget from datacenter
+      # runner IPs, silently replacing every custom icon with the letter
+      # fallback (abjadiye/arizk31 build 4c04abe7, 2026-08-03).
+      ICON_UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
       if [ -n "$ICON_URL" ]; then
-        wget -q --timeout=10 "$ICON_URL" -O /tmp/icon_raw 2>/dev/null && [ -s /tmp/icon_raw ] && ICON_OK=true
+        wget --timeout=15 --tries=3 --user-agent="$ICON_UA" "$ICON_URL" -O /tmp/icon_raw 2>/tmp/icon_err && [ -s /tmp/icon_raw ] && ICON_OK=true
         if [ "$ICON_OK" = "true" ]; then
           # Validate it's actually an image
           file /tmp/icon_raw | grep -qi "image" && cp /tmp/icon_raw /tmp/icon.png || ICON_OK=false
         fi
         if [ "$ICON_OK" = "false" ]; then
-          echo "WARNING: Icon URL invalid or unreachable ($ICON_URL) â€” using default icon"
+          echo "WARNING: Icon URL invalid or unreachable ($ICON_URL) — using default icon"
+          echo "icon fetch detail: $(tail -3 /tmp/icon_err 2>/dev/null | tr '\n' ' '); got: $(file /tmp/icon_raw 2>/dev/null)"
           rm -f /tmp/icon_raw
         fi
       fi
@@ -123,7 +128,7 @@ prepare:
     # Download splash screen if provided (convert to PNG for AAPT compatibility)
     - |
       if [ -n "$SPLASH_URL" ]; then
-        wget -q "$SPLASH_URL" -O /tmp/splash_raw || true
+        wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "$SPLASH_URL" -O /tmp/splash_raw || true
         if [ -s /tmp/splash_raw ]; then
           convert /tmp/splash_raw PNG:app/src/main/res/drawable/splash_image.png 2>/dev/null || true
           rm -f /tmp/splash_raw

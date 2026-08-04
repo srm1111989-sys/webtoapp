@@ -137,9 +137,20 @@ jobs:
       - name: Process icon
         run: |
           sudo apt-get install -y -qq imagemagick
+          # Browser UA + retries: Cloudflare challenges bare wget from datacenter
+          # runner IPs (icon silently replaced by letter fallback on GitLab; here a
+          # bare failure would kill the whole build). Fall back to the letter icon
+          # instead of failing, and say why.
+          ICON_UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+          ICON_OK=false
           if [ -n "${{ inputs.ICON_URL }}" ]; then
-            wget -q "${{ inputs.ICON_URL }}" -O /tmp/icon.png
-          else
+            wget --timeout=15 --tries=3 --user-agent="$ICON_UA" "${{ inputs.ICON_URL }}" -O /tmp/icon.png 2>/tmp/icon_err && [ -s /tmp/icon.png ] && file /tmp/icon.png | grep -qi image && ICON_OK=true
+            if [ "$ICON_OK" = "false" ]; then
+              echo "WARNING: Icon URL invalid or unreachable (${{ inputs.ICON_URL }}) — using default icon"
+              echo "icon fetch detail: $(tail -3 /tmp/icon_err 2>/dev/null | tr '\n' ' '); got: $(file /tmp/icon.png 2>/dev/null)"
+            fi
+          fi
+          if [ "$ICON_OK" = "false" ]; then
             convert -size 512x512 xc:"${{ inputs.PRIMARY_COLOR }}" -fill white -gravity center -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
           fi
           for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
@@ -153,7 +164,7 @@ jobs:
       - name: Process splash screen
         if: inputs.SPLASH_URL != ''
         run: |
-          wget -q "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
+          wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
           if [ -s /tmp/splash_raw ]; then
             convert '/tmp/splash_raw[0]' PNG:app/src/main/res/drawable/splash_image.png || true
           fi
