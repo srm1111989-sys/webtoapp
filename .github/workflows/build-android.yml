@@ -136,7 +136,7 @@ jobs:
         run: |
           sudo apt-get install -y -qq imagemagick
           if [ -n "${{ inputs.ICON_URL }}" ]; then
-            wget -q "${{ inputs.ICON_URL }}" -O /tmp/icon.png
+            wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "${{ inputs.ICON_URL }}" -O /tmp/icon.png || convert -size 512x512 xc:"${{ inputs.PRIMARY_COLOR }}" -fill white -gravity center -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
           else
             convert -size 512x512 xc:"${{ inputs.PRIMARY_COLOR }}" -fill white -gravity center -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
           fi
@@ -168,7 +168,7 @@ jobs:
       - name: Process splash screen
         if: inputs.SPLASH_URL != ''
         run: |
-          wget -q "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
+          wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
           if [ -s /tmp/splash_raw ]; then
             convert '/tmp/splash_raw[0]' -resize "1440x2560>" PNG:app/src/main/res/drawable/splash_image.png || true
           fi
