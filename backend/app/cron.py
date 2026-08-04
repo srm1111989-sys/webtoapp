@@ -180,6 +180,14 @@ async def sync_active_builds():
                         _quota_cache["gitlab"] = (False, time.monotonic())  # skip GitLab in next selection
                         v = dict(build.variables or {})
                         v["_quota_retried"] = True
+                        # The quota cache alone is UNRELIABLE for the requeue: its TTL /
+                        # a has_quota re-check can re-elect gitlab and the retry dies
+                        # terminally (build 1835f6bf, 2026-08-01). _failed_providers is
+                        # what process_pending_build durably excludes — use it, exactly
+                        # like the github artifact-quota reroute does.
+                        failed = set(v.get("_failed_providers", []))
+                        failed.add("gitlab")
+                        v["_failed_providers"] = sorted(failed)
                         v.pop("_build_provider", None)
                         build.variables = v
                         build.status = "pending"
