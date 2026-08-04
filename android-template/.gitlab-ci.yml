@@ -1,5 +1,15 @@
 ﻿image: jangrewe/gitlab-ci-android
 
+# Real builds are ONLY started by the backend via the pipeline-trigger API with
+# a full variable set. Bare pushes to this repo (template syncs) used to start a
+# variable-less pipeline that always failed (empty PACKAGE_NAME -> applicationId
+# "" -> manifest merger error) — pure red noise in the pipeline list.
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - when: always
+
 stages:
   - prepare
   - build
