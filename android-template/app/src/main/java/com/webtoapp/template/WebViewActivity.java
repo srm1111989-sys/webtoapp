@@ -58,6 +58,22 @@ public class WebViewActivity extends AppCompatActivity {
     private JSONObject config;
     private JSONObject features;
     private String appUrl;
+    private boolean offlineModeEnabled = false;
+
+    /** Cache-first ONLY without connectivity; online users always get live data. */
+    private void applyOfflineCacheMode(android.webkit.WebSettings settings) {
+        try {
+            android.net.ConnectivityManager cm =
+                (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
+            boolean online = ni != null && ni.isConnected();
+            settings.setCacheMode(online
+                ? android.webkit.WebSettings.LOAD_DEFAULT
+                : android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        } catch (Throwable t) {
+            settings.setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT);
+        }
+    }
     private String appHost;
     private String appBaseDomain;
 
@@ -525,9 +541,14 @@ public class WebViewActivity extends AppCompatActivity {
             }
         }
 
-        // Offline mode
-        if (features.optBoolean("offline_mode", false)) {
-            settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        // Offline mode (fixed 2026-08-05, rahatna report): LOAD_CACHE_ELSE_NETWORK
+        // unconditionally served CACHED responses even when online — dynamic sites
+        // showed stale/empty data (orders lists frozen at their first-ever fetch)
+        // with no error, while the same site worked in any normal browser.
+        // Cache-first is only correct when there is genuinely no connectivity.
+        offlineModeEnabled = features.optBoolean("offline_mode", false);
+        if (offlineModeEnabled) {
+            applyOfflineCacheMode(settings);
         }
 
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
@@ -557,6 +578,7 @@ public class WebViewActivity extends AppCompatActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                if (offlineModeEnabled) applyOfflineCacheMode(view.getSettings());
                 progressBar.setVisibility(View.VISIBLE);
             }
 
