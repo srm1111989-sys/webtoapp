@@ -463,7 +463,15 @@ public class WebViewActivity extends AppCompatActivity {
             startActivity(intent);
         } catch (Exception e) {
             intent.setPackage(null);
-            startActivity(intent);
+            try {
+                startActivity(intent);
+            } catch (Throwable t) {
+                // No browser at all (some review devices) — last resort: show
+                // the page in the WebView instead of crashing.
+                if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                    webView.loadUrl(url);
+                }
+            }
         }
     }
 
@@ -584,9 +592,21 @@ public class WebViewActivity extends AppCompatActivity {
                 if (isAuthHost(host)) {
                     return false; // Load in WebView
                 }
-                // External links open in browser
-                Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
-                startActivity(intent);
+                // External links open in browser — GUARDED (2026-08-05, Saad
+                // Shopping "Update" nav crash): startActivity throws when no
+                // activity resolves the URL (stripped review devices, odd
+                // schemes), and an uncaught throw here kills the whole app.
+                // A link must never be able to crash the app: fall back to
+                // loading http(s) URLs inside the WebView, ignore the rest.
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+                    startActivity(intent);
+                } catch (Throwable t) {
+                    String scheme = request.getUrl().getScheme();
+                    if ("http".equals(scheme) || "https".equals(scheme)) {
+                        view.loadUrl(request.getUrl().toString());
+                    }
+                }
                 return true;
             }
 
