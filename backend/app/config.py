@@ -56,9 +56,9 @@ class Settings(BaseSettings):
     paypal_api_key: str = ""
     paypal_secret: str = ""
 
-    # PayPal (sandbox/test)
-    paypal_test_client_id: str = ""
-    paypal_test_client_secret: str = ""
+    # PayPal (sandbox/test) — Doppler names: PAYPAL_TEST_KEY / PAYPAL_TEST_SECRET
+    paypal_test_key: str = ""
+    paypal_test_secret: str = ""
 
     # GitLab
     gitlab_url: str = "https://gitlab.com"

@@ -111,8 +111,8 @@ _PAYPAL_ZERO_DECIMAL = {"JPY", "TWD", "HUF"}
 
 def _get_paypal_credentials(test_mode: bool) -> tuple[str, str, str]:
     """Return (client_id, client_secret, api_base) for PayPal based on mode."""
-    if test_mode and settings.paypal_test_client_id and settings.paypal_test_client_secret:
-        return settings.paypal_test_client_id, settings.paypal_test_client_secret, PAYPAL_SANDBOX_BASE
+    if test_mode and settings.paypal_test_key and settings.paypal_test_secret:
+        return settings.paypal_test_key, settings.paypal_test_secret, PAYPAL_SANDBOX_BASE
     return settings.paypal_api_key, settings.paypal_secret, PAYPAL_LIVE_BASE
 
 
