@@ -26,9 +26,14 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
+    <!-- Security hardening (2026-08-05, Ostorlab scan report from a customer):
+         allowBackup=false keeps app data (cookies/sessions) out of device
+         backups; taskAffinity="" pins every activity to its own task, closing
+         the StrandHogg/task-hijacking vector scanners flag. -->
     <application
         android:enableOnBackInvokedCallback="false"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:taskAffinity=""
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
