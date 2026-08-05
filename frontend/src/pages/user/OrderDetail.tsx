@@ -184,6 +184,25 @@ export default function OrderDetail() {
     rzp.open()
   }
 
+  // PayPal redirect flow: create the PayPal order server-side, send the user
+  // to the approval page; PaymentSuccess captures it on return.
+  const handlePayPal = async () => {
+    if (!order) return
+    setIsPaying(true)
+    try {
+      const res = await paymentsApi.createPayPal(order.id)
+      sessionStorage.setItem('pending_conversion', JSON.stringify({
+        value: order.amount / 100,
+        currency: order.currency,
+        orderId: order.id,
+      }))
+      window.location.href = res.data.approval_url
+    } catch (e: any) {
+      toast.error(e?.response?.data?.detail ?? 'PayPal payment initialization failed. Please try again.')
+      setIsPaying(false)
+    }
+  }
+
   const handlePay = async () => {
     if (!order) return
     setIsPaying(true)
@@ -321,14 +340,26 @@ export default function OrderDetail() {
             Build Status
           </h2>
           {order.status === 'pending' && order.amount > 0 && (
-            <Button onClick={handlePay} disabled={isPaying}>
-              {isPaying ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <CreditCard className="w-4 h-4" />
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button onClick={handlePay} disabled={isPaying}>
+                {isPaying ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <CreditCard className="w-4 h-4" />
+                )}
+                Pay Now
+              </Button>
+              {paymentMode?.gateways?.paypal && (
+                <Button variant="secondary" onClick={handlePayPal} disabled={isPaying}>
+                  {isPaying ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <CreditCard className="w-4 h-4" />
+                  )}
+                  Pay with PayPal
+                </Button>
               )}
-              Pay Now
-            </Button>
+            </div>
           )}
           {order.status === 'paid' && (
             <div className="flex items-center gap-2">

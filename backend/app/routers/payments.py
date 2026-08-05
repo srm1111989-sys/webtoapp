@@ -14,6 +14,7 @@ from app.models.setting import Setting
 from app.schemas.payment import (
     RazorpayVerifyRequest, RazorpayOrderResponse, StripeCheckoutRequest,
     StripeCheckoutResponse, TestPaymentRequest, PaymentResponse,
+    PayPalCreateRequest, PayPalCreateResponse, PayPalCaptureRequest,
 )
 from app.schemas.auth import MessageResponse
 from app.dependencies import get_current_user
@@ -101,6 +102,39 @@ def _get_stripe_credentials(test_mode: bool) -> tuple[str, str]:
     return settings.stripe_publishable_key, settings.stripe_secret_key
 
 
+# ── PayPal (Orders API v2, redirect/approve flow — no JS SDK needed) ──
+PAYPAL_LIVE_BASE = "https://api-m.paypal.com"
+PAYPAL_SANDBOX_BASE = "https://api-m.sandbox.paypal.com"
+# Currencies PayPal treats as zero-decimal (no minor units in `value`).
+_PAYPAL_ZERO_DECIMAL = {"JPY", "TWD", "HUF"}
+
+
+def _get_paypal_credentials(test_mode: bool) -> tuple[str, str, str]:
+    """Return (client_id, client_secret, api_base) for PayPal based on mode."""
+    if test_mode and settings.paypal_test_client_id and settings.paypal_test_client_secret:
+        return settings.paypal_test_client_id, settings.paypal_test_client_secret, PAYPAL_SANDBOX_BASE
+    return settings.paypal_client_id, settings.paypal_client_secret, PAYPAL_LIVE_BASE
+
+
+def _paypal_value(amount_minor: int, currency: str) -> str:
+    """Convert our minor-unit amount to PayPal's decimal string."""
+    if currency.upper() in _PAYPAL_ZERO_DECIMAL:
+        return str(amount_minor)
+    return f"{amount_minor / 100:.2f}"
+
+
+async def _paypal_token(client, api_base: str, client_id: str, client_secret: str) -> str:
+    resp = await client.post(
+        f"{api_base}/v1/oauth2/token",
+        auth=(client_id, client_secret),
+        data={"grant_type": "client_credentials"},
+    )
+    if resp.status_code != 200:
+        logger.error(f"PayPal oauth failed: {resp.status_code} {resp.text[:300]}")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="PayPal authentication failed")
+    return resp.json()["access_token"]
+
+
 @router.get("/mode")
 async def get_payment_mode(
     user: User = Depends(get_current_user),
@@ -112,8 +146,11 @@ async def get_payment_mode(
     rp_key, rp_secret = _get_razorpay_credentials(test_mode)
     _, stripe_secret = _get_stripe_credentials(test_mode)
 
+    pp_id, pp_secret, _ = _get_paypal_credentials(test_mode)
+
     razorpay_configured = bool(rp_key and rp_secret)
     stripe_configured = bool(stripe_secret)
+    paypal_configured = bool(pp_id and pp_secret)
 
     return {
         "test_mode": test_mode,
@@ -121,6 +158,7 @@ async def get_payment_mode(
         "gateways": {
             "razorpay": razorpay_configured,
             "stripe": stripe_configured,
+            "paypal": paypal_configured,
         },
     }
 
@@ -310,6 +348,215 @@ async def create_stripe_checkout(
     gateway_label = "stripe_test" if test_mode else "stripe"
     order.payment_gateway = gateway_label
     return StripeCheckoutResponse(checkout_url=session.url, session_id=session.id)
+
+
+@router.post("/paypal/create", response_model=PayPalCreateResponse)
+@limiter.limit("10/minute")
+async def create_paypal_order(
+    request: Request,
+    data: PayPalCreateRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Order).where(Order.id == data.order_id, Order.user_id == user.id, Order.status == "pending")
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found or already paid")
+
+    test_mode = await _is_test_mode(db, user)
+    pp_id, pp_secret, api_base = _get_paypal_credentials(test_mode)
+    if not pp_id or not pp_secret:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="PayPal not configured")
+
+    import httpx
+    async with httpx.AsyncClient(timeout=30) as client:
+        token = await _paypal_token(client, api_base, pp_id, pp_secret)
+        resp = await client.post(
+            f"{api_base}/v2/checkout/orders",
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            json={
+                "intent": "CAPTURE",
+                "purchase_units": [{
+                    "reference_id": str(order.id),
+                    "custom_id": str(order.id),
+                    "invoice_id": order.order_number,
+                    "description": f"WebToApp Order {order.order_number}",
+                    "amount": {
+                        "currency_code": order.currency.upper(),
+                        "value": _paypal_value(order.amount, order.currency),
+                    },
+                }],
+                "payment_source": {
+                    "paypal": {
+                        "experience_context": {
+                            "brand_name": "WebToApp",
+                            "user_action": "PAY_NOW",
+                            "shipping_preference": "NO_SHIPPING",
+                            "return_url": f"{settings.app_url}/payment/success?order_id={order.id}&gateway=paypal",
+                            "cancel_url": f"{settings.app_url}/payment/cancel?order_id={order.id}",
+                        }
+                    }
+                },
+            },
+        )
+    if resp.status_code not in (200, 201):
+        logger.error(f"PayPal create order failed for {order.id}: {resp.status_code} {resp.text[:500]}")
+        detail = "PayPal could not create the payment"
+        try:
+            issue = resp.json().get("details", [{}])[0]
+            if issue.get("issue") == "CURRENCY_NOT_SUPPORTED":
+                detail = f"PayPal does not support {order.currency.upper()} payments — please choose another payment method"
+        except Exception:
+            pass
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=detail)
+
+    pp_order = resp.json()
+    approval_url = next(
+        (l["href"] for l in pp_order.get("links", []) if l.get("rel") in ("approve", "payer-action")),
+        None,
+    )
+    if not approval_url:
+        logger.error(f"PayPal order {pp_order.get('id')} has no approval link: {pp_order}")
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="PayPal did not return an approval link")
+
+    order.gateway_order_id = pp_order["id"]
+    order.payment_gateway = "paypal_test" if test_mode else "paypal"
+
+    return PayPalCreateResponse(
+        approval_url=approval_url,
+        paypal_order_id=pp_order["id"],
+        order_id=order.id,
+    )
+
+
+@router.post("/paypal/capture", response_model=MessageResponse)
+@limiter.limit("10/minute")
+async def capture_paypal_payment(
+    request: Request,
+    data: PayPalCaptureRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Order).where(Order.id == data.order_id, Order.user_id == user.id)
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+
+    # Idempotency: the return page can be reloaded — a paid order is a success.
+    if order.status == "paid":
+        return {"message": "Payment already verified. Build has been triggered."}
+
+    if order.gateway_order_id and order.gateway_order_id != data.paypal_order_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PayPal order mismatch")
+
+    test_mode = await _is_test_mode(db, user)
+    pp_id, pp_secret, api_base = _get_paypal_credentials(test_mode)
+    if not pp_id or not pp_secret:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="PayPal not configured")
+
+    import httpx
+    async with httpx.AsyncClient(timeout=30) as client:
+        token = await _paypal_token(client, api_base, pp_id, pp_secret)
+        resp = await client.post(
+            f"{api_base}/v2/checkout/orders/{data.paypal_order_id}/capture",
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+        )
+        # ORDER_ALREADY_CAPTURED (double-submit / reload) → read the order instead.
+        if resp.status_code == 422 and "ALREADY_CAPTURED" in resp.text:
+            resp = await client.get(
+                f"{api_base}/v2/checkout/orders/{data.paypal_order_id}",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+
+    if resp.status_code not in (200, 201):
+        logger.error(f"PayPal capture failed for {order.id}: {resp.status_code} {resp.text[:500]}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PayPal payment was not completed")
+
+    pp_data = resp.json()
+    if pp_data.get("status") != "COMPLETED":
+        logger.error(f"PayPal order {data.paypal_order_id} status={pp_data.get('status')} for order {order.id}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PayPal payment was not completed")
+
+    # Verify the captured amount matches what we charged for this order.
+    try:
+        pu = pp_data["purchase_units"][0]
+        capture = pu["payments"]["captures"][0]
+        cap_amount = capture["amount"]
+        expected_value = _paypal_value(order.amount, order.currency)
+        if (cap_amount["currency_code"].upper() != order.currency.upper()
+                or cap_amount["value"] != expected_value):
+            logger.error(
+                f"PayPal amount mismatch for order {order.id}: got {cap_amount}, expected {expected_value} {order.currency}"
+            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PayPal payment amount mismatch")
+        capture_id = capture["id"]
+    except (KeyError, IndexError):
+        logger.error(f"PayPal capture payload missing capture details for order {order.id}: {pp_data}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PayPal payment could not be verified")
+
+    gateway_label = "paypal_test" if test_mode else "paypal"
+    payment = Payment(
+        order_id=order.id,
+        gateway=gateway_label,
+        gateway_payment_id=capture_id,
+        amount=order.amount,
+        currency=order.currency,
+        status="captured",
+        raw_response=pp_data,
+    )
+    db.add(payment)
+
+    order.status = "paid"
+    order.gateway_payment_id = capture_id
+    order.payment_gateway = gateway_label
+    if not order.gateway_order_id:
+        order.gateway_order_id = data.paypal_order_id
+
+    ac_res = await db.execute(select(AppConfig).where(AppConfig.id == order.app_config_id))
+    ac = ac_res.scalar_one_or_none()
+    if ac and ac.status == "draft":
+        ac.status = "active"
+
+    # Persist the paid status BEFORE attempting the build — a build-trigger
+    # failure must never roll back or 500 a captured payment (same contract
+    # as the Razorpay verify path).
+    await db.commit()
+
+    from app.services.referrals import grant_reward_for_paid_order
+    await grant_reward_for_paid_order(db, order)
+
+    try:
+        await trigger_build(order.id, db)
+        await db.commit()
+    except Exception as e:
+        logger.error(f"Payment recorded but build trigger failed for order {order.id}: {e}")
+
+    app_name = order.app_config.name if order.app_config else "App"
+    plan_name = order.plan.name if order.plan else "Plan"
+    send_order_confirmation_email(
+        to=user.email,
+        order_number=order.order_number,
+        app_name=app_name,
+        plan_name=plan_name,
+        amount=order.amount,
+        currency=order.currency,
+        order_id=str(order.id),
+    )
+    send_admin_payment_notification(
+        order_number=order.order_number,
+        customer_email=user.email,
+        app_name=app_name,
+        plan_name=plan_name,
+        amount=order.amount,
+        currency=order.currency,
+        order_id=str(order.id),
+    )
+
+    return {"message": "Payment verified successfully. Build has been triggered."}
 
 
 @router.post("/test", response_model=MessageResponse)

@@ -46,11 +46,22 @@ export const paymentsApi = {
   createStripeCheckout: (orderId: string) =>
     client.post<{ checkout_url: string; session_id: string }>('/api/payments/stripe/checkout', { order_id: orderId }),
 
+  createPayPal: (orderId: string) =>
+    client.post<{ approval_url: string; paypal_order_id: string; order_id: string }>(
+      '/api/payments/paypal/create', { order_id: orderId }
+    ),
+
+  capturePayPal: (orderId: string, paypalOrderId: string) =>
+    client.post<{ message: string }>('/api/payments/paypal/capture', {
+      order_id: orderId,
+      paypal_order_id: paypalOrderId,
+    }),
+
   testPayment: (orderId: string) =>
     client.post<{ message: string }>('/api/payments/test', { order_id: orderId }),
 
   getPaymentMode: () =>
-    client.get<{ test_mode: boolean; environment: string; gateways: { razorpay: boolean; stripe: boolean } }>('/api/payments/mode'),
+    client.get<{ test_mode: boolean; environment: string; gateways: { razorpay: boolean; stripe: boolean; paypal?: boolean } }>('/api/payments/mode'),
 }
 
 export const plansApi = {

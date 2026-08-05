@@ -42,3 +42,18 @@ class RazorpayOrderResponse(BaseModel):
 class StripeCheckoutResponse(BaseModel):
     checkout_url: str
     session_id: str
+
+
+class PayPalCreateRequest(BaseModel):
+    order_id: uuid.UUID
+
+
+class PayPalCreateResponse(BaseModel):
+    approval_url: str
+    paypal_order_id: str
+    order_id: uuid.UUID
+
+
+class PayPalCaptureRequest(BaseModel):
+    order_id: uuid.UUID
+    paypal_order_id: str

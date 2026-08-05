@@ -50,6 +50,14 @@ class Settings(BaseSettings):
     stripe_test_publishable_key: str = ""
     stripe_test_secret_key: str = ""
 
+    # PayPal (live) — REST client credentials from developer.paypal.com
+    paypal_client_id: str = ""
+    paypal_client_secret: str = ""
+
+    # PayPal (sandbox/test)
+    paypal_test_client_id: str = ""
+    paypal_test_client_secret: str = ""
+
     # GitLab
     gitlab_url: str = "https://gitlab.com"
     gitlab_token: str = ""
