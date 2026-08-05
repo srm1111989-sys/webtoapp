@@ -50,9 +50,11 @@ class Settings(BaseSettings):
     stripe_test_publishable_key: str = ""
     stripe_test_secret_key: str = ""
 
-    # PayPal (live) — REST client credentials from developer.paypal.com
-    paypal_client_id: str = ""
-    paypal_client_secret: str = ""
+    # PayPal (live) — REST client credentials from developer.paypal.com.
+    # Doppler stores these as PAYPAL_API_KEY (client id) / PAYPAL_SECRET
+    # (client secret) — pydantic maps env names to field names case-insensitively.
+    paypal_api_key: str = ""
+    paypal_secret: str = ""
 
     # PayPal (sandbox/test)
     paypal_test_client_id: str = ""
