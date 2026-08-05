@@ -145,6 +145,11 @@ const PRICING_FAQS = [
     answer:
       'Yes — one-time purchases have a full refund within 7 days of purchase if the app build has not been downloaded, and a full refund if a build fails due to a platform issue. Pro Monthly subscriptions can be refunded in full within 48 hours of first subscribing if no builds were triggered. See the refund policy page for the complete terms.',
   },
+  {
+    question: 'What payment methods do you accept?',
+    answer:
+      'We accept credit and debit cards (via Razorpay, in INR or USD) and PayPal (USD). If a card payment fails, open your pending order under Orders and click "Pay with PayPal" instead. All payments are one-time charges and your build starts automatically the moment payment completes.',
+  },
 ]
 
 export default function Pricing() {

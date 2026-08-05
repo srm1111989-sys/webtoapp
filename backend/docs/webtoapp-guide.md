@@ -110,9 +110,19 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 2. **Visuals** — Upload app icon, configure splash screen, set theme color.
 3. **Features** — Enable/disable features: push notifications, AdMob, biometric auth, QR scanner, navigation menus, etc.
 4. **Advanced** — Configure Firebase, AdMob IDs, custom keystore (.JKS), User-Agent, navigation items, desktop window settings.
-5. **Plan & Review** — Select Free or Premium plan, apply promo code, pay via Razorpay (INR/USD) or Stripe (USD).
+5. **Plan & Review** — Select Free or Premium plan, apply promo code, pay via Razorpay (INR/USD), PayPal (USD), or Stripe (USD).
 
 After payment the build is triggered automatically. Users receive an email with the download link when ready.
+
+### Paying with PayPal
+
+PayPal is fully supported (added August 2026). If a card payment fails or you prefer PayPal:
+
+1. Start the plan purchase as usual. If the card payment window opens, simply close it — the order is saved as pending.
+2. Go to **Orders**, open the pending order, and click **Pay with PayPal**.
+3. Approve the payment in PayPal — you are returned to WebsiteToApp automatically and the build starts immediately.
+
+PayPal payments are one-time charges (no subscription) and receive the same instant build trigger and email confirmation as card payments.
 
 ### Editing an Existing App
 
