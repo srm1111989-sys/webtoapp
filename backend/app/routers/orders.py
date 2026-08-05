@@ -81,7 +81,10 @@ async def create_order(
             if valid:
                 discount = int(amount * promo.discount_percent / 100)
                 amount = max(0, amount - discount)
-                promo.current_uses += 1
+                # NOT consumed here (2026-08-05, Lovasecond report): incrementing
+                # current_uses at order creation burned single-use codes on FAILED
+                # payments. The use is now recorded only when the order is PAID
+                # (consume_promo_for_paid_order, called from every success path).
                 promo_applied = promo.code.upper()
         if not promo_applied:
             # Not a promo code — maybe another user's referral code (REF-XXXXXX):
@@ -119,6 +122,8 @@ async def create_order(
         currency=data.currency,
         payment_gateway=gateway,
         referred_by_user_id=referred_by_id,
+        # Carried so the promo use can be recorded at PAYMENT time.
+        order_metadata={"promo_code": promo_applied} if promo_applied else None,
     )
 
     # Free plan: mark as paid immediately
@@ -129,6 +134,12 @@ async def create_order(
     db.add(order)
     await db.flush()
     await db.refresh(order)
+
+    # A promo that discounted the order to 0 is "paid" right now — record the
+    # use immediately (there is no later payment step to do it).
+    if amount == 0 and promo_applied:
+        from app.services.promo import consume_promo_for_paid_order
+        await consume_promo_for_paid_order(db, order)
 
     # Promote app out of draft so it appears in My Apps immediately after order creation
     ac_result = await db.execute(select(AppConfig).where(AppConfig.id == data.app_config_id))

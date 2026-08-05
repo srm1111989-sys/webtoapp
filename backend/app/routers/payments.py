@@ -270,6 +270,9 @@ async def verify_razorpay_payment(
     # Referral reward (best-effort, never raises into the payment path)
     from app.services.referrals import grant_reward_for_paid_order
     await grant_reward_for_paid_order(db, order)
+    from app.services.promo import consume_promo_for_paid_order
+    await consume_promo_for_paid_order(db, order)
+    await db.commit()
 
     build_error = None
     try:
@@ -528,6 +531,9 @@ async def capture_paypal_payment(
 
     from app.services.referrals import grant_reward_for_paid_order
     await grant_reward_for_paid_order(db, order)
+    from app.services.promo import consume_promo_for_paid_order
+    await consume_promo_for_paid_order(db, order)
+    await db.commit()
 
     try:
         await trigger_build(order.id, db)
@@ -598,6 +604,9 @@ async def test_payment(
 
     from app.services.referrals import grant_reward_for_paid_order
     await grant_reward_for_paid_order(db, order)
+    from app.services.promo import consume_promo_for_paid_order
+    await consume_promo_for_paid_order(db, order)
+    await db.commit()
 
     try:
         await trigger_build(order.id, db)

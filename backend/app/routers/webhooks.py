@@ -175,6 +175,9 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
                     order.status = "paid"
                     order.gateway_payment_id = data_object.get("payment_intent")
 
+                    from app.services.promo import consume_promo_for_paid_order
+                    await consume_promo_for_paid_order(db, order)
+
                     from app.services.build_service import trigger_build
                     await trigger_build(order.id, db)
 
