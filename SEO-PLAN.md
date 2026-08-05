@@ -1,3 +1,4 @@
+# Last updated: 2026-08-05 by plan-updater based on SC data
 # Last updated: 2026-08-04 by plan-updater based on SC data
 # Last updated: 2026-08-03 by plan-updater based on SC data
 # Last updated: 2026-08-02 by plan-updater based on SC data
@@ -271,6 +272,33 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       passes with no CTR movement.
 
 ## Update log
+- 2026-08-05 (plan-updater): reprioritized against today's daily SC brief. All 6
+  Push-to-Page-1 targets (`exe to app converter online` pos 5.5, `exe to app`
+  pos 5.6, `url to exe converter` pos 5.7, `webintoapp` pos 6.3 / 3,307 imp /
+  45 clicks / 1.4% CTR, `exe to app converter` pos 6.3, `webtoapp free` pos
+  7.4) are the same recurring set flagged since 07-20/08-04, and remain
+  covered by existing DONE/verified-live tasks — the EXE/desktop cluster + CTR
+  pass, `/blog/exe-to-app-converter-guide`, `/blog/website-to-exe-converter-online-free`,
+  and `/convert/website-to-exe`'s existing URL-based `answerFirst` copy cover
+  all 5 EXE-cluster keywords; the webintoapp comparison expand/free-push and
+  `/alternatives/webintoapp` refresh (both DONE, verified live) cover
+  `webintoapp` and `webtoapp free` — no new page task added, no duplicate
+  created. No "Fix CTR" section for WebToApp in today's brief; `webintoapp`'s
+  CTR (1.4%) remains flagged for human backlink/SERP review, not queuing
+  another autopilot pass. Today's "Getting traction" trio (`webintoapp` 45
+  clicks pos 6.3, `websitetoapp` 27 clicks pos 1.3, `website to exe converter
+  online free` 14 clicks pos 3.6) is covered by the existing P2 link-audit +
+  brand-defense tasks (both DONE 2026-07-24) and the EXE-cluster CTR pass — no
+  new task needed. No undone tasks remain anywhere in this plan (all P1/P2/P3
+  checkboxes are DONE, re-verified via a full grep for `[ ]` checkboxes
+  today) — no reprioritization action needed beyond this log entry. Note:
+  today's brief's own "Today's Priority Recommendation" text again names
+  WebToApp as the site to "focus new content on" (the same mechanical
+  brief-generation heuristic flagged 08-04, based on raw keyword count in the
+  pos 5-15 zone, not a genuine content gap) — every one of those 6 keywords is
+  already served by a live, verified page per the analysis above. Local
+  checkout at `/opt/webtoapp` remains root-owned (`.git/index` unreadable) —
+  this update was made from a fresh scratch clone of origin/main.
 - 2026-08-04 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`url to exe converter` pos 5.7, `exe to app converter
   online` pos 5.7, `exe to app` pos 5.8, `website to exe converter` pos 6.0,
