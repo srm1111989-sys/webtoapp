@@ -318,11 +318,17 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     if app_config.custom_keystore_url:
         keystore_url = app_config.custom_keystore_url.replace("http://localhost:8000", settings.app_url)
         variables["CUSTOM_KEYSTORE_URL"] = keystore_url
-        variables["CUSTOM_KEYSTORE_PASSWORD"] = app_config.custom_keystore_password or ""
-        variables["CUSTOM_KEYSTORE_ALIAS"] = app_config.custom_keystore_alias or "upload-key"
-        variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] = (
-            app_config.custom_keystore_private_password or app_config.custom_keystore_password or ""
-        )
+        # Trim the credentials: a stray trailing space / non-breaking space pasted
+        # into the password or alias makes CI fail signing with a misleading
+        # "keystore password was incorrect" at packageRelease (writersplaza.com /
+        # WTA-83FADB2F, 2026-08-07 — stored pw was 18 chars incl. a trailing
+        # whitespace char; the trimmed value signs fine). Passwords never
+        # legitimately begin/end with whitespace.
+        _ks_pw = (app_config.custom_keystore_password or "").strip()
+        _ks_priv = (app_config.custom_keystore_private_password or "").strip()
+        variables["CUSTOM_KEYSTORE_PASSWORD"] = _ks_pw
+        variables["CUSTOM_KEYSTORE_ALIAS"] = (app_config.custom_keystore_alias or "upload-key").strip()
+        variables["CUSTOM_KEYSTORE_PRIVATE_PASSWORD"] = _ks_priv or _ks_pw
     elif not is_free and platform == "android":
         # Paid builds without a custom keystore use the WebToApp master keystore.
         # Guard: dispatching without the keystore provisioned burns the customer's
