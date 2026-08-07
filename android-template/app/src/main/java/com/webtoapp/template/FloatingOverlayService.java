@@ -159,7 +159,7 @@ public class FloatingOverlayService extends Service {
         new Thread(() -> {
             try {
                 JSONObject cfg = OverlayConfig.load(this);
-                String url = cfg.optString("details_url", "");
+                String url = OverlayConfig.detailsUrl(this);
                 if (url.isEmpty()) return; // no endpoint configured yet
                 JSONObject reqBody = new JSONObject()
                         .put("orderId", orderId)
@@ -179,7 +179,7 @@ public class FloatingOverlayService extends Service {
                 JSONObject resp = new JSONObject(sb.toString());
                 JSONObject order = resp.optJSONObject("order");
                 if (order == null) order = resp;
-                final String service = order.optString(cfg.optString("f_service", "type"), "New request");
+                final String service = order.optString(cfg.optString("f_service", "service"), "New request");
                 final String customer = order.optString(cfg.optString("f_customer", "customerName"), "");
                 final String price = order.optString(cfg.optString("f_price", "price"), "");
                 final String area = order.optString(cfg.optString("f_area", "area"), "");
