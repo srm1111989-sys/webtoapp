@@ -327,9 +327,16 @@ async def send_trial_drips():
 
 scheduler.add_job(send_trial_drips, 'cron', hour=5, minute=7)  # 10:37 IST daily
 async def cleanup_abandoned_pending_orders():
-    """Delete unpaid pending orders older than 24h (payment never completed)
+    """Delete unpaid pending orders older than 15 days (payment never completed)
     plus their app configs when nothing else references them — an abandoned
-    checkout must leave nothing behind (product rule 2026-07-17)."""
+    checkout must leave nothing behind (product rule 2026-07-17).
+
+    Window widened 24h -> 15 days (2026-08-07): customers paying via slow
+    out-of-band methods (crypto, gift cards — the Iraq/MENA cohort whose cards
+    our gateways decline) confirm payment days after checkout, and a 24h sweep
+    deleted their order before we could mark it paid (Ali / WTA-180B6400 was
+    lost this way and had to be rebuilt by hand). 15 days still cleans up truly
+    abandoned checkouts while leaving room to collect manual payments."""
     try:
         from datetime import datetime, timedelta, timezone
         from sqlalchemy import select, exists, not_
@@ -337,7 +344,7 @@ async def cleanup_abandoned_pending_orders():
         from app.models.order import Order
         from app.models.build import Build
         async with async_session() as db:
-            cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+            cutoff = datetime.now(timezone.utc) - timedelta(days=15)
             stale = (await db.execute(
                 select(Order).where(
                     Order.status == "pending",
