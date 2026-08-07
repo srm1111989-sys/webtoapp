@@ -28,8 +28,8 @@ prepare:
     - export PATH=$JAVA_HOME/bin:$PATH
     - java -version
 
-    # Install SDK 35 (required by compileSdk/targetSdk 35)
-    - yes | sdkmanager "platforms;android-35" > /dev/null 2>&1 || true
+    # Install SDK 36 (required by compileSdk/targetSdk 36)
+    - yes | sdkmanager "platforms;android-36" > /dev/null 2>&1 || true
 
     # Bootstrap Gradle wrapper if not present
     - |
@@ -152,6 +152,9 @@ prepare:
           # Remove the provider removal line and add AdMob meta-data
           sed -i '/<provider.*MobileAdsInitProvider/,/tools:node="remove" \/>/d' app/src/main/AndroidManifest.xml
           sed -i "s|</application>|        <meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$ADMOB_APP_ID\" />\n    </application>|" app/src/main/AndroidManifest.xml
+          # Ads are on, so the app really does use the advertising ID.
+          sed -i 's|<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />|<uses-permission android:name="com.google.android.gms.permission.AD_ID" />|' app/src/main/AndroidManifest.xml
+          echo "AdMob enabled - AD_ID permission kept in the manifest"
         fi
       fi
 

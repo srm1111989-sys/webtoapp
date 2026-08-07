@@ -283,6 +283,21 @@ public class WebViewActivity extends AppCompatActivity {
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                 android.view.ViewGroup.LayoutParams.MATCH_PARENT));
 
+        // targetSdk 35 (Android 15) draws the app edge-to-edge, so without inset
+        // handling the web content slides under the status bar / camera cutout
+        // and setStatusBarColor is ignored (customer report 2026-07-26, punch-hole
+        // devices). Pad the root by the system-bar + display-cutout insets so
+        // content starts below the status bar, and paint the root (the padded
+        // strips) with the configured status-bar color.
+        root.setBackgroundColor(Color.parseColor(config.optString("status_bar_color", "#1E3A5F")));
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            androidx.core.graphics.Insets bars = insets.getInsets(
+                    androidx.core.view.WindowInsetsCompat.Type.systemBars()
+                            | androidx.core.view.WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return androidx.core.view.WindowInsetsCompat.CONSUMED;
+        });
+
         // Pull-to-refresh behaviour
         // (1) Optional: apps can turn it off entirely via the "disable_pull_to_refresh"
         //     feature — web apps that never need a manual reload don't want the gesture
@@ -498,6 +513,27 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
+    /** OAuth / social-login provider hosts that must stay in the WebView (not be
+     *  punted to the system browser) so the sign-in redirect can return into the
+     *  same session. Covers Google/Firebase, Apple, Facebook and common IdPs. */
+    private boolean isAuthHost(String host) {
+        if (host == null) return false;
+        host = host.toLowerCase();
+        return host.equals("accounts.google.com")
+                || host.equals("accounts.youtube.com")
+                || host.equals("apis.google.com")
+                || host.equals("content.googleapis.com")
+                || host.endsWith(".googleusercontent.com")
+                || host.endsWith(".firebaseapp.com")
+                || host.endsWith(".web.app")
+                || host.equals("appleid.apple.com")
+                || host.endsWith(".facebook.com")
+                || host.endsWith(".fbcdn.net")
+                || host.endsWith(".auth0.com")
+                || host.endsWith(".okta.com")
+                || host.endsWith(".microsoftonline.com");
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private void setupWebView() {
         WebSettings settings = webView.getSettings();
@@ -516,6 +552,16 @@ public class WebViewActivity extends AppCompatActivity {
         String customUA = features.optString("custom_user_agent", "");
         if (!customUA.isEmpty()) {
             settings.setUserAgentString(customUA);
+        } else {
+            // OAuth providers (Google especially) BLOCK embedded WebViews — an
+            // Android WebView's default UA carries a "; wv" marker and Google
+            // returns "disallowed_useragent" / "The requested action is invalid"
+            // for Sign-In. Strip the marker so the auth pages treat us as normal
+            // Chrome and allow the flow to complete inside the app.
+            String ua = settings.getUserAgentString();
+            if (ua != null && ua.contains("; wv")) {
+                settings.setUserAgentString(ua.replace("; wv", ""));
+            }
         }
 
         // Offline mode (fixed 2026-08-05, rahatna report): LOAD_CACHE_ELSE_NETWORK
@@ -534,6 +580,16 @@ public class WebViewActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String host = request.getUrl().getHost();
                 if (host != null && (host.contains(appBaseDomain) || host.contains(appHost))) {
+                    return false; // Load in WebView
+                }
+                // Keep OAuth / social-login provider pages INSIDE the WebView.
+                // Previously any external host was punted to the system browser,
+                // which broke the sign-in round-trip: the provider redirected back
+                // to <project>.firebaseapp.com/__/auth/handler in a SEPARATE browser
+                // with no link to the WebView session -> "The requested action is
+                // invalid." Loading them here keeps one continuous session so the
+                // redirect returns and Firebase getRedirectResult() completes.
+                if (isAuthHost(host)) {
                     return false; // Load in WebView
                 }
                 // External links open in browser — GUARDED (2026-08-05, Saad

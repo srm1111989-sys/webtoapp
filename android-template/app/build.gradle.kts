@@ -9,12 +9,12 @@ if (file("google-services.json").exists()) {
 
 android {
     namespace = "com.webtoapp.template"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = project.findProperty("APP_PACKAGE_NAME")?.toString() ?: "com.webtoapp.template"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         val vc = (project.findProperty("VERSION_CODE")?.toString()?.toIntOrNull() ?: System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1)
         versionCode = vc
         versionName = "1.0.$vc"
@@ -66,7 +66,8 @@ android {
         buildConfig = true
     }
 
-    // 16 KB page size (Google Play)
+    // 16 KB page size (Google Play): keep native libs uncompressed so
+    // AGP 8.5+/build-tools 35 zipalign them to 16 KB.
     packaging {
         jniLibs {
             useLegacyPackaging = false
@@ -99,4 +100,8 @@ dependencies {
 
     // Location
     implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    // Native Google sign-in (device account chooser) — used by the JS bridge's
+    // googleSignIn(); returns an ID token the web page feeds to Firebase.
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }

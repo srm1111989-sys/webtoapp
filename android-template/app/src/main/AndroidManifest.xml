@@ -16,13 +16,22 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Android 15+ Screen Capture Protection: detect when the app is being screen-recorded to mute audio -->
     <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    <!-- AD_ID is stripped from the merged manifest unless AdMob is enabled: the
+         play-services-ads library declares it itself, and its presence in an app
+         that declares "no advertising ID" in Play Console blocks the release
+         ("Incomplete Advertising ID declaration"). CI drops the tools:node
+         attribute when ADMOB_ENABLED=true. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
-    <!-- Security hardening (2026-08-05): allowBackup=false + taskAffinity="" -->
+    <!-- Security hardening (2026-08-05, Ostorlab scan report from a customer):
+         allowBackup=false keeps app data (cookies/sessions) out of device
+         backups; taskAffinity="" pins every activity to its own task, closing
+         the StrandHogg/task-hijacking vector scanners flag. -->
     <application
+        android:enableOnBackInvokedCallback="false"
         android:allowBackup="false"
         android:taskAffinity=""
         android:icon="@mipmap/ic_launcher"
@@ -70,6 +79,12 @@
         <activity
             android:name=".QRScannerActivity"
             android:screenOrientation="portrait" />
+
+        <!-- Native Google sign-in helper (transparent; shows the device account chooser) -->
+        <activity
+            android:name=".GoogleSignInActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- FCM Service -->
         <service
