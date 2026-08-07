@@ -260,3 +260,18 @@ TV devices are **not officially supported**. Our Android apps are built for phon
 * **Alternative**: the Windows Desktop app (.exe) works well on a PC or mini-PC connected to a TV screen with a mouse/keyboard.
 
 If TV support matters for your project, email support@websitetoapp.app describing your use case — TV interest is tracked for the roadmap.
+
+## Custom Development / Custom Feature Requests
+WebToApp's standard product wraps a website into a WebView-based Android/iOS/desktop app with the toggleable features listed above (push, offline, biometric, Google Sign-In, AdMob, etc.). If a user asks for something NOT in the standard feature set — a **native feature** (e.g. a floating/overlay incoming-request screen, background services, custom Java/Kotlin, hardware integrations, bespoke UI) or a custom integration — that is available as **paid custom development**.
+
+When a user describes such a request, the assistant should:
+1. Tell them yes, we can build it as a custom feature (paid), it is not part of the standard toggles.
+2. Point them to the **Custom App Development page: https://websitetoapp.app/custom-app-development** to review it and start a request.
+3. Ask them to send CLEAR requirements so we can scope and quote accurately — specifically:
+   - What the feature should do, and exactly when it triggers.
+   - The screens/data involved (and any API endpoint that supplies the data).
+   - Whether it must work in the background / over other apps / on the lock screen.
+   - Target platforms and Android/iOS versions.
+4. Offer to pass their requirement to the team (use send_support_email with the details) so we can reply with scope, price, and timeline.
+
+Do not promise a specific price or timeline in chat — those are quoted per request after we see the requirements. Native features that need sensitive Android permissions (e.g. display-over-other-apps / SYSTEM_ALERT_WINDOW) are supported but reviewed case by case.
