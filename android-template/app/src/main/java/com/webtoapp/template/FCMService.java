@@ -28,6 +28,33 @@ public class FCMService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        // Incoming-request overlay (paid feature, gated + default OFF). A data message
+        // carrying a request type + orderId pops the floating overlay over other apps;
+        // a "taken"/"cancelled" event dismisses it. Falls through to a normal
+        // notification for every other app/message.
+        if (OverlayConfig.isEnabled(this) && !remoteMessage.getData().isEmpty()) {
+            java.util.Map<String, String> data = remoteMessage.getData();
+            String type = data.get("type");
+            String orderId = data.get("orderId");
+            if (orderId != null && ("request_taken".equals(type) || "request_cancelled".equals(type)
+                    || "cancelled".equals(type))) {
+                Intent dismiss = new Intent(this, FloatingOverlayService.class)
+                        .setAction(FloatingOverlayService.ACTION_DISMISS)
+                        .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, orderId);
+                startService(dismiss);
+                return;
+            }
+            if (orderId != null && ("new_request".equals(type) || "order".equals(type)
+                    || "publicRequest".equals(type))) {
+                Intent show = new Intent(this, FloatingOverlayService.class)
+                        .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, orderId)
+                        .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, data.get("providerUserId"));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(show);
+                else startService(show);
+                return;
+            }
+        }
+
         String title = "Notification";
         String body = "";
 

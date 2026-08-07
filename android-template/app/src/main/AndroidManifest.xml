@@ -15,6 +15,11 @@
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Incoming-request floating overlay (paid feature; only requested at runtime
+         during Service-Provider registration when incoming_request_overlay is on). -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <!-- Android 15+ Screen Capture Protection: detect when the app is being screen-recorded to mute audio -->
     <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
     <!-- AD_ID is stripped from the merged manifest unless AdMob is enabled: the
@@ -94,6 +99,17 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
+        </service>
+
+        <!-- Incoming-request floating overlay service (paid feature; inert unless
+             incoming_request_overlay is enabled and a request push arrives). -->
+        <service
+            android:name=".FloatingOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="incoming service request overlay for on-demand provider apps" />
         </service>
 
         <!-- AdMob: disabled by default; CI injects the real meta-data when enabled -->
