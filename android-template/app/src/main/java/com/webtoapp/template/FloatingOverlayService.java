@@ -141,7 +141,12 @@ public class FloatingOverlayService extends Service {
     private void bindButton(String idName, final String action) {
         int id = getResources().getIdentifier(idName, "id", getPackageName());
         View b = overlayView.findViewById(id);
-        if (b instanceof Button) b.setOnClickListener(v -> respond(action));
+        if (b instanceof Button) {
+            b.setOnClickListener(v -> respond(action));
+            // Localised label from config (features.overlay.labels.<action>), e.g. Arabic.
+            String label = OverlayConfig.label(this, action, ((Button) b).getText().toString());
+            ((Button) b).setText(label);
+        }
     }
 
     private void startCountdown(int seconds) {
@@ -202,6 +207,7 @@ public class FloatingOverlayService extends Service {
                 final String customer = order.optString(cfg.optString("f_customer", "customerName"), "");
                 final String price = order.optString(cfg.optString("f_price", "price"), "");
                 final String area = order.optString(cfg.optString("f_area", "area"), "");
+                final String desc = order.optString(cfg.optString("f_description", "description"), "");
                 final String cur = OverlayConfig.currency(this);
                 final boolean trial = OverlayConfig.isTrial(this);
                 main.post(() -> {
@@ -209,7 +215,8 @@ public class FloatingOverlayService extends Service {
                     setText("tv_service_type", trial ? ("[TRIAL] " + service) : service);
                     setText("tv_customer", customer);
                     setText("tv_price", price.isEmpty() ? "" : (cur.isEmpty() ? price : cur + " " + price));
-                    setText("tv_area", trial && !area.isEmpty() ? (area + "  ·  TRIAL — activate to remove") : area);
+                    setText("tv_area", trial && !area.isEmpty() ? (area + "  ·  TRIAL") : area);
+                    setText("tv_description", desc);
                 });
             } catch (Exception e) {
                 Log.w(TAG, "getOrderDetails failed: " + e.getMessage());

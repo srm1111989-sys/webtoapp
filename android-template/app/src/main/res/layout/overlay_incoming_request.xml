@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Rahatna Phase-1 floating overlay layout (SCAFFOLD). Inflated by FloatingOverlayService.
+<!-- Incoming-request floating overlay layout. Inflated by FloatingOverlayService.
      Field IDs are looked up by name; keep them stable: tv_service_type, tv_customer,
-     tv_price, tv_area, tv_countdown, btn_accept, btn_reject, btn_negotiate. -->
+     tv_price, tv_area, tv_description, tv_countdown, btn_accept, btn_reject, btn_negotiate.
+     layoutDirection=locale so Arabic content lays out right-to-left naturally. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,54 +10,76 @@
     android:background="#EE1E293B"
     android:padding="16dp"
     android:layout_margin="8dp"
+    android:layoutDirection="locale"
+    android:textAlignment="viewStart"
     android:elevation="12dp">
 
+    <!-- Countdown (top) -->
+    <TextView
+        android:id="@+id/tv_countdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="#FBBF24"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="30" />
+
+    <!-- Row 1: Customer name | Service type -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="4dp">
+        <TextView
+            android:id="@+id/tv_customer"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:textColor="#E2E8F0" android:textSize="14sp" android:textStyle="bold" />
         <TextView
             android:id="@+id/tv_service_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#F1F5F9"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="New request" />
-        <TextView
-            android:id="@+id/tv_countdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#FBBF24"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="30" />
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="#F1F5F9" android:textSize="15sp" android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView android:id="@+id/tv_customer"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:textColor="#E2E8F0" android:textSize="14sp" android:paddingTop="6dp" />
-    <TextView android:id="@+id/tv_price"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:textColor="#4ADE80" android:textSize="15sp" android:textStyle="bold" android:paddingTop="2dp" />
-    <TextView android:id="@+id/tv_area"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:textColor="#94A3B8" android:textSize="13sp" android:paddingTop="2dp" />
+    <!-- Row 2: Area | Price -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="4dp">
+        <TextView
+            android:id="@+id/tv_area"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:textColor="#94A3B8" android:textSize="13sp" />
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="#4ADE80" android:textSize="15sp" android:textStyle="bold" />
+    </LinearLayout>
 
+    <!-- Row 3: Order description -->
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingTop="6dp"
+        android:textColor="#CBD5E1" android:textSize="13sp" />
+
+    <!-- Actions -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="12dp">
+        <Button android:id="@+id/btn_accept"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:layout_marginEnd="6dp" android:text="Accept" />
         <Button android:id="@+id/btn_reject"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
             android:layout_marginEnd="6dp" android:text="Reject" />
         <Button android:id="@+id/btn_negotiate"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:layout_marginEnd="6dp" android:text="Negotiate" />
-        <Button android:id="@+id/btn_accept"
-            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:text="Accept" />
+            android:text="Negotiate" />
     </LinearLayout>
 </LinearLayout>

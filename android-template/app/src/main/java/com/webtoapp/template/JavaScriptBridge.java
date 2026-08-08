@@ -149,6 +149,34 @@ public class JavaScriptBridge {
         webView.post(() -> webView.evaluateJavascript(js, null));
     }
 
+    /** True if the "display over other apps" permission is granted (needed for the
+     *  incoming-request overlay). window.WebToApp.hasOverlayPermission() */
+    @JavascriptInterface
+    public boolean hasOverlayPermission() {
+        return android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M
+                || android.provider.Settings.canDrawOverlays(context);
+    }
+
+    /** Open the native "display over other apps" permission screen. Call this right
+     *  after the provider logs in: window.WebToApp.requestOverlayPermission() */
+    @JavascriptInterface
+    public void requestOverlayPermission() {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M
+                || android.provider.Settings.canDrawOverlays(context)) return;
+        try {
+            Intent i = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + context.getPackageName()));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        } catch (Exception e) {
+            try {
+                Intent i = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(i);
+            } catch (Exception ignored) {}
+        }
+    }
+
     // ── AdMob: let the web app trigger full-screen ads and get the rewarded callback ──
 
     /** Show a rewarded ad; the JS callback fires as callback(rewarded, reason):
