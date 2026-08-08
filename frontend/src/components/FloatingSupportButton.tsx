@@ -18,7 +18,7 @@ export default function FloatingSupportButton() {
     return f ? f.charAt(0).toUpperCase() + f.slice(1).toLowerCase() : ''
   })()
   const welcomeText = (firstName ? `Hi ${firstName}! 👋 ` : 'Hi there! 👋 ') +
-    "I'm the **WebsiteToApp assistant**. Are you struggling with anything — a feature, a build, publishing to the Play Store, or something else? Tell me what you're trying to do and I'll help."
+    "I'm **Zoya** from WebsiteToApp. Are you struggling with anything — a specific feature, a build, publishing to the Play Store, or something else? Tell me what you're trying to do and I'll help."
   // Open by default so the greeting is seen; respect a manual close for this session.
   const [open, setOpen] = useState(() => {
     try { return sessionStorage.getItem('wta_sw_dismissed') !== '1' } catch { return true }
@@ -199,7 +199,7 @@ export default function FloatingSupportButton() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
               <h3 className="font-semibold flex items-center gap-2 text-gray-900">
-                <MessageCircle className="w-5 h-5 text-primary-600" /> WebsiteToApp Expert Assistant
+                <MessageCircle className="w-5 h-5 text-primary-600" /> Zoya
                 <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-600"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>online</span>
               </h3>
               <div className="flex items-center gap-2">
