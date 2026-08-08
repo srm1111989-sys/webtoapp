@@ -32,7 +32,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.os.Vibrator;
+import android.os.VibrationEffect;
 
 import org.json.JSONObject;
 
@@ -133,8 +136,15 @@ public class FloatingOverlayService extends Service {
         bindButton("btn_accept", "accept");
         bindButton("btn_reject", "reject");
         bindButton("btn_negotiate", "negotiate");
+        // App logo in the banner.
+        int logoId = getResources().getIdentifier("iv_logo", "id", getPackageName());
+        View logo = logoId != 0 ? overlayView.findViewById(logoId) : null;
+        if (logo instanceof ImageView) {
+            try { ((ImageView) logo).setImageDrawable(getPackageManager().getApplicationIcon(getPackageName())); } catch (Exception ignored) {}
+        }
         overlayView.setOnClickListener(v -> openAppToRequest());
         startCountdown(30);
+        vibrateAlert();
         windowManager.addView(overlayView, params);
     }
 
@@ -155,6 +165,20 @@ public class FloatingOverlayService extends Service {
             public void onTick(long ms) { if (tv != null) tv.setText(String.valueOf(ms / 1000)); }
             public void onFinish() { respond("timeout"); }
         }.start();
+    }
+
+    /** Ring-like buzz when a request pops (like an incoming call). Needs VIBRATE (in manifest). */
+    private void vibrateAlert() {
+        try {
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (v == null || !v.hasVibrator()) return;
+            long[] pattern = {0, 400, 200, 400};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createWaveform(pattern, -1));
+            } else {
+                v.vibrate(pattern, -1);
+            }
+        } catch (Exception ignored) {}
     }
 
     private void respond(String action) {
