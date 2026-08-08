@@ -709,9 +709,9 @@ public class WebViewActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)) return;
         try {
             new AlertDialog.Builder(this)
-                    .setTitle("Allow incoming request alerts")
-                    .setMessage("To show new service requests over other apps, please allow \"Display over other apps\" for this app.")
-                    .setPositiveButton("Allow", (d, w) -> {
+                    .setTitle(OverlayConfig.label(this, "perm_title", "Allow incoming request alerts"))
+                    .setMessage(OverlayConfig.label(this, "perm_message", "To show new service requests over other apps, please allow \"Display over other apps\" for this app."))
+                    .setPositiveButton(OverlayConfig.label(this, "perm_allow", "Allow"), (d, w) -> {
                         try {
                             startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                                     Uri.parse("package:" + getPackageName())));
@@ -719,7 +719,7 @@ public class WebViewActivity extends AppCompatActivity {
                             try { startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)); } catch (Exception ignored) {}
                         }
                     })
-                    .setNegativeButton("Later", null)
+                    .setNegativeButton(OverlayConfig.label(this, "perm_later", "Later"), null)
                     .show();
         } catch (Exception ignored) {}
     }
