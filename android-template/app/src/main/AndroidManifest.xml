@@ -89,6 +89,16 @@
             android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <!-- Full-screen incoming-request screen (paid Phase-2 feature; launched via a
+             full-screen-intent notification, shows over the lock screen). -->
+        <activity
+            android:name=".IncomingRequestActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"
+            android:theme="@style/Theme.WebToApp" />
+
         <!-- FCM Service -->
         <service
             android:name=".FCMService"
