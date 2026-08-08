@@ -30,7 +30,7 @@ public class FCMService extends FirebaseMessagingService {
 
         // Incoming-request overlay (paid feature, gated + default OFF). A data message
         // carrying an orderId/requestId pops the floating overlay over other apps.
-        if (OverlayConfig.isEnabled(this) && !remoteMessage.getData().isEmpty()) {
+        if ((OverlayConfig.isEnabled(this) || OverlayConfig.isFullscreenEnabled(this)) && !remoteMessage.getData().isEmpty()) {
             java.util.Map<String, String> data = remoteMessage.getData();
             String type = data.get("type");
             String id = data.get("orderId");
@@ -42,19 +42,24 @@ public class FCMService extends FirebaseMessagingService {
                 startService(dismiss);
                 return;
             }
-            // Show the Accept/Reject overlay ONLY for the PROVIDER's new-request pushes.
+            // Show the Accept/Reject UI ONLY for the PROVIDER's new-request pushes.
             // The backend marks those with data.overlay="1" (or data.role="provider").
             // Customer-facing status pushes (accepted/negotiation/cancelled) omit it and
-            // fall through to a normal notification below — no overlay card for customers.
+            // fall through to a normal notification below — no card/screen for customers.
             String ov = data.get("overlay");
-            boolean wantOverlay = "1".equals(ov) || "true".equalsIgnoreCase(String.valueOf(ov))
+            boolean wantUi = "1".equals(ov) || "true".equalsIgnoreCase(String.valueOf(ov))
                     || "provider".equalsIgnoreCase(String.valueOf(data.get("role")));
-            if (wantOverlay && id != null) {
-                Intent show = new Intent(this, FloatingOverlayService.class)
-                        .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id)
-                        .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, data.get("providerUserId"));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(show);
-                else startService(show);
+            if (wantUi && id != null) {
+                if (OverlayConfig.isFullscreenEnabled(this)) {
+                    // Phase 2: full-screen call-style screen (works over lock screen / background).
+                    showFullScreenRequest(id, data.get("providerUserId"), data.get("title"), data.get("body"));
+                } else {
+                    Intent show = new Intent(this, FloatingOverlayService.class)
+                            .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id)
+                            .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, data.get("providerUserId"));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(show);
+                    else startService(show);
+                }
                 return;
             }
         }
@@ -108,6 +113,40 @@ public class FCMService extends FirebaseMessagingService {
 
         NotificationManager manager = getSystemService(NotificationManager.class);
         manager.notify((int) System.currentTimeMillis(), builder.build());
+    }
+
+    /** Phase-2 full-screen incoming-request screen, launched via a full-screen-intent
+     *  notification so it appears over the lock screen / when backgrounded (call-style). */
+    private void showFullScreenRequest(String id, String providerUserId, String title, String body) {
+        Intent full = new Intent(this, IncomingRequestActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id)
+                .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, providerUserId == null ? "" : providerUserId);
+        PendingIntent pi = PendingIntent.getActivity(this, 43, full,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        final String CH = "webtoapp_incoming_fullscreen";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager nm = getSystemService(NotificationManager.class);
+            if (nm.getNotificationChannel(CH) == null) {
+                NotificationChannel c = new NotificationChannel(CH, "Incoming requests", NotificationManager.IMPORTANCE_HIGH);
+                c.setDescription("New service requests");
+                nm.createNotificationChannel(c);
+            }
+        }
+        int smallIcon = getResources().getIdentifier("ic_stat_notification", "drawable", getPackageName());
+        if (smallIcon == 0) smallIcon = android.R.drawable.ic_dialog_info;
+        android.app.Notification n = new NotificationCompat.Builder(this, CH)
+                .setSmallIcon(smallIcon)
+                .setContentTitle(title != null && !title.isEmpty() ? title : "طلب جديد")
+                .setContentText(body != null && !body.isEmpty() ? body : "لديك طلب خدمة جديد")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setAutoCancel(true)
+                .setFullScreenIntent(pi, true)
+                .build();
+        getSystemService(NotificationManager.class).notify(43, n);
+        // Foreground case: also try launching directly (the full-screen intent covers locked/background).
+        try { startActivity(full); } catch (Exception ignored) {}
     }
 
     private void createNotificationChannel() {
