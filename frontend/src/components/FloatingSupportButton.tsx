@@ -11,12 +11,24 @@ interface Message {
 export default function FloatingSupportButton() {
   const isEnabled = import.meta.env.VITE_ASK_AI_ENABLED === 'true'
   const { user, accessToken } = useAuthStore()
-  const [open, setOpen] = useState(false)
+  // English-only first name for a personalised greeting (non-Latin names -> generic).
+  const firstName = (() => {
+    const raw = String((user as any)?.name || (user as any)?.fullName || (user as any)?.full_name || (user as any)?.email?.split('@')[0] || '').trim()
+    const f = raw.split(/[\s._-]+/)[0].replace(/[^A-Za-z]/g, '')
+    return f ? f.charAt(0).toUpperCase() + f.slice(1).toLowerCase() : ''
+  })()
+  const welcomeText = (firstName ? `Hi ${firstName}! 👋 ` : 'Hi there! 👋 ') +
+    "I'm the **WebsiteToApp assistant**. Are you struggling with anything — a feature, a build, publishing to the Play Store, or something else? Tell me what you're trying to do and I'll help."
+  // Open by default so the greeting is seen; respect a manual close for this session.
+  const [open, setOpen] = useState(() => {
+    try { return sessionStorage.getItem('wta_sw_dismissed') !== '1' } catch { return true }
+  })
+  const closeWidget = () => { try { sessionStorage.setItem('wta_sw_dismissed', '1') } catch {} ; setOpen(false) }
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
       role: 'bot',
-      text: 'Hello! I am **WebsiteToApp Expert Assistant**. I can answer questions about converting websites into Android apps, check your app list/build status, or help submit a support ticket. Ask me anything!'
+      text: welcomeText
     }
   ])
   const [input, setInput] = useState('')
@@ -47,7 +59,7 @@ export default function FloatingSupportButton() {
   // ESC to close
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeWidget() }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
@@ -177,12 +189,11 @@ export default function FloatingSupportButton() {
       )}
 
       {open && (
-        <div 
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:justify-end p-0 sm:p-5 bg-black/40" 
-          onClick={() => !loading && setOpen(false)}
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:justify-end p-0 sm:p-5 pointer-events-none"
         >
-          <div 
-            className="w-full sm:w-[420px] h-[100vh] sm:h-[550px] max-h-[100vh] sm:max-h-[90vh] bg-white border border-gray-200 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden" 
+          <div
+            className="pointer-events-auto w-full sm:w-[400px] h-[70vh] sm:h-[560px] max-h-[70vh] sm:max-h-[560px] bg-white border border-gray-200 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -199,8 +210,8 @@ export default function FloatingSupportButton() {
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
-                <button 
-                  onClick={() => setOpen(false)} 
+                <button
+                  onClick={closeWidget}
                   className="text-gray-500 hover:text-gray-900 p-1"
                   disabled={loading}
                 >
