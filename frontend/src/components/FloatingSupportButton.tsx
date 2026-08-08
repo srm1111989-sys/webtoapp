@@ -193,7 +193,7 @@ export default function FloatingSupportButton() {
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:justify-end p-0 sm:p-5 pointer-events-none"
         >
           <div
-            className="pointer-events-auto w-full sm:w-[400px] h-[70vh] sm:h-[560px] max-h-[70vh] sm:max-h-[560px] bg-white border border-gray-200 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="pointer-events-auto box-border w-full max-w-[100vw] sm:w-[400px] sm:max-w-[400px] h-[70vh] sm:h-[560px] max-h-[70vh] sm:max-h-[560px] bg-white border border-gray-200 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
