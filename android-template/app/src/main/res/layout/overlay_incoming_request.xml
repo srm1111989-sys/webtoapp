@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rahatna Phase-1 floating overlay layout (SCAFFOLD). Inflated by FloatingOverlayService.
+     Field IDs are looked up by name; keep them stable: tv_service_type, tv_customer,
+     tv_price, tv_area, tv_countdown, btn_accept, btn_reject, btn_negotiate. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#EE1E293B"
+    android:padding="16dp"
+    android:layout_margin="8dp"
+    android:elevation="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_service_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#F1F5F9"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="New request" />
+        <TextView
+            android:id="@+id/tv_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FBBF24"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="30" />
+    </LinearLayout>
+
+    <TextView android:id="@+id/tv_customer"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="#E2E8F0" android:textSize="14sp" android:paddingTop="6dp" />
+    <TextView android:id="@+id/tv_price"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="#4ADE80" android:textSize="15sp" android:textStyle="bold" android:paddingTop="2dp" />
+    <TextView android:id="@+id/tv_area"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textColor="#94A3B8" android:textSize="13sp" android:paddingTop="2dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="12dp">
+        <Button android:id="@+id/btn_reject"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:layout_marginEnd="6dp" android:text="Reject" />
+        <Button android:id="@+id/btn_negotiate"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:layout_marginEnd="6dp" android:text="Negotiate" />
+        <Button android:id="@+id/btn_accept"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Accept" />
+    </LinearLayout>
+</LinearLayout>
