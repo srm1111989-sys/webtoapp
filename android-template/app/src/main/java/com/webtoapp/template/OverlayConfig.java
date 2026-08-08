@@ -71,6 +71,14 @@ public final class OverlayConfig {
         return load(ctx).optString("currency", "");
     }
 
+    /** Localised button/label text from features.overlay.labels.<key> (e.g. Arabic); falls back to def. */
+    public static String label(Context ctx, String key, String def) {
+        JSONObject labels = load(ctx).optJSONObject("labels");
+        if (labels == null) return def;
+        String v = labels.optString(key, "");
+        return v.isEmpty() ? def : v;
+    }
+
     /**
      * Trial mode (features.overlay.trial). When true the overlay is fully functional
      * for testing but shows a visible TRIAL marker. Flip to false (or record the paid
