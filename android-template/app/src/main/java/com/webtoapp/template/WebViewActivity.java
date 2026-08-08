@@ -3,7 +3,9 @@ package com.webtoapp.template;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.provider.Settings;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -700,7 +702,32 @@ public class WebViewActivity extends AppCompatActivity {
 
     private AdManager adManager;
 
+    // Prompt for the "display over other apps" permission when the incoming-request
+    // overlay feature is on and it isn't granted yet (can't be auto-granted).
+    private void maybeRequestOverlayPermission() {
+        if (!OverlayConfig.isEnabled(this)) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)) return;
+        try {
+            new AlertDialog.Builder(this)
+                    .setTitle("Allow incoming request alerts")
+                    .setMessage("To show new service requests over other apps, please allow \"Display over other apps\" for this app.")
+                    .setPositiveButton("Allow", (d, w) -> {
+                        try {
+                            startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                    Uri.parse("package:" + getPackageName())));
+                        } catch (Exception e) {
+                            try { startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)); } catch (Exception ignored) {}
+                        }
+                    })
+                    .setNegativeButton("Later", null)
+                    .show();
+        } catch (Exception ignored) {}
+    }
+
     private void setupFeatures() {
+        // Incoming-request overlay needs the "display over other apps" grant — prompt once.
+        maybeRequestOverlayPermission();
+
         // AdMob — wire it up when enabled; each ad type activates only if its unit
         // ID is set and the APPLICATION_ID meta-data is present (CI injects it).
         boolean admobOn = features.optBoolean("admob", false);

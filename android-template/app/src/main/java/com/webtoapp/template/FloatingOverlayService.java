@@ -86,6 +86,7 @@ public class FloatingOverlayService extends Service {
     /** Android 8+ requires a foreground notification to reliably run + draw from the background. */
     private void promoteForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          try {
             NotificationManager nm = getSystemService(NotificationManager.class);
             if (nm.getNotificationChannel(FG_CHANNEL) == null) {
                 nm.createNotificationChannel(new NotificationChannel(
@@ -95,7 +96,19 @@ public class FloatingOverlayService extends Service {
                     .setContentTitle("New request")
                     .setSmallIcon(android.R.drawable.ic_dialog_info)
                     .build();
-            startForeground(42, n);
+            // Android 14 (API 34) REQUIRES the foregroundServiceType in the call for a
+            // manifest-declared specialUse service; omitting it throws and the overlay
+            // then never draws. Older APIs use the 2-arg form.
+            if (Build.VERSION.SDK_INT >= 34) {
+                startForeground(42, n, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            } else {
+                startForeground(42, n);
+            }
+          } catch (Exception e) {
+            // Never let a foreground-service failure abort the overlay — it draws via
+            // SYSTEM_ALERT_WINDOW regardless; FGS only keeps the service alive.
+            Log.w(TAG, "promoteForeground failed (continuing to draw overlay): " + e.getMessage());
+          }
         }
     }
 
