@@ -1,3 +1,4 @@
+# Last updated: 2026-08-08 by plan-updater based on SC data
 # Last updated: 2026-08-07 by plan-updater based on SC data
 # Last updated: 2026-08-06 by plan-updater based on SC data
 # Last updated: 2026-08-05 by plan-updater based on SC data
@@ -274,6 +275,40 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       passes with no CTR movement.
 
 ## Update log
+- 2026-08-08 (plan-updater): reprioritized against today's daily SC brief. 5 of 6
+  Push-to-Page-1 targets (`exe to app` pos 5.4, `url to exe converter` pos 5.7,
+  `exe to app converter` pos 5.8, `exe to app converter online` pos 5.9,
+  `webintoapp` pos 6.3 / 3,227 imp / 43 clicks / 1.3% CTR) are the same
+  recurring set flagged since 07-20/08-07, re-verified today against the live
+  `frontend/src/data/blogPosts.ts` and `platforms.ts` in this fresh scratch
+  clone: all remain covered by existing DONE/verified-live tasks — the
+  EXE/desktop cluster + CTR pass, `/blog/exe-to-app-converter-guide`,
+  `/blog/website-to-exe-converter-online-free`, and `/convert/website-to-exe`'s
+  existing URL-based `answerFirst` copy; the webintoapp comparison
+  expand/free-push and `/alternatives/webintoapp` refresh (both DONE, verified
+  live) cover `webintoapp`. The 6th slot is new today — `online exe to apk
+  converter online` (pos 6.2, 12 imp, 4 clicks, 33.3% CTR) — but this is
+  already covered by the existing `/blog/exe-to-app-converter-guide` post,
+  which explicitly addresses the "exe to apk" confusion (why arbitrary
+  Windows .exe files can't be converted to Android APKs, and the actual
+  website-conversion path that works) rather than being an uncovered gap. No
+  new page task added, no duplicate created. No "Fix CTR" section for WebToApp
+  in today's brief; `webintoapp`'s CTR (1.3%) remains flagged for human
+  backlink/SERP review, not queuing another autopilot pass. Today's "Getting
+  traction" trio (`webintoapp` 43 clicks pos 6.3, `websitetoapp` 29 clicks pos
+  1.0, `website to exe converter online free` 15 clicks pos 3.5) is covered by
+  the existing P2 link-audit + brand-defense tasks (both DONE 2026-07-24) and
+  the EXE-cluster CTR pass — no new task needed. No undone tasks remain
+  anywhere in this plan (all P1/P2/P3 checkboxes are DONE, re-verified via a
+  full grep for `[ ]` checkboxes today) — no reprioritization action needed
+  beyond this log entry. Note: today's brief's own "Today's Priority
+  Recommendation" text again names WebToApp as the site to "focus new content
+  on" (the same mechanical brief-generation heuristic flagged 08-04 through
+  08-07, based on raw keyword count in the pos 5-15 zone, not a genuine
+  content gap) — every one of those 6 keywords is already served by a live,
+  verified page per the analysis above. Local checkout at `/opt/webtoapp`
+  remains root-owned (`.git/index` unreadable) — this update was made from a
+  fresh scratch clone of origin/main.
 - 2026-08-07 (plan-updater): reprioritized against today's daily SC brief. All 6
   Push-to-Page-1 targets (`exe to app` pos 5.4, `url to exe converter` pos 5.7,
   `exe to app converter online` pos 5.8, `exe to app converter` pos 5.8,
