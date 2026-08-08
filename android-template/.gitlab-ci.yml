@@ -1,4 +1,14 @@
-image: jangrewe/gitlab-ci-android
+﻿image: jangrewe/gitlab-ci-android
+
+# Real builds are ONLY started by the backend via the pipeline-trigger API with
+# a full variable set. Bare pushes to this repo (template syncs) used to start a
+# variable-less pipeline that always failed (empty PACKAGE_NAME -> applicationId
+# "" -> manifest merger error) — pure red noise in the pipeline list.
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - when: always
 
 stages:
   - prepare
@@ -28,37 +38,34 @@ prepare:
     - export PATH=$JAVA_HOME/bin:$PATH
     - java -version
 
-    # Install SDK 36 (required by compileSdk/targetSdk 36)
-    - yes | sdkmanager "platforms;android-36" > /dev/null 2>&1 || true
+    # Install SDK 35 (required by compileSdk/targetSdk 35)
+    - yes | sdkmanager "platforms;android-35" > /dev/null 2>&1 || true
 
     # Bootstrap Gradle wrapper if not present
     - |
       if [ ! -f ./gradlew ]; then
         echo "Downloading Gradle to generate wrapper..."
-        curl -sL "https://services.gradle.org/distributions/gradle-8.4-bin.zip" -o /tmp/gradle.zip
+        curl -sL "https://services.gradle.org/distributions/gradle-8.11.1-bin.zip" -o /tmp/gradle.zip
         unzip -q /tmp/gradle.zip -d /tmp/
-        /tmp/gradle-8.4/bin/gradle wrapper --gradle-version 8.4
-        rm -rf /tmp/gradle.zip /tmp/gradle-8.4
+        /tmp/gradle-8.11.1/bin/gradle wrapper --gradle-version 8.11.1
+        rm -rf /tmp/gradle.zip /tmp/gradle-8.11.1
       fi
     - chmod +x ./gradlew
 
-    # Use custom keystore if provided, otherwise generate one
+    # Process release keystore for signing (custom or auto-generated)
     - |
-      if [ -n "${CUSTOM_KEYSTORE_URL}" ]; then
-        echo "Downloading custom keystore..."
-        # wget isn't installed until the icon step — install it here too
-        apt-get install -y -qq wget > /dev/null 2>&1 || true
-        wget -q "${CUSTOM_KEYSTORE_URL}" -O keystore.jks
-        KS_PASS="${CUSTOM_KEYSTORE_PASSWORD}"
-        KS_ALIAS="${CUSTOM_KEYSTORE_ALIAS}"
-        KEY_PASS="${CUSTOM_KEYSTORE_PRIVATE_PASSWORD:-${CUSTOM_KEYSTORE_PASSWORD}}"
-        echo "KEYSTORE_PASSWORD=$KS_PASS" > keystore.env
-        echo "KEY_ALIAS=$KS_ALIAS" >> keystore.env
-        echo "KEY_PASSWORD=$KEY_PASS" >> keystore.env
-        echo "Custom keystore configured."
+      if [ -n "$CUSTOM_KEYSTORE_URL" ]; then
+        echo "Custom keystore URL provided. Downloading..."
+        apt-get update -qq && apt-get install -y -qq wget > /dev/null 2>&1
+        wget -q "$CUSTOM_KEYSTORE_URL" -O keystore.jks
+        echo "KEYSTORE_PASSWORD=$CUSTOM_KEYSTORE_PASSWORD" > keystore.env
+        echo "KEY_ALIAS=$CUSTOM_KEYSTORE_ALIAS" >> keystore.env
+        echo "KEY_PASSWORD=${CUSTOM_KEYSTORE_PRIVATE_PASSWORD:-$CUSTOM_KEYSTORE_PASSWORD}" >> keystore.env
+        echo "Custom keystore downloaded successfully."
       else
-        KS_PASS="$(head -c 200 /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 24)"
-        KS_ALIAS="upload-key"
+        KS_PASS="${KEYSTORE_PASSWORD:-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)}"
+        KS_ALIAS="${KEY_ALIAS:-upload-key}"
+        APP_PKG="${PACKAGE_NAME:-com.webtoapp.app}"
         echo "Generating release keystore..."
         keytool -genkeypair \
           -alias "$KS_ALIAS" \
@@ -87,27 +94,31 @@ prepare:
         "secondary_color": "${SECONDARY_COLOR}",
         "status_bar_color": "${STATUS_BAR_COLOR}",
         "features": ${FEATURES_JSON},
-        "navigation_items": ${NAVIGATION_ITEMS:-[]},
-        "admob_config": ${ADMOB_CONFIG:-{}},
-        "firebase_config": ${FIREBASE_CONFIG:-{}},
-        "trial_days": ${TRIAL_DAYS:-0},
-        "purchase_url": "${PURCHASE_URL:-}"
+        "navigation_items": ${NAVIGATION_ITEMS:-[]}
       }
       HEREDOC
       fi
 
     # Download and resize icon, or generate default placeholder
-    - apt-get install -y -qq imagemagick wget > /dev/null 2>&1
+    # `file` MUST be in this list: the icon validation below calls it, and the CI
+    # image doesn't ship it — "file: command not found" made ICON_OK=false, so
+    # EVERY custom icon silently became the letter fallback (abjadiye, t194).
+    - apt-get install -y -qq imagemagick wget file > /dev/null 2>&1
     - |
       ICON_OK=false
+      # Browser UA + retries: Cloudflare challenges bare wget from datacenter
+      # runner IPs, silently replacing every custom icon with the letter
+      # fallback (abjadiye/arizk31 build 4c04abe7, 2026-08-03).
+      ICON_UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
       if [ -n "$ICON_URL" ]; then
-        wget -q --timeout=10 "$ICON_URL" -O /tmp/icon_raw 2>/dev/null && [ -s /tmp/icon_raw ] && ICON_OK=true
+        wget --timeout=15 --tries=3 --user-agent="$ICON_UA" "$ICON_URL" -O /tmp/icon_raw 2>/tmp/icon_err && [ -s /tmp/icon_raw ] && ICON_OK=true
         if [ "$ICON_OK" = "true" ]; then
           # Validate it's actually an image
           file /tmp/icon_raw | grep -qi "image" && cp /tmp/icon_raw /tmp/icon.png || ICON_OK=false
         fi
         if [ "$ICON_OK" = "false" ]; then
           echo "WARNING: Icon URL invalid or unreachable ($ICON_URL) — using default icon"
+          echo "icon fetch detail: $(tail -3 /tmp/icon_err 2>/dev/null | tr '\n' ' '); got: $(file /tmp/icon_raw 2>/dev/null)"
           rm -f /tmp/icon_raw
         fi
       fi
@@ -130,10 +141,9 @@ prepare:
     # Download splash screen if provided (convert to PNG for AAPT compatibility)
     - |
       if [ -n "$SPLASH_URL" ]; then
-        wget -q "$SPLASH_URL" -O /tmp/splash_raw || true
+        wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "$SPLASH_URL" -O /tmp/splash_raw || true
         if [ -s /tmp/splash_raw ]; then
-          # Bound the size: oversized user images make AAPT2 time out (build 2026-07-09)
-          convert /tmp/splash_raw -resize "1440x2560>" PNG:app/src/main/res/drawable/splash_image.png 2>/dev/null || true
+          convert /tmp/splash_raw PNG:app/src/main/res/drawable/splash_image.png 2>/dev/null || true
           rm -f /tmp/splash_raw
         fi
       fi
@@ -144,7 +154,7 @@ prepare:
         echo "$FIREBASE_CONFIG" > app/google-services.json
       fi
 
-    # Configure AdMob — inject meta-data and re-enable provider only when configured
+    # Configure AdMob â€” inject meta-data and re-enable provider only when configured
     - |
       if [ "$ADMOB_ENABLED" = "true" ] && [ -n "$ADMOB_CONFIG" ]; then
         ADMOB_APP_ID=$(echo "$ADMOB_CONFIG" | python3 -c "import sys,json; print(json.load(sys.stdin).get('app_id',''))" 2>/dev/null || echo "")
@@ -156,6 +166,8 @@ prepare:
           sed -i 's|<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />|<uses-permission android:name="com.google.android.gms.permission.AD_ID" />|' app/src/main/AndroidManifest.xml
           echo "AdMob enabled - AD_ID permission kept in the manifest"
         fi
+      else
+        echo "AdMob disabled - AD_ID permission removed from the merged manifest (Play advertising-ID declaration)"
       fi
 
   artifacts:
@@ -238,9 +250,6 @@ build_aab:
 
 webhook_notify:
   stage: deploy
-  image: curlimages/curl:latest
-  variables:
-    GIT_STRATEGY: none
   script:
     - |
       if [ -n "$WEBHOOK_URL" ]; then
@@ -250,5 +259,4 @@ webhook_notify:
           -d "{\"object_kind\":\"pipeline\",\"object_attributes\":{\"id\":$CI_PIPELINE_ID,\"status\":\"$CI_PIPELINE_STATUS\"},\"project\":{\"id\":$CI_PROJECT_ID}}"
       fi
   when: always
-
 

@@ -153,16 +153,6 @@ public class LauncherActivity extends AppCompatActivity {
     private void launchWebView() {
         Intent intent = new Intent(this, WebViewActivity.class);
         intent.putExtra("config", config.toString());
-        // Forward notification-tap data (FCM delivers the data payload as string
-        // extras) so WebViewActivity can deep-link into the web app.
-        Intent src = getIntent();
-        if (src != null && src.getExtras() != null) {
-            for (String key : src.getExtras().keySet()) {
-                if ("config".equals(key)) continue;
-                Object val = src.getExtras().get(key);
-                if (val instanceof String) intent.putExtra(key, (String) val);
-            }
-        }
         startActivity(intent);
         finish();
     }

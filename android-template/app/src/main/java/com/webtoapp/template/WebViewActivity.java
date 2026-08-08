@@ -113,24 +113,7 @@ public class WebViewActivity extends AppCompatActivity {
         setupFeatures();
         requestNotificationPermissionIfNeeded();
 
-        webView.loadUrl(buildStartUrl());
-    }
-
-    /** Appends a notification deep-link param (e.g. ?courseId=xxx) when the app was
-     *  opened from a push whose data payload carried type + <type>Id (chat, course, ...). */
-    private String buildStartUrl() {
-        try {
-            android.content.Intent it = getIntent();
-            if (it == null) return appUrl;
-            String type = it.getStringExtra("type");
-            String id = (type != null) ? it.getStringExtra(type + "Id") : null;
-            if (type == null) { type = it.getStringExtra("notif_type"); id = it.getStringExtra("notif_id"); }
-            if (type == null || id == null || id.isEmpty()) return appUrl;
-            String param = type + "Id=" + android.net.Uri.encode(id);
-            return appUrl + (appUrl.contains("?") ? "&" : "?") + param;
-        } catch (Exception e) {
-            return appUrl;
-        }
+        webView.loadUrl(appUrl);
     }
 
     private void loadConfig() {
@@ -210,10 +193,13 @@ public class WebViewActivity extends AppCompatActivity {
                                   : android.media.AudioManager.ADJUST_UNMUTE,
                         0);
             };
+            // Registering returns the current state so we mute immediately if a
+            // recording is already in progress when the app opens.
             int initial = getWindowManager()
                     .addScreenRecordingCallback(getMainExecutor(), screenRecordMuteCallback);
             screenRecordMuteCallback.accept(initial);
         } catch (Throwable t) {
+            // OEM quirk / API surface missing — fail safe, never crash the app.
             screenRecordMuteCallback = null;
         }
     }
@@ -224,6 +210,7 @@ public class WebViewActivity extends AppCompatActivity {
                 && android.os.Build.VERSION.SDK_INT >= 35) {
             try {
                 getWindowManager().removeScreenRecordingCallback(screenRecordMuteCallback);
+                // Leave audio unmuted on exit so we never strand the music stream muted.
                 android.media.AudioManager am =
                         (android.media.AudioManager) getSystemService(android.content.Context.AUDIO_SERVICE);
                 if (am != null) {
@@ -413,12 +400,10 @@ public class WebViewActivity extends AppCompatActivity {
         lead.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
 
         TextView brand = new TextView(this);
-        brand.setText("WebsiteToApp.app");
+        brand.setText("websitetoapp.app");
         brand.setTextColor(Color.parseColor("#60A5FA"));
         brand.setTypeface(Typeface.DEFAULT_BOLD);
         brand.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
-        // Tappable brand → opens the site (Play-safe: company link, not a checkout).
-        brand.setOnClickListener(v -> openUrl("https://websitetoapp.app"));
 
         TextView chip = new TextView(this);
         chip.setText("Upgrade ›");
@@ -565,8 +550,9 @@ public class WebViewActivity extends AppCompatActivity {
         }
 
         // Offline mode (fixed 2026-08-05, rahatna report): LOAD_CACHE_ELSE_NETWORK
-        // unconditionally served CACHED responses even when online - dynamic sites
-        // showed stale/empty data with no error while working in normal browsers.
+        // unconditionally served CACHED responses even when online — dynamic sites
+        // showed stale/empty data (orders lists frozen at their first-ever fetch)
+        // with no error, while the same site worked in any normal browser.
         // Cache-first is only correct when there is genuinely no connectivity.
         offlineModeEnabled = features.optBoolean("offline_mode", false);
         if (offlineModeEnabled) {
@@ -698,25 +684,10 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
-    private AdManager adManager;
-
     private void setupFeatures() {
-        // AdMob — wire it up when enabled; each ad type activates only if its unit
-        // ID is set and the APPLICATION_ID meta-data is present (CI injects it).
-        boolean admobOn = features.optBoolean("admob", false);
-        if (admobOn) {
-            try {
-                adManager = new AdManager(this, webView, config.optJSONObject("admob_config"));
-                adManager.initialize();
-            } catch (Throwable t) {
-                adManager = null;
-            }
-        }
-
-        // JS Bridge (also added when AdMob is on, so the web app can call
-        // WebToApp.showRewardedAd(...) / showInterstitial()).
-        if (features.optBoolean("js_bridge", false) || admobOn) {
-            JavaScriptBridge bridge = new JavaScriptBridge(this, webView, adManager);
+        // JS Bridge
+        if (features.optBoolean("js_bridge", false)) {
+            JavaScriptBridge bridge = new JavaScriptBridge(this, webView);
             webView.addJavascriptInterface(bridge, "WebToApp");
         }
 

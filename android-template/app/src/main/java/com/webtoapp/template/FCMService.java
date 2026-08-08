@@ -28,6 +28,39 @@ public class FCMService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        // Incoming-request overlay (paid feature, gated + default OFF). A data message
+        // carrying a request type + orderId pops the floating overlay over other apps;
+        // a "taken"/"cancelled" event dismisses it. Falls through to a normal
+        // notification for every other app/message.
+        if (OverlayConfig.isEnabled(this) && !remoteMessage.getData().isEmpty()) {
+            java.util.Map<String, String> data = remoteMessage.getData();
+            // Rahatna new-request pushes carry the id in data (confirmed 2026-08-07):
+            //   direct order   -> data.orderId   (sendOrderNotification)
+            //   public request -> data.requestId (notifyProvidersNewPublicRequest)
+            // There is no "type" field; presence of the key tells the two apart.
+            String type = data.get("type"); // reserved for a future taken/cancelled event
+            String id = data.get("orderId");
+            if (id == null) id = data.get("requestId");
+
+            // Optional dismiss event (if the backend ever emits one).
+            if (id != null && ("request_taken".equals(type) || "request_cancelled".equals(type)
+                    || "cancelled".equals(type))) {
+                Intent dismiss = new Intent(this, FloatingOverlayService.class)
+                        .setAction(FloatingOverlayService.ACTION_DISMISS)
+                        .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id);
+                startService(dismiss);
+                return;
+            }
+            if (id != null) {
+                Intent show = new Intent(this, FloatingOverlayService.class)
+                        .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id)
+                        .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, data.get("providerUserId"));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(show);
+                else startService(show);
+                return;
+            }
+        }
+
         String title = "Notification";
         String body = "";
 
@@ -38,7 +71,7 @@ public class FCMService extends FirebaseMessagingService {
                     ? remoteMessage.getNotification().getBody() : body;
         }
 
-        showNotification(title, body, remoteMessage.getData());
+        showNotification(title, body);
     }
 
     @Override
@@ -48,16 +81,9 @@ public class FCMService extends FirebaseMessagingService {
         // Send token to server if needed
     }
 
-    private void showNotification(String title, String body, java.util.Map<String, String> data) {
+    private void showNotification(String title, String body) {
         Intent intent = new Intent(this, LauncherActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        // Carry the FCM data payload so a tap deep-links into the web app
-        // (LauncherActivity forwards these extras to WebViewActivity).
-        if (data != null) {
-            for (java.util.Map.Entry<String, String> de : data.entrySet()) {
-                intent.putExtra(de.getKey(), de.getValue());
-            }
-        }
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
