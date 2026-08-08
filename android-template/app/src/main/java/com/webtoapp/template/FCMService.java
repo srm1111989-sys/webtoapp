@@ -42,7 +42,14 @@ public class FCMService extends FirebaseMessagingService {
                 startService(dismiss);
                 return;
             }
-            if (id != null) {
+            // Show the Accept/Reject overlay ONLY for the PROVIDER's new-request pushes.
+            // The backend marks those with data.overlay="1" (or data.role="provider").
+            // Customer-facing status pushes (accepted/negotiation/cancelled) omit it and
+            // fall through to a normal notification below — no overlay card for customers.
+            String ov = data.get("overlay");
+            boolean wantOverlay = "1".equals(ov) || "true".equalsIgnoreCase(String.valueOf(ov))
+                    || "provider".equalsIgnoreCase(String.valueOf(data.get("role")));
+            if (wantOverlay && id != null) {
                 Intent show = new Intent(this, FloatingOverlayService.class)
                         .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id)
                         .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, data.get("providerUserId"));
