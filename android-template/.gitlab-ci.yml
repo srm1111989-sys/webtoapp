@@ -158,6 +158,27 @@ prepare:
         fi
       fi
 
+    # Re-enable overlay ("incoming request") manifest entries ONLY for the paid
+    # feature. The template strips SYSTEM_ALERT_WINDOW + FOREGROUND_SERVICE_SPECIAL_USE
+    # + the specialUse FloatingOverlayService by default so ordinary apps don't declare
+    # FGS_SPECIAL_USE (Play flags it — customer removal request 2026-08-09). Same
+    # tools:node mechanism as AD_ID above.
+    - |
+      OVERLAY_ON=$(echo "$FEATURES_JSON" | python3 -c "import sys,json;print(str(json.load(sys.stdin).get('incoming_request_overlay',False)).lower())" 2>/dev/null || echo false)
+      FULLSCREEN_ON=$(echo "$FEATURES_JSON" | python3 -c "import sys,json;print(str(json.load(sys.stdin).get('incoming_request_fullscreen',False)).lower())" 2>/dev/null || echo false)
+      if [ "$OVERLAY_ON" = "true" ]; then
+        sed -i 's|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />|' app/src/main/AndroidManifest.xml
+        sed -i 's|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" tools:node="remove" />|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />|' app/src/main/AndroidManifest.xml
+        sed -i '/android:name=".FloatingOverlayService"/,/>/ { /tools:node="remove"/d; }' app/src/main/AndroidManifest.xml
+        echo "Overlay enabled - SYSTEM_ALERT_WINDOW + specialUse FGS kept in the manifest"
+      else
+        echo "Overlay disabled - overlay permissions/service stripped from merged manifest"
+      fi
+      if [ "$FULLSCREEN_ON" = "true" ]; then
+        sed -i '/android:name=".IncomingRequestActivity"/,/>/ { /tools:node="remove"/d; }' app/src/main/AndroidManifest.xml
+        echo "Fullscreen overlay enabled - IncomingRequestActivity kept in the manifest"
+      fi
+
   artifacts:
     paths:
       - app/src/main/assets/config.json

@@ -185,6 +185,25 @@ jobs:
             echo "AdMob: no valid app_id (ca-app-pub-...~...) or already set"
           fi
 
+      - name: Configure overlay manifest
+        run: |
+          MF=app/src/main/AndroidManifest.xml
+          # Overlay ("incoming request") perms are stripped by default so ordinary
+          # apps don't declare FGS_SPECIAL_USE (Play flags it). Re-enable only for
+          # the paid Rahatna overlay feature, keyed on FEATURES_JSON flags.
+          if printf '%s' '${{ inputs.FEATURES_JSON }}' | grep -qE '"incoming_request_overlay"[[:space:]]*:[[:space:]]*true'; then
+            sed -i 's|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />|' "$MF"
+            sed -i 's|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" tools:node="remove" />|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />|' "$MF"
+            sed -i '/android:name=".FloatingOverlayService"/,/>/ { /tools:node="remove"/d; }' "$MF"
+            echo "Overlay enabled - SYSTEM_ALERT_WINDOW + specialUse FGS kept"
+          else
+            echo "Overlay disabled - overlay permissions/service stripped from merged manifest"
+          fi
+          if printf '%s' '${{ inputs.FEATURES_JSON }}' | grep -qE '"incoming_request_fullscreen"[[:space:]]*:[[:space:]]*true'; then
+            sed -i '/android:name=".IncomingRequestActivity"/,/>/ { /tools:node="remove"/d; }' "$MF"
+            echo "Fullscreen overlay enabled - IncomingRequestActivity kept"
+          fi
+
       - name: Build APK
         run: |
           chmod +x ./gradlew
