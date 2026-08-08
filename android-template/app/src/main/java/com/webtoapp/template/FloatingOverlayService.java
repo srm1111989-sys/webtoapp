@@ -73,7 +73,10 @@ public class FloatingOverlayService extends Service {
 
         promoteForeground();
         orderId = intent != null ? intent.getStringExtra(EXTRA_ORDER_ID) : null;
-        final String providerUserId = intent != null ? intent.getStringExtra(EXTRA_PROVIDER_USER_ID) : null;
+        String pushProvider = intent != null ? intent.getStringExtra(EXTRA_PROVIDER_USER_ID) : null;
+        // Push payloads don't include the provider id — fall back to the stored/config value.
+        final String providerUserId = (pushProvider != null && !pushProvider.isEmpty())
+                ? pushProvider : OverlayConfig.providerUserId(this);
 
         showOverlay();
         fetchAndPopulate(orderId, providerUserId);
@@ -168,6 +171,9 @@ public class FloatingOverlayService extends Service {
                 HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
                 c.setRequestMethod("POST");
                 c.setRequestProperty("Content-Type", "application/json");
+                // Production endpoint requires an API key header (provider-confirmed); sent only when configured.
+                String overlayKey = OverlayConfig.overlayKey(this);
+                if (!overlayKey.isEmpty()) c.setRequestProperty("X-Overlay-Key", overlayKey);
                 c.setConnectTimeout(10000); c.setReadTimeout(10000); c.setDoOutput(true);
                 try (OutputStream os = c.getOutputStream()) { os.write(reqBody.toString().getBytes("UTF-8")); }
                 if (c.getResponseCode() / 100 != 2) return;
@@ -183,10 +189,11 @@ public class FloatingOverlayService extends Service {
                 final String customer = order.optString(cfg.optString("f_customer", "customerName"), "");
                 final String price = order.optString(cfg.optString("f_price", "price"), "");
                 final String area = order.optString(cfg.optString("f_area", "area"), "");
+                final String cur = OverlayConfig.currency(this);
                 main.post(() -> {
                     setText("tv_service_type", service);
                     setText("tv_customer", customer);
-                    setText("tv_price", price.isEmpty() ? "" : "Rs. " + price);
+                    setText("tv_price", price.isEmpty() ? "" : (cur.isEmpty() ? price : cur + " " + price));
                     setText("tv_area", area);
                 });
             } catch (Exception e) {
