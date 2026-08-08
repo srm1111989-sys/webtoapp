@@ -25,11 +25,6 @@ public class JavaScriptBridge {
         this.prefs = context.getSharedPreferences("webtoapp_bridge", Context.MODE_PRIVATE);
     }
 
-    // Convenience for callers without an AdManager (ad methods are already null-safe).
-    public JavaScriptBridge(Context context, WebView webView) {
-        this(context, webView, null);
-    }
-
     @JavascriptInterface
     public void showToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
