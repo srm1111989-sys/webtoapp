@@ -66,7 +66,8 @@ android {
         buildConfig = true
     }
 
-    // 16 KB page size (Google Play): keep native libs uncompressed so AGP 8.5+/build-tools 35 zipalign to 16 KB.
+    // 16 KB page size (Google Play): keep native libs uncompressed so
+    // AGP 8.5+/build-tools 35 zipalign them to 16 KB.
     packaging {
         jniLibs {
             useLegacyPackaging = false
