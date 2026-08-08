@@ -28,9 +28,14 @@ public final class OverlayConfig {
         return f != null ? f : new JSONObject();
     }
 
-    /** True only when the paid feature is enabled for this app. */
+    /** True only when the paid floating-overlay feature is enabled for this app. */
     public static boolean isEnabled(Context ctx) {
         return features(ctx).optBoolean("incoming_request_overlay", false);
+    }
+
+    /** True when the paid FULL-SCREEN incoming-request feature (Phase 2) is enabled. */
+    public static boolean isFullscreenEnabled(Context ctx) {
+        return features(ctx).optBoolean("incoming_request_fullscreen", false);
     }
 
     /** The features.overlay config object (field mappings); empty if unset. */
