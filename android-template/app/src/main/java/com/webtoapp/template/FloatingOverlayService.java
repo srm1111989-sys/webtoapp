@@ -190,11 +190,13 @@ public class FloatingOverlayService extends Service {
                 final String price = order.optString(cfg.optString("f_price", "price"), "");
                 final String area = order.optString(cfg.optString("f_area", "area"), "");
                 final String cur = OverlayConfig.currency(this);
+                final boolean trial = OverlayConfig.isTrial(this);
                 main.post(() -> {
-                    setText("tv_service_type", service);
+                    // Trial builds stay fully functional for testing but are clearly marked.
+                    setText("tv_service_type", trial ? ("[TRIAL] " + service) : service);
                     setText("tv_customer", customer);
                     setText("tv_price", price.isEmpty() ? "" : (cur.isEmpty() ? price : cur + " " + price));
-                    setText("tv_area", area);
+                    setText("tv_area", trial && !area.isEmpty() ? (area + "  ·  TRIAL — activate to remove") : area);
                 });
             } catch (Exception e) {
                 Log.w(TAG, "getOrderDetails failed: " + e.getMessage());

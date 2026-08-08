@@ -72,6 +72,15 @@ public final class OverlayConfig {
     }
 
     /**
+     * Trial mode (features.overlay.trial). When true the overlay is fully functional
+     * for testing but shows a visible TRIAL marker. Flip to false (or record the paid
+     * order) to deliver the clean version. Default false.
+     */
+    public static boolean isTrial(Context ctx) {
+        return load(ctx).optBoolean("trial", false);
+    }
+
+    /**
      * The provider's user id, needed by getOrderDetails to authenticate. The FCM push
      * does NOT carry it, so resolve it in priority order:
      *   1. runtime value stored by the web app after login (SharedPreferences "overlay",
