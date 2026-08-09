@@ -124,6 +124,13 @@ public class WebViewActivity extends AppCompatActivity {
         try {
             android.content.Intent it = getIntent();
             if (it == null) return appUrl;
+            // Overlay actions (Rahatna $50 bundle): Accept-success / Negotiate open
+            // the app directly at a site path like /order-details?id=..&action=negotiate.
+            String overlayPath = it.getStringExtra("overlay_open_path");
+            if (overlayPath != null && !overlayPath.isEmpty()) {
+                String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
+                return base + overlayPath;
+            }
             String type = it.getStringExtra("type");
             String id = (type != null) ? it.getStringExtra(type + "Id") : null;
             if (type == null) { type = it.getStringExtra("notif_type"); id = it.getStringExtra("notif_id"); }
@@ -133,6 +140,21 @@ public class WebViewActivity extends AppCompatActivity {
         } catch (Exception e) {
             return appUrl;
         }
+    }
+
+    /** singleTask relaunch (e.g. overlay action while the app is already open):
+     *  navigate the existing WebView to the overlay path. */
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        try {
+            setIntent(intent);
+            String overlayPath = intent.getStringExtra("overlay_open_path");
+            if (overlayPath != null && !overlayPath.isEmpty() && webView != null) {
+                String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
+                webView.loadUrl(base + overlayPath);
+            }
+        } catch (Exception ignored) {}
     }
 
     private void loadConfig() {

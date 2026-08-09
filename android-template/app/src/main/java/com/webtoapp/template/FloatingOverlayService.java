@@ -59,6 +59,7 @@ public class FloatingOverlayService extends Service {
     private String orderId;
     private String providerUserId;
     private boolean actionInFlight = false;
+    private final OverlayAlert alert = new OverlayAlert();
     private final Handler main = new Handler(Looper.getMainLooper());
 
     @Override
@@ -146,7 +147,9 @@ public class FloatingOverlayService extends Service {
         }
         overlayView.setOnClickListener(v -> openAppToRequest());
         startCountdown(30);
-        vibrateAlert();
+        // Ringtone + call-style vibration, looping until the provider responds
+        // or the countdown expires (silent/vibrate mode respected).
+        alert.start(this);
         windowManager.addView(overlayView, params);
     }
 
@@ -169,21 +172,9 @@ public class FloatingOverlayService extends Service {
         }.start();
     }
 
-    /** Ring-like buzz when a request pops (like an incoming call). Needs VIBRATE (in manifest). */
-    private void vibrateAlert() {
-        try {
-            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            if (v == null || !v.hasVibrator()) return;
-            long[] pattern = {0, 400, 200, 400};
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                v.vibrate(VibrationEffect.createWaveform(pattern, -1));
-            } else {
-                v.vibrate(pattern, -1);
-            }
-        } catch (Exception ignored) {}
-    }
-
     private void respond(String action) {
+        // First interaction silences the ringtone/vibration immediately.
+        alert.stop();
         // Live backend actions ($50 bundle spec, 2026-08-10):
         //  accept    -> POST acceptOrder; success = close + open app at the order;
         //               failure = show backend's Arabic message, keep the card open.
@@ -297,6 +288,7 @@ public class FloatingOverlayService extends Service {
 
     @Override
     public void onDestroy() {
+        alert.stop();
         if (timer != null) timer.cancel();
         if (overlayView != null && windowManager != null) {
             try { windowManager.removeView(overlayView); } catch (Exception ignored) {}
