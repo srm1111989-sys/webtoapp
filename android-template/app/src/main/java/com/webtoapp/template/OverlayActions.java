@@ -113,7 +113,13 @@ public final class OverlayActions {
                     ok = true;
                 } else {
                     // Surface the backend's own (Arabic) message when present.
-                    try { failMsg = new JSONObject(resp).optString("message", null); } catch (Exception ignored) {}
+                    // Rahatna's Base44 functions use {"error": "..."} (verified live);
+                    // accept either key.
+                    try {
+                        JSONObject r = new JSONObject(resp);
+                        failMsg = r.optString("message", null);
+                        if (failMsg == null || failMsg.isEmpty()) failMsg = r.optString("error", null);
+                    } catch (Exception ignored) {}
                 }
                 c.disconnect();
             } catch (Exception e) {
