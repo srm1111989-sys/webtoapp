@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Incoming-request full-screen palette (light theme). Dark values live in
+     values-night/colors_incoming.xml — the -night qualifier switches them with the
+     system theme, so the screen follows dark/light mode without touching the app
+     theme. Used ONLY by activity_incoming_request.xml (feature-gated). -->
+<resources>
+    <color name="incoming_bg">#F8FAFC</color>
+    <color name="incoming_text">#0F172A</color>
+    <color name="incoming_text_secondary">#475569</color>
+    <color name="incoming_text_muted">#64748B</color>
+    <color name="incoming_price">#15803D</color>
+    <color name="incoming_countdown_bg">#FEF3C7</color>
+    <color name="incoming_countdown_text">#B45309</color>
+    <color name="incoming_status">#B91C1C</color>
+    <color name="incoming_accept">#16A34A</color>
+    <color name="incoming_reject">#DC2626</color>
+    <color name="incoming_negotiate">#2563EB</color>
+    <color name="incoming_card">#FFFFFF</color>
+</resources>
