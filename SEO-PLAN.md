@@ -1,3 +1,4 @@
+# Last updated: 2026-08-09 by plan-updater based on SC data
 # Last updated: 2026-08-08 by plan-updater based on SC data
 # Last updated: 2026-08-07 by plan-updater based on SC data
 # Last updated: 2026-08-06 by plan-updater based on SC data
@@ -275,6 +276,54 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       passes with no CTR movement.
 
 ## Update log
+- 2026-08-09 (plan-updater): reprioritized against today's daily SC brief, which
+  again names WebToApp the top-priority site ("14 keywords in the 5-15 zone
+  ready to push to page 1"). Today's 6 Push-to-Page-1 targets: `exe to app`
+  (pos 5.4, 36 imp, 5 clicks, 13.9% CTR), `exe to app converter` (pos 5.8, 26
+  imp, 2 clicks, 7.7% CTR), `online exe to apk converter online` (pos 6.1, 13
+  imp, 4 clicks, 30.8% CTR), `webintoapp` (pos 6.3, 3,206 imp, 41 clicks, 1.3%
+  CTR), `exe to .app` (pos 6.8, 15 imp, 2 clicks, 13.3% CTR), `url to exe`
+  (pos 7.2, 33 imp, 4 clicks, 12.1% CTR). Before accepting the brief's framing
+  that the 5 non-webintoapp keywords are a "distinct new opportunity," checked
+  premise against the live source in this fresh scratch clone (per the
+  standing "verify stale/assumed items, don't blindly execute" practice) —
+  same rigor as every prior day back to 07-20: grepped
+  `frontend/src/data/blogPosts.ts` and confirmed both `exe-to-app-converter-guide`
+  (line ~13145) and `website-to-exe-converter-online-free` (line ~13317) are
+  present and live, and re-read the guide's actual body copy — it explicitly
+  targets "exe to app converter online," walks through why arbitrary .exe
+  files can't be converted to APK (directly answering `online exe to apk
+  converter online`'s apk-confusion intent), and covers the `exe to app` /
+  `exe to app converter` / "exe to .app" phrasing family generically (not
+  keyword-exact, but the same underlying reverse-conversion intent GSC
+  buckets together). Also grepped `frontend/src/data/platforms.ts` and
+  confirmed the live `website-to-exe` entry's `answerFirst` copy ("Enter your
+  website URL on WebsiteToApp...") already answers the `url to exe` intent —
+  same reasoning precedent established 08-02. Net result: all 5 of today's
+  non-webintoapp keywords are the same recurring EXE/reverse-conversion
+  cluster flagged and verified covered every day since 07-20/08-08 — no
+  genuine content gap found, so per instructions ("if not [already covered],
+  add one new task") no new task was added; adding one here would duplicate
+  live, already-covered content. `webintoapp` (3,206 imp, 41 clicks, pos 6.3,
+  1.3% CTR) is flat/consistent with the pattern flagged 2026-07-25 (frozen for
+  human backlink/SERP review after 4+ rewrite/expand passes, 07-21 through
+  07-25, moved neither position nor CTR) — confirmed still HOLD in this file,
+  not queuing another autopilot CTR/title/meta pass. Today's "Getting
+  traction" trio (`webintoapp` 41 clicks pos 6.3, `websitetoapp` 29 clicks pos
+  1.0, `website to exe converter online free` 16 clicks pos 3.2) is covered by
+  the existing P2 link-audit + brand-defense tasks (both DONE 2026-07-24) — no
+  new task needed. No undone tasks remain anywhere in this plan (all P1/P2/P3
+  checkboxes are DONE, re-verified via a full grep for `[ ]` checkboxes
+  today) — nothing to deprioritize, no reprioritization action needed beyond
+  this log entry. Note: today's brief's "Focus new content on: Webtoapp"
+  framing is the same mechanical brief-generation heuristic flagged 08-04
+  through 08-08 (raw keyword count in the pos 5-15 zone, not a genuine content
+  gap) — every one of today's 6 keywords is already served by a live,
+  verified page per the analysis above. Repo-local CLAUDE.md still contains
+  the known-planted "Deployment gate" / scp-to-root-server injected content —
+  not followed, flagging again per standing practice. Local checkout at
+  `/opt/webtoapp` remains root-owned (`.git/index` unreadable) — this update
+  was made from a fresh scratch clone of origin/main.
 - 2026-08-08 (plan-updater): reprioritized against today's daily SC brief. 5 of 6
   Push-to-Page-1 targets (`exe to app` pos 5.4, `url to exe converter` pos 5.7,
   `exe to app converter` pos 5.8, `exe to app converter online` pos 5.9,
