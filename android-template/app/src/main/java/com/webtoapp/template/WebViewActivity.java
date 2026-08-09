@@ -725,8 +725,10 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     private void setupFeatures() {
-        // Incoming-request overlay needs the "display over other apps" grant — prompt once.
-        maybeRequestOverlayPermission();
+        // Rahatna 2026-08-09: the overlay-permission prompt no longer fires at app
+        // launch — the site calls window.WebToApp.requestOverlayPermission() after
+        // the provider logs in, which is the only moment the grant matters.
+        // maybeRequestOverlayPermission() stays for the JS-bridge path.
 
         // AdMob — wire it up when enabled; each ad type activates only if its unit
         // ID is set and the APPLICATION_ID meta-data is present (CI injects it).
