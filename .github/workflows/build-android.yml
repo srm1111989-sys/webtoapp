@@ -96,12 +96,33 @@ jobs:
           }
           HEREDOC
 
-          # Firebase: the google-services gms plugin only activates when
-          # app/google-services.json exists (build.gradle: file("google-services.json").exists()).
-          # GitLab CI wrote this file but the GitHub workflows did not, so push was silently disabled.
-          if [ "${{ inputs.FIREBASE_ENABLED }}" = "true" ] && [ -n "$FIREBASE_CFG" ] && [ "$FIREBASE_CFG" != "{}" ]; then
-            printf '%s' "$FIREBASE_CFG" > app/google-services.json
-            echo "Wrote app/google-services.json for Firebase (enabled)"
+          # The template strips AD_ID from the merged manifest by default so
+          # apps without ads pass Play's advertising-ID declaration. Ad-enabled
+          # apps need it back.
+          if [ "${{ inputs.ADMOB_ENABLED }}" = "true" ]; then
+            sed -i 's|<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />|<uses-permission android:name="com.google.android.gms.permission.AD_ID" />|' app/src/main/AndroidManifest.xml
+            echo "AdMob enabled — AD_ID permission kept in the manifest"
+          else
+            echo "AdMob disabled — AD_ID permission removed from the merged manifest"
+          fi
+
+          # Overlay ("incoming request") manifest entries are stripped by default so
+          # ordinary apps don't declare FGS_SPECIAL_USE (Play flags it — customer
+          # removal request 2026-08-09). Re-enable only for the paid feature.
+          OVERLAY_ON=$(echo '${{ inputs.FEATURES_JSON }}' | python3 -c "import sys,json;print(str(json.load(sys.stdin).get('incoming_request_overlay',False)).lower())" 2>/dev/null || echo false)
+          FULLSCREEN_ON=$(echo '${{ inputs.FEATURES_JSON }}' | python3 -c "import sys,json;print(str(json.load(sys.stdin).get('incoming_request_fullscreen',False)).lower())" 2>/dev/null || echo false)
+          if [ "$OVERLAY_ON" = "true" ]; then
+            sed -i 's|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />|' app/src/main/AndroidManifest.xml
+            sed -i 's|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" tools:node="remove" />|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />|' app/src/main/AndroidManifest.xml
+            sed -i '/android:name=".FloatingOverlayService"/,/>/ { /tools:node="remove"/d; }' app/src/main/AndroidManifest.xml
+            echo "Overlay enabled — SYSTEM_ALERT_WINDOW + specialUse FGS kept in the manifest"
+          else
+            echo "Overlay disabled — overlay permissions/service stripped from merged manifest"
+          fi
+          if [ "$FULLSCREEN_ON" = "true" ]; then
+            sed -i '/android:name=".IncomingRequestActivity"/,/>/ { /tools:node="remove"/d; }' app/src/main/AndroidManifest.xml
+            sed -i 's|<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:node="remove" />|<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />|' app/src/main/AndroidManifest.xml
+            echo "Fullscreen overlay enabled — IncomingRequestActivity + USE_FULL_SCREEN_INTENT kept in the manifest"
           fi
 
       - name: Process keystore
@@ -135,9 +156,20 @@ jobs:
       - name: Process icon
         run: |
           sudo apt-get install -y -qq imagemagick
+          # Browser UA + retries: Cloudflare challenges bare wget from datacenter
+          # runner IPs (icon silently replaced by letter fallback on GitLab; here a
+          # bare failure would kill the whole build). Fall back to the letter icon
+          # instead of failing, and say why.
+          ICON_UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+          ICON_OK=false
           if [ -n "${{ inputs.ICON_URL }}" ]; then
-            wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "${{ inputs.ICON_URL }}" -O /tmp/icon.png || convert -size 512x512 xc:"${{ inputs.PRIMARY_COLOR }}" -fill white -gravity center -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
-          else
+            wget --timeout=15 --tries=3 --user-agent="$ICON_UA" "${{ inputs.ICON_URL }}" -O /tmp/icon.png 2>/tmp/icon_err && [ -s /tmp/icon.png ] && file /tmp/icon.png | grep -qi image && ICON_OK=true
+            if [ "$ICON_OK" = "false" ]; then
+              echo "WARNING: Icon URL invalid or unreachable (${{ inputs.ICON_URL }}) — using default icon"
+              echo "icon fetch detail: $(tail -3 /tmp/icon_err 2>/dev/null | tr '\n' ' '); got: $(file /tmp/icon.png 2>/dev/null)"
+            fi
+          fi
+          if [ "$ICON_OK" = "false" ]; then
             convert -size 512x512 xc:"${{ inputs.PRIMARY_COLOR }}" -fill white -gravity center -pointsize 200 -annotate +0+0 "W" /tmp/icon.png
           fi
           for size_dir in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
@@ -148,63 +180,12 @@ jobs:
             convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
           done
 
-      - name: Process notification icon
-        run: |
-          NURL=$(grep -oE '"notification_icon_url":[[:space:]]*"[^"]*"' app/src/main/assets/config.json 2>/dev/null | grep -oE 'https?://[^"]*' | head -1)
-          if [ -n "$NURL" ]; then
-            wget -q "$NURL" -O /tmp/notif_raw || true
-            if [ -s /tmp/notif_raw ] && file /tmp/notif_raw | grep -qi image; then
-              mkdir -p app/src/main/res/drawable app/src/main/res/raw
-              convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png || true
-              printf '%s\n' '<?xml version="1.0" encoding="utf-8"?>' '<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@drawable/ic_stat_notification" />' > app/src/main/res/raw/keep.xml
-              # Register icon for background/quit FCM notifications (system tray uses manifest meta-data, not FCMService)
-              MF=app/src/main/AndroidManifest.xml
-              if [ -f "" ] && ! grep -q default_notification_icon ""; then
-                sed -i 's#</application>#    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" /></application>#' ""
-              fi
-            fi
-          fi
-
       - name: Process splash screen
         if: inputs.SPLASH_URL != ''
         run: |
           wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
           if [ -s /tmp/splash_raw ]; then
-            convert '/tmp/splash_raw[0]' -resize "1440x2560>" PNG:app/src/main/res/drawable/splash_image.png || true
-          fi
-
-      - name: Configure AdMob manifest
-        if: inputs.ADMOB_ENABLED == 'true'
-        run: |
-          MF=app/src/main/AndroidManifest.xml
-          APP_ID=$(printf '%s' '${{ inputs.ADMOB_CONFIG }}' | grep -oE 'ca-app-pub-[0-9]+~[0-9]+' | head -1)
-          if [ -n "$APP_ID" ] && ! grep -q "com.google.android.gms.ads.APPLICATION_ID" "$MF"; then
-            sed -i "s#</application>#    <meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$APP_ID\" /></application>#" "$MF"
-            echo "AdMob APPLICATION_ID set: $APP_ID"
-          else
-            echo "AdMob: no valid app_id (ca-app-pub-...~...) or already set"
-          fi
-          # Ads are on, so the app really does use the advertising ID.
-          sed -i 's|<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />|<uses-permission android:name="com.google.android.gms.permission.AD_ID" />|' "$MF"
-          echo "AdMob enabled - AD_ID permission kept in the manifest"
-
-      - name: Configure overlay manifest
-        run: |
-          MF=app/src/main/AndroidManifest.xml
-          # Overlay ("incoming request") perms are stripped by default so ordinary
-          # apps don't declare FGS_SPECIAL_USE (Play flags it). Re-enable only for
-          # the paid Rahatna overlay feature, keyed on FEATURES_JSON flags.
-          if printf '%s' '${{ inputs.FEATURES_JSON }}' | grep -qE '"incoming_request_overlay"[[:space:]]*:[[:space:]]*true'; then
-            sed -i 's|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />|<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />|' "$MF"
-            sed -i 's|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" tools:node="remove" />|<uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />|' "$MF"
-            sed -i '/android:name=".FloatingOverlayService"/,/>/ { /tools:node="remove"/d; }' "$MF"
-            echo "Overlay enabled - SYSTEM_ALERT_WINDOW + specialUse FGS kept"
-          else
-            echo "Overlay disabled - overlay permissions/service stripped from merged manifest"
-          fi
-          if printf '%s' '${{ inputs.FEATURES_JSON }}' | grep -qE '"incoming_request_fullscreen"[[:space:]]*:[[:space:]]*true'; then
-            sed -i '/android:name=".IncomingRequestActivity"/,/>/ { /tools:node="remove"/d; }' "$MF"
-            echo "Fullscreen overlay enabled - IncomingRequestActivity kept"
+            convert '/tmp/splash_raw[0]' PNG:app/src/main/res/drawable/splash_image.png || true
           fi
 
       - name: Build APK
@@ -242,7 +223,6 @@ jobs:
         with:
           name: android-apk
           path: android-template/app/build/outputs/apk/release/app-release.apk
-          retention-days: 3
 
       - name: Upload AAB
         if: inputs.BUILD_AAB == 'true'
@@ -250,14 +230,12 @@ jobs:
         with:
           name: android-aab
           path: android-template/app/build/outputs/bundle/release/app-release.aab
-          retention-days: 3
 
       - name: Upload Keystore
         uses: actions/upload-artifact@v4
         with:
           name: keystore
           path: android-template/keystore.jks
-          retention-days: 3
 
       - name: Notify webhook
         if: always()
