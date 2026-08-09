@@ -177,6 +177,28 @@ public class JavaScriptBridge {
         }
     }
 
+    /** Lock-screen display permission (Rahatna $50 bundle). On standard Android
+     *  the capability ships inside the app (USE_FULL_SCREEN_INTENT + the
+     *  activity's showWhenLocked flags) — nothing to grant, so this is a no-op.
+     *  Some OEMs (Xiaomi/MIUI, Oppo/ColorOS, Vivo) gate "show on lock screen"
+     *  behind a per-app settings toggle; there this opens the app's settings
+     *  page so the provider can flip it. Call after the provider logs in:
+     *  window.WebToApp.requestLockScreenPermission() */
+    @JavascriptInterface
+    public void requestLockScreenPermission() {
+        String maker = android.os.Build.MANUFACTURER == null ? "" : android.os.Build.MANUFACTURER.toLowerCase();
+        boolean needsToggle = maker.contains("xiaomi") || maker.contains("redmi")
+                || maker.contains("oppo") || maker.contains("vivo") || maker.contains("realme")
+                || maker.contains("oneplus");
+        if (!needsToggle) return; // stock Android & most brands: already capable
+        try {
+            Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + context.getPackageName()));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        } catch (Exception ignored) {}
+    }
+
     // ── AdMob: let the web app trigger full-screen ads and get the rewarded callback ──
 
     /** Show a rewarded ad; the JS callback fires as callback(rewarded, reason):
