@@ -25,6 +25,11 @@
          AD_ID below. -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" tools:node="remove" />
+    <!-- Full-screen intent: without this the incoming-request notification silently
+         degrades to a banner on PIN-locked devices instead of launching the
+         call-style screen (Rahatna report 2026-08-09). CI re-enables it with the
+         fullscreen flag, same pattern as the two above. -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:node="remove" />
     <!-- Android 15+ Screen Capture Protection: detect when the app is being screen-recorded to mute audio -->
     <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
     <!-- AD_ID is stripped from the merged manifest unless AdMob is enabled: the
@@ -105,7 +110,8 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:excludeFromRecents="true"
-            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:theme="@style/Theme.WebToApp"
             tools:node="remove"
             />

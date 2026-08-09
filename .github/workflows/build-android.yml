@@ -121,7 +121,8 @@ jobs:
           fi
           if [ "$FULLSCREEN_ON" = "true" ]; then
             sed -i '/android:name=".IncomingRequestActivity"/,/>/ { /tools:node="remove"/d; }' app/src/main/AndroidManifest.xml
-            echo "Fullscreen overlay enabled — IncomingRequestActivity kept in the manifest"
+            sed -i 's|<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:node="remove" />|<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />|' app/src/main/AndroidManifest.xml
+            echo "Fullscreen overlay enabled — IncomingRequestActivity + USE_FULL_SCREEN_INTENT kept in the manifest"
           fi
 
       - name: Process keystore
