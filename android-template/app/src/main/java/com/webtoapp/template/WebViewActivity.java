@@ -143,17 +143,20 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     /** singleTask relaunch (e.g. overlay action while the app is already open):
-     *  navigate the existing WebView to the overlay path. */
+     *  navigate the existing WebView to the overlay path.
+     *  STRICT no-op for every app/intent without overlay_open_path — no
+     *  setIntent, no navigation — so existing apps' relaunch behaviour is
+     *  byte-for-byte unchanged (regression-safety rule after the 2026-08-09
+     *  overlay-permission leak incident). */
     @Override
     protected void onNewIntent(android.content.Intent intent) {
         super.onNewIntent(intent);
         try {
+            String overlayPath = intent == null ? null : intent.getStringExtra("overlay_open_path");
+            if (overlayPath == null || overlayPath.isEmpty() || webView == null) return;
             setIntent(intent);
-            String overlayPath = intent.getStringExtra("overlay_open_path");
-            if (overlayPath != null && !overlayPath.isEmpty() && webView != null) {
-                String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
-                webView.loadUrl(base + overlayPath);
-            }
+            String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
+            webView.loadUrl(base + overlayPath);
         } catch (Exception ignored) {}
     }
 
