@@ -50,7 +50,25 @@ public class FCMService extends FirebaseMessagingService {
             boolean wantUi = "1".equals(ov) || "true".equalsIgnoreCase(String.valueOf(ov))
                     || "provider".equalsIgnoreCase(String.valueOf(data.get("role")));
             if (wantUi && id != null) {
-                if (OverlayConfig.isFullscreenEnabled(this)) {
+                boolean fullscreenOn = OverlayConfig.isFullscreenEnabled(this);
+                boolean floatingOn = OverlayConfig.isEnabled(this);
+                boolean useFullScreen;
+                if (fullscreenOn && floatingOn) {
+                    // Mode rule ($50 bundle): device locked or screen off → call-style
+                    // full screen; unlocked & in use → the less intrusive floating card.
+                    // The card also needs the draw-over-apps permission — if the provider
+                    // hasn't granted it, fall back to full screen so no request is missed.
+                    android.app.KeyguardManager km = (android.app.KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+                    boolean locked = km != null && km.isKeyguardLocked();
+                    android.os.PowerManager pm = (android.os.PowerManager) getSystemService(POWER_SERVICE);
+                    boolean screenOff = pm != null && !pm.isInteractive();
+                    boolean canFloat = Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                            || android.provider.Settings.canDrawOverlays(this);
+                    useFullScreen = locked || screenOff || !canFloat;
+                } else {
+                    useFullScreen = fullscreenOn;
+                }
+                if (useFullScreen) {
                     // Phase 2: full-screen call-style screen (works over lock screen / background).
                     showFullScreenRequest(id, data.get("providerUserId"), data.get("title"), data.get("body"));
                 } else {
