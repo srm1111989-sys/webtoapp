@@ -1,84 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Full-screen incoming-request screen (Phase 2). Inflated by IncomingRequestActivity.
-     Same field IDs as the floating overlay so the populate code is shared in spirit:
-     iv_logo, tv_countdown, tv_service_type, tv_customer, tv_price, tv_area,
-     tv_description, btn_accept, btn_reject, btn_negotiate. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Full-screen incoming-request screen (Rahatna $50 bundle redesign).
+     Inflated only by IncomingRequestActivity (feature-gated, default OFF).
+     IDs bound from Java: iv_logo, tv_countdown, tv_service_type, tv_customer,
+     tv_price, tv_area, tv_description, tv_status, row_images, iv_img1..3,
+     wv_map, btn_accept, btn_reject, btn_negotiate, img_viewer, iv_full.
+     Colors come from colors_incoming.xml (+ values-night twin → follows
+     system dark/light mode automatically). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#0F172A"
-    android:padding="24dp"
-    android:layoutDirection="locale"
-    android:textAlignment="viewStart">
+    android:background="@color/incoming_bg">
 
-    <!-- Header: logo + countdown -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingTop="24dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layoutDirection="locale"
+        android:textAlignment="viewStart">
+
+        <!-- Header: countdown pinned top-LEFT regardless of RTL (spec), logo right -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
+            android:paddingStart="20dp" android:paddingEnd="20dp"
+            android:paddingTop="28dp" android:paddingBottom="8dp">
+            <TextView
+                android:id="@+id/tv_countdown"
+                android:layout_width="48dp" android:layout_height="48dp"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_incoming_countdown"
+                android:textColor="@color/incoming_countdown_text"
+                android:textSize="22sp" android:textStyle="bold"
+                android:text="30" />
+            <ImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="40dp" android:layout_height="40dp"
+                android:layout_gravity="right|center_vertical"
+                android:contentDescription="logo" />
+        </FrameLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="20dp" android:paddingEnd="20dp"
+                android:paddingBottom="12dp">
+
+                <!-- Service + price: the two things a provider decides on -->
+                <TextView
+                    android:id="@+id/tv_service_type"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/incoming_text"
+                    android:textSize="28sp" android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/incoming_price"
+                    android:textSize="26sp" android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_customer"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:paddingTop="12dp"
+                    android:textColor="@color/incoming_text_secondary"
+                    android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/tv_area"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/incoming_text_muted"
+                    android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/incoming_text_secondary"
+                    android:textSize="16sp" />
+
+                <!-- Request photos: up to 3 tappable thumbnails (hidden when none) -->
+                <LinearLayout
+                    android:id="@+id/row_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="96dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone">
+                    <ImageView android:id="@+id/iv_img1"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1" android:layout_marginEnd="8dp"
+                        android:scaleType="centerCrop" android:visibility="gone"
+                        android:contentDescription="photo" />
+                    <ImageView android:id="@+id/iv_img2"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1" android:layout_marginEnd="8dp"
+                        android:scaleType="centerCrop" android:visibility="gone"
+                        android:contentDescription="photo" />
+                    <ImageView android:id="@+id/iv_img3"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:scaleType="centerCrop" android:visibility="gone"
+                        android:contentDescription="photo" />
+                </LinearLayout>
+
+                <!-- Pickup → destination map (hidden until coordinates arrive) -->
+                <WebView
+                    android:id="@+id/wv_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone" />
+
+                <!-- Action feedback (accepting… / backend error) -->
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/incoming_status"
+                    android:textSize="15sp" android:textStyle="bold" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Actions: Accept solid green ✓ · Reject red outline ✗ · Negotiate blue outline 💬 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:paddingBottom="24dp" android:paddingTop="8dp">
+            <Button android:id="@+id/btn_reject"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/incoming_reject"
+                app:strokeColor="@color/incoming_reject" app:strokeWidth="2dp"
+                android:textSize="15sp"
+                android:text="Reject" />
+            <Button android:id="@+id/btn_negotiate"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/incoming_negotiate"
+                app:strokeColor="@color/incoming_negotiate" app:strokeWidth="2dp"
+                android:textSize="15sp"
+                android:text="Negotiate" />
+            <Button android:id="@+id/btn_accept"
+                android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1.2"
+                android:backgroundTint="@color/incoming_accept"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:text="Accept" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Full-size photo viewer (tap anywhere to close) -->
+    <FrameLayout
+        android:id="@+id/img_viewer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
         <ImageView
-            android:id="@+id/iv_logo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="12dp"
-            android:contentDescription="logo" />
-        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
-        <TextView
-            android:id="@+id/tv_countdown"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textColor="#FBBF24" android:textSize="30sp" android:textStyle="bold"
-            android:text="30" />
-    </LinearLayout>
-
-    <!-- Spacer -->
-    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="0.4" />
-
-    <!-- Details -->
-    <TextView
-        android:id="@+id/tv_service_type"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:textColor="#F8FAFC" android:textSize="26sp" android:textStyle="bold" />
-    <TextView
-        android:id="@+id/tv_customer"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:textColor="#E2E8F0" android:textSize="18sp" />
-    <TextView
-        android:id="@+id/tv_price"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:paddingTop="6dp"
-        android:textColor="#4ADE80" android:textSize="22sp" android:textStyle="bold" />
-    <TextView
-        android:id="@+id/tv_area"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:paddingTop="6dp"
-        android:textColor="#94A3B8" android:textSize="16sp" />
-    <TextView
-        android:id="@+id/tv_description"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:textColor="#CBD5E1" android:textSize="16sp" />
-
-    <!-- Spacer -->
-    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
-
-    <!-- Actions -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="24dp">
-        <Button android:id="@+id/btn_accept"
-            android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"
-            android:layout_marginEnd="8dp" android:text="Accept" />
-        <Button android:id="@+id/btn_reject"
-            android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"
-            android:layout_marginEnd="8dp" android:text="Reject" />
-        <Button android:id="@+id/btn_negotiate"
-            android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"
-            android:text="Negotiate" />
-    </LinearLayout>
-</LinearLayout>
+            android:id="@+id/iv_full"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="photo" />
+    </FrameLayout>
+</FrameLayout>
