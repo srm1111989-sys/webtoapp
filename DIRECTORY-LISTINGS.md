@@ -68,7 +68,7 @@ Prices below verified against `backend/docs/webtoapp-guide.md` (2026-08-02).
   hero, the wizard, and the build-success screen (grab fresh ones at 1280×800).
 - Worth it: G2/Capterra pages rank for "X alternatives" queries and feed LLM answers.
 
-## Other products (drafted 2026-08-02, none posted yet)
+## Other products (drafted 2026-08-02, prices verified 2026-08-09, none posted yet)
 
 Same copy works for both AlternativeTo and SaaSHub — they ask for the same fields.
 Post one product per Sunday slot; AlternativeTo first (no account barrier).
@@ -98,12 +98,15 @@ Pricing verified against `IndexFlow/frontend/src/app/pricing/page.tsx` (2026-08-
   against simulated slaves, or debug a field device without hauling hardware to the
   desk. 30-day free trial with all features unlocked, no registration and no card;
   one-time license after that, with no subscription.
-- **Pricing model**: Free trial (30 days), then paid one-time.
-  ⚠️ **OPERATOR: confirm the price before posting.** The repo disagrees with itself —
-  the desktop app UI (`src/renderer/App.tsx`) and several blog/comparison pages say $99,
-  while the license-server site (`public/index.html`, `download.html`,
-  `free-modbus-simulator.html`) says $59, and `api/chatbot.ts` says $49. This is a
-  release-consistency defect worth fixing on the site regardless of the listing.
+- **Pricing model**: Free trial (30 days, all features, no card), then $59 one-time
+  (single license; $49/each for the 3+ license pack).
+  ✅ VERIFIED 2026-08-09: the live checkout is the source of truth — `public/index.html`
+  calls `openPurchaseModal(59, 1)` (single) and `openPurchaseModal(49, 3)` (3-pack), and
+  the payment APIs charge the amount the page sends. $59 is what buyers actually pay.
+  ⚠️ Separate site defect (does NOT block this listing): the desktop app UI
+  (`src/renderer/App.tsx`) and some blog/comparison pages still say $99, and
+  `api/chatbot.ts` says $49 — display drift vs the $59 checkout, worth a
+  release-consistency fix.
 - **Categories**: Development / Industrial Automation / Network Tools
 - **Alternatives to claim**: Modbus Poll, Modbus Slave (Witte Software), QModMaster,
   ModbusMechanic, Simply Modbus, EasyModbus, CAS Modbus Scanner, modpoll/diagslave
@@ -115,10 +118,15 @@ Pricing verified against `IndexFlow/frontend/src/app/pricing/page.tsx` (2026-08-
   import an existing product list, take UPI payments, and publish a storefront or
   landing page from templates. Built for kirana stores, boutiques, trades and local
   service providers rather than for developers.
-- **Pricing model**: ⚠️ **OPERATOR: confirm live plans and prices before posting.** The
-  ₹249/mo Pro and ₹499/mo Pro+ tiers in `mystore/SERVICE-PROVIDER-PLAN.md` are a
-  proposal doc for the service-provider wedge, not confirmed live pricing — don't
-  publish them to a directory until checked against the live pricing page.
+- **Pricing model**: Free for the first 2 months (all features, no credit card), then
+  Growth at ₹199/month or ₹1,990/year. No transaction cut on store payments (merchant
+  connects their own Razorpay).
+  ✅ VERIFIED 2026-08-09 against the live API (`https://ownstore.app/api/subscriptions/plans`
+  returns exactly two plans: FREE trial + GROWTH ₹199/mo, ₹1,990/yr) and
+  `frontend/app/pricing/page.tsx`. The ₹249/₹499 tiers in `SERVICE-PROVIDER-PLAN.md`
+  are a proposal doc, not live — do not use them. Note: the backend seed
+  (`backend/app/models/subscription.py` DEFAULT_PLANS: Starter ₹299/Pro ₹799/Agency
+  ₹2499) is stale vs the live DB — only relevant on a fresh install, ignore for listings.
 - **Categories**: Accounting / Invoicing / eCommerce / Small Business
 - **Alternatives to claim**: Vyapar, myBillBook, Zoho Invoice, Khatabook, Dukaan,
   Tally, Instamojo
@@ -131,4 +139,5 @@ Day 2: SaaSHub for WebsiteToApp — copy ready above, blocked on a browser sessi
 Day 3-5: Product Hunt (pick a Tuesday, prep maker comment).
 Week 2: G2 + Capterra vendor signups (operator), then profiles.
 Then: one other product per Sunday — IndexFlow first (copy ready, no blockers), then
-ModbusSimulator and OwnStore once the operator confirms their prices.
+ModbusSimulator and OwnStore (prices verified 2026-08-09 — all four products are now
+post-ready; the only remaining blocker is a browser session with the Chrome extension).
