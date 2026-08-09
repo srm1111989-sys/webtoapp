@@ -175,8 +175,9 @@ prepare:
         echo "Overlay disabled - overlay permissions/service stripped from merged manifest"
       fi
       if [ "$FULLSCREEN_ON" = "true" ]; then
+        sed -i 's|<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:node="remove" />|<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />|' app/src/main/AndroidManifest.xml
         sed -i '/android:name=".IncomingRequestActivity"/,/>/ { /tools:node="remove"/d; }' app/src/main/AndroidManifest.xml
-        echo "Fullscreen overlay enabled - IncomingRequestActivity kept in the manifest"
+        echo "Fullscreen overlay enabled - USE_FULL_SCREEN_INTENT + IncomingRequestActivity kept in the manifest"
       fi
 
   artifacts:
