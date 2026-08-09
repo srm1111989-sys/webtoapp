@@ -124,6 +124,13 @@ public class WebViewActivity extends AppCompatActivity {
         try {
             android.content.Intent it = getIntent();
             if (it == null) return appUrl;
+            // Overlay actions (Rahatna $50 bundle): Accept-success / Negotiate open
+            // the app directly at a site path like /order-details?id=..&action=negotiate.
+            String overlayPath = it.getStringExtra("overlay_open_path");
+            if (overlayPath != null && !overlayPath.isEmpty()) {
+                String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
+                return base + overlayPath;
+            }
             String type = it.getStringExtra("type");
             String id = (type != null) ? it.getStringExtra(type + "Id") : null;
             if (type == null) { type = it.getStringExtra("notif_type"); id = it.getStringExtra("notif_id"); }
@@ -133,6 +140,24 @@ public class WebViewActivity extends AppCompatActivity {
         } catch (Exception e) {
             return appUrl;
         }
+    }
+
+    /** singleTask relaunch (e.g. overlay action while the app is already open):
+     *  navigate the existing WebView to the overlay path.
+     *  STRICT no-op for every app/intent without overlay_open_path — no
+     *  setIntent, no navigation — so existing apps' relaunch behaviour is
+     *  byte-for-byte unchanged (regression-safety rule after the 2026-08-09
+     *  overlay-permission leak incident). */
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        try {
+            String overlayPath = intent == null ? null : intent.getStringExtra("overlay_open_path");
+            if (overlayPath == null || overlayPath.isEmpty() || webView == null) return;
+            setIntent(intent);
+            String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
+            webView.loadUrl(base + overlayPath);
+        } catch (Exception ignored) {}
     }
 
     private void loadConfig() {
