@@ -380,8 +380,18 @@ public class IncomingRequestActivity extends Activity {
                 + "var p=[" + pLat + "," + pLng + "];L.marker(p).addTo(map);"
                 + (hasDest
                     ? "var d=[" + dLat + "," + dLng + "];L.marker(d).addTo(map);"
-                      + "L.polyline([p,d],{color:'#2563EB',weight:4,dashArray:'8 6'}).addTo(map);"
+                      // Straight dashed line shows instantly; OSRM (keyless public
+                      // routing) then replaces it with the real driving route along
+                      // roads (Mohamed: straight line misleads drivers). On any
+                      // routing failure the dashed line simply stays.
+                      + "var line=L.polyline([p,d],{color:'#2563EB',weight:4,dashArray:'8 6'}).addTo(map);"
                       + "map.fitBounds(L.latLngBounds([p,d]).pad(0.3));"
+                      + "fetch('https://router.project-osrm.org/route/v1/driving/'+p[1]+','+p[0]+';'+d[1]+','+d[0]+'?overview=full&geometries=geojson')"
+                      + ".then(function(r){return r.json()}).then(function(j){"
+                      + "if(j.routes&&j.routes[0]){map.removeLayer(line);"
+                      + "var route=L.geoJSON(j.routes[0].geometry,{style:{color:'#2563EB',weight:5,opacity:0.9}}).addTo(map);"
+                      + "map.fitBounds(route.getBounds().pad(0.15));}"
+                      + "}).catch(function(){});"
                     : "map.setView(p,15);")
                 + "</script></body></html>";
         wv.getSettings().setJavaScriptEnabled(true);
