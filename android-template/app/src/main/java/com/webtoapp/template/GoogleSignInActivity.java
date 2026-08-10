@@ -67,10 +67,15 @@ public class GoogleSignInActivity extends Activity {
                     .requestEmail()
                     .build();
             GoogleSignInClient client = GoogleSignIn.getClient(this, gso);
-            // Sign out first so the account CHOOSER always shows (otherwise a
-            // previously used account silently auto-signs-in and the user can
-            // never switch accounts from inside the app).
-            client.signOut().addOnCompleteListener(t ->
+            // revokeAccess (implies signOut) rather than signOut alone: with a
+            // prior grant left from the last session, Play Services routes the
+            // next sign-in through the RE-GRANT path, which fails with
+            // DEVELOPER_ERROR(10) on some console setups even though the
+            // fresh-consent path works ("works once after install, error 10
+            // afterwards" — Ali, t310). Revoking the old grant forces every
+            // sign-in down the fresh-consent path that provably works, and the
+            // account CHOOSER still always shows (which we want anyway).
+            client.revokeAccess().addOnCompleteListener(t ->
                     startActivityForResult(client.getSignInIntent(), RC_SIGN_IN));
         } catch (Exception e) {
             Log.e(TAG, "Google sign-in init failed", e);
