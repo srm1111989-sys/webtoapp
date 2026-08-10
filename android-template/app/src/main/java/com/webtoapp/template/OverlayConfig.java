@@ -107,4 +107,15 @@ public final class OverlayConfig {
         if (stored != null && !stored.isEmpty()) return stored;
         return load(ctx).optString("provider_user_id", "");
     }
+
+    /** First non-empty string value among the given keys (config-mapped key first,
+     *  then common API spellings — Rahatna sends customerFirstName, t310). */
+    public static String firstNonEmpty(org.json.JSONObject o, String... keys) {
+        for (String k : keys) {
+            if (k == null || k.isEmpty()) continue;
+            String v = o.optString(k, "");
+            if (!v.isEmpty() && !"null".equals(v)) return v;
+        }
+        return "";
+    }
 }

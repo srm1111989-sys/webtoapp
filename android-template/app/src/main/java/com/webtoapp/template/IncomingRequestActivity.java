@@ -189,7 +189,9 @@ public class IncomingRequestActivity extends Activity {
                 JSONObject order = resp.optJSONObject("order");
                 if (order == null) order = resp;
                 final String service = order.optString(cfg.optString("f_service", "service"), "New request");
-                final String customer = order.optString(cfg.optString("f_customer", "customerName"), "");
+                final String customer = OverlayConfig.firstNonEmpty(order,
+                        cfg.optString("f_customer", "customerName"),
+                        "customerName", "customerFirstName", "customer_name", "firstName", "name");
                 final String price = order.optString(cfg.optString("f_price", "price"), "");
                 final String area = order.optString(cfg.optString("f_area", "area"), "");
                 final String desc = order.optString(cfg.optString("f_description", "description"), "");
