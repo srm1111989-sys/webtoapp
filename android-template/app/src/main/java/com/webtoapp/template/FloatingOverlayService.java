@@ -136,9 +136,9 @@ public class FloatingOverlayService extends Service {
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.TOP;
 
-        bindButton("btn_accept", "accept");
-        bindButton("btn_reject", "reject");
-        bindButton("btn_negotiate", "negotiate");
+        bindButton("btn_accept", "accept", "✓ ");
+        bindButton("btn_reject", "reject", "✗ ");
+        bindButton("btn_negotiate", "negotiate", "💬 ");
         // App logo in the banner.
         int logoId = getResources().getIdentifier("iv_logo", "id", getPackageName());
         View logo = logoId != 0 ? overlayView.findViewById(logoId) : null;
@@ -153,14 +153,14 @@ public class FloatingOverlayService extends Service {
         windowManager.addView(overlayView, params);
     }
 
-    private void bindButton(String idName, final String action) {
+    private void bindButton(String idName, final String action, String symbol) {
         int id = getResources().getIdentifier(idName, "id", getPackageName());
         View b = overlayView.findViewById(id);
         if (b instanceof Button) {
             b.setOnClickListener(v -> respond(action));
             // Localised label from config (features.overlay.labels.<action>), e.g. Arabic.
             String label = OverlayConfig.label(this, action, ((Button) b).getText().toString());
-            ((Button) b).setText(label);
+            ((Button) b).setText(symbol + label);
         }
     }
 
@@ -260,7 +260,9 @@ public class FloatingOverlayService extends Service {
                 JSONObject order = resp.optJSONObject("order");
                 if (order == null) order = resp;
                 final String service = order.optString(cfg.optString("f_service", "service"), "New request");
-                final String customer = order.optString(cfg.optString("f_customer", "customerName"), "");
+                final String customer = OverlayConfig.firstNonEmpty(order,
+                        cfg.optString("f_customer", "customerName"),
+                        "customerName", "customerFirstName", "customer_name", "firstName", "name");
                 final String price = order.optString(cfg.optString("f_price", "price"), "");
                 final String area = order.optString(cfg.optString("f_area", "area"), "");
                 final String desc = order.optString(cfg.optString("f_description", "description"), "");
