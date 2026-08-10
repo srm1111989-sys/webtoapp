@@ -189,9 +189,25 @@ public class IncomingRequestActivity extends Activity {
                 JSONObject order = resp.optJSONObject("order");
                 if (order == null) order = resp;
                 final String service = order.optString(cfg.optString("f_service", "service"), "New request");
-                final String customer = order.optString(cfg.optString("f_customer", "customerName"), "");
+                final String customer = OverlayConfig.firstNonEmpty(order,
+                        cfg.optString("f_customer", "customerName"),
+                        "customerName", "customerFirstName", "customer_name", "firstName", "name");
                 final String price = order.optString(cfg.optString("f_price", "price"), "");
-                final String area = order.optString(cfg.optString("f_area", "area"), "");
+                String areaLine = order.optString(cfg.optString("f_area", "area"), "");
+                // Trip distance/duration when the backend provides them (Rahatna:
+                // tripDistance km, tripDuration min; null on public requests).
+                double dist = order.optDouble("tripDistance", Double.NaN);
+                double dur = order.optDouble("tripDuration", Double.NaN);
+                if (!Double.isNaN(dist) || !Double.isNaN(dur)) {
+                    StringBuilder trip = new StringBuilder();
+                    if (!Double.isNaN(dist)) trip.append(dist % 1 == 0 ? String.valueOf((long) dist) : String.valueOf(dist)).append(" كم");
+                    if (!Double.isNaN(dur)) {
+                        if (trip.length() > 0) trip.append(" · ");
+                        trip.append((long) dur).append(" دقيقة");
+                    }
+                    areaLine = areaLine.isEmpty() ? trip.toString() : areaLine + " · " + trip;
+                }
+                final String area = areaLine;
                 final String desc = order.optString(cfg.optString("f_description", "description"), "");
                 final String cur = OverlayConfig.currency(this);
                 final boolean trial = OverlayConfig.isTrial(this);
@@ -305,13 +321,14 @@ public class IncomingRequestActivity extends Activity {
 
     // ── Pickup → destination map (OpenStreetMap/Leaflet, no API key) ────────
 
-    private static final String[] PICKUP_LAT = {"pickupLatitude", "pickup_lat", "pickupLat",
+    // Rahatna's live API (verified sample, t310): startLat/startLng + endLat/endLng.
+    private static final String[] PICKUP_LAT = {"startLat", "pickupLatitude", "pickup_lat", "pickupLat",
             "pickup.lat", "pickup.latitude", "location.lat", "location.latitude", "latitude", "lat"};
-    private static final String[] PICKUP_LNG = {"pickupLongitude", "pickup_lng", "pickupLng",
+    private static final String[] PICKUP_LNG = {"startLng", "pickupLongitude", "pickup_lng", "pickupLng",
             "pickup.lng", "pickup.longitude", "location.lng", "location.longitude", "longitude", "lng"};
-    private static final String[] DEST_LAT = {"destinationLatitude", "destination_lat", "destLat",
+    private static final String[] DEST_LAT = {"endLat", "destinationLatitude", "destination_lat", "destLat",
             "destination.lat", "destination.latitude", "dropoff.lat", "dropoffLatitude", "dropLatitude"};
-    private static final String[] DEST_LNG = {"destinationLongitude", "destination_lng", "destLng",
+    private static final String[] DEST_LNG = {"endLng", "destinationLongitude", "destination_lng", "destLng",
             "destination.lng", "destination.longitude", "dropoff.lng", "dropoffLongitude", "dropLongitude"};
 
     /** Read a coordinate: config-mapped key first (supports dotted paths), then candidates. */
