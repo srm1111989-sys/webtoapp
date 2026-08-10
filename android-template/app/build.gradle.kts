@@ -103,5 +103,12 @@ dependencies {
 
     // Native Google sign-in (device account chooser) — used by the JS bridge's
     // googleSignIn(); returns an ID token the web page feeds to Firebase.
+    // Primary flow: Credential Manager ("Sign in with Google" — Google's current
+    // API; the legacy GoogleSignIn SDK is deprecated and its re-grant path
+    // produced repeat-login DEVELOPER_ERROR(10) on some devices, Ali t310).
+    // play-services-auth stays as the automatic fallback for old GMS versions.
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 }
