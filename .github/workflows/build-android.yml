@@ -96,6 +96,16 @@ jobs:
           }
           HEREDOC
 
+          # Firebase: the google-services gms plugin only activates when
+          # app/google-services.json exists (build.gradle: file("google-services.json").exists()).
+          # This step was ONLY in the github repos' local workflow copies and was lost when the
+          # stale canonical was synced over them (2026-08-09 — broke Google Sign-In + push on
+          # every Firebase build; Ali vc12 + Rahatna incident). It lives in the canonical now.
+          if [ "${{ inputs.FIREBASE_ENABLED }}" = "true" ] && [ -n "$FIREBASE_CFG" ] && [ "$FIREBASE_CFG" != "{}" ]; then
+            printf '%s' "$FIREBASE_CFG" > app/google-services.json
+            echo "Wrote app/google-services.json for Firebase (enabled)"
+          fi
+
           # The template strips AD_ID from the merged manifest by default so
           # apps without ads pass Play's advertising-ID declaration. Ad-enabled
           # apps need it back.
