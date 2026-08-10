@@ -127,6 +127,24 @@ prepare:
         convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
       done
 
+    # Notification icon (parity with the github workflows, t310): FCMService and
+    # the firebase default-icon meta-data resolve ic_stat_notification at runtime;
+    # without it customer pushes show the generic "i". URL lives in config.json.
+    - |
+      NURL=$(grep -oE '"notification_icon_url":[[:space:]]*"[^"]*"' app/src/main/assets/config.json 2>/dev/null | grep -oE 'https?://[^"]*' | head -1)
+      if [ -n "$NURL" ]; then
+        wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "$NURL" -O /tmp/notif_raw || true
+        if [ -s /tmp/notif_raw ] && file /tmp/notif_raw | grep -qi image; then
+          mkdir -p app/src/main/res/drawable app/src/main/res/raw
+          convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png || true
+          printf '%s\n' '<?xml version="1.0" encoding="utf-8"?>' '<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@drawable/ic_stat_notification" />' > app/src/main/res/raw/keep.xml
+          if ! grep -q default_notification_icon app/src/main/AndroidManifest.xml; then
+            sed -i 's#</application>#    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" /></application>#' app/src/main/AndroidManifest.xml
+          fi
+          echo "Notification icon baked from $NURL"
+        fi
+      fi
+
     # Download splash screen if provided (convert to PNG for AAPT compatibility)
     - |
       if [ -n "$SPLASH_URL" ]; then
