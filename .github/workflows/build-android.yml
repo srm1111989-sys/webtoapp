@@ -190,12 +190,50 @@ jobs:
             convert /tmp/icon.png -resize ${size}x${size} "app/src/main/res/mipmap-${dir}/ic_launcher_round.png"
           done
 
+      - name: Process notification icon
+        run: |
+          # ic_stat_notification: FCMService + the firebase default-icon meta-data
+          # resolve this drawable at runtime; without it customer pushes show the
+          # generic "i" (Rahatna report 2026-08-10). URL travels INSIDE config.json
+          # (workflow_dispatch is capped at 25 inputs). keep.xml stops the resource
+          # shrinker from stripping a runtime-referenced drawable.
+          NURL=$(grep -oE '"notification_icon_url":[[:space:]]*"[^"]*"' app/src/main/assets/config.json 2>/dev/null | grep -oE 'https?://[^"]*' | head -1)
+          if [ -n "$NURL" ]; then
+            wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "$NURL" -O /tmp/notif_raw || true
+            if [ -s /tmp/notif_raw ] && file /tmp/notif_raw | grep -qi image; then
+              mkdir -p app/src/main/res/drawable app/src/main/res/raw
+              convert /tmp/notif_raw -resize 96x96 -background none app/src/main/res/drawable/ic_stat_notification.png || true
+              printf '%s
+' '<?xml version="1.0" encoding="utf-8"?>' '<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@drawable/ic_stat_notification" />' > app/src/main/res/raw/keep.xml
+              # Background/quit-state FCM notifications use manifest meta-data, not FCMService.
+              MF=app/src/main/AndroidManifest.xml
+              if ! grep -q default_notification_icon "$MF"; then
+                sed -i 's#</application>#    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notification" /></application>#' "$MF"
+              fi
+              echo "Notification icon baked from $NURL"
+            else
+              echo "Notification icon URL unusable ($NURL) — default icon"
+            fi
+          fi
+
       - name: Process splash screen
         if: inputs.SPLASH_URL != ''
         run: |
           wget -q --timeout=15 --tries=3 --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" "${{ inputs.SPLASH_URL }}" -O /tmp/splash_raw || true
           if [ -s /tmp/splash_raw ]; then
-            convert '/tmp/splash_raw[0]' PNG:app/src/main/res/drawable/splash_image.png || true
+            convert '/tmp/splash_raw[0]' -resize "1440x2560>" PNG:app/src/main/res/drawable/splash_image.png || true
+          fi
+
+      - name: Configure AdMob manifest
+        if: inputs.ADMOB_ENABLED == 'true'
+        run: |
+          MF=app/src/main/AndroidManifest.xml
+          APP_ID=$(printf '%s' '${{ inputs.ADMOB_CONFIG }}' | grep -oE 'ca-app-pub-[0-9]+~[0-9]+' | head -1)
+          if [ -n "$APP_ID" ] && ! grep -q "com.google.android.gms.ads.APPLICATION_ID" "$MF"; then
+            sed -i "s#</application>#    <meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$APP_ID\" /></application>#" "$MF"
+            echo "AdMob APPLICATION_ID set: $APP_ID"
+          else
+            echo "AdMob: no valid app_id (ca-app-pub-...~...) or already set"
           fi
 
       - name: Build APK
@@ -233,6 +271,7 @@ jobs:
         with:
           name: android-apk
           path: android-template/app/build/outputs/apk/release/app-release.apk
+          retention-days: 3
 
       - name: Upload AAB
         if: inputs.BUILD_AAB == 'true'
@@ -240,12 +279,14 @@ jobs:
         with:
           name: android-aab
           path: android-template/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 3
 
       - name: Upload Keystore
         uses: actions/upload-artifact@v4
         with:
           name: keystore
           path: android-template/keystore.jks
+          retention-days: 3
 
       - name: Notify webhook
         if: always()
