@@ -48,6 +48,9 @@ DOPPLER_TOKEN="$DOPPLER_TOKEN" doppler secrets download \
   --no-file \
   --no-fallback > "$TMP_ENV"
 
+# Alias Doppler secret name to code-expected name
+sed -i "s/^CLAUDE_API=/CLAUDE_API_KEY=/" "$TMP_ENV"
+
 # Native services on this host still reach the Dockerized Postgres/Redis
 # containers through localhost port publishing, not via Docker DNS names.
 sed -i \
