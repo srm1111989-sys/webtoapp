@@ -6,7 +6,17 @@
   "secondary_color": "#3d5a9e",
   "status_bar_color": "#2d4a8e",
   "features": {
-    "admob": true, "js_bridge": true, "qr_scanner": true, "file_upload": true, "deep_linking": true, "offline_mode": true, "camera_access": true, "biometric_auth": true, "push_notifications": true, "navigation_menu": true, "download_file_manager": true
+    "admob": true,
+    "js_bridge": true,
+    "qr_scanner": true,
+    "file_upload": true,
+    "deep_linking": true,
+    "offline_mode": true,
+    "camera_access": true,
+    "biometric_auth": true,
+    "push_notifications": true,
+    "navigation_menu": true,
+    "download_file_manager": true
   },
   "navigation_items": []
 }
