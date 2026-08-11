@@ -37,7 +37,6 @@
          that declares "no advertising ID" in Play Console blocks the release
          ("Incomplete Advertising ID declaration"). CI drops the tools:node
          attribute when ADMOB_ENABLED=true. -->
->>>>>>> github/main
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -103,7 +102,6 @@
             android:screenOrientation="portrait" />
 
         <!-- Native Google sign-in helper (transparent; shows the device account chooser) -->
->>>>>>> github/main
         <activity
             android:name=".GoogleSignInActivity"
             android:exported="false"
@@ -112,7 +110,6 @@
         <!-- Full-screen incoming-request screen (paid Phase-2 feature; launched via a
              full-screen-intent notification, shows over the lock screen).
              Removed by default; CI keeps it when incoming_request_fullscreen=true. -->
->>>>>>> github/main
         <activity
             android:name=".IncomingRequestActivity"
             android:exported="false"
@@ -125,7 +122,6 @@
             />
 
         <!-- FCM Service -->
->>>>>>> github/main
         <service
             android:name=".FCMService"
             android:exported="false">
@@ -143,14 +139,12 @@
         <!-- Floating overlay foreground service (paid feature). Removed by default;
              CI keeps it when incoming_request_overlay=true. A specialUse FGS declared
              in every build is what triggered the Play FGS_SPECIAL_USE flag. -->
->>>>>>> github/main
         <service
             android:name=".FloatingOverlayService"
             android:exported="false"
             android:foregroundServiceType="specialUse"
             tools:node="remove"
             >
->>>>>>> github/main
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="incoming service request overlay for on-demand provider apps" />

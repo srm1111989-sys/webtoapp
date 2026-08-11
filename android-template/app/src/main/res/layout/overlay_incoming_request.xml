@@ -116,7 +116,6 @@
             android:textColor="@color/incoming_negotiate"
             android:textSize="13sp"
             android:text="Negotiate" />
->>>>>>> github/main
         <Button android:id="@+id/btn_accept"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp" android:layout_height="44dp" android:layout_weight="1.15"

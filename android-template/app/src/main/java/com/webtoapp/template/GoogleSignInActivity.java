@@ -49,7 +49,6 @@ public class GoogleSignInActivity extends Activity {
     private static final int RC_SIGN_IN = 9301;
 
     /** One-shot result receiver set by the bridge just before launch. */
->>>>>>> github/main
     public interface Callback {
         void onResult(String idToken, String error);
     }
@@ -59,7 +58,6 @@ public class GoogleSignInActivity extends Activity {
     public static void setCallback(Callback cb) {
         pendingCallback = cb;
     }
->>>>>>> github/main
 
     private static void deliver(String idToken, String error) {
         Callback cb = pendingCallback;
@@ -68,7 +66,6 @@ public class GoogleSignInActivity extends Activity {
     }
 
     private String webClientId;
->>>>>>> github/main
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +77,6 @@ public class GoogleSignInActivity extends Activity {
         if (resId == 0) {
             Log.w(TAG, "default_web_client_id missing — Firebase not configured for this app");
             deliver("", "google_signin_not_available");
->>>>>>> github/main
             finish();
             return;
         }
@@ -91,7 +87,6 @@ public class GoogleSignInActivity extends Activity {
         } catch (Throwable t) {
             // Credential Manager classes unavailable/broken on this device — legacy.
             Log.w(TAG, "Credential Manager unavailable, using legacy flow", t);
->>>>>>> github/main
             legacyFlow();
         }
     }
@@ -126,7 +121,6 @@ public class GoogleSignInActivity extends Activity {
                             Log.e(TAG, "Credential parse failed", e);
                             deliver("", "credential_parse_failed");
                         }
->>>>>>> github/main
                         finish();
                     }
 
@@ -134,7 +128,6 @@ public class GoogleSignInActivity extends Activity {
                     public void onError(GetCredentialException e) {
                         if (e instanceof GetCredentialCancellationException) {
                             Log.w(TAG, "Credential Manager: user cancelled");
->>>>>>> github/main
                             deliver("", "cancelled");
                             finish();
                             return;
@@ -144,7 +137,6 @@ public class GoogleSignInActivity extends Activity {
                         // failing the login outright.
                         Log.w(TAG, "Credential Manager failed (" + e.getClass().getSimpleName()
                                 + ") — falling back to legacy sign-in", e);
->>>>>>> github/main
                         legacyFlow();
                     }
                 });
@@ -164,7 +156,6 @@ public class GoogleSignInActivity extends Activity {
                     startActivityForResult(client.getSignInIntent(), RC_SIGN_IN));
         } catch (Exception e) {
             Log.e(TAG, "Google sign-in init failed", e);
->>>>>>> github/main
             deliver("", "google_signin_init_failed");
             finish();
         }
@@ -189,7 +180,6 @@ public class GoogleSignInActivity extends Activity {
             Log.w(TAG, "Google sign-in result: " + err);
             deliver("", err);
         }
->>>>>>> github/main
         finish();
     }
 }

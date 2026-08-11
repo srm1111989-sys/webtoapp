@@ -118,7 +118,6 @@ public class JavaScriptBridge {
         Intent intent = new Intent(context, GoogleSignInActivity.class);
         context.startActivity(intent);
     }
->>>>>>> github/main
 
     /**
      * Hand the NATIVE Android FCM registration token to the web page. A WebView
