@@ -15,15 +15,38 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Overlay ("incoming request") permissions are stripped from the merged manifest
+         by default. SYSTEM_ALERT_WINDOW ("draw over other apps") and
+         FOREGROUND_SERVICE_SPECIAL_USE are ONLY needed by the paid floating-overlay
+         feature (Rahatna). Left in unconditionally they made every WebToApp build
+         declare FGS_SPECIAL_USE, which Google Play flags on apps that don't use it
+         (customer "Request to Remove", 2026-08-09). CI removes the tools:node attribute
+         only when FEATURES_JSON has incoming_request_overlay=true — same mechanism as
+         AD_ID below. -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" tools:node="remove" />
+    <!-- Full-screen intent: without this the incoming-request notification silently
+         degrades to a banner on PIN-locked devices instead of launching the
+         call-style screen (Rahatna report 2026-08-09). CI re-enables it with the
+         fullscreen flag, same pattern as the two above. -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" tools:node="remove" />
+    <!-- Android 15+ Screen Capture Protection: detect when the app is being screen-recorded to mute audio -->
     <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
+    <!-- AD_ID is stripped from the merged manifest unless AdMob is enabled: the
+         play-services-ads library declares it itself, and its presence in an app
+         that declares "no advertising ID" in Play Console blocks the release
+         ("Incomplete Advertising ID declaration"). CI drops the tools:node
+         attribute when ADMOB_ENABLED=true. -->
+>>>>>>> github/main
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
+    <!-- Security hardening (2026-08-05, Ostorlab scan report from a customer):
+         allowBackup=false keeps app data (cookies/sessions) out of device
+         backups; taskAffinity="" pins every activity to its own task, closing
+         the StrandHogg/task-hijacking vector scanners flag. -->
     <application
         android:enableOnBackInvokedCallback="false"
         android:allowBackup="false"
@@ -49,6 +72,9 @@
         </provider>
 
         <!-- Launcher Activity (TWA or WebView) -->
+        <!-- Orientation follows the device: portrait-locking letterboxed
+             landscape tablets with huge side margins (customer report
+             2026-07-20). Sites are responsive; let them rotate. -->
         <activity
             android:name=".LauncherActivity"
             android:exported="true"
@@ -76,11 +102,17 @@
             android:name=".QRScannerActivity"
             android:screenOrientation="portrait" />
 
+        <!-- Native Google sign-in helper (transparent; shows the device account chooser) -->
+>>>>>>> github/main
         <activity
             android:name=".GoogleSignInActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <!-- Full-screen incoming-request screen (paid Phase-2 feature; launched via a
+             full-screen-intent notification, shows over the lock screen).
+             Removed by default; CI keeps it when incoming_request_fullscreen=true. -->
+>>>>>>> github/main
         <activity
             android:name=".IncomingRequestActivity"
             android:exported="false"
@@ -89,8 +121,11 @@
             android:showWhenLocked="true"
             android:turnScreenOn="true"
             android:theme="@style/Theme.WebToApp"
-            tools:node="remove" />
+            tools:node="remove"
+            />
 
+        <!-- FCM Service -->
+>>>>>>> github/main
         <service
             android:name=".FCMService"
             android:exported="false">
@@ -104,11 +139,18 @@
             android:authorities="${applicationId}.mobileadsinitprovider"
             tools:node="remove" />
 
+    
+        <!-- Floating overlay foreground service (paid feature). Removed by default;
+             CI keeps it when incoming_request_overlay=true. A specialUse FGS declared
+             in every build is what triggered the Play FGS_SPECIAL_USE flag. -->
+>>>>>>> github/main
         <service
             android:name=".FloatingOverlayService"
             android:exported="false"
             android:foregroundServiceType="specialUse"
-            tools:node="remove">
+            tools:node="remove"
+            >
+>>>>>>> github/main
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="incoming service request overlay for on-demand provider apps" />

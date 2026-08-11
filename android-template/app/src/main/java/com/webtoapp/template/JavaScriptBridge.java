@@ -118,22 +118,7 @@ public class JavaScriptBridge {
         Intent intent = new Intent(context, GoogleSignInActivity.class);
         context.startActivity(intent);
     }
-    /**
-     * Share the Google Sign-In diagnostic log file (gsi_log.txt) via any app.
-     * Available only in diagnostic builds. Use this on a device with no PC:
-     *   1. Attempt sign-in, let it fail.
-     *   2. Call window.WebToApp.exportGsiLog() from the web page console.
-     *   3. Choose Gmail / WhatsApp / etc and send to support@websitetoapp.app
-     */
-    @JavascriptInterface
-    public void exportGsiLog() {
-        try {
-            GoogleSignInActivity.exportAndShareLogs((Activity) context);
-        } catch (Exception e) {
-            android.widget.Toast.makeText(context, "Export failed: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
-        }
-    }
-
+>>>>>>> github/main
 
     /**
      * Hand the NATIVE Android FCM registration token to the web page. A WebView

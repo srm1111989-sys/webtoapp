@@ -154,7 +154,8 @@
                 android:textColor="@color/incoming_negotiate"
                 app:strokeColor="@color/incoming_negotiate" app:strokeWidth="2dp"
                 android:textSize="15sp"
-                android:text="عرض التفاصيل" />
+                android:text="Negotiate" />
+>>>>>>> github/main
             <Button android:id="@+id/btn_accept"
                 android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1.2"
                 android:backgroundTint="@color/incoming_accept"
