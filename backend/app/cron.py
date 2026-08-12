@@ -9,7 +9,6 @@ from sqlalchemy import select, update
 from app.database import async_session
 from app.models.build import Build
 from app.services.github_service import GitHubService
-from app.services.gitlab_service import GitLabService
 
 logger = logging.getLogger("webtoapp.cron")
 
@@ -37,22 +36,13 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     github2 = GitHubService(platform=platform, account=2)
     github3 = GitHubService(platform=platform, account=3)
 
-    # iOS builds only exist on the GitHub runners (macOS); GitLab's pipeline
-    # builds Android, so it must never be offered for iOS.
-    if platform == "ios":
-        candidates = [
-            ("github1", github1, lambda: _check_quota_cached("github1", github1.has_quota)),
-            ("github2", github2, lambda: _check_quota_cached("github2", github2.has_quota)),
-            ("github3", github3, lambda: _check_quota_cached("github3", github3.has_quota)),
-        ]
-    else:
-        gitlab = GitLabService(platform=platform)
-        candidates = [
-            ("gitlab",   gitlab,  lambda: _check_quota_cached("gitlab",   gitlab.has_quota)),
-            ("github1",  github1, lambda: _check_quota_cached("github1",  github1.has_quota)),
-            ("github2",  github2, lambda: _check_quota_cached("github2",  github2.has_quota)),
-            ("github3",  github3, lambda: _check_quota_cached("github3",  github3.has_quota)),
-        ]
+    # iOS builds only exist on the GitHub runners (macOS).
+    # All platforms now use GitHub only — GitLab removed (t342).
+    candidates = [
+        ("github1", github1, lambda: _check_quota_cached("github1", github1.has_quota)),
+        ("github2", github2, lambda: _check_quota_cached("github2", github2.has_quota)),
+        ("github3", github3, lambda: _check_quota_cached("github3", github3.has_quota)),
+    ]
 
     # Ops escape hatch: CI_SKIP_PROVIDERS=github1,gitlab hard-excludes providers.
     # Needed when a provider is broken in a way quota checks can't see — e.g.
@@ -163,38 +153,9 @@ async def sync_active_builds():
                         service = GitHubService(platform=build.platform, account=2)
                     elif provider_name == "github3":
                         service = GitHubService(platform=build.platform, account=3)
-                    else:
-                        service = GitLabService(platform=build.platform)
 
                     pipeline_data = service.get_pipeline(build.pipeline_id)
                     remote_status = pipeline_data.get("status")
-
-                    # Self-heal: a GitLab pipeline that died on ci_quota_exceeded
-                    # isn't a real build failure — requeue it so the provider list
-                    # (with GitLab now known-exhausted) sends it to GitHub. Retry once.
-                    if (remote_status == "failed" and provider_name not in ["github1", "github2", "github"]
-                            and not (build.variables or {}).get("_quota_retried")
-                            and isinstance(service, GitLabService)
-                            and service.pipeline_quota_exceeded(build.pipeline_id)):
-                        logger.warning(f"Build {build.id}: GitLab ci_quota_exceeded — requeuing on another provider")
-                        _quota_cache["gitlab"] = (False, time.monotonic())  # skip GitLab in next selection
-                        v = dict(build.variables or {})
-                        v["_quota_retried"] = True
-                        # The quota cache alone is UNRELIABLE for the requeue: its TTL /
-                        # a has_quota re-check can re-elect gitlab and the retry dies
-                        # terminally (build 1835f6bf, 2026-08-01). _failed_providers is
-                        # what process_pending_build durably excludes — use it, exactly
-                        # like the github artifact-quota reroute does.
-                        failed = set(v.get("_failed_providers", []))
-                        failed.add("gitlab")
-                        v["_failed_providers"] = sorted(failed)
-                        v.pop("_build_provider", None)
-                        build.variables = v
-                        build.status = "pending"
-                        build.pipeline_id = None
-                        build.started_at = None
-                        await db.commit()
-                        continue
 
                     if remote_status in ["success", "failed", "canceled"]:
                         logger.info(f"Sync active builds: Build {build.id} (pipeline {build.pipeline_id}) finished with status {remote_status} on {provider_name}")
