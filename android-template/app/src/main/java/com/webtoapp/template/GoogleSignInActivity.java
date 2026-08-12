@@ -44,7 +44,7 @@ public class GoogleSignInActivity extends Activity {
     }
 
     private String webClientId;
-    private boolean cmUiShown = false;
+    private boolean cmAttempted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +57,8 @@ public class GoogleSignInActivity extends Activity {
             return;
         }
         webClientId = getString(resId);
-        cmUiShown = false;
-        try {
-            credentialManagerFlow();
-        } catch (Throwable t) {
-            Log.w(TAG, "Credential Manager threw, using legacy", t);
-            legacyFlow();
-        }
+        cmAttempted = false;
+        credentialManagerFlow();
     }
 
     @Override
@@ -73,6 +68,7 @@ public class GoogleSignInActivity extends Activity {
     }
 
     private void credentialManagerFlow() {
+        cmAttempted = true;
         CredentialManager cm = CredentialManager.create(this);
         GetSignInWithGoogleOption option = new GetSignInWithGoogleOption.Builder(webClientId).build();
         GetCredentialRequest request = new GetCredentialRequest.Builder()
@@ -82,7 +78,6 @@ public class GoogleSignInActivity extends Activity {
                 new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                     @Override
                     public void onResult(GetCredentialResponse response) {
-                        cmUiShown = true;
                         try {
                             Credential cred = response.getCredential();
                             if (cred instanceof CustomCredential
@@ -106,23 +101,13 @@ public class GoogleSignInActivity extends Activity {
 
                     @Override
                     public void onError(GetCredentialException e) {
-                        if (e instanceof GetCredentialCancellationException) {
-                            if (cmUiShown) {
-                                Log.w(TAG, "CM cancelled after UI shown");
-                                deliver("", "credential_manager_cancelled");
-                            } else {
-                                deliver("", "cancelled");
-                            }
-                            finish();
-                            return;
-                        }
-                        if (cmUiShown) {
-                            Log.w(TAG, "CM error after UI: " + e.getClass().getSimpleName());
-                            deliver("", "credential_manager_error");
-                            finish();
-                            return;
-                        }
-                        Log.w(TAG, "CM failed before UI, falling back to legacy");
+                        Log.w(TAG, "CM error: " + e.getClass().getSimpleName() + " — " + e.getMessage());
+                        // CM failed — always fall back to legacy GoogleSignIn flow.
+                        // This handles devices where CM's account picker returns
+                        // GetCredentialCancellationException even after the user
+                        // selected an account (known issue on some Android/Play
+                        // Services versions where the CM UI shows but the result
+                        // is delivered as a cancellation instead of onResult).
                         legacyFlow();
                     }
                 });
