@@ -263,7 +263,11 @@ public class FloatingOverlayService extends Service {
                 final String customer = OverlayConfig.firstNonEmpty(order,
                         cfg.optString("f_customer", "customerName"),
                         "customerName", "customerFirstName", "customer_name", "firstName", "name");
-                final String price = order.optString(cfg.optString("f_price", "price"), "");
+                // Price: try the configured key first (default "price"), then common
+                // fallbacks so public requests (which may use a different key) also show.
+                final String price = OverlayConfig.firstNonEmpty(order,
+                        cfg.optString("f_price", "price"), "price",
+                        "offeredPrice", "amount", "total", "fare", "cost");
                 final String area = order.optString(cfg.optString("f_area", "area"), "");
                 final String desc = order.optString(cfg.optString("f_description", "description"), "");
                 final String cur = OverlayConfig.currency(this);

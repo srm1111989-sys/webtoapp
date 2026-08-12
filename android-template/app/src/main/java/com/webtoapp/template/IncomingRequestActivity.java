@@ -192,7 +192,9 @@ public class IncomingRequestActivity extends Activity {
                 final String customer = OverlayConfig.firstNonEmpty(order,
                         cfg.optString("f_customer", "customerName"),
                         "customerName", "customerFirstName", "customer_name", "firstName", "name");
-                final String price = order.optString(cfg.optString("f_price", "price"), "");
+                final String price = OverlayConfig.firstNonEmpty(order,
+                        cfg.optString("f_price", "price"), "price",
+                        "offeredPrice", "amount", "total", "fare", "cost");
                 String areaLine = order.optString(cfg.optString("f_area", "area"), "");
                 // Trip distance/duration when the backend provides them (Rahatna:
                 // tripDistance km, tripDuration min; null on public requests).

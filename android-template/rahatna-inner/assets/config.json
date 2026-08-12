@@ -1,0 +1,14 @@
+{
+  "app_name": "Rahatna (Delivery Build)",
+  "app_url": "https://rahatna-f1fb0c60.base44.app",
+  "app_host": "rahatna-f1fb0c60.base44.app",
+  "primary_color": "#2563EB",
+  "secondary_color": "#1E40AF",
+  "status_bar_color": "#1E3A5F",
+  "features": {"incoming_request_overlay":true,"incoming_request_fullscreen":true},
+  "navigation_items": [],
+  "admob_config": {},
+  "firebase_config": {},
+  "trial_days": 0,
+  "purchase_url": ""
+}

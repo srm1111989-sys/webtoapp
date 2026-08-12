@@ -1,0 +1,14 @@
+{
+  "app_name": "Regression Test",
+  "app_url": "https://websitetoapp.app",
+  "app_host": "websitetoapp.app",
+  "primary_color": "#2563EB",
+  "secondary_color": "#1E40AF",
+  "status_bar_color": "#1E3A5F",
+  "features": {},
+  "navigation_items": [],
+  "admob_config": {},
+  "firebase_config": {},
+  "trial_days": 0,
+  "purchase_url": ""
+}
