@@ -557,6 +557,8 @@ public class WebViewActivity extends AppCompatActivity {
                 || host.endsWith(".web.app")
                 || host.equals("oauth.lovable.app")
                 || host.endsWith(".lovable.app")
+                || host.equals("edumobile.ai.studio")
+                || host.endsWith(".ai.studio")
                 || host.equals("appleid.apple.com")
                 || host.endsWith(".facebook.com")
                 || host.endsWith(".fbcdn.net")
