@@ -33,7 +33,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.util.Log;
 import android.util.TypedValue;
+import android.os.Message;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -546,13 +548,15 @@ public class WebViewActivity extends AppCompatActivity {
     private boolean isAuthHost(String host) {
         if (host == null) return false;
         host = host.toLowerCase();
-        return host.equals("accounts.google.com")
-                || host.equals("accounts.youtube.com")
-                || host.equals("apis.google.com")
-                || host.equals("content.googleapis.com")
+        return host.startsWith("accounts.google.")
+                || host.startsWith("accounts.youtube.")
+                || host.startsWith("apis.google.")
+                || host.startsWith("content.googleapis")
                 || host.endsWith(".googleusercontent.com")
                 || host.endsWith(".firebaseapp.com")
                 || host.endsWith(".web.app")
+                || host.equals("oauth.lovable.app")
+                || host.endsWith(".lovable.app")
                 || host.equals("appleid.apple.com")
                 || host.endsWith(".facebook.com")
                 || host.endsWith(".fbcdn.net")
@@ -574,6 +578,8 @@ public class WebViewActivity extends AppCompatActivity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setSupportZoom(false);
+        settings.setSupportMultipleWindows(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
         // Custom user agent
         String customUA = features.optString("custom_user_agent", "");
@@ -619,6 +625,19 @@ public class WebViewActivity extends AppCompatActivity {
                 if (isAuthHost(host)) {
                     return false; // Load in WebView
                 }
+                // Catch any custom-scheme redirect (e.g. webtoapp://, myapp://)
+                // that Firebase / OAuth uses to return to the app after sign-in.
+                // Without this, the redirect opens in Chrome and the WebView session
+                // never sees the result -> getRedirectResult() stays null.
+                String scheme = request.getUrl().getScheme();
+                if (scheme != null && !"http".equals(scheme) && !"https".equals(scheme)) {
+                    // Redirect back to the main URL so Firebase can pick up the
+                    // auth result from the same WebView session.
+                    String redirectTarget = "https://" + appHost + "/";
+                    Log.d("WebViewActivity", "[Redirect] caught " + request.getUrl() + " -> reloading " + redirectTarget);
+                    view.loadUrl(redirectTarget);
+                    return true;
+                }
                 // External links open in browser — GUARDED (2026-08-05, Saad
                 // Shopping "Update" nav crash): startActivity throws when no
                 // activity resolves the URL (stripped review devices, odd
@@ -629,7 +648,6 @@ public class WebViewActivity extends AppCompatActivity {
                     Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
                     startActivity(intent);
                 } catch (Throwable t) {
-                    String scheme = request.getUrl().getScheme();
                     if ("http".equals(scheme) || "https".equals(scheme)) {
                         view.loadUrl(request.getUrl().toString());
                     }
@@ -654,6 +672,21 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 progressBar.setProgress(newProgress);
+            }
+
+            // Firebase signInWithRedirect() opens the provider via window.open().
+            // By default the WebView rejects the popup and the auth flow breaks.
+            // We accept the popup but route it back to the SAME WebView so the
+            // OAuth cookies and session state are preserved — this prevents the
+            // Lovable backend from seeing a broken/missing state parameter and
+            // returning HTTP 400.
+            @Override
+            public boolean onCreateWindow(WebView view, boolean isDialog,
+                                          boolean isUserGesture, Message resultMsg) {
+                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                transport.setWebView(view); // reuse same WebView = same session
+                resultMsg.sendToTarget();
+                return true;
             }
 
             @Override
