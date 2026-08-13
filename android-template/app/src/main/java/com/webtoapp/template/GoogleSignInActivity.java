@@ -86,17 +86,22 @@ public class GoogleSignInActivity extends Activity {
                                 String idToken = gid.getIdToken();
                                 if (idToken != null && !idToken.isEmpty()) {
                                     deliver(idToken, "");
+                                    finish();
                                 } else {
-                                    deliver("", "no_id_token");
+                                    Log.w(TAG, "Empty idToken from CM — falling back to legacy");
+                                    legacyFlow();
+                                    // finish() will be called in onActivityResult
                                 }
                             } else {
-                                deliver("", "unexpected_credential_type");
+                                Log.w(TAG, "Unexpected credential type: " + cred.getType() + " — falling back to legacy");
+                                legacyFlow();
+                                // finish() will be called in onActivityResult
                             }
                         } catch (Exception e) {
-                            Log.e(TAG, "Credential parse failed", e);
-                            deliver("", "credential_parse_failed");
+                            Log.e(TAG, "Credential parse failed, falling back to legacy", e);
+                            legacyFlow();
+                            // finish() will be called in onActivityResult
                         }
-                        finish();
                     }
 
                     @Override
