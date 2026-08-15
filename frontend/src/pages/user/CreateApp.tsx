@@ -1291,6 +1291,7 @@ function Step3Advanced() {
 
   const [firebaseServerKey, setFirebaseServerKey] = useState(wizard.firebaseConfig?.server_key || '')
   const [firebaseServicesJson, setFirebaseServicesJson] = useState(wizard.firebaseConfig?.google_services_json || '')
+  const hasFirebaseJson = !!firebaseServicesJson.trim()
 
   const [admobAppId, setAdmobAppId] = useState(wizard.admobConfig?.app_id || '')
   const [admobBannerId, setAdmobBannerId] = useState(wizard.admobConfig?.banner_id || '')
@@ -1421,6 +1422,11 @@ function Step3Advanced() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">google-services.json</label>
+          {hasFirebaseJson && (
+            <p className="text-xs text-green-600 mb-1.5 font-medium flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Uploaded — saved with your app config
+            </p>
+          )}
           <textarea
             className={`${inputClass} resize-none font-mono text-xs`}
             rows={6}

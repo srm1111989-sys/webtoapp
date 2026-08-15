@@ -1,0 +1,10 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/pages/public/ComparisonPage.js")
+R.c("server/chunks/ssr/[root-of-the-server]__1i_rj3p._.js")
+R.c("server/chunks/ssr/node_modules_next_dist_esm_build_templates_pages_0l_4ocg.js")
+R.c("server/chunks/ssr/[root-of-the-server]__061aqhn._.js")
+R.c("server/chunks/ssr/src_data_blogPosts_ts_1juvull._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__213_-zt._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__031ppiv._.js")
+R.c("server/chunks/ssr/node_modules_next_1_o5zxs._.js")
+R.m(49556)
+module.exports=R.m(49556).exports

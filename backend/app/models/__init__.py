@@ -13,9 +13,14 @@ from app.models.audit_log import AuditLog
 from app.models.promo_code import PromoCode
 from app.models.team_member import TeamMember
 from app.models.referral_reward import ReferralReward
+from app.models.product import Product
+from app.models.sale import Sale
+from app.models.sale_item import SaleItem
+from app.models.project import Project, ProjectMember
 
 __all__ = [
     "User", "Admin", "Setting", "Plan", "AppConfig", "Order",
     "Payment", "Build", "PWAConfig", "Subscription", "SubscriptionPayment",
     "PushCampaign", "AuditLog", "PromoCode", "TeamMember", "ReferralReward",
+    "Product", "Sale", "SaleItem", "Project", "ProjectMember",
 ]

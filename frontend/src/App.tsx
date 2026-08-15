@@ -47,6 +47,10 @@ import AdminOrders from '@/pages/admin/AdminOrders'
 import AdminBuilds from '@/pages/admin/AdminBuilds'
 import AdminPlans from '@/pages/admin/AdminPlans'
 import AdminSettings from '@/pages/admin/AdminSettings'
+import AdminProducts from '@/pages/admin/AdminProducts'
+import AdminSales from '@/pages/admin/AdminSales'
+import AdminSalesAnalytics from '@/pages/admin/AdminSalesAnalytics'
+import AdminProjects from '@/pages/admin/AdminProjects'
 import Settings from '@/pages/user/Settings'
 import Subscription from '@/pages/user/Subscription'
 
@@ -114,9 +118,13 @@ export default function App() {
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/projects" element={<AdminProjects />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/builds" element={<AdminBuilds />} />
           <Route path="/admin/plans" element={<AdminPlans />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="/admin/sales" element={<AdminSales />} />
+          <Route path="/admin/sales/analytics" element={<AdminSalesAnalytics />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
         </Route>
       </Route>

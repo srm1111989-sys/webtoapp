@@ -1,0 +1,8 @@
+__turbopack_load_page_chunks__("/public/ComparisonPage", [
+  "static/chunks/2uvd3cncot1rz.js",
+  "static/chunks/087ll29fkb19r.js",
+  "static/chunks/293k9zxc00n94.js",
+  "static/chunks/1a2g_wy_yguqf.js",
+  "static/chunks/1ye_z987kr79j.js",
+  "static/chunks/turbopack-1h-qvelkwz_j7.js"
+])

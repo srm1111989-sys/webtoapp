@@ -164,6 +164,17 @@ async def update_app(
     app_config = await get_accessible_app(app_id, user, db, write=True)
 
     update_data = data.model_dump(exclude_unset=True)
+
+    # Merge google_services_json into existing firebase_config (top-level alias for the wizard UI)
+    if "google_services_json" in update_data:
+        gsj = update_data.pop("google_services_json")
+        existing = dict(app_config.firebase_config or {})
+        if gsj:
+            existing["google_services_json"] = gsj
+        else:
+            existing.pop("google_services_json", None)
+        update_data["firebase_config"] = existing
+
     for key, value in update_data.items():
         setattr(app_config, key, value)
 

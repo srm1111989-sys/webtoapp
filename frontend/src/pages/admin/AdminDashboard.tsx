@@ -1,14 +1,20 @@
 import { useQuery } from '@tanstack/react-query'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
-import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard, FlaskConical } from 'lucide-react'
+import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard, FlaskConical, FolderOpen } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { adminApi } from '@/api/admin'
+import { projectsApi } from '@/api/projects'
 import { formatCurrency, formatDateTime } from '@/utils/format'
 
 export default function AdminDashboard() {
   const { data: stats, isLoading, error } = useQuery({
     queryKey: ['admin', 'enhanced-stats'],
     queryFn: () => adminApi.getEnhancedStats().then((r) => r.data),
+  })
+
+  const { data: projectsData } = useQuery({
+    queryKey: ['admin', 'projects'],
+    queryFn: () => projectsApi.list().then((r) => r.data),
   })
 
   const { data: adminSettings } = useQuery({
@@ -40,6 +46,13 @@ export default function AdminDashboard() {
       value: stats.users.toLocaleString(),
       icon: Users,
       color: 'bg-blue-50 text-blue-600',
+    },
+    {
+      label: 'Projects',
+      value: (projectsData?.total || 0).toLocaleString(),
+      icon: FolderOpen,
+      color: 'bg-indigo-50 text-indigo-600',
+      link: '/admin/projects',
     },
     {
       label: 'Total Orders',
@@ -134,8 +147,8 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {statCards.map((card) => {
           const Icon = card.icon
-          return (
-            <div key={card.label} className="bg-white rounded-xl border p-5 shadow-sm">
+          const CardContent = (
+            <div key={card.label} className={`bg-white rounded-xl border p-5 shadow-sm ${card.link ? 'hover:shadow-md transition-shadow cursor-pointer' : ''}`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-500">{card.label}</p>
@@ -147,6 +160,10 @@ export default function AdminDashboard() {
               </div>
             </div>
           )
+          if (card.link) {
+            return <Link key={card.label} to={card.link}>{CardContent}</Link>
+          }
+          return CardContent
         })}
       </div>
 

@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
-import { LayoutDashboard, Users, ShoppingCart, Hammer, CreditCard, Settings, LogOut, Smartphone, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Users, ShoppingCart, Hammer, CreditCard, Settings, LogOut, Smartphone, Menu, X, Receipt, Package, TrendingUp, FolderOpen } from 'lucide-react'
 import { clsx } from 'clsx'
 import { useSEO } from '@/hooks/useSEO'
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/admin/users', label: 'Users', icon: Users },
+  { to: '/admin/projects', label: 'Projects', icon: FolderOpen },
+  { to: '/admin/products', label: 'Products', icon: Package },
+  { to: '/admin/sales', label: 'Sales', icon: Receipt },
+  { to: '/admin/sales/analytics', label: 'Analytics', icon: TrendingUp },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { to: '/admin/builds', label: 'Builds', icon: Hammer },
   { to: '/admin/plans', label: 'Plans', icon: CreditCard },
