@@ -147,7 +147,7 @@ public class GoogleSignInActivity extends Activity {
         int hColon = content.indexOf(":", hashIdx);
         // certificate_hash can be an array [\"hash\"] or a string \"hash\"
         String foundHash;
-        if (hColon > 0 && content.charAt(hColon + 1) == [) {
+        if (hColon > 0 && content.charAt(hColon + 1) == '[') {
             int hq1 = content.indexOf("\"", hColon);
             int hq2 = content.indexOf("\"", hq1 + 1);
             foundHash = hq1 >= 0 ? content.substring(hq1 + 1, hq2) : "";
