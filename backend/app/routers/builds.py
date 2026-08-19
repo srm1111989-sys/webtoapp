@@ -139,7 +139,7 @@ async def trigger_build_endpoint(
             month_success = max(0, month_success - 1)  # initial build isn't a rebuild
         # Pro Monthly (t80): an active subscription on this app raises the
         # rebuild cap 5 -> 20 for the month.
-        rebuild_cap = 5
+        rebuild_cap = order.rebuild_limit or 5
         from app.models.subscription import Subscription
         pro = (await db.execute(
             select(Subscription.id).where(

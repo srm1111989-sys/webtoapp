@@ -275,3 +275,34 @@ When a user describes such a request, the assistant should:
 4. Offer to pass their requirement to the team (use send_support_email with the details) so we can reply with scope, price, and timeline.
 
 Do not promise a specific price or timeline in chat — those are quoted per request after we see the requirements. Native features that need sensitive Android permissions (e.g. display-over-other-apps / SYSTEM_ALERT_WINDOW) are supported but reviewed case by case.
+
+## Troubleshooting: Google Sign-In Issues
+
+### APK works but AAB fails with "sign_in_failed_10" or error code 10
+
+**Root cause:** Google Sign-In error code 10 = DEVELOPER_ERROR. This happens when the signing certificate SHA-1 of the installed app does not match any SHA-1 registered in Google Cloud Console for the OAuth client used by the native bridge.
+
+**Why it happens with AAB but not APK:**
+- **APK**: Signed with the upload keystore. The SHA-1 is registered in Google Cloud Console → works.
+- **AAB**: When uploaded to Google Play, Google Play re-signs the app with its own App Signing certificate. The Play Signing SHA-1 must ALSO be registered in the Web OAuth client in Google Cloud Console. If missing → error 10.
+
+**The WebToApp bridge:** WebsiteToApp uses a native Android bridge (`window.WebToApp.googleSignIn`) that launches the native Google Sign-In flow. The native flow uses the **Web OAuth client ID** (`default_web_client_id`), NOT the Android OAuth client IDs. This is why the Web OAuth client needs the Android package + Play Signing SHA-1 registered.
+
+**Fix steps (to give to the user):**
+1. Go to Google Cloud Console → APIs & Services → Credentials
+2. Find the OAuth 2.0 Client ID: `584835953487-802jr0spe03ms2qsc40am5qcga0uubbq` (Web OAuth client)
+3. Click Edit → scroll to "Authorized Android applications"
+4. Click "ADD APPLICATION":
+   - Package name: `a.academic.fresh`
+   - SHA-1 certificate fingerprint: (use the Play Signing SHA-1 from Google Play Console > Setup > App integrity)
+5. Save and wait 5-10 minutes for propagation
+6. Rebuild the app
+
+**Important:** The Play Signing SHA-1 must be added to the Web OAuth client (type: Web application) in Google Cloud Console, not just in Firebase. The Android OAuth clients and Web OAuth client are separate entries. Adding the SHA-1 to the Web OAuth client only enables the native bridge flow to work with the Play-signed APK — it does not affect existing Android OAuth clients.
+
+**Verification checklist:**
+- ✅ APK SHA-1 registered in Google Cloud Console Web OAuth client
+- ✅ Play Signing SHA-1 registered in Google Cloud Console Web OAuth client
+- ✅ Web OAuth client ID in `default_web_client_id` field in `google-services.json`
+- ✅ Firebase OAuth configuration includes all 4 SHA-1 fingerprints (upload keystore + Play Signing)
+- ✅ Google Sign-In API enabled in Google Cloud Console

@@ -405,6 +405,21 @@ async def chat_endpoint(
                     </div>
                     """
                     ok = send_email(SUPPORT_EMAIL, f"[Support AI] {args.get('subject')[:150]}", html_content)
+                    # Also persist to the tickets table in master-admin so the
+                    # dashboard (modbus-license-db) can show it across all sites.
+                    try:
+                        import subprocess, os
+                        user_email = (args.get('email', '') or '')[:255].replace("'", "''")
+                        subject = (args.get('subject', '') or '')[:500].replace("'", "''")
+                        message = (args.get('message', '') or '')[:5000].replace("'", "''")
+                        cmd = (
+                            "docker exec modbus-license-db psql -U modbus_user -d modbus_licenses "
+                            "-c \"INSERT INTO tickets (site, status, source, user_email, subject, body) "
+                            "VALUES ('webtoapp', 'open', 'chatbot', '{}', '{}', '{}');\""
+                        ).format(user_email, subject, message)
+                        subprocess.run(cmd, shell=True, timeout=10, capture_output=True)
+                    except Exception as db_err:
+                        print(f"[chatbot] ticket DB insert failed: {db_err}")
                     if ok:
                         result = "Support ticket sent successfully. Our support team will reply within 24 hours."
                     else:

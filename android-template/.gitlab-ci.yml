@@ -160,6 +160,8 @@ prepare:
     - |
       if [ "$FIREBASE_ENABLED" = "true" ] && [ -n "$FIREBASE_CONFIG" ]; then
         echo "$FIREBASE_CONFIG" > app/google-services.json
+        mkdir -p app/src/main/assets
+        echo "$FIREBASE_CONFIG" > app/src/main/assets/google-services.json
       fi
 
     # Configure AdMob — inject meta-data and re-enable provider only when configured
