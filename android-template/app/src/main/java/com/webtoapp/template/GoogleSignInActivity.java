@@ -145,10 +145,18 @@ public class GoogleSignInActivity extends Activity {
         int hashIdx = content.indexOf("\"certificate_hash\"", blockStart);
         if (hashIdx < 0 || hashIdx > blockEnd) return false;
         int hColon = content.indexOf(":", hashIdx);
-        int hq1 = content.indexOf("\"", hColon);
-        int hq2 = content.indexOf("\"", hq1 + 1);
-        String foundHash = content.substring(hq1 + 1, hq2);
-        return certHash.equalsIgnoreCase(foundHash);
+        // certificate_hash can be an array [\"hash\"] or a string \"hash\"
+        String foundHash;
+        if (hColon > 0 && content.charAt(hColon + 1) == [) {
+            int hq1 = content.indexOf("\"", hColon);
+            int hq2 = content.indexOf("\"", hq1 + 1);
+            foundHash = hq1 >= 0 ? content.substring(hq1 + 1, hq2) : "";
+        } else {
+            int hq1 = content.indexOf("\"", hColon);
+            int hq2 = content.indexOf("\"", hq1 + 1);
+            foundHash = hq1 >= 0 ? content.substring(hq1 + 1, hq2) : "";
+        }
+        return certHash.equals(normalizeSha(foundHash));
     }
 
     /**
