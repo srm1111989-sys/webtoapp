@@ -55,14 +55,8 @@ public class GoogleSignInActivity extends Activity {
 
         String clientId = resolveCorrectClientId();
         if (clientId == null) {
-            clientId = fallbackToWebClientId();
-            if (clientId != null) {
-                Log.d(TAG, "Using Web OAuth Client ID fallback");
-            }
-        }
-        if (clientId == null) {
-            Log.w(TAG, "No Google Sign-In client ID available");
-            deliver("", "google_signin_not_available");
+            Log.e(TAG, "No matching Android OAuth client found - cannot use Web Client ID for native sign-in (DEVELOPER_ERROR). Check google-services.json has correct package_name + SHA-1 for a.academic.fresh");
+            deliver("", "no_android_oauth_client");
             finish();
             return;
         }
@@ -158,6 +152,14 @@ public class GoogleSignInActivity extends Activity {
     }
 
     /**
+     * Normalize SHA-1: remove colons, lowercase.
+     */
+    private String normalizeSha(String sha) {
+        if (sha == null) return "";
+        return sha.replace(":", "").toLowerCase(Locale.US);
+    }
+
+    /**
      * Fallback: read default_web_client_id from generated resources.
      */
     private String fallbackToWebClientId() {
@@ -187,7 +189,7 @@ public class GoogleSignInActivity extends Activity {
             for (byte b : digest) {
                 sb.append(String.format(Locale.US, "%02x", b));
             }
-            return sb.toString();
+            return sb.toString().replace(":", "").toLowerCase(Locale.US);
         } catch (Exception e) {
             Log.w(TAG, "Cannot get signing cert hash: " + e.getMessage());
             return null;
