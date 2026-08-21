@@ -140,36 +140,57 @@ public class IncomingRequestActivity extends Activity {
         if (areaLine != null && !areaLine.isEmpty()) setText("tv_area", areaLine);
         if (desc != null && !desc.isEmpty()) setText("tv_description", desc);
 
-        // Coordinates for map
+        // Coordinates for map (supports startLat/startLng, pickupLat/pickupLng, lat/lng, or nested JSON)
         try {
-            double pLat = Double.parseDouble(b.getString("startLat", "NaN"));
-            double pLng = Double.parseDouble(b.getString("startLng", "NaN"));
-            double dLat = Double.parseDouble(b.getString("endLat", "NaN"));
-            double dLng = Double.parseDouble(b.getString("endLng", "NaN"));
-            showMap(pLat, pLng, dLat, dLng);
+            double pLat = parseCoord(b, "startLat", "pickupLat", "pickup_lat", "lat", "latitude");
+            double pLng = parseCoord(b, "startLng", "pickupLng", "pickup_lng", "lng", "longitude");
+            double dLat = parseCoord(b, "endLat", "destLat", "dest_lat", "dropLat", "dropoffLat");
+            double dLng = parseCoord(b, "endLng", "destLng", "dest_lng", "dropLng", "dropoffLng");
+            if (!Double.isNaN(pLat) && !Double.isNaN(pLng)) {
+                showMap(pLat, pLng, dLat, dLng);
+            }
         } catch (Exception ignored) {}
 
-        // Single or multiple description images
-        String singleImg = b.getString("descriptionImage");
-        String multiImg = b.getString("descriptionImages");
+        // Single or multiple description images (checks descriptionImage, descriptionImages, image, images, photo, photos)
         List<String> images = new ArrayList<>();
-        if (singleImg != null && (singleImg.startsWith("http://") || singleImg.startsWith("https://"))) {
-            images.add(singleImg);
+        String[] singleKeys = {"descriptionImage", "image", "photo", "imageUrl", "img"};
+        for (String k : singleKeys) {
+            String u = b.getString(k);
+            if (u != null && (u.startsWith("http://") || u.startsWith("https://")) && !images.contains(u)) {
+                images.add(u);
+            }
         }
-        if (multiImg != null && !multiImg.isEmpty()) {
-            try {
-                JSONArray arr = new JSONArray(multiImg);
-                for (int i = 0; i < arr.length() && images.size() < 3; i++) {
-                    String u = arr.optString(i, null);
-                    if (u != null && (u.startsWith("http://") || u.startsWith("https://")) && !images.contains(u)) {
-                        images.add(u);
+        String[] multiKeys = {"descriptionImages", "images", "photos"};
+        for (String k : multiKeys) {
+            String multi = b.getString(k);
+            if (multi != null && !multi.isEmpty()) {
+                try {
+                    JSONArray arr = new JSONArray(multi);
+                    for (int i = 0; i < arr.length() && images.size() < 3; i++) {
+                        String u = arr.optString(i, null);
+                        if (u != null && (u.startsWith("http://") || u.startsWith("https://")) && !images.contains(u)) {
+                            images.add(u);
+                        }
                     }
-                }
-            } catch (Exception ignored) {}
+                } catch (Exception ignored) {}
+            }
         }
         if (!images.isEmpty()) {
             loadThumbnails(images);
         }
+    }
+
+    private static double parseCoord(Bundle b, String... keys) {
+        for (String k : keys) {
+            String val = b.getString(k);
+            if (val != null && !val.isEmpty()) {
+                try {
+                    double d = Double.parseDouble(val);
+                    if (!Double.isNaN(d)) return d;
+                } catch (Exception ignored) {}
+            }
+        }
+        return Double.NaN;
     }
 
     private View view(String idName) {
@@ -476,8 +497,9 @@ public class IncomingRequestActivity extends Activity {
                     : "map.setView(p,15);")
                 + "</script></body></html>";
         wv.getSettings().setJavaScriptEnabled(true);
+        wv.getSettings().setDomStorageEnabled(true);
         wv.setVisibility(View.VISIBLE);
-        wv.loadDataWithBaseURL("https://webtoapp.map/", html, "text/html", "UTF-8", null);
+        wv.loadDataWithBaseURL("https://unpkg.com/", html, "text/html", "UTF-8", null);
     }
 
     @Override
