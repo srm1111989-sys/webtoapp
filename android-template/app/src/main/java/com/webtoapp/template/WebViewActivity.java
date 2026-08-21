@@ -614,6 +614,22 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String host = request.getUrl().getHost();
+                String url = request.getUrl().toString();
+
+                // Play Store URLs must never load inside the WebView — always open
+                // externally. Prevents the app from getting stuck on a blank
+                // Play Store page when site content triggers a "Rate us" link.
+                if (url.contains("play.google.com") || url.contains("market://")) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    } catch (Exception e) {
+                        if ("http".equals(scheme) || "https".equals(scheme)) {
+                            view.loadUrl(request.getUrl().toString());
+                        }
+                    }
+                    return true;
+                }
+
                 if (host != null && (host.contains(appBaseDomain) || host.contains(appHost))) {
                     return false; // Load in WebView
                 }
