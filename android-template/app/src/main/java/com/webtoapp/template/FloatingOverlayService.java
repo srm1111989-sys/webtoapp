@@ -85,8 +85,51 @@ public class FloatingOverlayService extends Service {
                 ? pushProvider : OverlayConfig.providerUserId(this);
 
         showOverlay();
+        populateFromIntentExtras(intent);
         fetchAndPopulate(orderId, providerUserId);
         return START_NOT_STICKY;
+    }
+
+    private void populateFromIntentExtras(Intent intent) {
+        if (intent == null || intent.getExtras() == null || overlayView == null) return;
+        android.os.Bundle b = intent.getExtras();
+        JSONObject cfg = OverlayConfig.load(this);
+        String service = b.getString("service");
+        if (service == null || service.isEmpty()) service = b.getString("type");
+        if (service == null || service.isEmpty()) service = "New request";
+
+        String customer = b.getString("customerFirstName");
+        if (customer == null || customer.isEmpty()) customer = b.getString("customerName");
+        if (customer == null || customer.isEmpty()) customer = b.getString("customer_name");
+        if (customer == null || customer.isEmpty()) customer = b.getString("name");
+
+        String price = b.getString("price");
+        if (price == null || price.isEmpty()) price = b.getString("offeredPrice");
+        if (price == null || price.isEmpty()) price = b.getString("amount");
+
+        String areaLine = b.getString("generalAddress");
+        if (areaLine == null || areaLine.isEmpty()) areaLine = b.getString("area");
+        if (areaLine == null || areaLine.isEmpty()) areaLine = b.getString("address");
+
+        String distStr = b.getString("tripDistance");
+        String durStr = b.getString("tripDuration");
+        if (distStr != null && !distStr.isEmpty()) {
+            StringBuilder trip = new StringBuilder(distStr).append(" كم");
+            if (durStr != null && !durStr.isEmpty()) {
+                trip.append(" · ").append(durStr).append(" دقيقة");
+            }
+            areaLine = (areaLine == null || areaLine.isEmpty()) ? trip.toString() : areaLine + " · " + trip;
+        }
+
+        String desc = b.getString("description");
+        String cur = OverlayConfig.currency(this);
+        boolean trial = OverlayConfig.isTrial(this);
+
+        if (service != null && !service.isEmpty()) setText("tv_service_type", trial ? ("[TRIAL] " + service) : service);
+        if (customer != null && !customer.isEmpty()) setText("tv_customer", customer);
+        if (price != null && !price.isEmpty()) setText("tv_price", cur.isEmpty() ? price : cur + " " + price);
+        if (areaLine != null && !areaLine.isEmpty()) setText("tv_area", trial ? (areaLine + "  ·  TRIAL") : areaLine);
+        if (desc != null && !desc.isEmpty()) setText("tv_description", desc);
     }
 
     /** Android 8+ requires a foreground notification to reliably run + draw from the background. */
@@ -262,13 +305,15 @@ public class FloatingOverlayService extends Service {
                 final String service = order.optString(cfg.optString("f_service", "service"), "New request");
                 final String customer = OverlayConfig.firstNonEmpty(order,
                         cfg.optString("f_customer", "customerName"),
-                        "customerName", "customerFirstName", "customer_name", "firstName", "name");
+                        "customerFirstName", "customerName", "customer_name", "firstName", "name");
                 // Price: try the configured key first (default "price"), then common
                 // fallbacks so public requests (which may use a different key) also show.
                 final String price = OverlayConfig.firstNonEmpty(order,
                         cfg.optString("f_price", "price"), "price",
                         "offeredPrice", "amount", "total", "fare", "cost");
-                final String area = order.optString(cfg.optString("f_area", "area"), "");
+                final String area = OverlayConfig.firstNonEmpty(order,
+                        cfg.optString("f_area", "area"),
+                        "generalAddress", "area", "address", "locationName");
                 final String desc = order.optString(cfg.optString("f_description", "description"), "");
                 final String cur = OverlayConfig.currency(this);
                 final boolean trial = OverlayConfig.isTrial(this);

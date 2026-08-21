@@ -92,7 +92,84 @@ public class IncomingRequestActivity extends Activity {
         // Looping ringtone + call-style vibration until the provider responds
         // (silent/vibrate mode respected) — shared with the floating card.
         alert.start(this);
+
+        // Pre-populate UI immediately from Intent extras (FCM data message contains all order fields)
+        populateFromIntentExtras();
+
         fetchAndPopulate(orderId, providerUserId);
+    }
+
+    private void populateFromIntentExtras() {
+        if (getIntent() == null || getIntent().getExtras() == null) return;
+        Bundle b = getIntent().getExtras();
+        JSONObject cfg = OverlayConfig.load(this);
+        String service = b.getString("service");
+        if (service == null || service.isEmpty()) service = b.getString("type");
+        if (service == null || service.isEmpty()) service = "New request";
+
+        String customer = b.getString("customerFirstName");
+        if (customer == null || customer.isEmpty()) customer = b.getString("customerName");
+        if (customer == null || customer.isEmpty()) customer = b.getString("customer_name");
+        if (customer == null || customer.isEmpty()) customer = b.getString("name");
+
+        String price = b.getString("price");
+        if (price == null || price.isEmpty()) price = b.getString("offeredPrice");
+        if (price == null || price.isEmpty()) price = b.getString("amount");
+
+        String areaLine = b.getString("generalAddress");
+        if (areaLine == null || areaLine.isEmpty()) areaLine = b.getString("area");
+        if (areaLine == null || areaLine.isEmpty()) areaLine = b.getString("address");
+
+        String distStr = b.getString("tripDistance");
+        String durStr = b.getString("tripDuration");
+        if (distStr != null && !distStr.isEmpty()) {
+            StringBuilder trip = new StringBuilder(distStr).append(" كم");
+            if (durStr != null && !durStr.isEmpty()) {
+                trip.append(" · ").append(durStr).append(" دقيقة");
+            }
+            areaLine = (areaLine == null || areaLine.isEmpty()) ? trip.toString() : areaLine + " · " + trip;
+        }
+
+        String desc = b.getString("description");
+        String cur = OverlayConfig.currency(this);
+        boolean trial = OverlayConfig.isTrial(this);
+
+        if (service != null && !service.isEmpty()) setText("tv_service_type", trial ? ("[TRIAL] " + service) : service);
+        if (customer != null && !customer.isEmpty()) setText("tv_customer", customer);
+        if (price != null && !price.isEmpty()) setText("tv_price", cur.isEmpty() ? price : cur + " " + price);
+        if (areaLine != null && !areaLine.isEmpty()) setText("tv_area", areaLine);
+        if (desc != null && !desc.isEmpty()) setText("tv_description", desc);
+
+        // Coordinates for map
+        try {
+            double pLat = Double.parseDouble(b.getString("startLat", "NaN"));
+            double pLng = Double.parseDouble(b.getString("startLng", "NaN"));
+            double dLat = Double.parseDouble(b.getString("endLat", "NaN"));
+            double dLng = Double.parseDouble(b.getString("endLng", "NaN"));
+            showMap(pLat, pLng, dLat, dLng);
+        } catch (Exception ignored) {}
+
+        // Single or multiple description images
+        String singleImg = b.getString("descriptionImage");
+        String multiImg = b.getString("descriptionImages");
+        List<String> images = new ArrayList<>();
+        if (singleImg != null && (singleImg.startsWith("http://") || singleImg.startsWith("https://"))) {
+            images.add(singleImg);
+        }
+        if (multiImg != null && !multiImg.isEmpty()) {
+            try {
+                JSONArray arr = new JSONArray(multiImg);
+                for (int i = 0; i < arr.length() && images.size() < 3; i++) {
+                    String u = arr.optString(i, null);
+                    if (u != null && (u.startsWith("http://") || u.startsWith("https://")) && !images.contains(u)) {
+                        images.add(u);
+                    }
+                }
+            } catch (Exception ignored) {}
+        }
+        if (!images.isEmpty()) {
+            loadThumbnails(images);
+        }
     }
 
     private View view(String idName) {
@@ -191,11 +268,13 @@ public class IncomingRequestActivity extends Activity {
                 final String service = order.optString(cfg.optString("f_service", "service"), "New request");
                 final String customer = OverlayConfig.firstNonEmpty(order,
                         cfg.optString("f_customer", "customerName"),
-                        "customerName", "customerFirstName", "customer_name", "firstName", "name");
+                        "customerFirstName", "customerName", "customer_name", "firstName", "name");
                 final String price = OverlayConfig.firstNonEmpty(order,
                         cfg.optString("f_price", "price"), "price",
                         "offeredPrice", "amount", "total", "fare", "cost");
-                String areaLine = order.optString(cfg.optString("f_area", "area"), "");
+                String areaLine = OverlayConfig.firstNonEmpty(order,
+                        cfg.optString("f_area", "area"),
+                        "generalAddress", "area", "address", "locationName");
                 // Trip distance/duration when the backend provides them (Rahatna:
                 // tripDistance km, tripDuration min; null on public requests).
                 double dist = order.optDouble("tripDistance", Double.NaN);

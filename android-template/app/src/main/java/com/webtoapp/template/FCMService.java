@@ -70,11 +70,14 @@ public class FCMService extends FirebaseMessagingService {
                 }
                 if (useFullScreen) {
                     // Phase 2: full-screen call-style screen (works over lock screen / background).
-                    showFullScreenRequest(id, data.get("providerUserId"), data.get("title"), data.get("body"));
+                    showFullScreenRequest(id, data.get("providerUserId"), data.get("title"), data.get("body"), data);
                 } else {
                     Intent show = new Intent(this, FloatingOverlayService.class)
                             .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id)
                             .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, data.get("providerUserId"));
+                    for (java.util.Map.Entry<String, String> entry : data.entrySet()) {
+                        show.putExtra(entry.getKey(), entry.getValue());
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(show);
                     else startService(show);
                 }
@@ -135,11 +138,16 @@ public class FCMService extends FirebaseMessagingService {
 
     /** Phase-2 full-screen incoming-request screen, launched via a full-screen-intent
      *  notification so it appears over the lock screen / when backgrounded (call-style). */
-    private void showFullScreenRequest(String id, String providerUserId, String title, String body) {
+     private void showFullScreenRequest(String id, String providerUserId, String title, String body, java.util.Map<String, String> data) {
         Intent full = new Intent(this, IncomingRequestActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 .putExtra(FloatingOverlayService.EXTRA_ORDER_ID, id)
                 .putExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID, providerUserId == null ? "" : providerUserId);
+        if (data != null) {
+            for (java.util.Map.Entry<String, String> entry : data.entrySet()) {
+                full.putExtra(entry.getKey(), entry.getValue());
+            }
+        }
         PendingIntent pi = PendingIntent.getActivity(this, 43, full,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         final String CH = "webtoapp_incoming_fullscreen";

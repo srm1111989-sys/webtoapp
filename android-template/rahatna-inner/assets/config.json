@@ -10,5 +10,14 @@
   "admob_config": {},
   "firebase_config": {},
   "trial_days": 0,
-  "purchase_url": ""
+  "purchase_url": "",
+  "overlay": {
+    "details_url": "https://rahatna-f1fb0c60.base44.app/functions/getOrderDetailsSecure",
+    "overlay_key": "gmzZQKWxdFWPNRhhGsZeZVDv7shOHIOdZ0VfMm75GLInOYE8rwaateKPou3lgTT1",
+    "labels": {
+      "accept": "قبول",
+      "reject": "رفض",
+      "negotiate": "تفاوض"
+    }
+  }
 }
