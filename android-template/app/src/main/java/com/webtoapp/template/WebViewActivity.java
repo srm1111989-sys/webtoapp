@@ -565,14 +565,14 @@ public class WebViewActivity extends AppCompatActivity {
         if (!customUA.isEmpty()) {
             settings.setUserAgentString(customUA);
         } else {
-            // OAuth providers (Google especially) BLOCK embedded WebViews — an
-            // Android WebView's default UA carries a "; wv" marker and Google
-            // returns "disallowed_useragent" / "The requested action is invalid"
-            // for Sign-In. Strip the marker so the auth pages treat us as normal
-            // Chrome and allow the flow to complete inside the app.
+            // Google blocks embedded WebViews with '400 / disallowed_useragent'
+            // if the User-Agent contains '; wv' or 'Version/4.0'.
+            // Clean both markers so Google OAuth treats WebView as standard mobile Chrome.
             String ua = settings.getUserAgentString();
-            if (ua != null && ua.contains("; wv")) {
-                settings.setUserAgentString(ua.replace("; wv", ""));
+            if (ua != null) {
+                ua = ua.replaceAll(";\\s*wv", "");
+                ua = ua.replaceAll("Version/\\d+\\.\\d+\\s*", "");
+                settings.setUserAgentString(ua);
             }
         }
 
