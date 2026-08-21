@@ -615,6 +615,7 @@ public class WebViewActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String host = request.getUrl().getHost();
                 String url = request.getUrl().toString();
+                String scheme = request.getUrl().getScheme();
 
                 // Play Store URLs must never load inside the WebView — always open
                 // externally. Prevents the app from getting stuck on a blank
@@ -647,7 +648,6 @@ public class WebViewActivity extends AppCompatActivity {
                 // that Firebase / OAuth uses to return to the app after sign-in.
                 // Without this, the redirect opens in Chrome and the WebView session
                 // never sees the result -> getRedirectResult() stays null.
-                String scheme = request.getUrl().getScheme();
                 if (scheme != null && !"http".equals(scheme) && !"https".equals(scheme)) {
                     // Redirect back to the main URL so Firebase can pick up the
                     // auth result from the same WebView session.

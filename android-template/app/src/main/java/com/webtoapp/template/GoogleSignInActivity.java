@@ -188,11 +188,11 @@ public class GoogleSignInActivity extends Activity {
      */
     private String getSigningCertHash() {
         try {
-            java.security.cert.Certificate cert = getPackageManager()
+            android.content.pm.Signature sig = getPackageManager()
                     .getPackageInfo(getPackageName(), android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES)
                     .signingInfo.getApkContentsSigners()[0];
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] digest = md.digest(cert.getEncoded());
+            byte[] digest = md.digest(sig.toByteArray());
             StringBuilder sb = new StringBuilder();
             for (byte b : digest) {
                 sb.append(String.format(Locale.US, "%02x", b));
