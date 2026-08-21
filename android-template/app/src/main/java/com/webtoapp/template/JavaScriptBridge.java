@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Vibrator;
 import android.webkit.JavascriptInterface;
-import android.app.Activity;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -18,11 +17,18 @@ public class JavaScriptBridge {
     private final WebView webView;
     private final SharedPreferences prefs;
     private final AdManager adManager;
+    private final boolean credentialManagerOnlyGoogleSignIn;
 
     public JavaScriptBridge(Context context, WebView webView, AdManager adManager) {
+        this(context, webView, adManager, false);
+    }
+
+    public JavaScriptBridge(Context context, WebView webView, AdManager adManager,
+                            boolean credentialManagerOnlyGoogleSignIn) {
         this.context = context;
         this.webView = webView;
         this.adManager = adManager;
+        this.credentialManagerOnlyGoogleSignIn = credentialManagerOnlyGoogleSignIn;
         this.prefs = context.getSharedPreferences("webtoapp_bridge", Context.MODE_PRIVATE);
     }
 
@@ -116,6 +122,7 @@ public class JavaScriptBridge {
             webView.post(() -> webView.evaluateJavascript(js, null));
         });
         Intent intent = new Intent(context, GoogleSignInActivity.class);
+        intent.putExtra("credential_manager_only", credentialManagerOnlyGoogleSignIn);
         context.startActivity(intent);
     }
 
@@ -148,56 +155,6 @@ public class JavaScriptBridge {
         final String js = "if (typeof " + callback + " === 'function') { "
                 + callback + "(" + JSONObject.quote(token) + ", " + JSONObject.quote(error) + "); }";
         webView.post(() -> webView.evaluateJavascript(js, null));
-    }
-
-    /** True if the "display over other apps" permission is granted (needed for the
-     *  incoming-request overlay). window.WebToApp.hasOverlayPermission() */
-    @JavascriptInterface
-    public boolean hasOverlayPermission() {
-        return android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M
-                || android.provider.Settings.canDrawOverlays(context);
-    }
-
-    /** Open the native "display over other apps" permission screen. Call this right
-     *  after the provider logs in: window.WebToApp.requestOverlayPermission() */
-    @JavascriptInterface
-    public void requestOverlayPermission() {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M
-                || android.provider.Settings.canDrawOverlays(context)) return;
-        try {
-            Intent i = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + context.getPackageName()));
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(i);
-        } catch (Exception e) {
-            try {
-                Intent i = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(i);
-            } catch (Exception ignored) {}
-        }
-    }
-
-    /** Lock-screen display permission (Rahatna $50 bundle). On standard Android
-     *  the capability ships inside the app (USE_FULL_SCREEN_INTENT + the
-     *  activity's showWhenLocked flags) — nothing to grant, so this is a no-op.
-     *  Some OEMs (Xiaomi/MIUI, Oppo/ColorOS, Vivo) gate "show on lock screen"
-     *  behind a per-app settings toggle; there this opens the app's settings
-     *  page so the provider can flip it. Call after the provider logs in:
-     *  window.WebToApp.requestLockScreenPermission() */
-    @JavascriptInterface
-    public void requestLockScreenPermission() {
-        String maker = android.os.Build.MANUFACTURER == null ? "" : android.os.Build.MANUFACTURER.toLowerCase();
-        boolean needsToggle = maker.contains("xiaomi") || maker.contains("redmi")
-                || maker.contains("oppo") || maker.contains("vivo") || maker.contains("realme")
-                || maker.contains("oneplus");
-        if (!needsToggle) return; // stock Android & most brands: already capable
-        try {
-            Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + context.getPackageName()));
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(i);
-        } catch (Exception ignored) {}
     }
 
     // ── AdMob: let the web app trigger full-screen ads and get the rewarded callback ──

@@ -3,9 +3,7 @@ package com.webtoapp.template;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.provider.Settings;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -33,9 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.util.Log;
 import android.util.TypedValue;
-import android.os.Message;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -63,6 +59,10 @@ public class WebViewActivity extends AppCompatActivity {
     private JSONObject features;
     private String appUrl;
     private boolean offlineModeEnabled = false;
+    private boolean nativeGoogleSignInDisabled = false;
+    private boolean safeGoogleAccountPickerEnabled = false;
+    private boolean credentialManagerOnlyGoogleSignIn = false;
+    private boolean useSafeWebToAppWrapper = false;
 
     /** Cache-first ONLY without connectivity; online users always get live data. */
     private void applyOfflineCacheMode(android.webkit.WebSettings settings) {
@@ -126,13 +126,6 @@ public class WebViewActivity extends AppCompatActivity {
         try {
             android.content.Intent it = getIntent();
             if (it == null) return appUrl;
-            // Overlay actions (Rahatna $50 bundle): Accept-success / Negotiate open
-            // the app directly at a site path like /order-details?id=..&action=negotiate.
-            String overlayPath = it.getStringExtra("overlay_open_path");
-            if (overlayPath != null && !overlayPath.isEmpty()) {
-                String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
-                return base + overlayPath;
-            }
             String type = it.getStringExtra("type");
             String id = (type != null) ? it.getStringExtra(type + "Id") : null;
             if (type == null) { type = it.getStringExtra("notif_type"); id = it.getStringExtra("notif_id"); }
@@ -142,24 +135,6 @@ public class WebViewActivity extends AppCompatActivity {
         } catch (Exception e) {
             return appUrl;
         }
-    }
-
-    /** singleTask relaunch (e.g. overlay action while the app is already open):
-     *  navigate the existing WebView to the overlay path.
-     *  STRICT no-op for every app/intent without overlay_open_path — no
-     *  setIntent, no navigation — so existing apps' relaunch behaviour is
-     *  byte-for-byte unchanged (regression-safety rule after the 2026-08-09
-     *  overlay-permission leak incident). */
-    @Override
-    protected void onNewIntent(android.content.Intent intent) {
-        super.onNewIntent(intent);
-        try {
-            String overlayPath = intent == null ? null : intent.getStringExtra("overlay_open_path");
-            if (overlayPath == null || overlayPath.isEmpty() || webView == null) return;
-            setIntent(intent);
-            String base = appUrl.endsWith("/") ? appUrl.substring(0, appUrl.length() - 1) : appUrl;
-            webView.loadUrl(base + overlayPath);
-        } catch (Exception ignored) {}
     }
 
     private void loadConfig() {
@@ -172,12 +147,20 @@ public class WebViewActivity extends AppCompatActivity {
             }
             features = config.optJSONObject("features");
             if (features == null) features = new JSONObject();
+            nativeGoogleSignInDisabled = features.optBoolean("disable_native_google_signin", false);
+            safeGoogleAccountPickerEnabled = features.optBoolean("safe_google_account_picker", false);
+            credentialManagerOnlyGoogleSignIn = features.optBoolean("credential_manager_google_signin_only", false);
+            useSafeWebToAppWrapper = nativeGoogleSignInDisabled || safeGoogleAccountPickerEnabled;
             appUrl = config.optString("app_url", "https://example.com");
             appHost = config.optString("app_host", "example.com");
             appBaseDomain = extractBaseDomain(appHost);
         } catch (Exception e) {
             config = new JSONObject();
             features = new JSONObject();
+            nativeGoogleSignInDisabled = false;
+            safeGoogleAccountPickerEnabled = false;
+            credentialManagerOnlyGoogleSignIn = false;
+            useSafeWebToAppWrapper = false;
             appUrl = "https://example.com";
             appHost = "example.com";
             appBaseDomain = "example.com";
@@ -548,17 +531,13 @@ public class WebViewActivity extends AppCompatActivity {
     private boolean isAuthHost(String host) {
         if (host == null) return false;
         host = host.toLowerCase();
-        return host.startsWith("accounts.google.")
-                || host.startsWith("accounts.youtube.")
-                || host.startsWith("apis.google.")
-                || host.startsWith("content.googleapis")
+        return host.equals("accounts.google.com")
+                || host.equals("accounts.youtube.com")
+                || host.equals("apis.google.com")
+                || host.equals("content.googleapis.com")
                 || host.endsWith(".googleusercontent.com")
                 || host.endsWith(".firebaseapp.com")
                 || host.endsWith(".web.app")
-                || host.equals("oauth.lovable.app")
-                || host.endsWith(".lovable.app")
-                || host.equals("edumobile.ai.studio")
-                || host.endsWith(".ai.studio")
                 || host.equals("appleid.apple.com")
                 || host.endsWith(".facebook.com")
                 || host.endsWith(".fbcdn.net")
@@ -580,8 +559,6 @@ public class WebViewActivity extends AppCompatActivity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setSupportZoom(false);
-        settings.setSupportMultipleWindows(true);
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
         // Custom user agent
         String customUA = features.optString("custom_user_agent", "");
@@ -614,23 +591,6 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String host = request.getUrl().getHost();
-                String url = request.getUrl().toString();
-                String scheme = request.getUrl().getScheme();
-
-                // Play Store URLs must never load inside the WebView — always open
-                // externally. Prevents the app from getting stuck on a blank
-                // Play Store page when site content triggers a "Rate us" link.
-                if (url.contains("play.google.com") || url.contains("market://")) {
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    } catch (Exception e) {
-                        if ("http".equals(scheme) || "https".equals(scheme)) {
-                            view.loadUrl(request.getUrl().toString());
-                        }
-                    }
-                    return true;
-                }
-
                 if (host != null && (host.contains(appBaseDomain) || host.contains(appHost))) {
                     return false; // Load in WebView
                 }
@@ -644,18 +604,6 @@ public class WebViewActivity extends AppCompatActivity {
                 if (isAuthHost(host)) {
                     return false; // Load in WebView
                 }
-                // Catch any custom-scheme redirect (e.g. webtoapp://, myapp://)
-                // that Firebase / OAuth uses to return to the app after sign-in.
-                // Without this, the redirect opens in Chrome and the WebView session
-                // never sees the result -> getRedirectResult() stays null.
-                if (scheme != null && !"http".equals(scheme) && !"https".equals(scheme)) {
-                    // Redirect back to the main URL so Firebase can pick up the
-                    // auth result from the same WebView session.
-                    String redirectTarget = "https://" + appHost + "/";
-                    Log.d("WebViewActivity", "[Redirect] caught " + request.getUrl() + " -> reloading " + redirectTarget);
-                    view.loadUrl(redirectTarget);
-                    return true;
-                }
                 // External links open in browser — GUARDED (2026-08-05, Saad
                 // Shopping "Update" nav crash): startActivity throws when no
                 // activity resolves the URL (stripped review devices, odd
@@ -666,6 +614,7 @@ public class WebViewActivity extends AppCompatActivity {
                     Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
                     startActivity(intent);
                 } catch (Throwable t) {
+                    String scheme = request.getUrl().getScheme();
                     if ("http".equals(scheme) || "https".equals(scheme)) {
                         view.loadUrl(request.getUrl().toString());
                     }
@@ -683,6 +632,7 @@ public class WebViewActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
+                installWebToAppWrapperIfNeeded();
             }
         });
 
@@ -690,21 +640,6 @@ public class WebViewActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 progressBar.setProgress(newProgress);
-            }
-
-            // Firebase signInWithRedirect() opens the provider via window.open().
-            // By default the WebView rejects the popup and the auth flow breaks.
-            // We accept the popup but route it back to the SAME WebView so the
-            // OAuth cookies and session state are preserved — this prevents the
-            // Lovable backend from seeing a broken/missing state parameter and
-            // returning HTTP 400.
-            @Override
-            public boolean onCreateWindow(WebView view, boolean isDialog,
-                                          boolean isUserGesture, Message resultMsg) {
-                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-                transport.setWebView(view); // reuse same WebView = same session
-                resultMsg.sendToTarget();
-                return true;
             }
 
             @Override
@@ -778,34 +713,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     private AdManager adManager;
 
-    // Prompt for the "display over other apps" permission when the incoming-request
-    // overlay feature is on and it isn't granted yet (can't be auto-granted).
-    private void maybeRequestOverlayPermission() {
-        if (!OverlayConfig.isEnabled(this)) return;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)) return;
-        try {
-            new AlertDialog.Builder(this)
-                    .setTitle(OverlayConfig.label(this, "perm_title", "Allow incoming request alerts"))
-                    .setMessage(OverlayConfig.label(this, "perm_message", "To show new service requests over other apps, please allow \"Display over other apps\" for this app."))
-                    .setPositiveButton(OverlayConfig.label(this, "perm_allow", "Allow"), (d, w) -> {
-                        try {
-                            startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                    Uri.parse("package:" + getPackageName())));
-                        } catch (Exception e) {
-                            try { startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)); } catch (Exception ignored) {}
-                        }
-                    })
-                    .setNegativeButton(OverlayConfig.label(this, "perm_later", "Later"), null)
-                    .show();
-        } catch (Exception ignored) {}
-    }
-
     private void setupFeatures() {
-        // Rahatna 2026-08-09: the overlay-permission prompt no longer fires at app
-        // launch — the site calls window.WebToApp.requestOverlayPermission() after
-        // the provider logs in, which is the only moment the grant matters.
-        // maybeRequestOverlayPermission() stays for the JS-bridge path.
-
         // AdMob — wire it up when enabled; each ad type activates only if its unit
         // ID is set and the APPLICATION_ID meta-data is present (CI injects it).
         boolean admobOn = features.optBoolean("admob", false);
@@ -821,8 +729,13 @@ public class WebViewActivity extends AppCompatActivity {
         // JS Bridge (also added when AdMob is on, so the web app can call
         // WebToApp.showRewardedAd(...) / showInterstitial()).
         if (features.optBoolean("js_bridge", false) || admobOn) {
-            JavaScriptBridge bridge = new JavaScriptBridge(this, webView, adManager);
-            webView.addJavascriptInterface(bridge, "WebToApp");
+            JavaScriptBridge bridge = new JavaScriptBridge(
+                    this, webView, adManager, credentialManagerOnlyGoogleSignIn);
+            if (useSafeWebToAppWrapper) {
+                webView.addJavascriptInterface(bridge, "__WebToAppNative");
+            } else {
+                webView.addJavascriptInterface(bridge, "WebToApp");
+            }
         }
 
         // Biometric auth
@@ -833,6 +746,36 @@ public class WebViewActivity extends AppCompatActivity {
                 finish(); // Auth failed
             });
         }
+    }
+
+    private void installWebToAppWrapperIfNeeded() {
+        if (!useSafeWebToAppWrapper || webView == null) return;
+        final String googleSignInMethod = safeGoogleAccountPickerEnabled
+                ? "googleSignIn:function(callback){return native.googleSignIn(String(callback||''));},"
+                : "";
+        final String js = "(function(){try{"
+                + "var native=window.__WebToAppNative;"
+                + "if(!native)return;"
+                + "window.WebToApp={"
+                + "__safeWebToAppWrapper:true,"
+                + "__nativeGoogleSignInDisabled:" + (!safeGoogleAccountPickerEnabled) + ","
+                + googleSignInMethod
+                + "showToast:function(message){return native.showToast(String(message||''));},"
+                + "vibrate:function(duration){return native.vibrate(Number(duration)||0);},"
+                + "shareText:function(title,text){return native.shareText(String(title||''),String(text||''));},"
+                + "openExternalUrl:function(url){return native.openExternalUrl(String(url||''));},"
+                + "setItem:function(key,value){return native.setItem(String(key||''),String(value||''));},"
+                + "getItem:function(key){return native.getItem(String(key||''));},"
+                + "removeItem:function(key){return native.removeItem(String(key||''));},"
+                + "getDeviceInfo:function(){return native.getDeviceInfo();},"
+                + "scanQR:function(){return native.scanQR();},"
+                + "getFCMToken:function(callback){return native.getFCMToken(String(callback||''));},"
+                + "showRewardedAd:function(callback){return native.showRewardedAd(String(callback||''));},"
+                + "isRewardedReady:function(){return native.isRewardedReady();},"
+                + "showInterstitial:function(){return native.showInterstitial();}"
+                + "};"
+                + "}catch(e){}})();";
+        webView.post(() -> webView.evaluateJavascript(js, null));
     }
 
     // ── Server entitlement (Variant B): a paid upgrade made on the website
