@@ -278,31 +278,28 @@ Do not promise a specific price or timeline in chat — those are quoted per req
 
 ## Troubleshooting: Google Sign-In Issues
 
-### APK works but AAB fails with "sign_in_failed_10" or error code 10
+### APK works but Play Store version fails with "sign_in_failed_10" or "invalid-credential / NO_CODE"
 
-**Root cause:** Google Sign-In error code 10 = DEVELOPER_ERROR. This happens when the signing certificate SHA-1 of the installed app does not match any SHA-1 registered in Google Cloud Console for the OAuth client used by the native bridge.
+**Root cause:** Google Sign-In error code 10 represents a `DEVELOPER_ERROR`. This occurs when the Android app's signing certificate (SHA-1 fingerprint) at runtime is not registered in the Firebase / Google Cloud project configuration associated with your Web Client ID.
 
-**Why it happens with AAB but not APK:**
-- **APK**: Signed with the upload keystore. The SHA-1 is registered in Google Cloud Console → works.
-- **AAB**: When uploaded to Google Play, Google Play re-signs the app with its own App Signing certificate. The Play Signing SHA-1 must ALSO be registered in the Web OAuth client in Google Cloud Console. If missing → error 10.
+**Why it happens on the Play Store version but not direct APKs:**
+* **Direct APK/Testing:** The APK is signed by your local **Upload Key** (or debug key). If your upload key SHA-1 is registered in Firebase, the login works.
+* **Play Store Version (AAB):** Once you upload an AAB to the Google Play Console, Google Play re-signs the app with Google's own **App Signing Key** before distributing it to users. The runtime SHA-1 is now the Google Play App Signing key fingerprint. If this Play Store SHA-1 is missing from your Firebase configuration, Google Play Services will block login requests.
 
-**The WebToApp bridge:** WebsiteToApp uses a native Android bridge (`window.WebToApp.googleSignIn`) that launches the native Google Sign-In flow. The native flow uses the **Web OAuth client ID** (`default_web_client_id`), NOT the Android OAuth client IDs. This is why the Web OAuth client needs the Android package + Play Signing SHA-1 registered.
-
-**Fix steps (to give to the user):**
-1. Go to Google Cloud Console → APIs & Services → Credentials
-2. Find the OAuth 2.0 Client ID: `584835953487-802jr0spe03ms2qsc40am5qcga0uubbq` (Web OAuth client)
-3. Click Edit → scroll to "Authorized Android applications"
-4. Click "ADD APPLICATION":
-   - Package name: `a.academic.fresh`
-   - SHA-1 certificate fingerprint: (use the Play Signing SHA-1 from Google Play Console > Setup > App integrity)
-5. Save and wait 5-10 minutes for propagation
-6. Rebuild the app
-
-**Important:** The Play Signing SHA-1 must be added to the Web OAuth client (type: Web application) in Google Cloud Console, not just in Firebase. The Android OAuth clients and Web OAuth client are separate entries. Adding the SHA-1 to the Web OAuth client only enables the native bridge flow to work with the Play-signed APK — it does not affect existing Android OAuth clients.
-
-**Verification checklist:**
-- ✅ APK SHA-1 registered in Google Cloud Console Web OAuth client
-- ✅ Play Signing SHA-1 registered in Google Cloud Console Web OAuth client
-- ✅ Web OAuth client ID in `default_web_client_id` field in `google-services.json`
-- ✅ Firebase OAuth configuration includes all 4 SHA-1 fingerprints (upload keystore + Play Signing)
-- ✅ Google Sign-In API enabled in Google Cloud Console
+**How to configure it correctly (Step-by-Step):**
+1. **Get the Play Store SHA-1:**
+   * Go to the **Google Play Console** and select your app.
+   * Navigate to **Setup** → **App integrity** (or **App signing**).
+   * Copy the **App signing key certificate SHA-1 fingerprint**.
+2. **Add it to Firebase:**
+   * Go to the **[Firebase Console](https://console.firebase.google.com/)** and open your project.
+   * Click the gear icon next to Project Overview → **Project Settings** → **General**.
+   * Scroll down to **Your apps** and select your Android app package.
+   * Click **Add fingerprint** and paste the Play Store App signing key SHA-1.
+   * *(Recommended)* Also make sure your local **Upload Key SHA-1** is added here so local/debug APK testing continues to work.
+3. **Update client ID in App Builder:**
+   * In your Firebase Console, go to **Authentication** → **Sign-in method** → **Google** (under provider settings) and copy the **Web SDK configuration Web client ID** (this is the client ID that represents your backend).
+   * In the WebsiteToApp app builder wizard, make sure you configure this Client ID under **Google Web Client ID** in Advanced Settings.
+4. **Rebuild the App:**
+   * Re-download the `google-services.json` from your Firebase project.
+   * Upload the new `google-services.json` into step 4 (Advanced) of the WebToApp wizard and click **Rebuild** so the configuration changes compile into the app binary. Allow 5–10 minutes for Firebase's backend configurations to propagate globally.
