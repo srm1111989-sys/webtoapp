@@ -14,3 +14,8 @@
 -keepclassmembers class com.webtoapp.template.JavaScriptBridge {
     public *;
 }
+
+# Credential Manager & Google ID Token
+-keep class androidx.credentials.** { *; }
+-keep class com.google.android.libraries.identity.googleid.** { *; }
+

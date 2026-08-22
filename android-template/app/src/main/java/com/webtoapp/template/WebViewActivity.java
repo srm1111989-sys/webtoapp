@@ -564,16 +564,6 @@ public class WebViewActivity extends AppCompatActivity {
         String customUA = features.optString("custom_user_agent", "");
         if (!customUA.isEmpty()) {
             settings.setUserAgentString(customUA);
-        } else {
-            // Google blocks embedded WebViews with '400 / disallowed_useragent'
-            // if the User-Agent contains '; wv' or 'Version/4.0'.
-            // Clean both markers so Google OAuth treats WebView as standard mobile Chrome.
-            String ua = settings.getUserAgentString();
-            if (ua != null) {
-                ua = ua.replaceAll(";\\s*wv", "");
-                ua = ua.replaceAll("Version/\\d+\\.\\d+\\s*", "");
-                settings.setUserAgentString(ua);
-            }
         }
 
         // Offline mode (fixed 2026-08-05, rahatna report): LOAD_CACHE_ELSE_NETWORK

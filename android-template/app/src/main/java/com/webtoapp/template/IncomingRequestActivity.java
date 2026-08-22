@@ -1,18 +1,5 @@
 package com.webtoapp.template;
 
-// Incoming-request FULL-SCREEN screen (Phase 2, paid feature). Unlike the floating
-// overlay card, this is a full-screen activity launched via a high-priority
-// full-screen-intent notification, so it appears over the lock screen and when the
-// app is backgrounded/closed — the sanctioned Android way to pop call-style UI from
-// the background (no SYSTEM_ALERT_WINDOW needed). Feature-gated by
-// features.incoming_request_fullscreen (default OFF). Config-driven, reuses the same
-// features.overlay block (details_url, labels, field maps, currency, trial, etc.).
-//
-// Rahatna $50 bundle: live Accept/Reject/Negotiate via OverlayActions, looping
-// ringtone+vibration via OverlayAlert, request photos (≤3 tappable thumbnails +
-// full-size viewer), pickup→destination OpenStreetMap (Leaflet, no API key),
-// dark/light palette via values-night, auto-close when the order is gone (403/404).
-
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
@@ -35,7 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,8 +31,6 @@ public class IncomingRequestActivity extends Activity {
 
     private static final String TAG = "IncomingFullScreen";
     private String orderId;
-    private String providerUserId;
-    private boolean actionInFlight = false;
     private CountDownTimer timer;
     private final OverlayAlert alert = new OverlayAlert();
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -71,9 +55,6 @@ public class IncomingRequestActivity extends Activity {
         setContentView(layoutId);
 
         orderId = getIntent() != null ? getIntent().getStringExtra(FloatingOverlayService.EXTRA_ORDER_ID) : null;
-        String pushProvider = getIntent() != null ? getIntent().getStringExtra(FloatingOverlayService.EXTRA_PROVIDER_USER_ID) : null;
-        providerUserId = (pushProvider != null && !pushProvider.isEmpty())
-                ? pushProvider : OverlayConfig.providerUserId(this);
 
         // App logo in the header.
         View logo = view("iv_logo");
@@ -86,23 +67,19 @@ public class IncomingRequestActivity extends Activity {
         if (viewer != null) viewer.setOnClickListener(v -> v.setVisibility(View.GONE));
 
         bindButton("btn_accept", "accept", "✓ ");
-        bindButton("btn_reject", "reject", "✗ ");
+        bindButton("btn_reject", "reject", "✕ ");
         bindButton("btn_negotiate", "negotiate", "💬 ");
         startCountdown(30);
         // Looping ringtone + call-style vibration until the provider responds
-        // (silent/vibrate mode respected) — shared with the floating card.
         alert.start(this);
 
         // Pre-populate UI immediately from Intent extras (FCM data message contains all order fields)
         populateFromIntentExtras();
-
-        fetchAndPopulate(orderId, providerUserId);
     }
 
     private void populateFromIntentExtras() {
         if (getIntent() == null || getIntent().getExtras() == null) return;
         Bundle b = getIntent().getExtras();
-        JSONObject cfg = OverlayConfig.load(this);
         String service = b.getString("service");
         if (service == null || service.isEmpty()) service = b.getString("type");
         if (service == null || service.isEmpty()) service = "New request";
@@ -140,7 +117,7 @@ public class IncomingRequestActivity extends Activity {
         if (areaLine != null && !areaLine.isEmpty()) setText("tv_area", areaLine);
         if (desc != null && !desc.isEmpty()) setText("tv_description", desc);
 
-        // Coordinates for map (supports startLat/startLng, pickupLat/pickupLng, lat/lng, or nested JSON)
+        // Coordinates for map
         try {
             double pLat = parseCoord(b, "startLat", "pickupLat", "pickup_lat", "lat", "latitude");
             double pLng = parseCoord(b, "startLng", "pickupLng", "pickup_lng", "lng", "longitude");
@@ -151,7 +128,7 @@ public class IncomingRequestActivity extends Activity {
             }
         } catch (Exception ignored) {}
 
-        // Single or multiple description images (checks descriptionImage, descriptionImages, image, images, photo, photos)
+        // Single or multiple description images
         List<String> images = new ArrayList<>();
         String[] singleKeys = {"descriptionImage", "image", "photo", "imageUrl", "img"};
         for (String k : singleKeys) {
@@ -167,7 +144,12 @@ public class IncomingRequestActivity extends Activity {
                 try {
                     JSONArray arr = new JSONArray(multi);
                     for (int i = 0; i < arr.length() && images.size() < 3; i++) {
-                        String u = arr.optString(i, null);
+                        Object v = arr.opt(i);
+                        String u = null;
+                        if (v instanceof String) u = (String) v;
+                        else if (v instanceof JSONObject) {
+                            u = ((JSONObject) v).optString("url", ((JSONObject) v).optString("src", null));
+                        }
                         if (u != null && (u.startsWith("http://") || u.startsWith("https://")) && !images.contains(u)) {
                             images.add(u);
                         }
@@ -216,33 +198,14 @@ public class IncomingRequestActivity extends Activity {
     }
 
     private void respond(String action) {
-        // First interaction silences the ringtone/vibration.
         alert.stop();
-        // Same live-action semantics as the floating card ($50 bundle spec):
-        if (actionInFlight) return;
         switch (action) {
             case "accept":
-                actionInFlight = true;
-                setText("tv_status", OverlayConfig.label(this, "accepting", "جارٍ قبول الطلب…"));
-                OverlayActions.accept(this, orderId, providerUserId, new OverlayActions.Callback() {
-                    @Override public void onSuccess() {
-                        OverlayActions.openOrder(IncomingRequestActivity.this, orderId);
-                        finish();
-                    }
-                    @Override public void onFailure(String message) {
-                        actionInFlight = false;
-                        setText("tv_status", message);
-                    }
-                });
-                break;
-            case "reject":
-                OverlayActions.reject(this, orderId, providerUserId);
-                finish();
-                break;
             case "negotiate":
                 OverlayActions.openNegotiate(this, orderId);
                 finish();
                 break;
+            case "reject":
             default: // timeout
                 finish();
         }
@@ -253,117 +216,6 @@ public class IncomingRequestActivity extends Activity {
         if (v instanceof TextView && value != null && !value.isEmpty()) ((TextView) v).setText(value);
     }
 
-    /** Fetch latest order details by ID (off the main thread) and populate the screen. */
-    private void fetchAndPopulate(final String orderId, final String providerUserId) {
-        if (orderId == null) return;
-        new Thread(() -> {
-            try {
-                JSONObject cfg = OverlayConfig.load(this);
-                String url = OverlayConfig.detailsUrl(this);
-                if (url.isEmpty()) return;
-                JSONObject reqBody = new JSONObject()
-                        .put("orderId", orderId)
-                        .put("providerUserId", providerUserId == null ? "" : providerUserId);
-                HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
-                c.setRequestMethod("POST");
-                c.setRequestProperty("Content-Type", "application/json");
-                String overlayKey = OverlayConfig.overlayKey(this);
-                if (!overlayKey.isEmpty()) c.setRequestProperty("X-Overlay-Key", overlayKey);
-                c.setConnectTimeout(10000); c.setReadTimeout(10000); c.setDoOutput(true);
-                try (OutputStream os = c.getOutputStream()) { os.write(reqBody.toString().getBytes("UTF-8")); }
-                int code = c.getResponseCode();
-                if (code == 403 || code == 404) {
-                    // Order gone / not for this provider (e.g. already taken): close silently.
-                    main.post(this::closeQuiet);
-                    return;
-                }
-                if (code / 100 != 2) return;
-                StringBuilder sb = new StringBuilder();
-                try (InputStream is = c.getInputStream()) {
-                    byte[] buf = new byte[4096]; int n;
-                    while ((n = is.read(buf)) != -1) sb.append(new String(buf, 0, n, "UTF-8"));
-                }
-                JSONObject resp = new JSONObject(sb.toString());
-                JSONObject order = resp.optJSONObject("order");
-                if (order == null) order = resp;
-                final String service = order.optString(cfg.optString("f_service", "service"), "New request");
-                final String customer = OverlayConfig.firstNonEmpty(order,
-                        cfg.optString("f_customer", "customerName"),
-                        "customerFirstName", "customerName", "customer_name", "firstName", "name");
-                final String price = OverlayConfig.firstNonEmpty(order,
-                        cfg.optString("f_price", "price"), "price",
-                        "offeredPrice", "amount", "total", "fare", "cost");
-                String areaLine = OverlayConfig.firstNonEmpty(order,
-                        cfg.optString("f_area", "area"),
-                        "generalAddress", "area", "address", "locationName");
-                // Trip distance/duration when the backend provides them (Rahatna:
-                // tripDistance km, tripDuration min; null on public requests).
-                double dist = order.optDouble("tripDistance", Double.NaN);
-                double dur = order.optDouble("tripDuration", Double.NaN);
-                if (!Double.isNaN(dist) || !Double.isNaN(dur)) {
-                    StringBuilder trip = new StringBuilder();
-                    if (!Double.isNaN(dist)) trip.append(dist % 1 == 0 ? String.valueOf((long) dist) : String.valueOf(dist)).append(" كم");
-                    if (!Double.isNaN(dur)) {
-                        if (trip.length() > 0) trip.append(" · ");
-                        trip.append((long) dur).append(" دقيقة");
-                    }
-                    areaLine = areaLine.isEmpty() ? trip.toString() : areaLine + " · " + trip;
-                }
-                final String area = areaLine;
-                final String desc = order.optString(cfg.optString("f_description", "description"), "");
-                final String cur = OverlayConfig.currency(this);
-                final boolean trial = OverlayConfig.isTrial(this);
-                final List<String> images = imageUrls(order, cfg);
-                final double pLat = coord(order, cfg, "f_pickup_lat", PICKUP_LAT);
-                final double pLng = coord(order, cfg, "f_pickup_lng", PICKUP_LNG);
-                final double dLat = coord(order, cfg, "f_dest_lat", DEST_LAT);
-                final double dLng = coord(order, cfg, "f_dest_lng", DEST_LNG);
-                main.post(() -> {
-                    setText("tv_service_type", trial ? ("[TRIAL] " + service) : service);
-                    setText("tv_customer", customer);
-                    setText("tv_price", price.isEmpty() ? "" : (cur.isEmpty() ? price : cur + " " + price));
-                    setText("tv_area", area);
-                    setText("tv_description", desc);
-                    showMap(pLat, pLng, dLat, dLng);
-                });
-                loadThumbnails(images);
-            } catch (Exception e) {
-                Log.w(TAG, "getOrderDetails failed: " + e.getMessage());
-            }
-        }).start();
-    }
-
-    private void closeQuiet() {
-        alert.stop();
-        finish();
-    }
-
-    // ── Request photos ──────────────────────────────────────────────────────
-
-    /** Image URLs from the order (config f_images, default descriptionImages);
-     *  accepts an array of strings or of objects with url/src. Max 3 (spec). */
-    private static List<String> imageUrls(JSONObject order, JSONObject cfg) {
-        List<String> out = new ArrayList<>();
-        String[] keys = {cfg.optString("f_images", "descriptionImages"), "images", "photos"};
-        for (String k : keys) {
-            JSONArray arr = order.optJSONArray(k);
-            if (arr == null) continue;
-            for (int i = 0; i < arr.length() && out.size() < 3; i++) {
-                Object v = arr.opt(i);
-                String u = null;
-                if (v instanceof String) u = (String) v;
-                else if (v instanceof JSONObject) {
-                    u = ((JSONObject) v).optString("url", ((JSONObject) v).optString("src", null));
-                }
-                if (u != null && (u.startsWith("http://") || u.startsWith("https://"))) out.add(u);
-            }
-            if (!out.isEmpty()) break;
-        }
-        return out;
-    }
-
-    /** Download each photo (already on a background thread when called from fetch;
-     *  spawns its own threads to stay safe) and show tappable thumbnails. */
     private void loadThumbnails(List<String> urls) {
         if (urls == null || urls.isEmpty()) return;
         final String[] slots = {"iv_img1", "iv_img2", "iv_img3"};
@@ -395,7 +247,6 @@ public class IncomingRequestActivity extends Activity {
         viewer.setVisibility(View.VISIBLE);
     }
 
-    /** Download + decode, downsampled to ~1280px so provider photos can't OOM. */
     private static Bitmap downloadBitmap(String url) {
         try {
             byte[] data;
@@ -421,50 +272,6 @@ public class IncomingRequestActivity extends Activity {
         }
     }
 
-    // ── Pickup → destination map (OpenStreetMap/Leaflet, no API key) ────────
-
-    // Rahatna's live API (verified sample, t310): startLat/startLng + endLat/endLng.
-    private static final String[] PICKUP_LAT = {"startLat", "pickupLatitude", "pickup_lat", "pickupLat",
-            "pickup.lat", "pickup.latitude", "location.lat", "location.latitude", "latitude", "lat"};
-    private static final String[] PICKUP_LNG = {"startLng", "pickupLongitude", "pickup_lng", "pickupLng",
-            "pickup.lng", "pickup.longitude", "location.lng", "location.longitude", "longitude", "lng"};
-    private static final String[] DEST_LAT = {"endLat", "destinationLatitude", "destination_lat", "destLat",
-            "destination.lat", "destination.latitude", "dropoff.lat", "dropoffLatitude", "dropLatitude"};
-    private static final String[] DEST_LNG = {"endLng", "destinationLongitude", "destination_lng", "destLng",
-            "destination.lng", "destination.longitude", "dropoff.lng", "dropoffLongitude", "dropLongitude"};
-
-    /** Read a coordinate: config-mapped key first (supports dotted paths), then candidates. */
-    private static double coord(JSONObject order, JSONObject cfg, String cfgKey, String[] candidates) {
-        String override = cfg.optString(cfgKey, "");
-        if (!override.isEmpty()) {
-            double v = pathDouble(order, override);
-            if (!Double.isNaN(v)) return v;
-        }
-        for (String k : candidates) {
-            double v = pathDouble(order, k);
-            if (!Double.isNaN(v)) return v;
-        }
-        return Double.NaN;
-    }
-
-    /** optDouble with "a.b" nested-object path support. */
-    private static double pathDouble(JSONObject o, String path) {
-        try {
-            String[] parts = path.split("\\.");
-            JSONObject cur = o;
-            for (int i = 0; i < parts.length - 1; i++) {
-                cur = cur.optJSONObject(parts[i]);
-                if (cur == null) return Double.NaN;
-            }
-            return cur.optDouble(parts[parts.length - 1], Double.NaN);
-        } catch (Exception e) {
-            return Double.NaN;
-        }
-    }
-
-    /** Pickup marker + (when present) destination marker with a route line between
-     *  them, on OpenStreetMap tiles via Leaflet — no API key needed. Map stays
-     *  hidden when the order carries no coordinates. */
     private void showMap(double pLat, double pLng, double dLat, double dLng) {
         if (Double.isNaN(pLat) || Double.isNaN(pLng)) return;
         View v = view("wv_map");
@@ -482,10 +289,6 @@ public class IncomingRequestActivity extends Activity {
                 + "var p=[" + pLat + "," + pLng + "];L.marker(p).addTo(map);"
                 + (hasDest
                     ? "var d=[" + dLat + "," + dLng + "];L.marker(d).addTo(map);"
-                      // Straight dashed line shows instantly; OSRM (keyless public
-                      // routing) then replaces it with the real driving route along
-                      // roads (Mohamed: straight line misleads drivers). On any
-                      // routing failure the dashed line simply stays.
                       + "var line=L.polyline([p,d],{color:'#2563EB',weight:4,dashArray:'8 6'}).addTo(map);"
                       + "map.fitBounds(L.latLngBounds([p,d]).pad(0.3));"
                       + "fetch('https://router.project-osrm.org/route/v1/driving/'+p[1]+','+p[0]+';'+d[1]+','+d[0]+'?overview=full&geometries=geojson')"
