@@ -116,8 +116,35 @@ public class WebViewActivity extends AppCompatActivity {
         setupWebView();
         setupFeatures();
         requestNotificationPermissionIfNeeded();
+        requestOverlayPermissionsIfNeeded();
 
         webView.loadUrl(buildStartUrl());
+    }
+
+    private void requestOverlayPermissionsIfNeeded() {
+        if (com.webtoapp.template.OverlayConfig.isFullscreenEnabled(this)) {
+            if (android.os.Build.VERSION.SDK_INT >= 34) { // Android 14+
+                android.app.NotificationManager nm = getSystemService(android.app.NotificationManager.class);
+                if (nm != null && !nm.canUseFullScreenIntent()) {
+                    try {
+                        Intent fsiIntent = new Intent(android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT);
+                        fsiIntent.setData(android.net.Uri.parse("package:" + getPackageName()));
+                        startActivity(fsiIntent);
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+        if (com.webtoapp.template.OverlayConfig.isEnabled(this)) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                if (!android.provider.Settings.canDrawOverlays(this)) {
+                    try {
+                        Intent overlayIntent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        overlayIntent.setData(android.net.Uri.parse("package:" + getPackageName()));
+                        startActivity(overlayIntent);
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
     }
 
     /** Appends a notification deep-link param (e.g. ?courseId=xxx) when the app was
