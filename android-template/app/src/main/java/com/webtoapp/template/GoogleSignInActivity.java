@@ -90,7 +90,8 @@ public class GoogleSignInActivity extends Activity {
     private void startCredentialManagerFlow() {
         try {
             CredentialManager cm = CredentialManager.create(this);
-            GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder(webClientId)
+            GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                    .setServerClientId(webClientId)
                     .setFilterByAuthorizedAccounts(false)
                     .build();
 
