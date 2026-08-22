@@ -148,7 +148,7 @@ public class FCMService extends FirebaseMessagingService {
                 full.putExtra(entry.getKey(), entry.getValue());
             }
         }
-        PendingIntent pi = PendingIntent.getActivity(this, 43, full,
+        PendingIntent pi = PendingIntent.getActivity(this, (id != null ? id.hashCode() : 43), full,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         final String CH = "webtoapp_incoming_fullscreen";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
