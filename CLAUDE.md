@@ -1,4 +1,4 @@
-﻿# Claude Operating Rules & Project Context
+# Claude Operating Rules & Project Context
 
 ## Core Rule: Persistent Memory
 **This is an EXISTING production project.**
@@ -17,6 +17,8 @@ Only ask the user when the required information truly cannot be inferred or retr
 ## Project State & Routing
 For durable operational knowledge, integrations, deployment workflows, and credentials locations, read:
 -> docs/PROJECT_STATE.md
+-> D:\Projects\.ai\SERVER_CONFIG.md (for cron jobs, Docker ports, email logs, and disk volumes)
+-> D:\Projects\.ai\TASKS.md (for ongoing task context)
 
 ## Server <-> Local Sync Rule
 **ALWAYS sync server-side changes back to local before finishing.**
