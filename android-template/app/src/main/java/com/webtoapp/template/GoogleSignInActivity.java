@@ -91,6 +91,7 @@ public class GoogleSignInActivity extends Activity {
         try {
             CredentialManager cm = CredentialManager.create(this);
             GetSignInWithGoogleOption googleIdOption = new GetSignInWithGoogleOption.Builder(webClientId)
+                    .setFilterByAuthorizedAccounts(false)
                     .build();
 
             GetCredentialRequest request = new GetCredentialRequest.Builder()
