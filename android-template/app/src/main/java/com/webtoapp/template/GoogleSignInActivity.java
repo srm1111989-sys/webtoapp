@@ -26,7 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 import java.io.InputStream;
@@ -90,7 +90,7 @@ public class GoogleSignInActivity extends Activity {
     private void startCredentialManagerFlow() {
         try {
             CredentialManager cm = CredentialManager.create(this);
-            GetSignInWithGoogleOption googleIdOption = new GetSignInWithGoogleOption.Builder(webClientId)
+            GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder(webClientId)
                     .setFilterByAuthorizedAccounts(false)
                     .build();
 

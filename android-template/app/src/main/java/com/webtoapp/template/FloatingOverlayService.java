@@ -24,6 +24,7 @@ public class FloatingOverlayService extends Service {
     private static final String TAG = "FloatingOverlay";
     public static final String EXTRA_ORDER_ID = "order_id";
     public static final String EXTRA_PROVIDER_USER_ID = "provider_user_id";
+    public static final String ACTION_DISMISS = "com.webtoapp.template.OVERLAY_DISMISS";
     private WindowManager windowManager;
     private View overlayView;
     private String orderId;
@@ -36,6 +37,10 @@ public class FloatingOverlayService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         promoteForeground();
+        if (intent != null && ACTION_DISMISS.equals(intent.getAction())) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
         if (intent != null) {
             orderId = intent.getStringExtra(EXTRA_ORDER_ID);
         }
