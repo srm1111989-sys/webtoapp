@@ -149,7 +149,18 @@ class GitHubService:
                     logger.info(f"GitHub quota exhausted for '{username}': {used}/{included} minutes used")
                     return False
                 logger.info(f"GitHub quota OK for '{username}': {used}/{included} minutes used")
-            elif r.status_code != 404:  # 404 = org account, different endpoint — fall through
+            elif r.status_code == 403:
+                # Personal PATs cannot access the billing API. Detect quota
+                # exhaustion indirectly: list recent workflow runs — if the
+                # last N runs all have 0 steps (runner never allocated) or the
+                # workflow itself is unreachable, assume no quota.
+                logger.info(f"GitHub billing API 403 for '{username}' (personal account) — using indirect detection")
+                return self._has_quota_indirect(username)
+            elif r.status_code == 404:
+                # Org account — org billing endpoint differs; fall through to
+                # artifact-storage check.
+                logger.info(f"GitHub billing API 404 for '{username}' — org account, falling through")
+            else:
                 logger.warning(f"GitHub quota check for '{username}' returned {r.status_code}, assuming minutes available")
         except Exception as e:
             logger.warning(f"GitHub minutes check failed ({e}), assuming available")
@@ -169,10 +180,66 @@ class GitHubService:
                 if mb >= 400:
                     logger.info(f"GitHub artifact storage near quota for '{self.repo}': {mb:.0f}MB — treating as no quota")
                     return False
+            elif r.status_code in (403, 404):
+                # Can't list artifacts — likely Actions not available on this
+                # account/repo combination.
+                logger.info(f"GitHub artifacts endpoint {r.status_code} for '{self.repo}' — Actions may be unavailable")
+                return False
         except Exception as e:
             logger.warning(f"GitHub artifact storage check failed ({e}), assuming available")
 
         return True
+
+    def _has_quota_indirect(self, username: str) -> bool:
+        """For personal accounts where the billing API returns 403, detect
+        quota exhaustion by listing recent workflow runs. If the last few
+        runs all completed with 0 steps (runner never allocated), the
+        account has exhausted its Actions minutes."""
+        try:
+            with httpx.Client(timeout=10) as client:
+                r = client.get(
+                    f"https://api.github.com/repos/{self.repo}/actions/runs?per_page=5",
+                    headers=self.headers,
+                )
+            if r.status_code != 200:
+                logger.info(f"GitHub workflow_runs returned {r.status_code} — assuming no quota")
+                return False
+            runs = r.json()
+            if not runs:
+                logger.info(f"No workflow runs found for '{self.repo}' — assuming no quota")
+                return False
+
+            # Check if any recent run actually executed steps (not empty)
+            has_real_run = False
+            for run in runs:
+                run_id = run.get("id")
+                if not run_id:
+                    continue
+                try:
+                    jr = client.get(
+                        f"https://api.github.com/repos/{self.repo}/actions/runs/{run_id}/jobs?per_page=1",
+                        headers=self.headers,
+                    )
+                    if jr.status_code == 200:
+                        jobs = jr.json().get("jobs", [])
+                        if jobs and len(jobs[0].get("steps", [])) > 0:
+                            has_real_run = True
+                            break
+                except Exception:
+                    pass
+
+            if not has_real_run:
+                logger.warning(
+                    f"GitHub account '{username}' has no recent runs with steps — "
+                    f"likely out of Actions minutes (all {len(runs)} recent runs empty)"
+                )
+                return False
+
+            logger.info(f"GitHub account '{username}' has recent runs with steps — assuming quota available")
+            return True
+        except Exception as e:
+            logger.warning(f"GitHub indirect quota check failed ({e}), assuming available")
+            return True
 
     def get_job_log(self, job_id: int) -> str:
         """Get logs for a specific job."""
