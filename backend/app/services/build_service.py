@@ -55,6 +55,19 @@ async def _fetch_pipeline_logs(service, pipeline_id: int) -> str:
         return f"[Failed to fetch pipeline logs: {e}]"
 
 
+def _is_github_pre_execution_failure(log: str, jobs: list) -> bool:
+    """True when a GitHub run never actually executed a build step — the runner
+    couldn't be allocated or artifacts were unavailable before the job started.
+    Indicators:
+      * BlobNotFound in the log (runner logs archived/lost before download)
+      * All jobs have empty steps arrays (job never got a runner)"""
+    if jobs and all(len(j.get("steps", [])) == 0 for j in jobs):
+        return True
+    if log and "blobnotfound" in log.lower():
+        return True
+    return False
+
+
 def _is_artifact_quota_failure(log: str) -> bool:
     """True when a GitHub run 'failed' only because the upload-artifact step hit
     the account's artifact-storage quota — the app actually built fine, so the
@@ -570,24 +583,42 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
             service = GitHubService(platform=build.platform, account=3)
         else:
             service = GitLabService(platform=build.platform)
-            
+
         full_log = await _fetch_pipeline_logs(service, pipeline_id)
         build.log = full_log
 
-        # Self-heal: a GitHub *artifact-storage quota* failure means the app
-        # actually built — only the Upload step failed because that account's
-        # artifact storage is full. Requeue on a provider we haven't tried yet
-        # (mirrors the GitLab ci_quota retry in cron.sync_active_builds), bounded
+        # Collect jobs data for pre-execution detection
+        try:
+            job_list = service.get_pipeline_jobs(pipeline_id)
+        except Exception:
+            job_list = []
+
+        # Self-heal: detect runnable-but-reroutable failures and requeue on a
+        # different provider. Two patterns:
+        #   1. GitHub *artifact-storage quota* failure — app actually built, only
+        #      the Upload step failed because the account's artifact storage is full.
+        #      Requeue on a provider we haven't tried yet.
+        #   2. GitHub *pre-execution* failure — run never actually started (empty
+        #      steps, BlobNotFound on log download). Requeue so a different account
+        #      gets a chance to allocate a runner.
+        # Both mirror the GitLab ci_quota retry in cron.sync_active_builds, bounded
         # by _failed_providers so we never ping-pong forever. Root cause 2026-07-20:
         # github1 storage filled and silently failed a paid customer build with no
         # reroute — only GitLab quota was self-healed before.
-        if provider in ("github", "github1", "github2", "github3") and _is_artifact_quota_failure(full_log):
+        is_runnable_failure = False
+        if provider in ("github", "github1", "github2", "github3"):
+            if _is_artifact_quota_failure(full_log) or _is_github_pre_execution_failure(full_log, job_list):
+                is_runnable_failure = True
+        if is_runnable_failure:
             v = dict(build.variables or {})
             failed = set(v.get("_failed_providers", []))
             failed.add("github1" if provider == "github" else provider)
-            remaining = {"gitlab", "github1", "github2", "github3"} - failed
+            # Respect CI_SKIP_PROVIDERS when choosing reroute targets
+            skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
+            all_candidates = {"gitlab", "github1", "github2", "github3"} - failed - skip
             if build.platform == "ios":
-                remaining -= {"gitlab"}  # iOS never builds on GitLab
+                all_candidates -= {"gitlab"}  # iOS never builds on GitLab
+            remaining = all_candidates
             if remaining:
                 v["_failed_providers"] = sorted(failed)
                 v.pop("_build_provider", None)
@@ -598,8 +629,9 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 build.completed_at = None
                 build.error_message = None
                 _save_build_log(str(build.id), full_log)
+                reason = "artifact-storage quota" if _is_artifact_quota_failure(full_log) else "pre-execution failure (no runner/steps)"
                 logger.warning(
-                    f"Build {build.id}: {provider} hit artifact-storage quota (app built OK) — "
+                    f"Build {build.id}: {provider} hit {reason} — "
                     f"requeuing; remaining providers {sorted(remaining)}"
                 )
                 logger.info(f"Build {build.id} updated to {build.status} (pipeline {pipeline_id})")

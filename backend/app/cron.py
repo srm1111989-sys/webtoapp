@@ -144,7 +144,9 @@ async def sync_active_builds():
 
                 provider_name = build.variables.get("_build_provider") if build.variables else None
                 if not provider_name:
-                    provider_name = "gitlab"
+                    # When GitLab is excluded, default to github1; otherwise gitlab
+                    skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
+                    provider_name = "gitlab" if "gitlab" not in skip else "github1"
 
                 try:
                     if provider_name in ["github1", "github"]:
