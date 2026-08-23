@@ -265,27 +265,47 @@ jobs:
             -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}" \
             -PVERSION_CODE="${{ inputs.VERSION_CODE }}"
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-apk
-          path: android-template/app/build/outputs/apk/release/app-release.apk
-          retention-days: 3
+      - name: Upload artifacts to server
+        if: always()
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 157.90.228.171 >> ~/.ssh/known_hosts
 
-      - name: Upload AAB
-        if: inputs.BUILD_AAB == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-aab
-          path: android-template/app/build/outputs/bundle/release/app-release.aab
-          retention-days: 3
+          REMOTE_DIR="/opt/webtoapp/builds/downloads"
+          ssh -o StrictHostKeyChecking=no root@157.90.228.171 "mkdir -p $REMOTE_DIR"
 
-      - name: Upload Keystore
-        uses: actions/upload-artifact@v4
-        with:
-          name: keystore
-          path: android-template/keystore.jks
-          retention-days: 3
+          APK="android-template/app/build/outputs/apk/release/app-release.apk"
+          if [ -f "$APK" ]; then
+            scp -o StrictHostKeyChecking=no "$APK" "root@157.90.228.171:$REMOTE_DIR/${{
+              inputs.ORDER_ID
+            }}-${{
+              inputs.PACKAGE_NAME
+            }}-v${{
+              inputs.VERSION_CODE
+            }}.apk"
+            echo "APK uploaded to server"
+          fi
+
+          if [ "${{ inputs.BUILD_AAB }}" = "true" ]; then
+            AAB="android-template/app/build/outputs/bundle/release/app-release.aab"
+            if [ -f "$AAB" ]; then
+              scp -o StrictHostKeyChecking=no "$AAB" "root@157.90.228.171:$REMOTE_DIR/${{
+                inputs.ORDER_ID
+              }}-${{
+                inputs.PACKAGE_NAME
+              }}-v${{
+                inputs.VERSION_CODE
+              }}.aab"
+              echo "AAB uploaded to server"
+            fi
+          fi
+
+          scp -o StrictHostKeyChecking=no "android-template/keystore.jks" "root@157.90.228.171:$REMOTE_DIR/${{
+            inputs.ORDER_ID
+          }}-keystore.jks"
+          echo "Keystore uploaded to server"
 
       - name: Notify webhook
         if: always()

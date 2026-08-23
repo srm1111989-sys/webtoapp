@@ -56,13 +56,13 @@ async def _fetch_pipeline_logs(service, pipeline_id: int) -> str:
 
 def _is_github_pre_execution_failure(log: str, jobs: list) -> bool:
     """True when a GitHub run never actually executed a build step — the runner
-    couldn't be allocated or artifacts were unavailable before the job started.
+    couldn't be allocated or the run was rejected before a job started.
     Indicators:
-      * BlobNotFound in the log (runner logs archived/lost before download)
+      * Empty job list (runner never allocated, or jobs API returned nothing)
       * All jobs have empty steps arrays (job never got a runner)"""
-    if jobs and all(len(j.get("steps", [])) == 0 for j in jobs):
+    if not jobs:
         return True
-    if log and "blobnotfound" in log.lower():
+    if all(len(j.get("steps", [])) == 0 for j in jobs):
         return True
     return False
 
@@ -625,6 +625,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 build.completed_at = None
                 build.error_message = None
                 _save_build_log(str(build.id), full_log)
+                await db.commit()
                 reason = "artifact-storage quota" if _is_artifact_quota_failure(full_log) else "pre-execution failure (no runner/steps)"
                 logger.warning(
                     f"Build {build.id}: {provider} hit {reason} — "
