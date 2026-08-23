@@ -99,22 +99,16 @@ jobs:
           # include the generated icon separately so the source zip always builds
           zip -q ios-source.zip App/Assets.xcassets/AppIcon.appiconset/icon1024.png
 
-      - name: Upload IPA and source to server
-        if: always()
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 157.90.228.171 >> ~/.ssh/known_hosts
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ios-template/app-unsigned.ipa
+          retention-days: 30
 
-          REMOTE_DIR="/opt/webtoapp/builds/downloads"
-          ssh -o StrictHostKeyChecking=no root@157.90.228.171 "mkdir -p $REMOTE_DIR"
-
-          if [ -f "ios-template/app-unsigned.ipa" ]; then
-            scp -o StrictHostKeyChecking=no "ios-template/app-unsigned.ipa" "root@157.90.228.171:$REMOTE_DIR/${{ inputs.ORDER_ID }}-ios-v${{ inputs.VERSION_CODE }}.ipa"
-            echo "IPA uploaded to server"
-          fi
-          if [ -f "ios-template/ios-source.zip" ]; then
-            scp -o StrictHostKeyChecking=no "ios-template/ios-source.zip" "root@157.90.228.171:$REMOTE_DIR/${{ inputs.ORDER_ID }}-ios-source-v${{ inputs.VERSION_CODE }}.zip"
-            echo "Source zip uploaded to server"
-          fi
+      - name: Upload source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-source
+          path: ios-template/ios-source.zip
+          retention-days: 30

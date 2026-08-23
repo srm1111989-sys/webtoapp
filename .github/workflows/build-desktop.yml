@@ -88,26 +88,12 @@ jobs:
       - name: Build Windows EXE
         run: npm run build:win
 
-      - name: Upload EXE to server
-        if: always()
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 157.90.228.171 >> ~/.ssh/known_hosts
-
-          REMOTE_DIR="/opt/webtoapp/builds/downloads"
-          ssh -o StrictHostKeyChecking=no root@157.90.228.171 "mkdir -p $REMOTE_DIR"
-
-          EXE=$(ls desktop-template/dist/*.exe 2>/dev/null | head -1)
-          if [ -n "$EXE" ]; then
-            scp -o StrictHostKeyChecking=no "$EXE" "root@157.90.228.171:$REMOTE_DIR/${{
-              inputs.ORDER_ID
-            }}-${{
-              inputs.APP_NAME | replace(' ', '_')
-            }}-v${{ inputs.VERSION_CODE }}.exe"
-            echo "EXE uploaded to server"
-          fi
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-exe
+          path: desktop-template/dist/*.exe
+          retention-days: 3
 
       - name: Notify webhook
         if: always()
