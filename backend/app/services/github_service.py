@@ -8,7 +8,7 @@ logger = logging.getLogger("webtoapp.github")
 
 
 class GitHubService:
-    """GitHub Actions fallback for when GitLab CI quota is exceeded."""
+    """GitHub Actions build provider. Quota detection handles personal PAT 403/410 responses."""
 
     def __init__(self, platform: str = "android", account: int = 1):
         if account == 3:
@@ -149,12 +149,11 @@ class GitHubService:
                     logger.info(f"GitHub quota exhausted for '{username}': {used}/{included} minutes used")
                     return False
                 logger.info(f"GitHub quota OK for '{username}': {used}/{included} minutes used")
-            elif r.status_code == 403:
-                # Personal PATs cannot access the billing API. Detect quota
-                # exhaustion indirectly: list recent workflow runs — if the
-                # last N runs all have 0 steps (runner never allocated) or the
-                # workflow itself is unreachable, assume no quota.
-                logger.info(f"GitHub billing API 403 for '{username}' (personal account) — using indirect detection")
+            elif r.status_code in (403, 410):
+                # 403 = personal PAT can't access billing; 410 = endpoint moved
+                # (GitHub sunset the direct billing endpoint for personal accounts).
+                # Detect quota exhaustion indirectly from workflow run history.
+                logger.info(f"GitHub billing API {r.status_code} for '{username}' — using indirect detection")
                 return self._has_quota_indirect(username)
             elif r.status_code == 404:
                 # Org account — org billing endpoint differs; fall through to

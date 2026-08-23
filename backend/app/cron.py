@@ -27,40 +27,23 @@ def _check_quota_cached(key: str, check_fn) -> bool:
     return result
 
 def _build_provider_list(platform: str) -> list[tuple[str, object]]:
-    """
-    Returns providers ordered by preference, skipping any whose quota is exhausted.
-    Falls back to all three (in order) if every quota check returns False, so a
-    genuine API error never blocks all builds.
-    """
+    """Returns GitHub-only providers ordered by preference (github1 → github2 → github3),
+    skipping any whose quota is exhausted. GitLab was permanently removed (t342)."""
     github1 = GitHubService(platform=platform, account=1)
     github2 = GitHubService(platform=platform, account=2)
     github3 = GitHubService(platform=platform, account=3)
 
-    # iOS builds only exist on the GitHub runners (macOS).
-    # All platforms now use GitHub only — GitLab removed (t342).
     candidates = [
         ("github1", github1, lambda: _check_quota_cached("github1", github1.has_quota)),
         ("github2", github2, lambda: _check_quota_cached("github2", github2.has_quota)),
         ("github3", github3, lambda: _check_quota_cached("github3", github3.has_quota)),
     ]
 
-    # Ops escape hatch: CI_SKIP_PROVIDERS=github1,gitlab hard-excludes providers.
-    # Needed when a provider is broken in a way quota checks can't see — e.g.
-    # GitHub's artifact-storage "quota hit" flag stays stale for 6-12h after a
-    # purge (2026-07-18 incident), failing every run at the Upload step while
-    # dispatch still succeeds. Set in /root/.webtoapp-local.env; REMOVE after.
-    skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
-    if skip:
-        kept = [c for c in candidates if c[0] not in skip]
-        if kept:  # never skip our way into having zero candidates
-            logger.warning(f"CI_SKIP_PROVIDERS active — excluding {sorted(skip)}")
-            candidates = kept
-
     available = [(name, svc) for name, svc, check in candidates if check()]
 
     if not available:
         # Every provider reported exhausted quota — try all anyway (quota check may be wrong)
-        logger.warning("All providers report exhausted quota; attempting all in fallback order")
+        logger.warning("All GitHub providers report exhausted quota; attempting all in fallback order")
         available = [(name, svc) for name, svc, _ in candidates]
 
     return available
@@ -144,9 +127,7 @@ async def sync_active_builds():
 
                 provider_name = build.variables.get("_build_provider") if build.variables else None
                 if not provider_name:
-                    # When GitLab is excluded, default to github1; otherwise gitlab
-                    skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
-                    provider_name = "gitlab" if "gitlab" not in skip else "github1"
+                    provider_name = "github1"
 
                 try:
                     if provider_name in ["github1", "github"]:

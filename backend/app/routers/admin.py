@@ -85,8 +85,8 @@ async def get_stats(
 
 
 # --- Users Management ---
-GITLAB_ANDROID_URL = "https://gitlab.com/mokashiswapnil11/webtoapp-android-template"
-GITLAB_DESKTOP_URL = "https://gitlab.com/mokashiswapnil11/webtoapp-desktop-template"
+GITHUB_ANDROID_URL = "https://github.com/pallavimokashi94-sys/webtoapp/actions"
+GITHUB_DESKTOP_URL = "https://github.com/pallavimokashi94-sys/webtoapp/actions"
 
 @router.get("/users", response_model=UserListResponse)
 async def list_users(
@@ -128,7 +128,7 @@ async def list_users(
             if row:
                 u.__dict__['pipeline_id'] = row.pipeline_id
                 u.__dict__['apk_url'] = row.apk_url
-                base = GITLAB_DESKTOP_URL if row.platform == 'desktop' else GITLAB_ANDROID_URL
+                base = GITHUB_DESKTOP_URL if row.platform == 'desktop' else GITHUB_ANDROID_URL
                 u.__dict__['pipeline_url'] = f"{base}/-/pipelines/{row.pipeline_id}" if row.pipeline_id else None
 
     return UserListResponse(users=users, total=total, page=page, per_page=per_page)
@@ -312,7 +312,6 @@ async def get_settings_list(
         "razorpay_test_key_id", "razorpay_test_key_secret",
         "stripe_publishable_key", "stripe_secret_key",
         "stripe_test_publishable_key", "stripe_test_secret_key",
-        "gitlab_url", "gitlab_token", "gitlab_project_id",
         "smtp_host", "smtp_port", "smtp_user", "smtp_password",
         "google_client_id", "payment_test_mode",
     ]

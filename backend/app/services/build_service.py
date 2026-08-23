@@ -12,7 +12,6 @@ from sqlalchemy import select
 from app.models.build import Build
 from app.models.order import Order
 from app.models.app_config import AppConfig
-from app.services.gitlab_service import GitLabService
 from app.services.github_service import GitHubService
 from app.config import get_settings
 
@@ -35,7 +34,7 @@ def _save_build_log(build_id: str, content: str, suffix: str = ""):
 
 
 async def _fetch_pipeline_logs(service, pipeline_id: int) -> str:
-    """Fetch all job logs from a GitLab/GitHub pipeline."""
+    """Fetch all job logs from a GitHub Actions pipeline."""
     try:
         jobs = service.get_pipeline_jobs(pipeline_id)
         logs = []
@@ -212,7 +211,7 @@ async def _ensure_app_keystore(app_config: AppConfig, order: Order, db: AsyncSes
 
 
 async def build_pipeline_variables(app_config: AppConfig, order: Order, platform: str = "android") -> dict:
-    """Convert app config to GitLab CI pipeline variables."""
+    """Convert app config to GitHub Actions workflow variables."""
     domain = urlparse(app_config.url).netloc or app_config.url
 
     # Determine watermark and trial: free plans (amount=0) get watermark + trial.
@@ -238,7 +237,7 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
     }
 
     if app_config.icon_url:
-        # Replace localhost with public app_url — GitLab CI can't reach localhost
+        # Replace localhost with public app_url — self-hosted runners resolve it fine
         icon_url = app_config.icon_url.replace("http://localhost:8000", settings.app_url)
         icon_valid = await _validate_image_url(icon_url)
         if icon_valid:
@@ -387,7 +386,7 @@ async def build_pipeline_variables(app_config: AppConfig, order: Order, platform
 
 
 async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "android") -> Build:
-    """Trigger a GitLab CI pipeline for the given order."""
+    """Trigger a GitHub Actions workflow dispatch for the given order."""
     result = await db.execute(select(Order).where(Order.id == order_id))
     order = result.scalar_one_or_none()
     if not order:
@@ -421,7 +420,7 @@ async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "
 
 
 async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: dict, db: AsyncSession):
-    """Handle GitLab pipeline webhook."""
+    """Handle GitHub Actions webhook."""
     result = await db.execute(select(Build).where(Build.pipeline_id == pipeline_id))
     build = result.scalar_one_or_none()
     if not build:
@@ -453,19 +452,16 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         await db.commit()
 
         # Download artifacts and save build log
-        provider = (build.variables or {}).get("_build_provider", "gitlab")
+        provider = (build.variables or {}).get("_build_provider", "github1")
         if provider in ("github", "github1"):
             service = GitHubService(platform=build.platform, account=1)
-            is_github = True
         elif provider == "github2":
             service = GitHubService(platform=build.platform, account=2)
-            is_github = True
         elif provider == "github3":
             service = GitHubService(platform=build.platform, account=3)
-            is_github = True
         else:
-            service = GitLabService(platform=build.platform)
-            is_github = False
+            service = GitHubService(platform=build.platform, account=1)
+        is_github = True
 
         # Save success log for reference
         try:
@@ -574,7 +570,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         await db.commit()
 
         # Fetch pipeline job logs for failure analysis (same provider routing as the success path)
-        provider = (build.variables or {}).get("_build_provider", "gitlab")
+        provider = (build.variables or {}).get("_build_provider", "github1")
         if provider in ("github", "github1"):
             service = GitHubService(platform=build.platform, account=1)
         elif provider == "github2":
@@ -582,7 +578,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         elif provider == "github3":
             service = GitHubService(platform=build.platform, account=3)
         else:
-            service = GitLabService(platform=build.platform)
+            service = GitHubService(platform=build.platform, account=1)
 
         full_log = await _fetch_pipeline_logs(service, pipeline_id)
         build.log = full_log
@@ -601,10 +597,10 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         #   2. GitHub *pre-execution* failure — run never actually started (empty
         #      steps, BlobNotFound on log download). Requeue so a different account
         #      gets a chance to allocate a runner.
-        # Both mirror the GitLab ci_quota retry in cron.sync_active_builds, bounded
+        # Both mirror the quota-exhaustion retry in cron._build_provider_list, bounded
         # by _failed_providers so we never ping-pong forever. Root cause 2026-07-20:
         # github1 storage filled and silently failed a paid customer build with no
-        # reroute — only GitLab quota was self-healed before.
+        # reroute — only GitHub artifact-storage quota was self-healed before.
         is_runnable_failure = False
         if provider in ("github", "github1", "github2", "github3"):
             if _is_artifact_quota_failure(full_log) or _is_github_pre_execution_failure(full_log, job_list):
@@ -615,9 +611,9 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
             failed.add("github1" if provider == "github" else provider)
             # Respect CI_SKIP_PROVIDERS when choosing reroute targets
             skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
-            all_candidates = {"gitlab", "github1", "github2", "github3"} - failed - skip
+            all_candidates = {"github1", "github2", "github3"} - failed - skip
             if build.platform == "ios":
-                all_candidates -= {"gitlab"}  # iOS never builds on GitLab
+                all_candidates -= {"github3"}  # free tier can't build iOS
             remaining = all_candidates
             if remaining:
                 v["_failed_providers"] = sorted(failed)
@@ -643,7 +639,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
         # Extract error summary from log, stripping internal CI references
         _ci_skip = re.compile(
-            r'github\.com|gitlab\.com|gitHub|gitLab|pipeline|workflow|actions/'
+            r'github\.com|gitHub|pipeline|workflow|actions/'
             r'|runner|job\s+#\d+|artifact|token|glpat-|github_pat_',
             re.IGNORECASE,
         )

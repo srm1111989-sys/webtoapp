@@ -59,21 +59,7 @@ async def _webhook_already_processed(db: AsyncSession, gateway: str, event_id: s
 
 @router.post("/gitlab")
 async def gitlab_webhook(request: Request, db: AsyncSession = Depends(get_db)):
-    token = request.headers.get("X-Gitlab-Token")
-    if token != settings.gitlab_token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-
-    body = await request.json()
-    object_kind = body.get("object_kind")
-
-    if object_kind == "pipeline":
-        pipeline_id = body.get("object_attributes", {}).get("id")
-        pipeline_status = body.get("object_attributes", {}).get("status")
-
-        if pipeline_id:
-            await handle_build_webhook(pipeline_id, pipeline_status, body, db)
-
-    return {"status": "ok"}
+    return {"status": "disabled", "message": "GitLab CI removed — builds run on GitHub Actions only."}
 
 
 # ─── GitHub Webhook ──────────────────────────────────────
