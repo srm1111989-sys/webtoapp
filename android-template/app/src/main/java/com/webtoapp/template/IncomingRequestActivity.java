@@ -44,7 +44,15 @@ public class IncomingRequestActivity extends Activity {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
             KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-            if (km != null) km.requestDismissKeyguard(this, null);
+            if (km != null) {
+                km.requestDismissKeyguard(this, new KeyguardManager.KeyguardDismissCallback() {
+                    @Override public void onDismissSucceeded() {
+                        enableButtons();
+                    }
+                });
+                // Buttons start disabled — they enable once keyguard is dismissed.
+                disableButtons();
+            }
         } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                     | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
@@ -295,6 +303,22 @@ public class IncomingRequestActivity extends Activity {
 
     private void respond(String action) {
         alert.stop();
+        KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        if (km != null && km.isKeyguardLocked()) {
+            km.requestDismissKeyguard(this, new KeyguardManager.KeyguardDismissCallback() {
+                @Override public void onDismissSucceeded() {
+                    doRespond(action);
+                }
+                @Override public void onDismissError() {
+                    doRespond(action);
+                }
+            });
+        } else {
+            doRespond(action);
+        }
+    }
+
+    private void doRespond(String action) {
         switch (action) {
             case "accept":
             case "negotiate":
@@ -304,6 +328,30 @@ public class IncomingRequestActivity extends Activity {
             case "reject":
             default: // timeout
                 finish();
+        }
+    }
+
+    private void disableButtons() {
+        setButtonsEnabled(false);
+    }
+
+    private void enableButtons() {
+        setButtonsEnabled(true);
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        int[] ids = {
+            getResources().getIdentifier("btn_accept", "id", getPackageName()),
+            getResources().getIdentifier("btn_reject", "id", getPackageName()),
+            getResources().getIdentifier("btn_negotiate", "id", getPackageName()),
+        };
+        for (int id : ids) {
+            if (id == 0) continue;
+            View v = findViewById(id);
+            if (v != null) {
+                v.setEnabled(enabled);
+                v.setAlpha(enabled ? 1.0f : 0.5f);
+            }
         }
     }
 
