@@ -525,41 +525,65 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
         # After the artifacts are safely on our server, delete them from GitHub to
         # free the account's ~500 MB artifact storage (otherwise later builds fail
-        # at the Upload step on a full account — see the GH-fallback2 quota alert).
+        # at the Upload step on a full account).
         if is_github and (build.apk_url or build.aab_url or build.exe_url):
             try:
                 await service.delete_run_artifacts(pipeline_id)
             except Exception as e:
                 logger.warning(f"Post-download artifact cleanup failed for pipeline {pipeline_id}: {e}")
 
+        # ── Artifact-missing guard (2026-08-23): CI can report success while GitHub
+        # silently drops artifacts (full artifact storage). If no URLs were captured,
+        # mark the build as failed with a retry hint and record the provider as
+        # exhausted so the next attempt routes to a different account.
+        if not (build.apk_url or build.aab_url or build.exe_url):
+            logger.error(
+                f"Build {build.id} (pipeline {pipeline_id}): CI succeeded but no artifacts "
+                f"were captured — likely artifact storage full on {provider}."
+            )
+            build.status = "failed"
+            build.error_message = (
+                "The build compiled successfully but the APK/AAB files could not be retrieved. "
+                "This is usually a temporary storage issue on our side. "
+                "Please click 'Retry Build' — it will be routed to a different server."
+            )
+            v = dict(build.variables or {})
+            failed_set = set(v.get("_failed_providers", []))
+            failed_set.add(provider)
+            v["_failed_providers"] = list(failed_set)
+            build.variables = v
+            await db.commit()
+
         # Mark app as active and send build completion email
-        try:
-            from app.utils.email import send_build_complete_email
-            result = await db.execute(select(Order).where(Order.id == build.order_id))
-            order = result.scalar_one_or_none()
-            if order:
-                from app.models.user import User
-                from app.models.app_config import AppConfig as AC
-                user_result = await db.execute(select(User).where(User.id == order.user_id))
-                user = user_result.scalar_one_or_none()
-                app_result = await db.execute(select(AC).where(AC.id == order.app_config_id))
-                app = app_result.scalar_one_or_none()
-                if app:
-                    app.status = "active"
-                if user and app:
-                    def _pub(url: str | None) -> str:
-                        if not url:
-                            return ""
-                        return url.replace("http://localhost:8000", settings.app_url)
-                    download_url = _pub(build.apk_url or build.exe_url) or f"{settings.app_url}/apps"
-                    platform_name = "Desktop" if build.platform == "desktop" else "Android"
-                    send_build_complete_email(
-                        user.email, app.name, order.order_number, download_url, platform_name,
-                        aab_url=_pub(build.aab_url), keystore_url=_pub(build.keystore_url),
-                    )
-                    logger.info(f"Build complete email sent to {user.email} for {app.name}")
-        except Exception as e:
-            logger.warning(f"Failed to send build complete email: {e}")
+        # (skip when artifacts were missing — the build is already marked failed above)
+        if build.status == "success":
+            try:
+                from app.utils.email import send_build_complete_email
+                result = await db.execute(select(Order).where(Order.id == build.order_id))
+                order = result.scalar_one_or_none()
+                if order:
+                    from app.models.user import User
+                    from app.models.app_config import AppConfig as AC
+                    user_result = await db.execute(select(User).where(User.id == order.user_id))
+                    user = user_result.scalar_one_or_none()
+                    app_result = await db.execute(select(AC).where(AC.id == order.app_config_id))
+                    app = app_result.scalar_one_or_none()
+                    if app:
+                        app.status = "active"
+                    if user and app:
+                        def _pub(url: str | None) -> str:
+                            if not url:
+                                return ""
+                            return url.replace("http://localhost:8000", settings.app_url)
+                        download_url = _pub(build.apk_url or build.exe_url) or f"{settings.app_url}/apps"
+                        platform_name = "Desktop" if build.platform == "desktop" else "Android"
+                        send_build_complete_email(
+                            user.email, app.name, order.order_number, download_url, platform_name,
+                            aab_url=_pub(build.aab_url), keystore_url=_pub(build.keystore_url),
+                        )
+                        logger.info(f"Build complete email sent to {user.email} for {app.name}")
+            except Exception as e:
+                logger.warning(f"Failed to send build complete email: {e}")
 
     elif pipeline_status == "failed":
         build.status = "failed"

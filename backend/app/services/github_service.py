@@ -321,3 +321,75 @@ class GitHubService:
         if deleted:
             logger.info(f"Deleted {deleted} GitHub artifact(s) for run {run_id} on {self.repo} (freed storage)")
         return deleted
+
+    async def cleanup_old_artifacts(self) -> int:
+        """Free artifact storage by deleting the oldest ~50% of artifacts when
+        the account is near quota. This keeps the ~500 MB budget alive so new
+        builds can upload their APK/AAB without hitting the quota cap.
+
+        Returns the number of artifacts deleted (0 if storage was fine)."""
+        ARTIFACT_LIMIT_MB = 400   # warn threshold (free tier ~500 MB)
+        TARGET_FREE_MB = 250      # aim to leave this much free after cleanup
+        MAX_PAGES = 10            # cap API pages to avoid runaway loops
+
+        total_mb = 0
+        artifacts = []
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                page = 1
+                while page <= MAX_PAGES:
+                    r = await client.get(
+                        self._api_url(f"/actions/artifacts?per_page=100&page={page}"),
+                        headers=self.headers,
+                    )
+                    if r.status_code != 200:
+                        break
+                    page_artifacts = r.json().get("artifacts", [])
+                    if not page_artifacts:
+                        break
+                    for a in page_artifacts:
+                        total_mb += a.get("size_in_bytes", 0) / 1e6
+                        artifacts.append(a)
+                    if len(page_artifacts) < 100:
+                        break
+                    page += 1
+        except Exception as e:
+            logger.warning(f"Artifact storage check failed for {self.repo}: {e}")
+            return 0
+
+        if total_mb < ARTIFACT_LIMIT_MB:
+            logger.debug(f"Artifact storage OK for {self.repo}: {total_mb:.0f} MB / ~500 MB")
+            return 0
+
+        logger.warning(
+            f"Artifact storage HIGH for {self.repo}: {total_mb:.0f} MB used — "
+            f"deleting oldest artifacts to free ~{TARGET_FREE_MB} MB"
+        )
+
+        # Sort oldest first, delete enough to get under target
+        artifacts.sort(key=lambda a: a.get("created_at", ""))
+        to_delete = max(1, len(artifacts) // 2)  # delete oldest 50 %
+        deleted = 0
+        try:
+            async with httpx.AsyncClient(timeout=60) as client:
+                for a in artifacts[:to_delete]:
+                    try:
+                        d = await client.delete(
+                            self._api_url(f"/actions/artifacts/{a['id']}"),
+                            headers=self.headers,
+                        )
+                        if d.status_code in (200, 204):
+                            total_mb -= a.get("size_in_bytes", 0) / 1e6
+                            deleted += 1
+                        if total_mb < ARTIFACT_LIMIT_MB - TARGET_FREE_MB:
+                            break
+                    except Exception:
+                        pass
+        except Exception as e:
+            logger.error(f"Artifact cleanup failed for {self.repo}: {e}")
+
+        logger.info(
+            f"Artifact cleanup for {self.repo}: deleted {deleted} artifacts, "
+            f"~{total_mb:.0f} MB remaining"
+        )
+        return deleted

@@ -49,6 +49,23 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     return available
 
 
+async def _ensure_artifact_storage(provider_name: str, provider: GitHubService) -> None:
+    """Proactively free GitHub artifact storage if it's near quota.
+
+    Called right before triggering a build so the account always has room
+    for the new APK/AAB upload.  Deletes the oldest ~50 % of artifacts
+    once usage is above the 400 MB warning threshold, aiming to leave
+    ~250 MB free afterward."""
+    try:
+        cleaned = await provider.cleanup_old_artifacts()
+        if cleaned:
+            # Invalidate the quota cache so the next has_quota() check sees
+            # the freed storage instead of a stale "full" result.
+            _quota_cache.pop(provider_name, None)
+    except Exception as e:
+        logger.warning(f"Artifact storage check/cleanup failed for {provider_name}: {e}")
+
+
 async def process_pending_build():
     try:
         async with async_session() as db:
@@ -82,6 +99,9 @@ async def process_pending_build():
 
             for provider_name, provider in providers:
                 try:
+                    # Proactively free artifact storage if this account is near quota
+                    await _ensure_artifact_storage(provider_name, provider)
+
                     variables = build.variables.copy() if build.variables else {}
                     variables["_build_provider"] = provider_name
 
