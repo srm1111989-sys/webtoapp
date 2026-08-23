@@ -153,5 +153,15 @@ public final class OverlayActions {
                 return "";
             }
         }
+
+        /** Return the first non-empty value for the given keys from a JSONObject. */
+        static String firstNonNull(JSONObject j, String... keys) {
+            for (String k : keys) {
+                if (k == null) continue;
+                String v = j.optString(k, "").trim();
+                if (!v.isEmpty() && !"null".equals(v)) return v;
+            }
+            return "";
+        }
     }
 }

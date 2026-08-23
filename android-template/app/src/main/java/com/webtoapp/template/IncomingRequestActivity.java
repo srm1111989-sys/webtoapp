@@ -73,8 +73,104 @@ public class IncomingRequestActivity extends Activity {
         // Looping ringtone + call-style vibration until the provider responds
         alert.start(this);
 
-        // Pre-populate UI immediately from Intent extras (FCM data message contains all order fields)
+        // Pre-populate UI immediately from Intent extras (FCM data message
+        // may contain all order fields, but if it doesn't, fetch from the API).
         populateFromIntentExtras();
+
+        // If the FCM extras were missing order details, fetch them live from
+        // the backend so the lock-screen UI is never blank.
+        if (!hasEnoughData()) fetchOrderDetails(orderId);
+    }
+
+    /** True when at least customer + service were populated from FCM extras. */
+    private boolean hasEnoughData() {
+        Bundle b = getIntent() != null ? getIntent().getExtras() : null;
+        if (b == null) return false;
+        String customer = b.getString("customerFirstName");
+        if (customer == null || customer.isEmpty()) customer = b.getString("customerName");
+        if (customer == null || customer.isEmpty()) customer = b.getString("customer_name");
+        if (customer == null || customer.isEmpty()) customer = b.getString("name");
+
+        String service = b.getString("service");
+        if (service == null || service.isEmpty()) service = b.getString("type");
+
+        return customer != null && !customer.isEmpty() && service != null && !service.isEmpty();
+    }
+
+    /** Fetch order details from the API when FCM data was incomplete. */
+    private void fetchOrderDetails(String orderId) {
+        if (orderId == null || orderId.isEmpty()) return;
+        final String url = OverlayConfig.detailsUrl(this);
+        if (url.isEmpty()) return;
+
+        setText("tv_service_type", "Loading...");
+        new Thread(() -> {
+            String json = null;
+            try {
+                JSONObject body = new JSONObject()
+                        .put("orderId", orderId)
+                        .put("providerUserId", OverlayConfig.providerUserId(this));
+                HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+                c.setRequestMethod("POST");
+                c.setRequestProperty("Content-Type", "application/json");
+                String key = OverlayConfig.overlayKey(this);
+                if (!key.isEmpty()) c.setRequestProperty("X-Overlay-Key", key);
+                c.setDoOutput(true);
+                try (java.io.OutputStream os = c.getOutputStream()) {
+                    os.write(body.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                }
+                int code = c.getResponseCode();
+                java.io.InputStream in = code < 400 ? c.getInputStream() : c.getErrorStream();
+                if (in != null) {
+                    java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+                    byte[] buf = new byte[4096]; int n;
+                    while ((n = in.read(buf)) > 0) bos.write(buf, 0, n);
+                    json = bos.toString("UTF-8");
+                }
+                c.disconnect();
+            } catch (Exception ignored) {}
+
+            final String resp = json;
+            main.post(() -> {
+                if (resp == null || resp.isEmpty()) {
+                    setText("tv_service_type", "New request");
+                    return;
+                }
+                try {
+                    JSONObject j = new JSONObject(resp);
+                    String service = OverlayActions.ApiUtil.firstNonNull(j,
+                            "serviceType", "service", "service_name", "type", "title");
+                    String customer = OverlayActions.ApiUtil.firstNonNull(j,
+                            "customerFirstName", "customerName", "customer_name", "name", "customer");
+                    String price = OverlayActions.ApiUtil.firstNonNull(j,
+                            "price", "offeredPrice", "amount", "total", "cost");
+                    String area = OverlayActions.ApiUtil.firstNonNull(j,
+                            "generalAddress", "address", "area", "location", "pickupAddress");
+                    String desc = OverlayActions.ApiUtil.firstNonNull(j,
+                            "description", "notes", "details", "serviceDescription");
+                    String dist = OverlayActions.ApiUtil.firstNonNull(j, "tripDistance", "distance");
+                    String dur = OverlayActions.ApiUtil.firstNonNull(j, "tripDuration", "duration");
+
+                    String cur = OverlayConfig.currency(this);
+                    boolean trial = OverlayConfig.isTrial(this);
+                    if (!service.isEmpty()) setText("tv_service_type", trial ? ("[TRIAL] " + service) : service);
+                    if (!customer.isEmpty()) setText("tv_customer", customer);
+                    if (!price.isEmpty()) setText("tv_price", cur.isEmpty() ? price : cur + " " + price);
+
+                    StringBuilder areaLine = new StringBuilder();
+                    if (!area.isEmpty()) areaLine.append(area);
+                    if (dist != null && !dist.isEmpty()) {
+                        areaLine.append(!areaLine.isEmpty() ? " · " : "").append(dist).append(" كم");
+                        if (dur != null && !dur.isEmpty()) areaLine.append(" · ").append(dur).append(" دقيقة");
+                    }
+                    if (areaLine.length() > 0) setText("tv_area", areaLine.toString());
+                    if (!desc.isEmpty()) setText("tv_description", desc);
+                } catch (Exception e) {
+                    Log.w(TAG, "Order details parse failed: " + e.getMessage());
+                    setText("tv_service_type", "New request");
+                }
+            });
+        }).start();
     }
 
     private void populateFromIntentExtras() {
