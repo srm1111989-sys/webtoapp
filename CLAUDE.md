@@ -1,5 +1,8 @@
 # Claude Operating Rules & Project Context
 
+## Core Rule: Auto-sync after every commit
+Both `D:\Projects\webtoapp` and `D:\Projects\.ai` have a `post-commit` git hook that pushes to **all** remotes automatically. After every `git commit` in either repo, verify the hook fires and the push succeeds. If a push fails (network, auth), surface it — do not silently leave the repo ahead of its remotes.
+
 ## Core Rule: Persistent Memory
 **This is an EXISTING production project.**
 Absence of information from your current conversation context **DOES NOT** mean absence from the project.
