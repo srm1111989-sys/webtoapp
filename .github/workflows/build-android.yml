@@ -265,6 +265,21 @@ jobs:
             -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}" \
             -PVERSION_CODE="${{ inputs.VERSION_CODE }}"
 
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 1
+
+      - name: Upload AAB artifact
+        if: inputs.BUILD_AAB == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 1
+
       - name: Notify webhook
         if: always()
         run: |
