@@ -84,6 +84,56 @@ async def get_stats(
     }
 
 
+@router.get("/ci-quota")
+async def get_ci_quota(admin: Admin = Depends(get_current_admin)):
+    """Return real-time CI quota status for all 3 GitHub Actions providers."""
+    providers = []
+
+    for acct_num in (1, 2, 3):
+        try:
+            gh = GitHubService(platform="android", account=acct_num)
+            has_token = bool(gh.token)
+            quota_ok = gh.has_quota() if has_token else False
+
+            storage_mb = 0.0
+            if has_token:
+                try:
+                    with httpx.Client(timeout=5) as client:
+                        r = client.get(
+                            f"https://api.github.com/repos/{gh.repo}/actions/artifacts?per_page=100",
+                            headers=gh.headers,
+                        )
+                        if r.status_code == 200:
+                            artifacts = r.json().get("artifacts", [])
+                            storage_mb = round(sum(a.get("size_in_bytes", 0) for a in artifacts) / (1024 * 1024), 1)
+                except Exception:
+                    pass
+
+            providers.append({
+                "id": f"github{acct_num}",
+                "name": f"GitHub Actions #{acct_num}",
+                "repo": gh.repo,
+                "configured": has_token,
+                "has_quota": quota_ok,
+                "storage_mb": storage_mb,
+                "max_storage_mb": 500.0,
+                "status": "Active (Healthy)" if quota_ok else ("No Token" if not has_token else "Quota Exhausted")
+            })
+        except Exception as e:
+            providers.append({
+                "id": f"github{acct_num}",
+                "name": f"GitHub Actions #{acct_num}",
+                "repo": f"account-{acct_num}",
+                "configured": False,
+                "has_quota": False,
+                "storage_mb": 0.0,
+                "max_storage_mb": 500.0,
+                "status": f"Error: {str(e)}"
+            })
+
+    return {"providers": providers}
+
+
 # --- Users Management ---
 GITHUB_ANDROID_URL = "https://github.com/pallavimokashi94-sys/webtoapp/actions"
 GITHUB_DESKTOP_URL = "https://github.com/pallavimokashi94-sys/webtoapp/actions"

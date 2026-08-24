@@ -71,4 +71,8 @@ export const adminApi = {
   // Build logs
   getBuildLog: (buildId: string) =>
     adminClient.get<BuildLog>(`/api/admin/builds/${buildId}/log`),
+
+  // CI Quota
+  getCiQuota: () =>
+    adminClient.get<{ providers: Array<{ id: string; name: string; repo: string; configured: boolean; has_quota: boolean; storage_mb: number; max_storage_mb: number; status: string }> }>('/api/admin/ci-quota'),
 }

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
-import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard, FlaskConical, FolderOpen } from 'lucide-react'
+import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard, FlaskConical, FolderOpen, Cpu, CheckCircle2, AlertCircle, HardDrive } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { adminApi } from '@/api/admin'
 import { projectsApi } from '@/api/projects'
@@ -10,6 +10,12 @@ export default function AdminDashboard() {
   const { data: stats, isLoading, error } = useQuery({
     queryKey: ['admin', 'enhanced-stats'],
     queryFn: () => adminApi.getEnhancedStats().then((r) => r.data),
+  })
+
+  const { data: ciQuotaData, isLoading: isLoadingQuota } = useQuery({
+    queryKey: ['admin', 'ci-quota'],
+    queryFn: () => adminApi.getCiQuota().then((r) => r.data),
+    refetchInterval: 30000,
   })
 
   const { data: projectsData } = useQuery({
@@ -165,6 +171,64 @@ export default function AdminDashboard() {
           }
           return CardContent
         })}
+      </div>
+
+      {/* CI Pipeline Quota Status Card */}
+      <div className="bg-white rounded-xl border p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Cpu className="w-5 h-5 text-blue-600" />
+            <h2 className="text-lg font-semibold text-gray-900">CI Pipeline Quotas (GitHub Actions)</h2>
+          </div>
+          <span className="text-xs text-gray-400 font-medium">3 Failover Accounts</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {ciQuotaData?.providers?.map((provider) => (
+            <div key={provider.id} className="border rounded-lg p-4 bg-gray-50 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-sm text-gray-900">{provider.name}</span>
+                  <span
+                    className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      provider.has_quota ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                    }`}
+                  >
+                    {provider.has_quota ? (
+                      <>
+                        <CheckCircle2 className="w-3 h-3" /> Ready
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-3 h-3" /> Exhausted
+                      </>
+                    )}
+                  </span>
+                </div>
+                <p className="text-xs font-mono text-gray-500 truncate mb-3">{provider.repo}</p>
+              </div>
+
+              <div className="space-y-1.5 pt-2 border-t text-xs">
+                <div className="flex items-center justify-between text-gray-600">
+                  <span className="flex items-center gap-1"><HardDrive className="w-3 h-3 text-gray-400" /> Artifact Storage:</span>
+                  <span className="font-mono font-medium">{provider.storage_mb} / {provider.max_storage_mb} MB</span>
+                </div>
+                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${
+                      provider.storage_mb > 400 ? 'bg-amber-500' : 'bg-blue-500'
+                    }`}
+                    style={{ width: `${Math.min(100, (provider.storage_mb / provider.max_storage_mb) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+          {(!ciQuotaData || isLoadingQuota) && (
+            <div className="col-span-3 text-center py-6">
+              <Loader2 className="w-5 h-5 animate-spin mx-auto text-gray-400" />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Charts row */}
