@@ -40,11 +40,16 @@ def _razorpay_product_matches(notes: dict | None) -> bool:
 
 @router.post("/github")
 async def github_webhook(request: Request, db: AsyncSession = Depends(get_db)):
+    token_header = request.headers.get("X-Github-Token")
     sig = request.headers.get("X-Hub-Signature-256")
     payload = await request.body()
 
     secrets = [s for s in [settings.github_webhook_secret, settings.github_webhook_secret_2] if s]
-    if secrets:
+
+    if token_header:
+        if secrets and token_header not in secrets:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    elif secrets:
         if not sig:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing signature")
         valid = any(
@@ -57,26 +62,34 @@ async def github_webhook(request: Request, db: AsyncSession = Depends(get_db)):
         if not valid:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid signature")
 
-    event = request.headers.get("X-GitHub-Event")
-    
-    if event == "workflow_run":
+    try:
         body = json.loads(payload)
+    except Exception:
+        body = {}
+
+    if body.get("object_kind") == "pipeline":
+        attrs = body.get("object_attributes", {})
+        pipeline_id = attrs.get("id")
+        pipeline_status = attrs.get("status")
+        if pipeline_id and pipeline_status:
+            await handle_build_webhook(pipeline_id, pipeline_status, body, db)
+    elif request.headers.get("X-GitHub-Event") == "workflow_run":
         workflow_run = body.get("workflow_run", {})
         pipeline_id = workflow_run.get("id")
-        
+
         gh_status = workflow_run.get("status")
         conclusion = workflow_run.get("conclusion")
-        
+
         status_map = {
             "queued": "pending",
             "in_progress": "running",
             "completed": "success" if conclusion == "success" else "failed",
         }
-        
+
         pipeline_status = status_map.get(gh_status)
         if conclusion and gh_status == "completed":
             pipeline_status = status_map["completed"]
-            
+
         if pipeline_id and pipeline_status:
             await handle_build_webhook(pipeline_id, pipeline_status, body, db)
 
