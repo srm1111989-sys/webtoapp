@@ -203,7 +203,7 @@ class GitHubService:
             if r.status_code != 200:
                 logger.info(f"GitHub workflow_runs returned {r.status_code} — assuming no quota")
                 return False
-            runs = r.json()
+            runs = r.json().get("workflow_runs", [])
             if not runs:
                 logger.info(f"No workflow runs found for '{self.repo}' — assuming no quota")
                 return False
@@ -264,12 +264,17 @@ class GitHubService:
 
             for artifact in artifacts:
                 if artifact_name in artifact["name"]:
-                    # Download artifact zip
-                    dl_response = await client.get(
+                    # Get redirect URL without forwarding Authorization header to Azure Blob Storage
+                    init_res = await client.get(
                         artifact["archive_download_url"],
                         headers=self.headers,
-                        follow_redirects=True,
+                        follow_redirects=False,
                     )
+                    redirect_url = init_res.headers.get("location")
+                    if redirect_url:
+                        dl_response = await client.get(redirect_url, follow_redirects=True)
+                    else:
+                        dl_response = init_res
                     dl_response.raise_for_status()
 
                     # Save and extract
