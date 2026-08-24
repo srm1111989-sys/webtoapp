@@ -341,7 +341,7 @@ export default function AdminProjects() {
 
       {showModal && (
         <ProjectModal
-          project={editingProject}
+          project={editingProject || undefined}
           onClose={() => { setShowModal(false); setEditingProject(null) }}
         />
       )}
