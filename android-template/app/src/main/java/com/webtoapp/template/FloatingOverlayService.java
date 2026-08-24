@@ -57,6 +57,16 @@ public class FloatingOverlayService extends Service {
         if (intent == null || intent.getExtras() == null || overlayView == null) return;
         Bundle b = intent.getExtras();
 
+        // Support both flat payload (order.service) and nested payload
+        // where the backend wraps everything under an "order" key
+        // (e.g. Rahatna's getOrderDetailsSecure returns { "order": { ... } }).
+        String orderObj = b.getString("order");
+        boolean nested = orderObj != null && !orderObj.isEmpty();
+        Bundle nb = b;
+        if (nested) {
+            try { nb = new Bundle(); nb.putString("order", orderObj); } catch (Exception ignored) {}
+        }
+
         String service = b.getString("service");
         if (service == null || service.isEmpty()) service = b.getString("type");
         if (service == null || service.isEmpty()) service = "New request";
@@ -68,7 +78,7 @@ public class FloatingOverlayService extends Service {
 
         String price = b.getString("price");
         if (price == null || price.isEmpty()) price = b.getString("offeredPrice");
-        if (price == null || price.isEmpty()) price = b.getString("amount");
+        if (price == null || service.isEmpty()) price = b.getString("amount");
 
         String areaLine = b.getString("generalAddress");
         if (areaLine == null || areaLine.isEmpty()) areaLine = b.getString("area");
@@ -85,6 +95,35 @@ public class FloatingOverlayService extends Service {
         }
 
         String desc = b.getString("description");
+
+        // Fallback: read fields from a nested "order" JSON string if flat lookup returned empty
+        if ((service == null || service.isEmpty() || "New request".equals(service))
+                && nested) {
+            try {
+                JSONObject order = new JSONObject(orderObj);
+                String s = order.optString("service", "").trim();
+                if (!s.isEmpty()) service = s;
+                String c = order.optString("customerFirstName", "").trim();
+                if (c.isEmpty()) c = order.optString("customerName", "").trim();
+                if (!c.isEmpty()) customer = c;
+                String p = order.optString("price", "").trim();
+                if (p.isEmpty()) p = order.optString("offeredPrice", "").trim();
+                if (!p.isEmpty()) price = p;
+                String a = order.optString("generalAddress", "").trim();
+                if (a.isEmpty()) a = order.optString("area", "").trim();
+                if (!a.isEmpty()) areaLine = a;
+                String d = order.optString("description", "").trim();
+                if (!d.isEmpty()) desc = d;
+                String dt = order.optString("tripDistance", "").trim();
+                String dr = order.optString("tripDuration", "").trim();
+                if (!dt.isEmpty()) {
+                    StringBuilder trip = new StringBuilder(dt).append(" كم");
+                    if (!dr.isEmpty()) trip.append(" · ").append(dr).append(" دقيقة");
+                    areaLine = (areaLine == null || areaLine.isEmpty()) ? trip.toString() : areaLine + " · " + trip;
+                }
+            } catch (Exception ignored) {}
+        }
+
         String cur = OverlayConfig.currency(this);
         boolean trial = OverlayConfig.isTrial(this);
 

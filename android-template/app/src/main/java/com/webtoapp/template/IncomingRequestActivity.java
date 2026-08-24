@@ -146,18 +146,22 @@ public class IncomingRequestActivity extends Activity {
                 }
                 try {
                     JSONObject j = new JSONObject(resp);
-                    String service = OverlayActions.ApiUtil.firstNonNull(j,
+                    // Support both flat API responses and nested ones (e.g.
+                    // Rahatna wraps fields under "order": { "service": ..., ... }).
+                    JSONObject orderObj = j.optJSONObject("order");
+                    JSONObject src = orderObj != null ? orderObj : j;
+                    String service = OverlayActions.ApiUtil.firstNonNull(src,
                             "serviceType", "service", "service_name", "type", "title");
-                    String customer = OverlayActions.ApiUtil.firstNonNull(j,
+                    String customer = OverlayActions.ApiUtil.firstNonNull(src,
                             "customerFirstName", "customerName", "customer_name", "name", "customer");
-                    String price = OverlayActions.ApiUtil.firstNonNull(j,
+                    String price = OverlayActions.ApiUtil.firstNonNull(src,
                             "price", "offeredPrice", "amount", "total", "cost");
-                    String area = OverlayActions.ApiUtil.firstNonNull(j,
+                    String area = OverlayActions.ApiUtil.firstNonNull(src,
                             "generalAddress", "address", "area", "location", "pickupAddress");
-                    String desc = OverlayActions.ApiUtil.firstNonNull(j,
+                    String desc = OverlayActions.ApiUtil.firstNonNull(src,
                             "description", "notes", "details", "serviceDescription");
-                    String dist = OverlayActions.ApiUtil.firstNonNull(j, "tripDistance", "distance");
-                    String dur = OverlayActions.ApiUtil.firstNonNull(j, "tripDuration", "duration");
+                    String dist = OverlayActions.ApiUtil.firstNonNull(src, "tripDistance", "distance");
+                    String dur = OverlayActions.ApiUtil.firstNonNull(src, "tripDuration", "duration");
 
                     String cur = OverlayConfig.currency(this);
                     boolean trial = OverlayConfig.isTrial(this);
@@ -212,6 +216,35 @@ public class IncomingRequestActivity extends Activity {
         }
 
         String desc = b.getString("description");
+
+        // Fallback: read fields from a nested "order" JSON string if flat lookup returned empty
+        String orderJson = b.getString("order");
+        if ((service != null && service.isEmpty()) && orderJson != null && !orderJson.isEmpty()) {
+            try {
+                JSONObject order = new JSONObject(orderJson);
+                String s = order.optString("service", "").trim();
+                if (!s.isEmpty()) service = s;
+                String c = order.optString("customerFirstName", "").trim();
+                if (c.isEmpty()) c = order.optString("customerName", "").trim();
+                if (!c.isEmpty()) customer = c;
+                String p = order.optString("price", "").trim();
+                if (p.isEmpty()) p = order.optString("offeredPrice", "").trim();
+                if (!p.isEmpty()) price = p;
+                String a = order.optString("generalAddress", "").trim();
+                if (a.isEmpty()) a = order.optString("area", "").trim();
+                if (!a.isEmpty()) areaLine = a;
+                String d = order.optString("description", "").trim();
+                if (!d.isEmpty()) desc = d;
+                String dt = order.optString("tripDistance", "").trim();
+                String dr = order.optString("tripDuration", "").trim();
+                if (!dt.isEmpty()) {
+                    StringBuilder trip = new StringBuilder(dt).append(" كم");
+                    if (!dr.isEmpty()) trip.append(" · ").append(dr).append(" دقيقة");
+                    areaLine = (areaLine == null || areaLine.isEmpty()) ? trip.toString() : areaLine + " · " + trip;
+                }
+            } catch (Exception ignored) {}
+        }
+
         String cur = OverlayConfig.currency(this);
         boolean trial = OverlayConfig.isTrial(this);
 
