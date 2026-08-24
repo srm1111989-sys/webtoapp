@@ -495,22 +495,26 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
             return svcs
 
         async def _download_any(artifact_name: str) -> str | None:
-            for svc in _all_github_services(build.platform):
-                if not getattr(svc, "token", ""):
-                    continue
-                try:
-                    url = await svc.download_artifact(pipeline_id, artifact_name, folder)
-                    if url:
-                        _download_svc = svc
-                        return url
-                except httpx.HTTPStatusError as e:
-                    if e.response.status_code == 404:
-                        logger.info(
-                            f"Artifact '{artifact_name}' not found on {svc.repo} "
-                            f"(pipeline {pipeline_id}); trying next account"
-                        )
+            nonlocal _download_svc
+            for attempt in range(5):
+                for svc in _all_github_services(build.platform):
+                    if not getattr(svc, "token", ""):
                         continue
-                    raise
+                    try:
+                        url = await svc.download_artifact(pipeline_id, artifact_name, folder)
+                        if url:
+                            _download_svc = svc
+                            return url
+                    except httpx.HTTPStatusError as e:
+                        if e.response.status_code == 404:
+                            logger.info(
+                                f"Artifact '{artifact_name}' not found on {svc.repo} "
+                                f"(pipeline {pipeline_id}, attempt {attempt + 1}/5); trying next"
+                            )
+                            continue
+                        raise
+                if attempt < 4:
+                    await asyncio.sleep(5)
             return None
 
         try:
