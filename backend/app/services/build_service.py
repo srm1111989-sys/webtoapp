@@ -564,18 +564,40 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 f"Build {build.id} (pipeline {pipeline_id}): CI succeeded but no artifacts "
                 f"were captured — likely artifact storage full on {provider}."
             )
-            build.status = "failed"
-            build.error_message = (
-                "The build compiled successfully but the APK/AAB files could not be retrieved. "
-                "This is usually a temporary storage issue on our side. "
-                "Please click 'Retry Build' — it will be routed to a different server."
-            )
             v = dict(build.variables or {})
             failed_set = set(v.get("_failed_providers", []))
             failed_set.add(provider)
-            v["_failed_providers"] = list(failed_set)
-            build.variables = v
-            await db.commit()
+            v["_failed_providers"] = sorted(failed_set)
+
+            # Self-heal: reset to pending so cron picks it up on a different provider.
+            # Without this, the user would have to manually click "Retry Build" and the
+            # _failed_providers list would be lost (trigger_build creates a fresh Build).
+            all_candidates = {"github1", "github2", "github3"} - failed_set
+            skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
+            remaining = all_candidates - skip
+            if remaining:
+                v.pop("_build_provider", None)
+                build.variables = v
+                build.status = "pending"
+                build.pipeline_id = None
+                build.started_at = None
+                build.completed_at = None
+                build.error_message = None
+                build.progress = 0
+                await db.commit()
+                logger.warning(
+                    f"Build {build.id}: artifact-missing on {provider} — "
+                    f"auto-rerouting; remaining providers {sorted(remaining)}"
+                )
+            else:
+                build.status = "failed"
+                build.error_message = (
+                    "The build compiled successfully but the APK/AAB files could not be retrieved "
+                    f"from any provider. Please contact support@websitetoapp.app."
+                )
+                build.variables = v
+                await db.commit()
+                logger.error(f"Build {build.id}: artifact-missing on all providers — giving up")
 
         # Mark app as active and send build completion email
         # (skip when artifacts were missing — the build is already marked failed above)
