@@ -472,40 +472,66 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
             logger.warning(f"Could not save success log for build {build.id}: {e}")
 
         folder = f"builds/{build.order_id}"
+
+        # Track which service actually downloaded artifacts so post-download
+        # cleanup (deleting artifacts from GitHub to free storage) targets the
+        # correct account.
+        _download_svc = None
+
+        # Artifact download: try the originating service first, then fall back
+        # to every other available GitHub account.  A build triggered on
+        # mokashiswapnil/webtoapp via github2 is only reachable with a token
+        # that has access to that repo — github2's token may be empty while
+        # github1's token (pallavimokashi94-sys/webtoapp) has access, or vice
+        # versa.  Iterating all accounts avoids silent 404s and empty URLs.
+        def _all_github_services(platform: str) -> list:
+            svcs = []
+            for acct in (1, 2, 3):
+                try:
+                    from app.services.github_service import GitHubService
+                    svcs.append(GitHubService(platform=platform, account=acct))
+                except Exception:
+                    pass
+            return svcs
+
+        async def _download_any(artifact_name: str) -> str | None:
+            for svc in _all_github_services(build.platform):
+                if not getattr(svc, "token", ""):
+                    continue
+                try:
+                    url = await svc.download_artifact(pipeline_id, artifact_name, folder)
+                    if url:
+                        _download_svc = svc
+                        return url
+                except httpx.HTTPStatusError as e:
+                    if e.response.status_code == 404:
+                        logger.info(
+                            f"Artifact '{artifact_name}' not found on {svc.repo} "
+                            f"(pipeline {pipeline_id}); trying next account"
+                        )
+                        continue
+                    raise
+            return None
+
         try:
             if build.platform == "desktop":
-                exe_url = await service.download_artifact(
-                    pipeline_id,
-                    "desktop-exe" if is_github else "dist/*.exe",
-                    folder,
-                )
+                exe_url = await _download_any("desktop-exe" if is_github else "dist/*.exe")
                 if exe_url:
                     build.exe_url = exe_url
             elif build.platform == "ios":
-                # iOS is GitHub-only. We ship an unsigned IPA (test in a simulator)
-                # plus the full Xcode source so the user can sign & publish under
-                # their own Apple account. apk_url reuses the "primary download".
-                ipa_url = await service.download_artifact(pipeline_id, "ios-ipa", folder)
+                ipa_url = await _download_any("ios-ipa")
                 if ipa_url:
                     build.ipa_url = ipa_url
-                    build.apk_url = ipa_url  # primary download link in UI/email
-                source_url = await service.download_artifact(pipeline_id, "ios-source", folder)
+                    build.apk_url = ipa_url
+                source_url = await _download_any("ios-source")
                 if source_url:
                     build.source_url = source_url
             else:
-                apk_url = await service.download_artifact(
-                    pipeline_id,
-                    "android-apk" if is_github else "app/build/outputs/apk/release/app-release.apk",
-                    folder,
-                )
+                apk_url = await _download_any("android-apk" if is_github else "app/build/outputs/apk/release/app-release.apk")
                 if apk_url:
                     build.apk_url = apk_url
 
-                aab_url = await service.download_artifact(
-                    pipeline_id,
-                    "android-aab" if is_github else "app/build/outputs/bundle/release/app-release.aab",
-                    folder,
-                )
+                aab_url = await _download_any("android-aab" if is_github else "app/build/outputs/bundle/release/app-release.aab")
                 if aab_url:
                     build.aab_url = aab_url
 
@@ -513,11 +539,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                 order = result.scalar_one_or_none()
                 is_free = order and order.amount == 0 and not (order.order_metadata or {}).get("force_premium")
                 if not is_free:
-                    keystore_url = await service.download_artifact(
-                        pipeline_id,
-                        "keystore" if is_github else "keystore.jks",
-                        folder,
-                    )
+                    keystore_url = await _download_any("keystore" if is_github else "keystore.jks")
                     if keystore_url:
                         build.keystore_url = keystore_url
         except Exception as e:
@@ -528,7 +550,8 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         # at the Upload step on a full account).
         if is_github and (build.apk_url or build.aab_url or build.exe_url):
             try:
-                await service.delete_run_artifacts(pipeline_id)
+                cleanup_svc = _download_svc or service
+                await cleanup_svc.delete_run_artifacts(pipeline_id)
             except Exception as e:
                 logger.warning(f"Post-download artifact cleanup failed for pipeline {pipeline_id}: {e}")
 

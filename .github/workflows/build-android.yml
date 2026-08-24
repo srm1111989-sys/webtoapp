@@ -250,6 +250,20 @@ jobs:
             -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}" \
             -PVERSION_CODE="${{ inputs.VERSION_CODE }}"
 
+      - name: Copy APK to known location
+        run: |
+          set -e
+          APK_SRC=$(find app/build/outputs -name "*.apk" -path "*/release/*" 2>/dev/null | head -1)
+          if [ -n "$APK_SRC" ]; then
+            mkdir -p app/build/outputs/apk/release
+            cp "$APK_SRC" app/build/outputs/apk/release/app-release.apk
+            echo "APK copied: $APK_SRC -> app/build/outputs/apk/release/app-release.apk"
+          else
+            echo "ERROR: No APK found after assembleRelease"
+            find app/build -name "*.apk" 2>/dev/null
+            exit 1
+          fi
+
       - name: Build AAB
         if: inputs.BUILD_AAB == 'true'
         run: |
@@ -265,11 +279,26 @@ jobs:
             -PADMOB_ENABLED="${{ inputs.ADMOB_ENABLED }}" \
             -PVERSION_CODE="${{ inputs.VERSION_CODE }}"
 
+      - name: Copy AAB to known location
+        if: inputs.BUILD_AAB == 'true'
+        run: |
+          set -e
+          AAB_SRC=$(find app/build/outputs -name "*.aab" -path "*/release/*" 2>/dev/null | head -1)
+          if [ -n "$AAB_SRC" ]; then
+            mkdir -p app/build/outputs/bundle/release
+            cp "$AAB_SRC" app/build/outputs/bundle/release/app-release.aab
+            echo "AAB copied: $AAB_SRC -> app/build/outputs/bundle/release/app-release.aab"
+          else
+            echo "ERROR: No AAB found after bundleRelease"
+            find app/build -name "*.aab" 2>/dev/null
+            exit 1
+          fi
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: app/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/release/app-release.apk
           retention-days: 1
 
       - name: Upload AAB artifact
@@ -277,7 +306,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-aab
-          path: app/build/outputs/bundle/release/*.aab
+          path: app/build/outputs/bundle/release/app-release.aab
           retention-days: 1
 
       - name: Notify webhook
