@@ -1,7 +1,9 @@
 import uuid
+import httpx
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
+from app.services.github_service import GitHubService
 from fastapi.responses import PlainTextResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, case, cast, Date
