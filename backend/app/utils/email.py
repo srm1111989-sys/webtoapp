@@ -181,6 +181,72 @@ def send_admin_payment_notification(
     )
 
 
+def send_build_delay_apology_email(
+    to: str,
+    app_name: str,
+    order_number: str,
+    download_url: str,
+    platform: str = "Android",
+    aab_url: str = "",
+    keystore_url: str = "",
+) -> bool:
+    """Apology email sent when a build succeeds after prior failures."""
+    btn = "display:inline-block; color:#ffffff; padding:13px 28px; border-radius:8px; text-decoration:none; font-weight:600; font-size:15px; margin:6px auto; min-width:200px; text-align:center;"
+    extra_buttons = ""
+    if aab_url:
+        extra_buttons += f'<div><a href="{aab_url}" style="{btn} background:#2563eb;">Download AAB (Play Store)</a></div>'
+    keystore_note = ""
+    if keystore_url:
+        keystore_note = f'<div style="text-align:center;"><a href="{keystore_url}" style="{btn} background:#6b7280; font-size:14px; padding:11px 24px;">Download Keystore (.jks)</a></div><p style="font-size:12px; color:#9ca3af; text-align:center; margin:4px 0 0;">Keep the keystore safe — you need it for every Play Store update.</p>'
+    html = f"""
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #4f46e5; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">Your App Is Ready — We Apologize for the Delay</h1>
+      </div>
+      <div style="padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+        <p style="font-size: 16px; color: #111827;">Hi there,</p>
+        <p style="font-size: 15px; color: #374151; line-height: 1.7;">
+          We sincerely apologize for the delay in getting your app built. We know you were waiting, and we appreciate your patience.
+        </p>
+        <p style="font-size: 15px; color: #374151; line-height: 1.7;">
+          The good news is that <strong>{app_name}</strong> is now ready for you to download.
+        </p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">App Name</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: 600; font-size: 14px;">{app_name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Order</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: 600; font-size: 14px;">{order_number}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Platform</td>
+            <td style="padding: 8px 0; text-align: right; font-weight: 600; font-size: 14px;">{platform}</td>
+          </tr>
+        </table>
+        <div style="text-align: center; margin: 24px 0;">
+          <div><a href="{download_url}" style="{btn} background:#059669;">Download {'APK' if platform == 'Android' else 'App'}</a></div>
+          {extra_buttons}
+          {keystore_note}
+        </div>
+        <p style="font-size: 14px; color: #6b7280;">You can also download your app from your <a href="{settings.app_url}/apps" style="color: #4f46e5;">dashboard</a>.</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+        <p style="font-size: 13px; color: #6b7280;"><strong>Next steps:</strong></p>
+        <ul style="font-size: 13px; color: #6b7280; padding-left: 20px;">
+          <li>Install the APK on your Android device to test</li>
+          <li>Upload the AAB file to the Google Play Store (button above, or from your dashboard)</li>
+          <li>Share with your users!</li>
+        </ul>
+        <p style="font-size: 12px; color: #9ca3af; text-align: center; margin-top: 20px;">
+          If you have any questions, just reply to this email or contact <a href="mailto:support@websitetoapp.app" style="color: #4f46e5;">support@websitetoapp.app</a>
+        </p>
+      </div>
+    </div>
+    """
+    return send_email(to, f"Your app \"{app_name}\" is ready — sorry for the delay!", html)
+
+
 def send_build_complete_email(
     to: str,
     app_name: str,

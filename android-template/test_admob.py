@@ -64,7 +64,7 @@ def check_google_play_services() -> bool:
 def inject_admob_manifest():
     """Inject AdMob meta-data into AndroidManifest.xml.
 
-    This replicates what .gitlab-ci.yml does in the prepare stage:
+    This replicates what the CI pipeline does in the prepare stage:
     removes the provider removal line and adds the AdMob app ID.
     """
     with open(MANIFEST_PATH, 'r') as f:

@@ -17,7 +17,7 @@ On a new service-request push to a **Service Provider**, show a floating overlay
 This is a per-app custom feature, not a general WebToApp feature. Build + verify it here
 first. When done and paid, integrate as a FEATURE-GATED module (activated only for Rahatna's
 app_config via a `features.rahatna_overlay` flag) and — per the pipeline sync rule — apply it
-identically to gitlab + github1 + github2 + github3 with the var added to the github allowlist +
+identically to github1 + github2 + github3 with the var added to the github allowlist +
 each workflow's inputs. (See ../../../.ai/WEBTOAPP-BUILD-PIPELINES.md.)
 
 ## Components

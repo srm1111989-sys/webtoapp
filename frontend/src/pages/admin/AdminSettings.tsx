@@ -44,15 +44,6 @@ const SECTIONS: SettingsSection[] = [
     ],
   },
   {
-    title: 'GitLab',
-    icon: GitBranch,
-    fields: [
-      { key: 'gitlab_url', label: 'GitLab URL', type: 'text', placeholder: 'https://gitlab.com' },
-      { key: 'gitlab_token', label: 'Private Token', type: 'password', placeholder: 'Enter GitLab token' },
-      { key: 'gitlab_project_id', label: 'Project ID', type: 'text', placeholder: '12345' },
-    ],
-  },
-  {
     title: 'SMTP',
     icon: Mail,
     fields: [

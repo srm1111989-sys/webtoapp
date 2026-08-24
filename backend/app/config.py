@@ -60,13 +60,6 @@ class Settings(BaseSettings):
     paypal_test_key: str = ""
     paypal_test_secret: str = ""
 
-    # GitLab (deprecated — kept for backward compat with existing .env files)
-    gitlab_url: str = "https://gitlab.com"
-    gitlab_token: str = ""
-    gitlab_project_id: str = ""
-    gitlab_android_project_id: str = ""
-    gitlab_desktop_project_id: str = ""
-
     # GitHub (sole CI provider — GitLab removed)
     github_token: str = ""
     github_repo: str = "pallavimokashi94-sys/webtoapp"

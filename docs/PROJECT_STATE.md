@@ -11,7 +11,7 @@ This file contains durable operational knowledge for Claude, Codex, and Gemini. 
 ## 2. Deployment Workflow
 * **Deployment Scripts:** `deploy.sh` (and `deploy-blog.sh` for blog).
 * **Deployment Gate:** `D:\Projects\.ai\DEPLOYMENT-CHECKLIST.md` MUST be walked before any deploy.
-* **Sync Rule:** Server changes must always be scp'd back to local and pushed to GitLab before finishing a task.
+* **Sync Rule:** Server changes must always be scp'd back to local and pushed to GitHub before finishing a task.
 
 ## 3. Integrations & Configurations
 * **Email / SMTP:** We use Zoho Mail (`support@websitetoapp.app`). 

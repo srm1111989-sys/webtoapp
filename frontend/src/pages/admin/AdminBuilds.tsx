@@ -1,16 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Loader2, X, FileText, Download, ExternalLink } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, X, FileText, Download } from 'lucide-react'
 
-const GITLAB_ANDROID_URL = 'https://gitlab.com/mokashiswapnil11/webtoapp-android-template'
-const GITLAB_DESKTOP_URL = 'https://gitlab.com/mokashiswapnil11/webtoapp-desktop-template'
-
-function pipelineUrl(build: any) {
-  if (!build.pipeline_id) return null
-  const base = build.platform === 'desktop' ? GITLAB_DESKTOP_URL : GITLAB_ANDROID_URL
-  return `${base}/-/pipelines/${build.pipeline_id}`
-}
 import { adminApi } from '@/api/admin'
 import { formatDateTime } from '@/utils/format'
 
@@ -165,12 +157,9 @@ export default function AdminBuilds() {
                         <span className="text-sm font-mono text-gray-600">{build.order_id.slice(0, 8)}...</span>
                       </td>
                       <td className="px-6 py-4">
-                        {pipelineUrl(build) ? (
-                          <a href={pipelineUrl(build)!} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-mono">
-                            #{build.pipeline_id} <ExternalLink className="w-3 h-3" />
-                          </a>
-                        ) : <span className="text-sm text-gray-400">-</span>}
+                        <span className="text-sm font-mono text-gray-600">
+                          {build.pipeline_id || '-'}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
                         <span

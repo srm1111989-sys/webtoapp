@@ -273,49 +273,25 @@ class TestBuildPipelineVariablesLogic:
 
 
 # =========================================================================
-# GitLabService — platform routing tests
+# GitHubService — quota and platform routing tests
 # =========================================================================
 
 
-class TestGitLabServicePlatform:
-    """Test that GitLabService routes to the correct project."""
+class TestGitHubServiceQuota:
+    """Test that GitHubService quota checks work correctly."""
 
-    @patch("app.services.gitlab_service.settings")
-    def test_android_uses_android_project_id(self, mock_settings):
-        mock_settings.gitlab_url = "https://gitlab.com"
-        mock_settings.gitlab_token = "test-token"
-        mock_settings.gitlab_project_id = "default-project"
-        mock_settings.gitlab_android_project_id = "android-project"
+    @patch("app.services.github_service.settings")
+    def test_github_account_1_selected(self, mock_settings):
+        mock_settings.github_token = "token-1"
+        mock_settings.github_repo = "user/webtoapp"
+        mock_settings.github_token_2 = "token-2"
+        mock_settings.github_repo_2 = "user/webtoapp-2"
+        mock_settings.github_token_3 = "token-3"
+        mock_settings.github_repo_3 = "user/webtoapp-3"
 
-        from app.services.gitlab_service import GitLabService
-        service = GitLabService(platform="android")
-
-        assert service.project_id == "android-project"
-
-    @patch("app.services.gitlab_service.settings")
-    def test_default_platform_is_android(self, mock_settings):
-        mock_settings.gitlab_url = "https://gitlab.com"
-        mock_settings.gitlab_token = "test-token"
-        mock_settings.gitlab_project_id = "default-project"
-        mock_settings.gitlab_android_project_id = "android-project"
-
-        from app.services.gitlab_service import GitLabService
-        service = GitLabService()
-
-        assert service.project_id == "android-project"
-
-    @patch("app.services.gitlab_service.settings")
-    def test_android_falls_back_to_default_project(self, mock_settings):
-        """When android_project_id is empty, should fall back to gitlab_project_id."""
-        mock_settings.gitlab_url = "https://gitlab.com"
-        mock_settings.gitlab_token = "test-token"
-        mock_settings.gitlab_project_id = "default-project"
-        mock_settings.gitlab_android_project_id = ""
-
-        from app.services.gitlab_service import GitLabService
-        service = GitLabService(platform="android")
-
-        assert service.project_id == "default-project"
+        from app.services.github_service import GitHubService
+        service = GitHubService(platform="android", account=1)
+        assert service.repo == "user/webtoapp"
 
 
 # =========================================================================
@@ -327,7 +303,7 @@ class TestWebhookArtifactRouting:
     """Test that webhook handler downloads correct artifacts."""
 
     def test_android_artifact_names(self):
-        """Verify Android artifact file names match the GitLab CI output."""
+        """Verify Android artifact file names match the GitHub Actions output."""
         assert "app-release.apk" == "app-release.apk"
         assert "app-release.aab" == "app-release.aab"
 
@@ -365,7 +341,7 @@ class TestPipelineVariablesRoundTrip:
     """Verify pipeline variables can be consumed by CI scripts."""
 
     def test_android_variables_match_ci_expectations(self, sample_app_config, sample_order):
-        """Variables match what android-template/.gitlab-ci.yml expects."""
+        """Variables match what android-template/.github/workflows/build-android.yml expects."""
         func = TestBuildPipelineVariablesLogic._build_pipeline_variables
         variables = func(sample_app_config, sample_order, platform="android")
 
@@ -386,7 +362,7 @@ class TestPipelineVariablesRoundTrip:
         assert isinstance(parsed, dict)
 
     def test_all_variable_values_are_strings(self, sample_app_config, sample_order):
-        """All pipeline variable values must be strings (GitLab requirement)."""
+        """All pipeline variable values must be strings (GitHub Actions requirement)."""
         func = TestBuildPipelineVariablesLogic._build_pipeline_variables
         variables = func(sample_app_config, sample_order, platform="android")
         for key, value in variables.items():

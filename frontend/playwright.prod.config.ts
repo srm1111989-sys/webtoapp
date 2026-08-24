@@ -9,7 +9,7 @@ export default defineConfig({
   retries: 1,
   workers: 1,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'test-results/report' }]],
-  timeout: 20 * 60 * 1000, // 20 minutes (allow time for GitLab builds)
+  timeout: 20 * 60 * 1000, // 20 minutes (allow time for GitHub Actions builds)
   use: {
     baseURL: 'https://websitetoapp.app',
     trace: 'on-first-retry',

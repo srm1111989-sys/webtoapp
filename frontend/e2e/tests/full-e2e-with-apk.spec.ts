@@ -4,7 +4,7 @@
  * This test suite covers the ENTIRE flow:
  * 1. User registration
  * 2. App creation with payment
- * 3. Waiting for build to complete (polls GitLab pipeline)
+ * 3. Waiting for build to complete (polls GitHub Actions workflow)
  * 4. Downloading APK
  * 5. Installing APK on Android emulator
  * 6. Testing app functionality on emulator

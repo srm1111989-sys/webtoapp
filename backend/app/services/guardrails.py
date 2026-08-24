@@ -31,7 +31,7 @@ class IntentClassifier:
                 r"what\s+database\s+does\s+webtoapp\s+use",
             ],
             "source code": [
-                r"\b(?:source\s+code|github\s+repo|gitlab\s+repository|python\s+code|main\.py|chatbot\.py|show\s+code|view\s+code|codebase|implementation\s+details|android\s+template|ios\s+source|fastlane)\b",
+                r"\b(?:source\s+code|github\s+repo|python\s+code|main\.py|chatbot\.py|show\s+code|view\s+code|codebase|implementation\s+details|android\s+template|ios\s+source|fastlane)\b",
                 r"show\s+me\s+the\s+code",
                 r"can\s+i\s+see\s+the\s+source",
             ],

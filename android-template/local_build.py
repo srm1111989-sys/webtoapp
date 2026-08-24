@@ -98,7 +98,7 @@ def fetch_app_config(app_id: str, token: str) -> dict:
 def app_config_to_android_config(app_config: dict) -> dict:
     """Convert backend AppConfig response to Android config.json format.
 
-    This replicates what .gitlab-ci.yml does in the prepare stage:
+    This replicates what the CI pipeline does in the prepare stage:
     it takes the pipeline variables and writes config.json.
     """
     from urllib.parse import urlparse

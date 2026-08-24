@@ -167,7 +167,7 @@ jobs:
         run: |
           sudo apt-get install -y -qq imagemagick
           # Browser UA + retries: Cloudflare challenges bare wget from datacenter
-          # runner IPs (icon silently replaced by letter fallback on GitLab; here a
+          # runner IPs (icon silently replaced by letter fallback on failure; here a
           # bare failure would kill the whole build). Fall back to the letter icon
           # instead of failing, and say why.
           ICON_UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"

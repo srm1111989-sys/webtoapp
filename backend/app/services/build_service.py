@@ -581,7 +581,13 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         # (skip when artifacts were missing — the build is already marked failed above)
         if build.status == "success":
             try:
-                from app.utils.email import send_build_complete_email
+                had_prior_failures = bool(
+                    (build.variables or {}).get("_failed_providers")
+                )
+                email_fn = "send_build_delay_apology_email" if had_prior_failures else "send_build_complete_email"
+                from app.utils.email import send_build_complete_email, send_build_delay_apology_email
+                _email_sender = send_build_delay_apology_email if had_prior_failures else send_build_complete_email
+
                 result = await db.execute(select(Order).where(Order.id == build.order_id))
                 order = result.scalar_one_or_none()
                 if order:
@@ -600,11 +606,12 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                             return url.replace("http://localhost:8000", settings.app_url)
                         download_url = _pub(build.apk_url or build.exe_url) or f"{settings.app_url}/apps"
                         platform_name = "Desktop" if build.platform == "desktop" else "Android"
-                        send_build_complete_email(
+                        _email_sender(
                             user.email, app.name, order.order_number, download_url, platform_name,
                             aab_url=_pub(build.aab_url), keystore_url=_pub(build.keystore_url),
                         )
-                        logger.info(f"Build complete email sent to {user.email} for {app.name}")
+                        label = "apology" if had_prior_failures else "standard"
+                        logger.info(f"Build complete {label} email sent to {user.email} for {app.name}")
             except Exception as e:
                 logger.warning(f"Failed to send build complete email: {e}")
 

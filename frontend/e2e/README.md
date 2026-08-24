@@ -6,7 +6,7 @@ Comprehensive automated E2E tests that cover:
 - ✅ User registration & login
 - ✅ App creation flow (all steps)
 - ✅ **Payment bypassed** (uses FREE plan)
-- ✅ Build monitoring (waits for GitLab pipeline)
+- ✅ Build monitoring (waits for GitHub Actions workflow)
 - ✅ APK download
 - ✅ Android emulator installation & testing
 - ✅ App functionality verification
@@ -96,7 +96,7 @@ npm run test:e2e:ui
 Tests the ENTIRE flow:
 - User registration
 - App creation (FREE plan - no payment!)
-- Build completion (polls GitLab pipeline every 30s)
+- Build completion (polls GitHub Actions workflow every 30s)
 - APK download
 - Emulator testing
 
@@ -310,7 +310,7 @@ A: No! Tests use the FREE plan - **payment is bypassed completely**.
 A: Yes, change `BASE_URL` to `http://localhost:5173` and run `npm run test:e2e`.
 
 **Q: What if build fails?**
-A: Test will fail and show the error message from GitLab pipeline.
+A: Test will fail and show the error message from the GitHub Actions workflow.
 
 **Q: Can I test on real device?**
 A: Yes! Connect device via USB, enable USB debugging, and run tests. ADB will detect it automatically.
