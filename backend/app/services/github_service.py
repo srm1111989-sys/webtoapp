@@ -208,7 +208,28 @@ class GitHubService:
                 logger.info(f"No workflow runs found for '{self.repo}' — assuming no quota")
                 return False
 
-            # Check if any recent run actually executed steps (not empty)
+            # Check the most recent completed run first. If the latest completed run
+            # had 0 steps (runner never allocated / quota hit), the account is out of quota.
+            completed_runs = [run for run in runs if run.get("status") == "completed"]
+            if completed_runs:
+                latest_run_id = completed_runs[0].get("id")
+                if latest_run_id:
+                    try:
+                        jr = client.get(
+                            f"https://api.github.com/repos/{self.repo}/actions/runs/{latest_run_id}/jobs?per_page=1",
+                            headers=self.headers,
+                        )
+                        if jr.status_code == 200:
+                            jobs = jr.json().get("jobs", [])
+                            if jobs and len(jobs[0].get("steps", [])) == 0:
+                                logger.warning(
+                                    f"GitHub account '{username}' ({self.repo}) latest run {latest_run_id} completed with 0 steps — out of quota"
+                                )
+                                return False
+                    except Exception:
+                        pass
+
+            # Fallback: check if any recent run actually executed steps (not empty)
             has_real_run = False
             for run in runs:
                 run_id = run.get("id")

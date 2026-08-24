@@ -12,31 +12,21 @@ from app.services.github_service import GitHubService
 
 logger = logging.getLogger("webtoapp.cron")
 
-# Quota results are cached for 5 minutes so each build doesn't re-check all 3 APIs
-_QUOTA_TTL = 300
-_quota_cache: dict[str, tuple[bool, float]] = {}
-
-def _check_quota_cached(key: str, check_fn) -> bool:
-    now = time.monotonic()
-    if key in _quota_cache:
-        result, ts = _quota_cache[key]
-        if now - ts < _QUOTA_TTL:
-            return result
-    result = check_fn()
-    _quota_cache[key] = (result, now)
-    return result
+# Live API check every time to prevent stale quota routing
+def _check_quota_live(key: str, check_fn) -> bool:
+    return check_fn()
 
 def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     """Returns GitHub-only providers ordered by preference (github1 → github2 → github3),
-    skipping any whose quota is exhausted. GitLab was permanently removed (t342)."""
+    skipping any whose quota is exhausted. Checks API live every time."""
     github1 = GitHubService(platform=platform, account=1)
     github2 = GitHubService(platform=platform, account=2)
     github3 = GitHubService(platform=platform, account=3)
 
     candidates = [
-        ("github1", github1, lambda: _check_quota_cached("github1", github1.has_quota)),
-        ("github2", github2, lambda: _check_quota_cached("github2", github2.has_quota)),
-        ("github3", github3, lambda: _check_quota_cached("github3", github3.has_quota)),
+        ("github1", github1, lambda: github1.has_quota()),
+        ("github2", github2, lambda: github2.has_quota()),
+        ("github3", github3, lambda: github3.has_quota()),
     ]
 
     available = [(name, svc) for name, svc, check in candidates if check()]
