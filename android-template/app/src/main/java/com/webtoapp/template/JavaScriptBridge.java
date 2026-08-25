@@ -185,4 +185,11 @@ public class JavaScriptBridge {
     public void showInterstitial() {
         if (adManager != null) adManager.showInterstitial();
     }
+
+    @JavascriptInterface
+    public void print() {
+        if (context instanceof WebViewActivity) {
+            ((WebViewActivity) context).printCurrentPage();
+        }
+    }
 }

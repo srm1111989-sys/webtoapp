@@ -603,6 +603,39 @@ public class WebViewActivity extends AppCompatActivity {
         }
 
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+        webView.setBackgroundColor(Color.WHITE);
+
+        webView.setDownloadListener((url, userAgent, contentDisposition, mimeType, contentLength) -> {
+            try {
+                if (url.startsWith("blob:") || url.startsWith("data:")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                    return;
+                }
+                android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(Uri.parse(url));
+                if (mimeType != null && !mimeType.isEmpty()) {
+                    request.setMimeType(mimeType);
+                }
+                String cookies = CookieManager.getInstance().getCookie(url);
+                if (cookies != null) request.addRequestHeader("cookie", cookies);
+                if (userAgent != null) request.addRequestHeader("User-Agent", userAgent);
+                request.setDescription("Downloading file...");
+                String filename = android.webkit.URLUtil.guessFileName(url, contentDisposition, mimeType);
+                request.setTitle(filename);
+                request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(android.os.Environment.DIRECTORY_DOWNLOADS, filename);
+                android.app.DownloadManager dm = (android.app.DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                if (dm != null) {
+                    dm.enqueue(request);
+                    Toast.makeText(WebViewActivity.this, "Downloading " + filename, Toast.LENGTH_SHORT).show();
+                }
+            } catch (Throwable t) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                } catch (Throwable ignored) {}
+            }
+        });
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -650,6 +683,16 @@ public class WebViewActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
                 installWebToAppWrapperIfNeeded();
+                String printHook = "if (!window.__webtoapp_print_hooked) {"
+                        + "  window.__webtoapp_print_hooked = true;"
+                        + "  window.print = function() {"
+                        + "    try {"
+                        + "      if (window.WebToApp && typeof window.WebToApp.print === 'function') { window.WebToApp.print(); }"
+                        + "      else if (window.__WebToAppNative && typeof window.__WebToAppNative.print === 'function') { window.__WebToAppNative.print(); }"
+                        + "    } catch(e) {}"
+                        + "  };"
+                        + "}";
+                view.evaluateJavascript(printHook, null);
             }
         });
 
@@ -743,16 +786,13 @@ public class WebViewActivity extends AppCompatActivity {
             }
         }
 
-        // JS Bridge (also added when AdMob is on, so the web app can call
-        // WebToApp.showRewardedAd(...) / showInterstitial()).
-        if (features.optBoolean("js_bridge", false) || admobOn) {
-            JavaScriptBridge bridge = new JavaScriptBridge(
-                    this, webView, adManager, credentialManagerOnlyGoogleSignIn);
-            if (useSafeWebToAppWrapper) {
-                webView.addJavascriptInterface(bridge, "__WebToAppNative");
-            } else {
-                webView.addJavascriptInterface(bridge, "WebToApp");
-            }
+        // JS Bridge: always registered so WebToApp.print(), toast, vibration, share,
+        // and ad methods are available.
+        JavaScriptBridge bridge = new JavaScriptBridge(
+                this, webView, adManager, credentialManagerOnlyGoogleSignIn);
+        webView.addJavascriptInterface(bridge, "__WebToAppNative");
+        if (!useSafeWebToAppWrapper) {
+            webView.addJavascriptInterface(bridge, "WebToApp");
         }
 
         // Biometric auth
@@ -789,10 +829,26 @@ public class WebViewActivity extends AppCompatActivity {
                 + "getFCMToken:function(callback){return native.getFCMToken(String(callback||''));},"
                 + "showRewardedAd:function(callback){return native.showRewardedAd(String(callback||''));},"
                 + "isRewardedReady:function(){return native.isRewardedReady();},"
-                + "showInterstitial:function(){return native.showInterstitial();}"
+                + "showInterstitial:function(){return native.showInterstitial();},"
+                + "print:function(){return native.print();}"
                 + "};"
                 + "}catch(e){}})();";
         webView.post(() -> webView.evaluateJavascript(js, null));
+    }
+
+    public void printCurrentPage() {
+        runOnUiThread(() -> {
+            try {
+                android.print.PrintManager printManager = (android.print.PrintManager) getSystemService(android.content.Context.PRINT_SERVICE);
+                if (printManager != null && webView != null) {
+                    String jobName = (config != null ? config.optString("app_name", "Document") : "Document") + " Print";
+                    android.print.PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(jobName);
+                    printManager.print(jobName, printAdapter, new android.print.PrintAttributes.Builder().build());
+                }
+            } catch (Throwable t) {
+                Toast.makeText(this, "Printing is not supported on this device", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // ── Server entitlement (Variant B): a paid upgrade made on the website
