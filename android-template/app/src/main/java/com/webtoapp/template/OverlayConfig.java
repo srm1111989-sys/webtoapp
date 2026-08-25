@@ -55,7 +55,7 @@ public final class OverlayConfig {
         String appUrl = config(ctx).optString("app_url", "");
         if (appUrl.isEmpty()) return "";
         if (appUrl.endsWith("/")) appUrl = appUrl.substring(0, appUrl.length() - 1);
-        return appUrl + "/functions/getOrderDetails";
+        return appUrl + "/functions/getOrderDetailsSecure";
     }
 
     /**

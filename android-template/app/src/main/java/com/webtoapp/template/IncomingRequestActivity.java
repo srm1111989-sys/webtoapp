@@ -108,8 +108,15 @@ public class IncomingRequestActivity extends Activity {
     /** Fetch order details from the API when FCM data was incomplete. */
     private void fetchOrderDetails(String orderId) {
         if (orderId == null || orderId.isEmpty()) return;
-        final String url = OverlayConfig.detailsUrl(this);
-        if (url.isEmpty()) return;
+        Bundle b = getIntent() != null ? getIntent().getExtras() : null;
+        String apiUrl = b != null ? b.getString("overlayApiUrl") : null;
+        if (apiUrl == null || apiUrl.isEmpty()) apiUrl = OverlayConfig.detailsUrl(this);
+        if (apiUrl.isEmpty()) return;
+
+        final String targetUrl = apiUrl;
+        final String apiKey = (b != null && b.getString("overlayKey") != null && !b.getString("overlayKey").isEmpty())
+                ? b.getString("overlayKey")
+                : OverlayConfig.overlayKey(this);
 
         setText("tv_service_type", "Loading...");
         new Thread(() -> {
@@ -117,12 +124,12 @@ public class IncomingRequestActivity extends Activity {
             try {
                 JSONObject body = new JSONObject()
                         .put("orderId", orderId)
+                        .put("requestId", orderId)
                         .put("providerUserId", OverlayConfig.providerUserId(this));
-                HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+                HttpURLConnection c = (HttpURLConnection) new URL(targetUrl).openConnection();
                 c.setRequestMethod("POST");
                 c.setRequestProperty("Content-Type", "application/json");
-                String key = OverlayConfig.overlayKey(this);
-                if (!key.isEmpty()) c.setRequestProperty("X-Overlay-Key", key);
+                if (apiKey != null && !apiKey.isEmpty()) c.setRequestProperty("X-Overlay-Key", apiKey);
                 c.setDoOutput(true);
                 try (java.io.OutputStream os = c.getOutputStream()) {
                     os.write(body.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
