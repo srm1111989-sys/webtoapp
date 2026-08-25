@@ -135,13 +135,16 @@ export interface Build {
   id: string
   order_id: string
   pipeline_id?: number
+  pipeline_url?: string
+  variables?: Record<string, any>
   status: 'pending' | 'building' | 'success' | 'failed'
-  platform: 'android' | 'desktop'
+  platform: 'android' | 'desktop' | 'ios'
   build_type: string
   progress: number
   apk_url?: string
   aab_url?: string
   exe_url?: string
+  ipa_url?: string
   source_url?: string
   keystore_url?: string
   keystore_password?: string

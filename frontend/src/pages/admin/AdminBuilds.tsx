@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Loader2, X, FileText, Download } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, X, FileText, Download, ExternalLink } from 'lucide-react'
 
 import { adminApi } from '@/api/admin'
 import { formatDateTime } from '@/utils/format'
+import type { Build } from '@/types'
 
 const STATUS_OPTIONS = [
   { value: '', label: 'All Statuses' },
@@ -13,6 +14,18 @@ const STATUS_OPTIONS = [
   { value: 'success', label: 'Success' },
   { value: 'failed', label: 'Failed' },
 ]
+
+const getPipelineUrl = (build: Build): string | null => {
+  if (build.pipeline_url) return build.pipeline_url
+  if (!build.pipeline_id) return null
+  const provider = build.variables?._build_provider
+  let repo = 'srm1111989-sys/webtoapp'
+  if (provider === 'github1' || provider === 'github') repo = 'pallavimokashi94-sys/webtoapp'
+  else if (provider === 'github2') repo = 'mokashiswapnil/webtoapp'
+  else if (provider === 'github3') repo = 'sohamsmulay/webtoapp'
+  else if (provider === 'github4') repo = 'srm1111989-sys/webtoapp'
+  return `https://github.com/${repo}/actions/runs/${build.pipeline_id}`
+}
 
 const statusBadge = (status: string) => {
   const map: Record<string, string> = {
@@ -142,74 +155,146 @@ export default function AdminBuilds() {
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Pipeline</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Platform</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Status</th>
-                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">APK / Error</th>
+                    <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Downloads / Result</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Started</th>
                     <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {builds.map((build) => (
-                    <tr key={build.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <span className="text-sm font-mono text-gray-900">{build.id.slice(0, 8)}...</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm font-mono text-gray-600">{build.order_id.slice(0, 8)}...</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm font-mono text-gray-600">
-                          {build.pipeline_id || '-'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            build.platform === 'desktop'
-                              ? 'bg-indigo-100 text-indigo-700'
-                              : 'bg-emerald-100 text-emerald-700'
-                          }`}
-                        >
-                          {build.platform === 'desktop' ? 'Windows' : 'Android'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${statusBadge(build.status)}`}
-                        >
-                          {build.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 max-w-xs">
-                        {build.apk_url ? (
-                          <a href={build.apk_url} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-800 font-medium">
-                            <Download className="w-3.5 h-3.5" /> Download APK
-                          </a>
-                        ) : build.error_message ? (
-                          <p className="text-sm text-red-600 truncate" title={build.error_message}>
-                            {build.error_message.split('\n')[0]}
-                          </p>
-                        ) : (
-                          <span className="text-sm text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-gray-500">
-                          {build.started_at ? formatDateTime(build.started_at) : '-'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => setViewLogId(build.id)}
-                          className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 transition-colors"
-                          title="View build log"
-                        >
-                          <FileText className="w-4 h-4" />
-                          Log
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {builds.map((build) => {
+                    const pipelineUrl = getPipelineUrl(build)
+                    const hasArtifacts = !!(build.apk_url || build.aab_url || build.exe_url || build.ipa_url || build.source_url)
+                    return (
+                      <tr key={build.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-mono text-gray-900">{build.id.slice(0, 8)}...</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-mono text-gray-600">{build.order_id.slice(0, 8)}...</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          {pipelineUrl ? (
+                            <a
+                              href={pipelineUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-sm font-mono text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                              title={`Open GitHub Action run (${build.variables?._build_provider || 'github'})`}
+                            >
+                              {build.pipeline_id}
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <span className="text-sm font-mono text-gray-400">
+                              {build.pipeline_id || '-'}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                              build.platform === 'desktop'
+                                ? 'bg-indigo-100 text-indigo-700'
+                                : build.platform === 'ios'
+                                  ? 'bg-purple-100 text-purple-700'
+                                  : 'bg-emerald-100 text-emerald-700'
+                            }`}
+                          >
+                            {build.platform === 'desktop' ? 'Windows' : build.platform === 'ios' ? 'iOS' : 'Android'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${statusBadge(build.status)}`}
+                          >
+                            {build.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 max-w-sm">
+                          {hasArtifacts ? (
+                            <div className="flex flex-wrap gap-1.5 items-center">
+                              {build.apk_url && (
+                                <a
+                                  href={build.apk_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-medium transition-colors"
+                                  title="Download APK file"
+                                >
+                                  <Download className="w-3 h-3" /> APK
+                                </a>
+                              )}
+                              {build.aab_url && (
+                                <a
+                                  href={build.aab_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 font-medium transition-colors"
+                                  title="Download AAB bundle file"
+                                >
+                                  <Download className="w-3 h-3" /> AAB
+                                </a>
+                              )}
+                              {build.exe_url && (
+                                <a
+                                  href={build.exe_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 font-medium transition-colors"
+                                  title="Download Windows EXE installer"
+                                >
+                                  <Download className="w-3 h-3" /> EXE
+                                </a>
+                              )}
+                              {build.ipa_url && (
+                                <a
+                                  href={build.ipa_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 font-medium transition-colors"
+                                  title="Download iOS IPA file"
+                                >
+                                  <Download className="w-3 h-3" /> IPA
+                                </a>
+                              )}
+                              {build.source_url && (
+                                <a
+                                  href={build.source_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 font-medium transition-colors"
+                                  title="Download source code archive"
+                                >
+                                  <Download className="w-3 h-3" /> Source
+                                </a>
+                              )}
+                            </div>
+                          ) : build.error_message ? (
+                            <p className="text-sm text-red-600 truncate" title={build.error_message}>
+                              {build.error_message.split('\n')[0]}
+                            </p>
+                          ) : (
+                            <span className="text-sm text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-gray-500">
+                            {build.started_at ? formatDateTime(build.started_at) : '-'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => setViewLogId(build.id)}
+                            className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                            title="View build log"
+                          >
+                            <FileText className="w-4 h-4" />
+                            Log
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
                   {builds.length === 0 && (
                     <tr>
                       <td colSpan={8} className="text-center py-12 text-gray-400">
