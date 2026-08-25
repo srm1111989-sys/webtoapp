@@ -69,6 +69,7 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
+          cache: "gradle"
 
       - name: Configure app
         run: |
@@ -165,7 +166,7 @@ jobs:
 
       - name: Process icon
         run: |
-          sudo apt-get install -y -qq imagemagick
+          which convert >/dev/null 2>&1 || sudo apt-get install -y -qq imagemagick
           # Browser UA + retries: Cloudflare challenges bare wget from datacenter
           # runner IPs (icon silently replaced by letter fallback on failure; here a
           # bare failure would kill the whole build). Fall back to the letter icon
