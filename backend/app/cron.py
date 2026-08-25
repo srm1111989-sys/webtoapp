@@ -57,62 +57,73 @@ async def _ensure_artifact_storage(provider_name: str, provider: GitHubService) 
         logger.warning(f"Artifact storage check/cleanup failed for {provider_name}: {e}")
 
 
+MAX_CONCURRENT_BUILDS = 3
+
+
 async def process_pending_build():
     try:
         async with async_session() as db:
+            active_res = await db.execute(
+                select(Build).where(Build.status == "building")
+            )
+            active_count = len(active_res.scalars().all())
+            slots_available = max(0, MAX_CONCURRENT_BUILDS - active_count)
+            if slots_available <= 0:
+                return
+
             result = await db.execute(
                 select(Build)
                 .where(Build.status == "pending")
                 .order_by(Build.created_at.asc())
-                .limit(1)
+                .limit(slots_available)
             )
-            build = result.scalar_one_or_none()
-            if not build:
+            pending_builds = result.scalars().all()
+            if not pending_builds:
                 return
 
-            build.status = "building"
-            build.started_at = datetime.now(timezone.utc)
-            await db.commit()
+            for build in pending_builds:
+                build.status = "building"
+                build.started_at = datetime.now(timezone.utc)
+                await db.commit()
 
-            providers = _build_provider_list(build.platform)
+                providers = _build_provider_list(build.platform)
 
-            # Skip providers this build already failed on (e.g. a GitHub account
-            # whose artifact storage was full — see build_service.handle_build_webhook).
-            # Never filter down to zero: a stale failed-list must not wedge the build.
-            failed_providers = set((build.variables or {}).get("_failed_providers", []))
-            if failed_providers:
-                kept = [(n, p) for (n, p) in providers if n not in failed_providers]
-                if kept:
-                    providers = kept
-                    logger.info(f"Build {build.id}: excluding already-failed providers {sorted(failed_providers)}")
+                failed_providers = set((build.variables or {}).get("_failed_providers", []))
+                if failed_providers:
+                    kept = [(n, p) for (n, p) in providers if n not in failed_providers]
+                    if kept:
+                        providers = kept
+                        logger.info(f"Build {build.id}: excluding already-failed providers {sorted(failed_providers)}")
 
-            errors = {}
+                errors = {}
+                dispatched = False
 
-            for provider_name, provider in providers:
-                try:
-                    # Proactively free artifact storage if this account is near quota
-                    await _ensure_artifact_storage(provider_name, provider)
+                for provider_name, provider in providers:
+                    try:
+                        await _ensure_artifact_storage(provider_name, provider)
 
-                    variables = build.variables.copy() if build.variables else {}
-                    variables["_build_provider"] = provider_name
+                        variables = build.variables.copy() if build.variables else {}
+                        variables["_build_provider"] = provider_name
 
-                    pipeline = provider.trigger_pipeline(variables)
+                        pipeline = provider.trigger_pipeline(variables)
 
-                    build.pipeline_id = pipeline.get("id")
-                    build.variables = variables
+                        build.pipeline_id = pipeline.get("id")
+                        build.variables = variables
+                        await db.commit()
+
+                        logger.info(f"Build {build.id} triggered via {provider_name} (pipeline {build.pipeline_id})")
+                        dispatched = True
+                        break
+
+                    except Exception as e:
+                        errors[provider_name] = str(e)
+                        logger.warning(f"Build {build.id}: {provider_name} failed — {e}")
+
+                if not dispatched:
+                    build.status = "failed"
+                    build.error_message = "Build could not be started at this time. Please retry in a few minutes or contact support@websitetoapp.app."
                     await db.commit()
-
-                    logger.info(f"Build {build.id} triggered via {provider_name} (pipeline {build.pipeline_id})")
-                    return
-
-                except Exception as e:
-                    errors[provider_name] = str(e)
-                    logger.warning(f"Build {build.id}: {provider_name} failed — {e}")
-
-            build.status = "failed"
-            build.error_message = "Build could not be started at this time. Please retry in a few minutes or contact support@websitetoapp.app."
-            await db.commit()
-            logger.error(f"Build {build.id} failed on all providers: {errors}")
+                    logger.error(f"Build {build.id} failed on all providers: {errors}")
 
     except Exception as e:
         logger.error(f"Error in process_pending_build: {e}")
@@ -335,8 +346,8 @@ async def cleanup_abandoned_pending_orders():
 
 scheduler.add_job(cleanup_abandoned_pending_orders, 'interval', hours=1)
 
-scheduler.add_job(process_pending_build, 'interval', minutes=1)
-scheduler.add_job(sync_active_builds, 'interval', minutes=1)
+scheduler.add_job(process_pending_build, 'interval', seconds=20)
+scheduler.add_job(sync_active_builds, 'interval', seconds=20)
 
 def start_scheduler():
     scheduler.start()
