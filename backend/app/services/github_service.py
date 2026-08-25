@@ -12,17 +12,17 @@ class GitHubService:
 
     def __init__(self, platform: str = "android", account: int = 1):
         if account == 4:
-            self.token = settings.github_token_4
-            self.repo = settings.github_repo_4
+            self.token = (settings.github_token_4 or "").strip()
+            self.repo = (settings.github_repo_4 or "").strip()
         elif account == 3:
-            self.token = settings.github_token_3
-            self.repo = settings.github_repo_3
+            self.token = (settings.github_token_3 or "").strip()
+            self.repo = (settings.github_repo_3 or "").strip()
         elif account == 2:
-            self.token = settings.github_token_2
-            self.repo = settings.github_repo_2
+            self.token = (settings.github_token_2 or "").strip()
+            self.repo = (settings.github_repo_2 or "").strip()
         else:
-            self.token = settings.github_token
-            self.repo = settings.github_repo  # e.g. "pallavimokashi94-sys/webtoapp"
+            self.token = (settings.github_token or "").strip()
+            self.repo = (settings.github_repo or "").strip()  # e.g. "pallavimokashi94-sys/webtoapp"
             
         self.platform = platform
         if platform == "desktop":
