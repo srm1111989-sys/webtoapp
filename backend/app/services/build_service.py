@@ -514,14 +514,11 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
                         if url:
                             _download_svc = svc
                             return url
-                    except httpx.HTTPStatusError as e:
-                        if e.response.status_code == 404:
-                            logger.info(
-                                f"Artifact '{artifact_name}' not found on {svc.repo} "
-                                f"(pipeline {pipeline_id}, attempt {attempt + 1}/5); trying next"
-                            )
-                            continue
-                        raise
+                    except Exception as e:
+                        logger.info(
+                            f"Artifact '{artifact_name}' fetch from {svc.repo} (pipeline {pipeline_id}) failed: {e}; trying next"
+                        )
+                        continue
                 if attempt < 4:
                     await asyncio.sleep(5)
             return None
@@ -572,6 +569,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         # silently drops artifacts (full artifact storage). If no URLs were captured,
         # mark the build as failed with a retry hint and record the provider as
         # exhausted so the next attempt routes to a different account.
+        provider = (build.variables or {}).get("_build_provider") or "github4"
         if not (build.apk_url or build.aab_url or build.exe_url):
             logger.error(
                 f"Build {build.id} (pipeline {pipeline_id}): CI succeeded but no artifacts "
@@ -585,7 +583,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
             # Self-heal: reset to pending so cron picks it up on a different provider.
             # Without this, the user would have to manually click "Retry Build" and the
             # _failed_providers list would be lost (trigger_build creates a fresh Build).
-            all_candidates = {"github1", "github2", "github3"} - failed_set
+            all_candidates = {"github4", "github1", "github2", "github3"} - failed_set
             skip = {s.strip() for s in os.environ.get("CI_SKIP_PROVIDERS", "").split(",") if s.strip()}
             remaining = all_candidates - skip
             if remaining:
