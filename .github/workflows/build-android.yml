@@ -303,16 +303,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: app/build/outputs/apk/release/app-release.apk
-          retention-days: 1
+          path: android-template/app/build/outputs/apk/release/app-release.apk
+          retention-days: 3
 
       - name: Upload AAB artifact
         if: inputs.BUILD_AAB == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: android-aab
-          path: app/build/outputs/bundle/release/app-release.aab
-          retention-days: 1
+          path: android-template/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 3
 
       - name: Notify webhook
         if: always()

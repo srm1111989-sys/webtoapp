@@ -494,11 +494,13 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         # github1's token (pallavimokashi94-sys/webtoapp) has access, or vice
         # versa.  Iterating all accounts avoids silent 404s and empty URLs.
         def _all_github_services(platform: str) -> list:
-            svcs = []
+            svcs = [service]
             for acct in (4, 1, 2, 3):
                 try:
                     from app.services.github_service import GitHubService
-                    svcs.append(GitHubService(platform=platform, account=acct))
+                    s = GitHubService(platform=platform, account=acct)
+                    if getattr(s, "repo", "") != getattr(service, "repo", ""):
+                        svcs.append(s)
                 except Exception:
                     pass
             return svcs
