@@ -420,6 +420,31 @@ async def trigger_build(order_id: uuid.UUID, db: AsyncSession, platform: str = "
     return build
 
 
+def _get_service_for_build(build: Build) -> GitHubService:
+    """Resolve the GitHubService for a build, falling back to live API checking if provider is unknown."""
+    provider = (build.variables or {}).get("_build_provider")
+    if provider in ("github", "github1"):
+        return GitHubService(platform=build.platform, account=1)
+    elif provider == "github2":
+        return GitHubService(platform=build.platform, account=2)
+    elif provider == "github3":
+        return GitHubService(platform=build.platform, account=3)
+    elif provider == "github4":
+        return GitHubService(platform=build.platform, account=4)
+    
+    # Auto-detect which account owns this pipeline_id if _build_provider was not recorded
+    if build.pipeline_id:
+        for acct in (4, 1, 2, 3):
+            try:
+                svc = GitHubService(platform=build.platform, account=acct)
+                r = svc.client.get(f"https://api.github.com/repos/{svc.repo}/actions/runs/{build.pipeline_id}")
+                if r.status_code == 200:
+                    return svc
+            except Exception:
+                pass
+    return GitHubService(platform=build.platform, account=1)
+
+
 async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: dict, db: AsyncSession):
     """Handle GitHub Actions webhook."""
     result = await db.execute(select(Build).where(Build.pipeline_id == pipeline_id))
@@ -430,13 +455,6 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
 
     now = datetime.now(timezone.utc)
 
-    # Idempotency guard. sync_active_builds polls every minute and selects rows
-    # still marked "building"; the success path below then spends MINUTES
-    # downloading artifacts before anything is committed. The next tick therefore
-    # picked up the same row and ran the whole path again — which is why
-    # customers received duplicate "ready to download" emails seconds apart
-    # (Ali got ~20 for one app and told us to stop). A CI webhook racing the
-    # poller causes the same thing. Once a build is terminal, never re-process it.
     if build.status in ("success", "failed"):
         logger.info(
             f"Build {build.id} (pipeline {pipeline_id}) already {build.status} — "
@@ -448,20 +466,10 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         build.status = "success"
         build.progress = 100
         build.completed_at = now
-        # Claim the row BEFORE the slow artifact download so a concurrent poll
-        # tick sees a terminal status and skips it.
         await db.commit()
 
         # Download artifacts and save build log
-        provider = (build.variables or {}).get("_build_provider", "github1")
-        if provider in ("github", "github1"):
-            service = GitHubService(platform=build.platform, account=1)
-        elif provider == "github2":
-            service = GitHubService(platform=build.platform, account=2)
-        elif provider == "github3":
-            service = GitHubService(platform=build.platform, account=3)
-        else:
-            service = GitHubService(platform=build.platform, account=1)
+        service = _get_service_for_build(build)
         is_github = True
 
         # Save success log for reference
@@ -651,15 +659,8 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         await db.commit()
 
         # Fetch pipeline job logs for failure analysis (same provider routing as the success path)
+        service = _get_service_for_build(build)
         provider = (build.variables or {}).get("_build_provider", "github1")
-        if provider in ("github", "github1"):
-            service = GitHubService(platform=build.platform, account=1)
-        elif provider == "github2":
-            service = GitHubService(platform=build.platform, account=2)
-        elif provider == "github3":
-            service = GitHubService(platform=build.platform, account=3)
-        else:
-            service = GitHubService(platform=build.platform, account=1)
 
         full_log = await _fetch_pipeline_logs(service, pipeline_id)
         build.log = full_log

@@ -70,6 +70,8 @@ class Settings(BaseSettings):
     github_repo_2: str = "mokashiswapnil/webtoapp"
     github_token_3: str = ""
     github_repo_3: str = "sohamsmulay/webtoapp"
+    github_token_4: str = ""
+    github_repo_4: str = "srm1111989-sys/webtoapp"
     github_webhook_secret_2: str = ""
 
     # S3/R2

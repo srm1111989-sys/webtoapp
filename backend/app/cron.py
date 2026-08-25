@@ -17,13 +17,15 @@ def _check_quota_live(key: str, check_fn) -> bool:
     return check_fn()
 
 def _build_provider_list(platform: str) -> list[tuple[str, object]]:
-    """Returns GitHub-only providers ordered by preference (github1 → github2 → github3),
+    """Returns GitHub-only providers ordered by preference (github4 → github1 → github2 → github3),
     skipping any whose quota is exhausted. Checks API live every time."""
     github1 = GitHubService(platform=platform, account=1)
     github2 = GitHubService(platform=platform, account=2)
     github3 = GitHubService(platform=platform, account=3)
+    github4 = GitHubService(platform=platform, account=4)
 
     candidates = [
+        ("github4", github4, lambda: github4.has_quota()),
         ("github1", github1, lambda: github1.has_quota()),
         ("github2", github2, lambda: github2.has_quota()),
         ("github3", github3, lambda: github3.has_quota()),

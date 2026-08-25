@@ -11,7 +11,10 @@ class GitHubService:
     """GitHub Actions build provider. Quota detection handles personal PAT 403/410 responses."""
 
     def __init__(self, platform: str = "android", account: int = 1):
-        if account == 3:
+        if account == 4:
+            self.token = settings.github_token_4
+            self.repo = settings.github_repo_4
+        elif account == 3:
             self.token = settings.github_token_3
             self.repo = settings.github_repo_3
         elif account == 2:
