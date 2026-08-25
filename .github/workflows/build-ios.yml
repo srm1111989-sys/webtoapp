@@ -62,7 +62,7 @@ jobs:
 
       - name: Generate Xcode project
         run: |
-          brew install xcodegen
+          HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 which xcodegen >/dev/null 2>&1 || brew install xcodegen
           SAFE_BUNDLE="$(echo "${{ inputs.PACKAGE_NAME }}" | tr -cd 'a-zA-Z0-9.-')"
           sed -i '' "s/__BUNDLE_ID__/${SAFE_BUNDLE:-com.webtoapp.app}/" project.yml
           sed -i '' "s/__VERSION_CODE__/${{ inputs.VERSION_CODE }}/g" project.yml
@@ -77,6 +77,8 @@ jobs:
             -target App \
             -configuration Release \
             -sdk iphoneos \
+            -parallelizeTargets \
+            -derivedDataPath build/DerivedData \
             SYMROOT="$PWD/build" \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
@@ -104,11 +106,20 @@ jobs:
         with:
           name: ios-ipa
           path: ios-template/app-unsigned.ipa
-          retention-days: 30
+          retention-days: 3
 
       - name: Upload source artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-source
           path: ios-template/ios-source.zip
-          retention-days: 30
+          retention-days: 3
+
+      - name: Notify webhook
+        if: always()
+        run: |
+          if [ -n "${{ secrets.WEBHOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.WEBHOOK_URL }}" \
+              -H "Content-Type: application/json" \
+              -d '{"object_kind":"pipeline","object_attributes":{"id":${{ github.run_id }},"status":"${{ job.status }}"},"project":{"id":0}}'
+          fi
