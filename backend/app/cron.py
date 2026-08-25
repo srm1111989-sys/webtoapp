@@ -34,9 +34,8 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     available = [(name, svc) for name, svc, check in candidates if check()]
 
     if not available:
-        # Every provider reported exhausted quota — try all anyway (quota check may be wrong)
-        logger.warning("All GitHub providers report exhausted quota; attempting all in fallback order")
-        available = [(name, svc) for name, svc, _ in candidates]
+        logger.warning("All GitHub build providers have exhausted their monthly quota.")
+        return []
 
     return available
 
