@@ -208,16 +208,16 @@ class GitHubService:
                 logger.info(f"No workflow runs found for '{self.repo}' — assuming no quota")
                 return False
 
-            # Check the most recent completed run first.
-            # If the latest completed run succeeded, the account clearly has quota!
+            # Check the most recent completed runs.
+            # If any of the recent completed runs succeeded, the account clearly has quota!
             completed_runs = [run for run in runs if run.get("status") == "completed"]
             if completed_runs:
-                latest = completed_runs[0]
-                if latest.get("conclusion") == "success":
-                    logger.info(f"GitHub account '{username}' ({self.repo}) latest run succeeded — quota available")
+                if any(run.get("conclusion") == "success" for run in completed_runs[:3]):
+                    logger.info(f"GitHub account '{username}' ({self.repo}) has recent successful run — quota available")
                     return True
                 
                 # If the latest completed run failed, check if it was a 0-step pre-execution failure
+                latest = completed_runs[0]
                 latest_run_id = latest.get("id")
                 if latest_run_id and latest.get("conclusion") == "failure":
                     try:
