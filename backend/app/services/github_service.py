@@ -161,7 +161,9 @@ class GitHubService:
             elif r.status_code == 404:
                 # Org account — org billing endpoint differs; fall through to
                 # artifact-storage check.
-                logger.info(f"GitHub billing API 404 for '{username}' — org account, falling through")
+            elif r.status_code == 401:
+                logger.warning(f"GitHub token invalid/expired for '{username}' (401 Unauthorized) — no quota")
+                return False
             else:
                 logger.warning(f"GitHub quota check for '{username}' returned {r.status_code}, assuming minutes available")
         except Exception as e:
