@@ -495,7 +495,7 @@ async def handle_build_webhook(pipeline_id: int, pipeline_status: str, payload: 
         # versa.  Iterating all accounts avoids silent 404s and empty URLs.
         def _all_github_services(platform: str) -> list:
             svcs = []
-            for acct in (1, 2, 3):
+            for acct in (4, 1, 2, 3):
                 try:
                     from app.services.github_service import GitHubService
                     svcs.append(GitHubService(platform=platform, account=acct))
