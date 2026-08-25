@@ -147,6 +147,10 @@ async def sync_active_builds():
                         service = GitHubService(platform=build.platform, account=2)
                     elif provider_name == "github3":
                         service = GitHubService(platform=build.platform, account=3)
+                    elif provider_name == "github4":
+                        service = GitHubService(platform=build.platform, account=4)
+                    else:
+                        service = GitHubService(platform=build.platform, account=4)
 
                     pipeline_data = service.get_pipeline(build.pipeline_id)
                     remote_status = pipeline_data.get("status")
