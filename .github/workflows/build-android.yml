@@ -152,12 +152,14 @@ jobs:
             echo "Custom keystore configured successfully."
           else
             KS_PASS="WebToApp2025!"
+            SAFE_CN=$(echo "${{ inputs.APP_NAME }}" | sed 's/[+,="\\<>;#]/ /g' | tr -s ' ' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+            [ -z "$SAFE_CN" ] && SAFE_CN="WebToApp"
             keytool -genkeypair \
               -alias upload-key \
               -keyalg RSA -keysize 2048 -validity 10000 \
               -keystore keystore.jks \
               -storepass "$KS_PASS" -keypass "$KS_PASS" \
-              -dname "CN=${{ inputs.APP_NAME }}, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
+              -dname "CN=$SAFE_CN, OU=Mobile, O=WebToApp, L=Mumbai, ST=Maharashtra, C=IN"
             echo "KEYSTORE_PASSWORD=$KS_PASS" >> $GITHUB_ENV
             echo "KEY_ALIAS=upload-key" >> $GITHUB_ENV
             echo "KEY_PASSWORD=$KS_PASS" >> $GITHUB_ENV
