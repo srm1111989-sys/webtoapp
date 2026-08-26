@@ -11,12 +11,12 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 | Free (Android or Desktop) | $0 | 5 free builds total across all your websites (lifetime), ALL app features included, watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
 | Premium Android App | $35 one-time | Modify + rebuild up to 5× per month |
 | Premium Desktop App | $35 one-time | Modify + rebuild up to 5× per month |
-| Play Store Listing Add-on | $15 one-time | We publish your app to Google Play |
-| Android App + Play Store Bundle | $50 one-time | Premium Android + Play Store listing |
+| Play Store Publishing Service | $50 one-time | Complete end-to-end publishing to Google Play Store by our team |
+| Android App + Play Store Bundle | $75 one-time | Premium Android + Play Store Publishing Service bundle |
 | Pro Monthly (add-on) | $9/month per app | For paid apps: 20 rebuilds/month (instead of 5) + priority build queue; cancel anytime; subscribe from the app's order page in the dashboard |
 
 * All paid plans are **one-time payments** — no subscriptions, no renewals, no hidden charges.
-* Indian users pay in INR (₹2905 for $35 equivalent plans; Pro Monthly is ₹747/month).
+* Indian users pay in INR (₹2905 for $35 equivalent plans; ₹4150 for $50 Play Store Publishing; Pro Monthly is ₹747/month).
 * Promo/discount codes can be applied at checkout.
 * **APK and AAB files are included on ALL plans, including Free.** The AAB (Android App Bundle) is the format Google Play requires. Download buttons for APK, AAB and the signing keystore appear on the Orders page once a build completes, and the links are also in the build-complete email.
 
@@ -147,12 +147,32 @@ Without this, Google Play will reject updates due to signature mismatch (differe
 
 ---
 
-## Play Store Listing Add-on
+## Play Store Publishing Service ($50 Flat One-Time)
 
-* Our team publishes your app to Google Play Store on your behalf.
-* You need a Google Play Developer account ($25 one-time Google fee if you don't have one).
-* You must add **support@websitetoapp.app** to your Play Console with **Release Manager** permissions.
-* Our team contacts you within 24 hours after payment to collect store listing details (description, screenshots, category).
+* **Price**: $50 one-time flat fee (₹4150 for Indian users).
+* **What Our Team Handles End-to-End**:
+  * **Store Assets Preparation**:
+    * App Logo / Icon (512x512 px PNG/vector)
+    * Feature Graphic promotional banner (1024x500 px)
+    * Professional phone & tablet screenshots formatted to Google Play Store specifications
+  * **Metadata & Store Copy**:
+    * SEO-optimized App Title (up to 30 characters)
+    * Short Description (up to 80 characters)
+    * Full Description (up to 4000 characters highlighting core features)
+  * **Mandatory Google Policy & Questionnaires**:
+    * Data Safety section declarations & encryption policies
+    * Content Rating (IARC) certification
+    * Target Audience & content declarations
+    * Website Privacy Policy URL configuration
+  * **Release Management**:
+    * Uploading production-signed `.aab` bundle
+    * Configuring release tracks and release notes
+    * Review monitoring and resolving any Google compliance feedback until the app is officially approved and live.
+
+* **What the User Needs to Provide**:
+  1. **Google Play Console Account**: An active Google Play Developer account ($25 one-time fee paid to Google). *(Alternatively, users can request managed publishing under our developer organization).*
+  2. **Admin/Release Manager Invitation**: Add **sohamsmulay@gmail.com** (or **support@websitetoapp.app**) in **Google Play Console → Users and permissions → Invite new users** with **Admin** or **Release Manager** permissions.
+  3. **App Details Confirmation**: Preferred App Name/Title, high-res logo/icon, website privacy policy URL, and any custom description points or promotional images.
 
 ---
 
