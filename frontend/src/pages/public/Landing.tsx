@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
@@ -227,7 +227,7 @@ export default function Landing() {
     setPublishLoading(true)
     try {
       const order = await createRazorpayOrder({
-        amount: 1500,
+        amount: 5000,
         currency: 'USD',
         receipt: `publish_${Date.now()}`,
         notes: { name: publishForm.name, email: publishForm.email, appName: publishForm.appName, websiteUrl: publishForm.websiteUrl, notes: publishForm.notes, service: 'play-store-publish' },
@@ -389,10 +389,10 @@ export default function Landing() {
               <div className="flex-1 min-w-0 text-center sm:text-left">
                 <p className="text-xs text-indigo-500 font-semibold uppercase tracking-wider mb-0.5">Already have an Android build?</p>
                 <p className="text-base sm:text-lg font-bold text-indigo-900 leading-tight">Publish Your App on Google Play Store</p>
-                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup - $15 flat</p>
+                <p className="text-xs sm:text-sm text-indigo-600 mt-0.5">Expert submission, full store listing setup - $50 flat</p>
               </div>
               <div className="shrink-0 bg-indigo-600 group-hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                Get Started - $15 <ArrowRight className="w-4 h-4" />
+                Get Started - $50 <ArrowRight className="w-4 h-4" />
               </div>
             </Link>
           </div>
@@ -827,7 +827,7 @@ export default function Landing() {
                   <div className="p-2 bg-indigo-100 rounded-xl"><Store className="w-6 h-6 text-indigo-600" /></div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Publish App on Play Store</h3>
-                    <p className="text-sm text-indigo-600 font-semibold">$15 one-time</p>
+                    <p className="text-sm text-indigo-600 font-semibold">$50 one-time</p>
                   </div>
                 </div>
 
@@ -886,7 +886,7 @@ export default function Landing() {
 
                 <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
                   <p className="font-semibold mb-1">Note:</p>
-                  <p>Our team will contact you shortly after payment. You will need to add our email <strong>support@websitetoapp.app</strong> to your Play Console account with <strong>Release Manager</strong> permissions to allow us to publish.</p>
+                  <p>Our team will contact you shortly after payment. You will need to add our email <strong>sohamsmulay@gmail.com</strong> / <strong>support@websitetoapp.app</strong> to your Play Console account with <strong>Admin / Release Manager</strong> permissions to allow us to publish.</p>
                 </div>
 
                 <button
@@ -894,7 +894,7 @@ export default function Landing() {
                   disabled={publishLoading || !publishForm.name || !publishForm.email || !publishForm.appName}
                   className="mt-4 w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg"
                 >
-                  {publishLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Store className="w-4 h-4" /> Pay $15 &amp; Submit Request</>}
+                  {publishLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Store className="w-4 h-4" /> Pay $50 &amp; Submit Request</>}
                 </button>
               </>
             )}

@@ -13278,8 +13278,8 @@ WebsiteToApp is one-time pricing, not a subscription, so there's a clear ceiling
 
 - **$35 one-time** — Android or Windows Desktop premium: removes the watermark, removes the 15-day trial limit, unlocks keystore download, and includes 5 rebuilds per month per app
 - **$35 one-time** — iOS (beta): unsigned .ipa plus the full Xcode source project (you publish it yourself with your own Apple Developer account)
-- **$15 one-time** — optional Play Store Listing add-on if you want WebsiteToApp to handle store submission for you (requires the Android premium plan)
-- **$50 one-time** — Android app build + Play Store Listing bundled together
+- **$50 one-time** — optional Play Store Listing add-on if you want WebsiteToApp to handle store submission for you (requires the Android premium plan)
+- **$75 one-time** — Android app build + Play Store Listing bundled together
 - **$9/month per app** — optional "Pro Monthly" add-on, only needed if you ship updates often and want 20 rebuilds a month instead of 5; entirely optional and cancel anytime
 
 See the full breakdown on the [pricing page](/pricing).
@@ -13296,7 +13296,7 @@ Both, honestly. You get 5 real builds (across Android, Desktop, and iOS beta) wi
 It shows a WebsiteToApp watermark. It does not force ads on you — AdMob is available as an optional feature you control, on both the free and paid plans.
 
 ### Can I publish a free app to the Google Play Store?
-You can build and test it for free, but publishing a signed, unbranded app to Google Play requires the $35 one-time Android premium plan for keystore access; the $15 Play Store Listing add-on is optional if you'd rather WebsiteToApp submit it for you.
+You can build and test it for free, but publishing a signed, unbranded app to Google Play requires the $35 one-time Android premium plan for keystore access; the $50 Play Store Listing add-on is optional if you'd rather WebsiteToApp submit it for you.
 
 ### What's the fastest way to convert a website to an app for free right now?
 [Create a free account](/register), paste your website URL, pick Android/Desktop/iOS, and build — most people have a working test app in under 10 minutes.

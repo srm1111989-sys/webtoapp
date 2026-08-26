@@ -123,7 +123,7 @@ const PRICING_FAQS = [
   {
     question: 'How much does it cost to convert a website to an app?',
     answer:
-      'With WebsiteToApp, converting a website to an Android app costs $35 one-time (no subscription). A Windows desktop app (.exe) is also $35 one-time, and an iOS app (beta) is $35 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the App + Play Store bundle is $50 one-time, or the Play Store listing service alone is $15 one-time.',
+      'With WebsiteToApp, converting a website to an Android app costs $35 one-time (no subscription). A Windows desktop app (.exe) is also $35 one-time, and an iOS app (beta) is $35 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the Play Store listing service is $50 one-time, or the App + Play Store bundle is $75 one-time.',
   },
   {
     question: 'Is there a free plan, and does it have a watermark?',
