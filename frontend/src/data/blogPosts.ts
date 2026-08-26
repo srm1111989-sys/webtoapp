@@ -972,7 +972,7 @@ Choose from 15+ features:
 
 ### Step 4: Choose a Plan and Pay
 
-Select from Free, Android App ($25), Play Store Listing ($15), or App + Play Store ($40) — all one-time payments, no subscription. [View full pricing comparison](/pricing).
+Select from Free (5 trial builds), Premium Android App ($35), Play Store Publishing ($50), or App + Play Store Bundle ($75) — all one-time payments, no subscription. [View full pricing comparison](/pricing).
 
 ### Step 5: Download Your APK or AAB
 
@@ -3330,13 +3330,13 @@ Redeem for $35 off your next purchase. Limited time!
 
 **AdMob:** Free (you earn money)
 
-**Total to get started:** $40 ($25 app + $15 Play Store)
+**Total to get started:** $85 ($35 app + $50 Play Store Publishing)
 
 ### Competitor Pricing
 
 | Platform | Monthly Cost | Annual Cost | One-Time Option |
 |----------|--------------|-------------|-----------------|
-| WebsiteToApp | - | - | $25 |
+| WebsiteToApp | - | - | $35 |
 | Shopify Mobile App Builder | $99 | $1,188 | No |
 | Tapcart | $200+ | $2,400+ | No |
 | Appy Pie | $60 | $720 | No |
@@ -5446,7 +5446,7 @@ We evaluated each converter using the same WordPress test website, focusing on:
 
 ## 1. WebsiteToApp.app — Best Value for Android Apps
 
-**Pricing:** $15 (Basic) / $25 (Pro) / $35 (Premium) — one-time payment
+**Pricing:** $0 Free Trial / $35 Premium (Android or Desktop) — one-time payment
 
 [WebsiteToApp.app](https://websitetoapp.app) is an affordable, no-code platform designed specifically for converting websites into Android apps. What sets it apart is the combination of low one-time pricing, full AdMob monetization support, and the fact that you get the complete source code with every plan.
 
@@ -5761,7 +5761,7 @@ In this detailed comparison, we break down everything you need to know to choose
 | Feature | WebsiteToApp.app | Appilix |
 |---------|-----------------|---------|
 | **Pricing Model** | One-time payment | Annual subscription |
-| **Starting Price** | $15 | $69/year |
+| **Starting Price** | $35 once | $69/year |
 | **AdMob Support** | Full (banner, interstitial, rewarded) | Limited |
 | **Push Notifications** | Yes | Yes |
 | **Source Code** | Included | Not included |
@@ -5776,9 +5776,9 @@ In this detailed comparison, we break down everything you need to know to choose
 This is the single biggest difference between the two platforms and where WebsiteToApp.app has a clear advantage.
 
 ### WebsiteToApp.app Pricing
-- **Basic Plan:** $15 one-time — Core app conversion with custom icon and splash screen
-- **Pro Plan:** $35 one-time — Adds push notifications and offline support
-- **Premium Plan:** $35 one-time — Full AdMob integration, source code, and all features
+- **Free Plan:** $0 — 5 free test builds with full features & 15-day trial
+- **Premium Plan:** $35 one-time — Signed APK/AAB, no watermark, full AdMob integration, and all 50+ features
+- **Play Store Publishing:** $50 one-time — Complete submission handled by our engineering team
 
 You pay once and own your app forever. No recurring charges, no annual renewals, no surprise fees.
 
@@ -6024,20 +6024,20 @@ This fundamental difference shapes everything else about these tools, from prici
 
 WebsiteToApp.app uses straightforward one-time pricing:
 
-- **Starter Plan:** $15 one-time
-  - Basic features
-  - APK & AAB files
-  - Push notifications
-  - Source code included
+- **Free Plan:** $0
+  - 5 free builds with full feature access
+  - 15-day trial period
+  - Watermark enabled
 
-- **Professional Plan:** $35 one-time
-  - All Starter features
-  - AdMob integration
-  - Advanced customization
-  - Priority support
+- **Premium Android / Desktop Plan:** $35 one-time
+  - All 50+ features included
+  - Signed APK & AAB files (or Windows .exe)
+  - Push notifications & AdMob monetization
+  - No watermark, lifetime access
+  - 5 rebuilds per month
 
-- **Premium Plan:** $35 one-time
-  - All Professional features
+- **Play Store Publishing Service:** $50 one-time
+  - Full end-to-end publishing to Google Play Store by our team
   - Custom splash screens
   - Advanced navigation
   - Biometric authentication
