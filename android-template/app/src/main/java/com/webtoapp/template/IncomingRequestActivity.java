@@ -81,13 +81,8 @@ public class IncomingRequestActivity extends Activity {
         // Looping ringtone + call-style vibration until the provider responds
         alert.start(this);
 
-        // Pre-populate UI immediately from Intent extras (FCM data message
-        // may contain all order fields, but if it doesn't, fetch from the API).
+        // Pre-populate UI immediately from Intent extras (all data is available in FCM payload).
         populateFromIntentExtras();
-
-        // If the FCM extras were missing order details, fetch them live from
-        // the backend so the lock-screen UI is never blank.
-        if (!hasEnoughData()) fetchOrderDetails(orderId);
     }
 
     /** True when at least customer + service were populated from FCM extras. */
@@ -261,10 +256,10 @@ public class IncomingRequestActivity extends Activity {
         if (areaLine != null && !areaLine.isEmpty()) setText("tv_area", areaLine);
         if (desc != null && !desc.isEmpty()) setText("tv_description", desc);
 
-        // Coordinates for map
+        // Coordinates for map (supports customerLat, startLat, pickupLat, lat)
         try {
-            double pLat = parseCoord(b, "startLat", "pickupLat", "pickup_lat", "lat", "latitude");
-            double pLng = parseCoord(b, "startLng", "pickupLng", "pickup_lng", "lng", "longitude");
+            double pLat = parseCoord(b, "customerLat", "customer_lat", "startLat", "pickupLat", "pickup_lat", "lat", "latitude");
+            double pLng = parseCoord(b, "customerLng", "customer_lng", "startLng", "pickupLng", "pickup_lng", "lng", "longitude");
             double dLat = parseCoord(b, "endLat", "destLat", "dest_lat", "dropLat", "dropoffLat");
             double dLng = parseCoord(b, "endLng", "destLng", "dest_lng", "dropLng", "dropoffLng");
             if (!Double.isNaN(pLat) && !Double.isNaN(pLng)) {
