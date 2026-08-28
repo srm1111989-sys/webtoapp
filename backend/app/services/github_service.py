@@ -32,9 +32,10 @@ class GitHubService:
         else:
             self.workflow_file = "build-android.yml"
         self.headers = {
-            "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json",
         }
+        if self.token:
+            self.headers["Authorization"] = f"token {self.token}"
 
     def _api_url(self, path: str) -> str:
         return f"https://api.github.com/repos/{self.repo}{path}"
@@ -64,6 +65,9 @@ class GitHubService:
 
     def trigger_pipeline(self, variables: dict) -> dict:
         """Trigger a GitHub Actions workflow dispatch with variables as inputs."""
+        if not self.token or not self.repo:
+            raise RuntimeError(f"GitHub account ({self.repo or 'unconfigured'}) missing token or repo")
+
         if self.platform == "desktop":
             allowed_keys = self._ALLOWED_INPUTS_DESKTOP
         elif self.platform == "ios":
@@ -137,6 +141,10 @@ class GitHubService:
            dispatcher never cascaded because triggering had succeeded. A
            storage-full account is effectively out of quota.
         """
+        if not self.token or not self.repo:
+            logger.info(f"GitHub provider ({self.repo or 'unconfigured'}): missing token or repo — treating as no quota")
+            return False
+
         try:
             username = self.repo.split("/")[0]
             with httpx.Client(timeout=10) as client:

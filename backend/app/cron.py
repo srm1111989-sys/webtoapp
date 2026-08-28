@@ -25,10 +25,10 @@ def _build_provider_list(platform: str) -> list[tuple[str, object]]:
     github4 = GitHubService(platform=platform, account=4)
 
     candidates = [
-        ("github4", github4, lambda: github4.has_quota()),
-        ("github1", github1, lambda: github1.has_quota()),
-        ("github2", github2, lambda: github2.has_quota()),
-        ("github3", github3, lambda: github3.has_quota()),
+        ("github4", github4, lambda: bool(github4.token) and bool(github4.repo) and github4.has_quota()),
+        ("github1", github1, lambda: bool(github1.token) and bool(github1.repo) and github1.has_quota()),
+        ("github2", github2, lambda: bool(github2.token) and bool(github2.repo) and github2.has_quota()),
+        ("github3", github3, lambda: bool(github3.token) and bool(github3.repo) and github3.has_quota()),
     ]
 
     available = [(name, svc) for name, svc, check in candidates if check()]
