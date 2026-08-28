@@ -36,6 +36,25 @@ def _razorpay_product_matches(notes: dict | None) -> bool:
     return (notes or {}).get("product") == RAZORPAY_PRODUCT_KEY
 
 
+async def _webhook_already_processed(db: AsyncSession, gateway: str, event_id: str) -> bool:
+    """Atomic idempotency guard. Records (gateway, event_id) and returns True if it
+    was already seen — so retried / duplicated webhook deliveries are ignored.
+    Payment gateways retry on non-2xx and can fan the same event more than once."""
+    if not event_id:
+        return False
+    await db.execute(text(
+        "CREATE TABLE IF NOT EXISTS processed_webhook_events ("
+        "gateway VARCHAR(20) NOT NULL, event_id VARCHAR(191) NOT NULL, "
+        "processed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), "
+        "PRIMARY KEY (gateway, event_id))"))
+    res = await db.execute(text(
+        "INSERT INTO processed_webhook_events (gateway, event_id) VALUES (:g, :e) "
+        "ON CONFLICT (gateway, event_id) DO NOTHING RETURNING event_id"),
+        {"g": gateway, "e": event_id})
+    await db.commit()
+    return res.first() is None
+
+
 # ─── GitHub Webhook ──────────────────────────────────────
 
 @router.post("/github")
