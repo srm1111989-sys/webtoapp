@@ -1,7 +1,9 @@
+import uuid
 import json
 import hmac
 import hashlib
 import logging
+import secrets
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Request, HTTPException, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,11 +12,15 @@ from app.database import get_db
 from app.models.build import Build
 from app.models.order import Order
 from app.models.payment import Payment
+from app.models.user import User
+from app.models.app_config import AppConfig
+from app.models.plan import Plan
 from app.models.subscription import Subscription, SubscriptionPayment
 from app.config import get_settings
 from app.services.build_service import handle_build_webhook
 from app.services.subscription_service import handle_subscription_payment
 from app.utils.email import send_order_confirmation_email
+from app.utils.security import hash_password
 
 settings = get_settings()
 logger = logging.getLogger("webtoapp.webhooks")
@@ -32,8 +38,16 @@ async def _find_subscription_by_gateway_id(db: AsyncSession, gateway_id: str) ->
     return result.scalar_one_or_none()
 
 
-def _razorpay_product_matches(notes: dict | None) -> bool:
-    return (notes or {}).get("product") == RAZORPAY_PRODUCT_KEY
+def _razorpay_product_matches(notes: dict | None, description: str | None = None) -> bool:
+    if not isinstance(notes, dict):
+        notes = {}
+    if notes.get("product") == RAZORPAY_PRODUCT_KEY:
+        return True
+    if notes.get("service") in ("play-store-publish", "publishing", "custom-development"):
+        return True
+    if description and "Publish App on Google Play Store" in description:
+        return True
+    return False
 
 
 async def _webhook_already_processed(db: AsyncSession, gateway: str, event_id: str) -> bool:
@@ -366,8 +380,10 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
         if not isinstance(notes, dict):  # Razorpay sends notes as [] when empty
             notes = {}
         order_id = notes.get("order_id")
+        description = payment_entity.get("description", "")
+        gateway_payment_id = payment_entity.get("id")
 
-        if not _razorpay_product_matches(notes):
+        if not _razorpay_product_matches(notes, description):
             logger.warning(
                 "Ignoring Razorpay payment for non-WebToApp product",
                 extra={"order_id": order_id, "product": notes.get("product")},
@@ -377,8 +393,29 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
         if order_id:
             result = await db.execute(select(Order).where(Order.id == order_id))
             order = result.scalar_one_or_none()
-            if order and order.status == "pending":
-                order.status = "paid"
+            if order:
+                if order.status == "pending":
+                    order.status = "paid"
+                if not order.gateway_payment_id and gateway_payment_id:
+                    order.gateway_payment_id = gateway_payment_id
+
+                # Ensure payment record exists
+                p_res = await db.execute(select(Payment).where(Payment.order_id == order.id))
+                payment = p_res.scalar_one_or_none()
+                if not payment and gateway_payment_id:
+                    payment = Payment(
+                        order_id=order.id,
+                        gateway="razorpay",
+                        gateway_payment_id=gateway_payment_id,
+                        amount=payment_entity.get("amount", order.amount),
+                        currency=payment_entity.get("currency", order.currency).upper(),
+                        status="captured",
+                        raw_response=payment_entity,
+                    )
+                    db.add(payment)
+
+                from app.services.promo import consume_promo_for_paid_order
+                await consume_promo_for_paid_order(db, order)
 
                 # Send order confirmation email
                 app_name = order.app_config.name if order.app_config else "App"
@@ -390,6 +427,92 @@ async def razorpay_webhook(request: Request, db: AsyncSession = Depends(get_db))
                         order_number=order.order_number,
                         app_name=app_name,
                         plan_name=plan_name,
+                        amount=order.amount,
+                        currency=order.currency,
+                        order_id=str(order.id),
+                    )
+        elif notes.get("service") in ("play-store-publish", "publishing") or "Publish App on Google Play Store" in description:
+            # Standalone Play Store publishing checkout
+            cust_email = (notes.get("email") or payment_entity.get("email") or "").strip().lower()
+            cust_name = (notes.get("name") or "Customer").strip()
+            app_name = (notes.get("appName") or "My Android App").strip()
+            website_url = (notes.get("websiteUrl") or "").strip()
+
+            if cust_email:
+                # Find or create user
+                u_res = await db.execute(select(User).where(User.email == cust_email))
+                user = u_res.scalar_one_or_none()
+                if not user:
+                    temp_pwd = hash_password(secrets.token_urlsafe(16))
+                    user = User(
+                        email=cust_email,
+                        full_name=cust_name,
+                        password_hash=temp_pwd,
+                        is_active=True,
+                        is_verified=True,
+                    )
+                    db.add(user)
+                    await db.flush()
+
+                # Find or create app_config
+                ac_res = await db.execute(select(AppConfig).where(AppConfig.user_id == user.id, AppConfig.name == app_name))
+                app_config = ac_res.scalar_one_or_none()
+                if not app_config:
+                    app_config = AppConfig(
+                        user_id=user.id,
+                        name=app_name,
+                        url=website_url or "https://example.com",
+                    )
+                    db.add(app_config)
+                    await db.flush()
+
+                # Find plan for play store submission
+                p_res = await db.execute(select(Plan).where(Plan.slug.in_(["play-store-submission", "play-store-listing"])))
+                plan = p_res.scalar_one_or_none()
+                if not plan:
+                    p_res = await db.execute(select(Plan).where(Plan.price_usd == 5000))
+                    plan = p_res.scalar_one_or_none()
+
+                plan_id = plan.id if plan else uuid.UUID("d886d8a3-0364-4759-9957-96c3da1dd855")
+                order_num = f"WTA-PUB{secrets.token_hex(4).upper()}"
+
+                # Check if order already exists for this payment
+                existing_p = await db.execute(select(Payment).where(Payment.gateway_payment_id == gateway_payment_id))
+                if not existing_p.scalar_one_or_none():
+                    order = Order(
+                        user_id=user.id,
+                        app_config_id=app_config.id,
+                        plan_id=plan_id,
+                        order_number=order_num,
+                        amount=payment_entity.get("amount", 5000),
+                        currency=payment_entity.get("currency", "USD").upper(),
+                        status="paid",
+                        payment_gateway="razorpay",
+                        gateway_order_id=payment_entity.get("order_id"),
+                        gateway_payment_id=gateway_payment_id,
+                        metadata=notes,
+                    )
+                    db.add(order)
+                    await db.flush()
+
+                    payment = Payment(
+                        order_id=order.id,
+                        gateway="razorpay",
+                        gateway_payment_id=gateway_payment_id,
+                        amount=order.amount,
+                        currency=order.currency,
+                        status="captured",
+                        raw_response=payment_entity,
+                    )
+                    db.add(payment)
+                    await db.commit()
+
+                    # Send confirmation email
+                    send_order_confirmation_email(
+                        to=cust_email,
+                        order_number=order.order_number,
+                        app_name=app_name,
+                        plan_name="Play Store Publishing Service",
                         amount=order.amount,
                         currency=order.currency,
                         order_id=str(order.id),

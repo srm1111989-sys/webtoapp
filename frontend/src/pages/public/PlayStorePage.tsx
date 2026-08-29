@@ -93,6 +93,7 @@ export default function PlayStorePage() {
           websiteUrl: form.websiteUrl,
           notes: form.notes,
           service: 'play-store-publish',
+          product: 'webtoapp',
         },
       })
       const options = {
