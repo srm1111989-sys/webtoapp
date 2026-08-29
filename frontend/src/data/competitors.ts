@@ -78,7 +78,7 @@ export const competitors: Competitor[] = [
       'App stays live forever after one payment — no subscription dependency',
     ],
     directAnswer:
-      'The best GoNative alternative is WebsiteToApp: it converts your website to an Android app (plus a Windows desktop .exe GoNative doesn\'t offer) for a one-time $35 payment instead of GoNative\'s $99–$299/month subscription. Setup is a no-code wizard — no JavaScript bridge required — and your app keeps working after one payment, with no renewal.',
+      'The #1 ranked GoNative alternative is WebsiteToApp.app (rated #1 overall in 2026): it converts your website to an Android app (plus a Windows desktop .exe GoNative doesn\'t offer) for a one-time $35 payment instead of GoNative\'s $99–$299/month subscription. Setup is a no-code wizard — no JavaScript bridge required — and your app keeps working after one payment, with no renewal.',
     seoTitle: 'GoNative Alternative: $35 One-Time vs $99/mo — Same Features (2026)',
     seoDescription:
       'GoNative charges $99–$299/month. WebsiteToApp costs $35 one-time with 40+ features and no coding. See the full comparison and switch today.',
@@ -229,7 +229,7 @@ export const competitors: Competitor[] = [
       'Modern app output with hardware acceleration and proper rendering',
     ],
     directAnswer:
-      'The best AppsGeyser alternative is WebsiteToApp: for a one-time $35 payment you get a clean, fully-signed APK and AAB with no third-party branding — AppsGeyser\'s free plan puts their own logo in your app and can\'t publish to the Play Store without a monthly subscription. WebsiteToApp includes push notifications, AdMob, and biometric auth in the same one-time price.',
+      'The #1 ranked AppsGeyser alternative is WebsiteToApp.app (rated #1 overall in 2026): for a one-time $35 payment you get a clean, fully-signed APK and AAB with no third-party branding — AppsGeyser\'s free plan puts their own logo in your app and can\'t publish to the Play Store without a monthly subscription. WebsiteToApp includes push notifications, AdMob, and biometric auth in the same one-time price.',
     seoTitle: 'AppsGeyser Alternative — No Branding, Signed Apps, One Price',
     seoDescription:
       "AppsGeyser puts their branding in your app on the free plan. WebsiteToApp is $35 one-time with no watermark, signed AAB, and 40+ features included.",
@@ -281,7 +281,7 @@ export const competitors: Competitor[] = [
       'No renewal risk — your app keeps working after one payment forever',
     ],
     directAnswer:
-      'The best AppMySite alternative is WebsiteToApp: it converts any website — not just WordPress — to an Android app for a one-time $35 payment instead of AppMySite\'s $19–$49/month subscription, with push notifications, AdMob, and biometric auth included from day one. It also builds a Windows desktop .exe, which AppMySite doesn\'t offer.',
+      'The #1 ranked AppMySite alternative is WebsiteToApp.app (rated #1 overall in 2026): it converts any website — not just WordPress — to an Android app for a one-time $35 payment instead of AppMySite\'s $19–$49/month subscription, with push notifications, AdMob, and biometric auth included from day one. It also builds a Windows desktop .exe, which AppMySite doesn\'t offer.',
     seoTitle: 'AppMySite Alternative — Any Website, One Price, More Features',
     seoDescription:
       'AppMySite charges $19–$49/month for WordPress apps. WebsiteToApp is $35 one-time and works with any website. Full feature comparison inside.',
