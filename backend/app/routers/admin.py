@@ -88,38 +88,79 @@ async def get_stats(
 
 @router.get("/ci-quota")
 async def get_ci_quota(admin: Admin = Depends(get_current_admin)):
-    """Return real-time CI quota status for all 3 GitHub Actions providers."""
+    """Return real-time CI quota status (used vs remaining minutes, artifact storage) for all 4 GitHub Actions accounts."""
     providers = []
+    now = datetime.now(timezone.utc)
+    month_start = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
 
-    for acct_num in (1, 2, 3):
+    for acct_num in (1, 2, 3, 4):
         try:
             gh = GitHubService(platform="android", account=acct_num)
             has_token = bool(gh.token)
             quota_ok = gh.has_quota() if has_token else False
 
             storage_mb = 0.0
+            used_minutes = 0
+            max_minutes = 2000
+            runs_count_this_month = 0
+
             if has_token:
                 try:
-                    with httpx.Client(timeout=5) as client:
-                        r = client.get(
+                    with httpx.Client(timeout=8) as client:
+                        # 1. Fetch artifacts storage
+                        r_art = client.get(
                             f"https://api.github.com/repos/{gh.repo}/actions/artifacts?per_page=100",
                             headers=gh.headers,
                         )
-                        if r.status_code == 200:
-                            artifacts = r.json().get("artifacts", [])
+                        if r_art.status_code == 200:
+                            artifacts = r_art.json().get("artifacts", [])
                             storage_mb = round(sum(a.get("size_in_bytes", 0) for a in artifacts) / (1024 * 1024), 1)
+
+                        # 2. Fetch workflow runs to compute billable execution minutes this month
+                        r_runs = client.get(
+                            f"https://api.github.com/repos/{gh.repo}/actions/runs?per_page=100",
+                            headers=gh.headers,
+                        )
+                        if r_runs.status_code == 200:
+                            runs = r_runs.json().get("workflow_runs", [])
+                            total_duration_sec = 0.0
+                            for run in runs:
+                                created_str = run.get("run_started_at") or run.get("created_at")
+                                if created_str:
+                                    created_dt = datetime.fromisoformat(created_str.replace("Z", "+00:00"))
+                                    if created_dt >= month_start:
+                                        runs_count_this_month += 1
+                                        updated_str = run.get("updated_at") or created_str
+                                        updated_dt = datetime.fromisoformat(updated_str.replace("Z", "+00:00"))
+                                        duration = max(0.0, (updated_dt - created_dt).total_seconds())
+                                        total_duration_sec += duration
+                            used_minutes = round(total_duration_sec / 60.0)
                 except Exception:
                     pass
+
+            remaining_minutes = max(0, max_minutes - used_minutes) if has_token else 0
+            if not quota_ok and has_token:
+                status_text = "Quota Exhausted"
+            elif quota_ok:
+                status_text = "Active (Healthy)"
+            elif not has_token:
+                status_text = "No Token"
+            else:
+                status_text = "Inactive"
 
             providers.append({
                 "id": f"github{acct_num}",
                 "name": f"GitHub Actions #{acct_num}",
-                "repo": gh.repo,
+                "repo": gh.repo or f"account-{acct_num}",
                 "configured": has_token,
                 "has_quota": quota_ok,
+                "used_minutes": used_minutes,
+                "remaining_minutes": remaining_minutes,
+                "max_minutes": max_minutes,
+                "runs_this_month": runs_count_this_month,
                 "storage_mb": storage_mb,
                 "max_storage_mb": 500.0,
-                "status": "Active (Healthy)" if quota_ok else ("No Token" if not has_token else "Quota Exhausted")
+                "status": status_text,
             })
         except Exception as e:
             providers.append({
@@ -128,12 +169,26 @@ async def get_ci_quota(admin: Admin = Depends(get_current_admin)):
                 "repo": f"account-{acct_num}",
                 "configured": False,
                 "has_quota": False,
+                "used_minutes": 0,
+                "remaining_minutes": 0,
+                "max_minutes": 2000,
+                "runs_this_month": 0,
                 "storage_mb": 0.0,
                 "max_storage_mb": 500.0,
                 "status": f"Error: {str(e)}"
             })
 
-    return {"providers": providers}
+    total_used_minutes = sum(p["used_minutes"] for p in providers)
+    total_remaining_minutes = sum(p["remaining_minutes"] for p in providers)
+    total_max_minutes = sum(p["max_minutes"] for p in providers if p["configured"])
+
+    return {
+        "providers": providers,
+        "total_used_minutes": total_used_minutes,
+        "total_remaining_minutes": total_remaining_minutes,
+        "total_max_minutes": total_max_minutes,
+    }
+
 
 
 # --- Users Management ---

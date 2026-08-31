@@ -74,5 +74,24 @@ export const adminApi = {
 
   // CI Quota
   getCiQuota: () =>
-    adminClient.get<{ providers: Array<{ id: string; name: string; repo: string; configured: boolean; has_quota: boolean; storage_mb: number; max_storage_mb: number; status: string }> }>('/api/admin/ci-quota'),
+    adminClient.get<{
+      providers: Array<{
+        id: string
+        name: string
+        repo: string
+        configured: boolean
+        has_quota: boolean
+        used_minutes: number
+        remaining_minutes: number
+        max_minutes: number
+        runs_this_month: number
+        storage_mb: number
+        max_storage_mb: number
+        status: string
+      }>
+      total_used_minutes: number
+      total_remaining_minutes: number
+      total_max_minutes: number
+    }>('/api/admin/ci-quota'),
 }
+

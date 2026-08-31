@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
-import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard, FlaskConical, FolderOpen, Cpu, CheckCircle2, AlertCircle, HardDrive } from 'lucide-react'
+import { Users, ShoppingCart, IndianRupee, DollarSign, Loader2, AlertTriangle, Activity, CreditCard, FlaskConical, FolderOpen, Cpu, CheckCircle2, AlertCircle, HardDrive, Clock, GitBranch } from 'lucide-react'
+
 import { Link } from 'react-router-dom'
 import { adminApi } from '@/api/admin'
 import { projectsApi } from '@/api/projects'
@@ -174,62 +175,115 @@ export default function AdminDashboard() {
       </div>
 
       {/* CI Pipeline Quota Status Card */}
-      <div className="bg-white rounded-xl border p-5 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b">
           <div className="flex items-center gap-2">
             <Cpu className="w-5 h-5 text-blue-600" />
-            <h2 className="text-lg font-semibold text-gray-900">CI Pipeline Quotas (GitHub Actions)</h2>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">CI Pipeline Quotas (GitHub Actions)</h2>
+              <p className="text-xs text-gray-500">Monthly runner minutes & artifact storage across 4 GitHub accounts</p>
+            </div>
           </div>
-          <span className="text-xs text-gray-400 font-medium">3 Failover Accounts</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {ciQuotaData?.providers?.map((provider) => (
-            <div key={provider.id} className="border rounded-lg p-4 bg-gray-50 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold text-sm text-gray-900">{provider.name}</span>
-                  <span
-                    className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                      provider.has_quota ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                    }`}
-                  >
-                    {provider.has_quota ? (
-                      <>
-                        <CheckCircle2 className="w-3 h-3" /> Ready
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="w-3 h-3" /> Exhausted
-                      </>
-                    )}
-                  </span>
-                </div>
-                <p className="text-xs font-mono text-gray-500 truncate mb-3">{provider.repo}</p>
-              </div>
-
-              <div className="space-y-1.5 pt-2 border-t text-xs">
-                <div className="flex items-center justify-between text-gray-600">
-                  <span className="flex items-center gap-1"><HardDrive className="w-3 h-3 text-gray-400" /> Artifact Storage:</span>
-                  <span className="font-mono font-medium">{provider.storage_mb} / {provider.max_storage_mb} MB</span>
-                </div>
-                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${
-                      provider.storage_mb > 400 ? 'bg-amber-500' : 'bg-blue-500'
-                    }`}
-                    style={{ width: `${Math.min(100, (provider.storage_mb / provider.max_storage_mb) * 100)}%` }}
-                  />
-                </div>
+          {ciQuotaData && (
+            <div className="flex items-center gap-3 bg-blue-50/70 border border-blue-100 px-3 py-1.5 rounded-lg text-xs">
+              <div className="flex items-center gap-1.5 text-blue-900 font-medium">
+                <Clock className="w-3.5 h-3.5 text-blue-600" />
+                <span>Total Pool:</span>
+                <span className="font-bold font-mono text-blue-700">{ciQuotaData.total_used_minutes}m used</span>
+                <span className="text-gray-400">/</span>
+                <span className="font-bold font-mono text-green-700">{ciQuotaData.total_remaining_minutes}m free</span>
+                <span className="text-gray-500">({ciQuotaData.total_max_minutes}m limit)</span>
               </div>
             </div>
-          ))}
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {ciQuotaData?.providers?.map((provider) => {
+            const minutesPercent = provider.max_minutes > 0 ? Math.min(100, Math.round((provider.used_minutes / provider.max_minutes) * 100)) : 0
+            const isNearMinuteLimit = provider.used_minutes >= 1600
+            return (
+              <div key={provider.id} className="border rounded-xl p-4 bg-gray-50/60 hover:bg-white transition-colors flex flex-col justify-between space-y-3">
+                <div>
+                  <div className="flex items-center justify-between gap-1 mb-1.5">
+                    <span className="font-semibold text-sm text-gray-900 truncate">{provider.name}</span>
+                    <span
+                      className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${
+                        provider.has_quota ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {provider.has_quota ? (
+                        <>
+                          <CheckCircle2 className="w-3 h-3" /> Ready
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle className="w-3 h-3" /> Exhausted
+                        </>
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs font-mono text-gray-500 truncate mb-1">
+                    <GitBranch className="w-3 h-3 shrink-0 text-gray-400" />
+                    <span className="truncate">{provider.repo}</span>
+                  </div>
+                </div>
+
+                {/* Quota Minutes Bar */}
+                <div className="space-y-1.5 pt-2 border-t text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1 text-gray-600 font-medium">
+                      <Clock className="w-3 h-3 text-indigo-500" /> Quota Minutes:
+                    </span>
+                    <span className="font-mono font-semibold text-gray-900">
+                      <span className={isNearMinuteLimit ? 'text-amber-600' : 'text-indigo-600'}>{provider.used_minutes}m</span>
+                      <span className="text-gray-400 font-normal"> / {provider.max_minutes}m</span>
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        isNearMinuteLimit ? 'bg-amber-500' : 'bg-indigo-600'
+                      }`}
+                      style={{ width: `${Math.max(3, minutesPercent)}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-gray-500">
+                    <span>{provider.runs_this_month} runs this month</span>
+                    <span className="font-medium text-green-600">{provider.remaining_minutes}m left</span>
+                  </div>
+                </div>
+
+                {/* Artifact Storage Bar */}
+                <div className="space-y-1 pt-1.5 border-t border-dashed text-xs">
+                  <div className="flex items-center justify-between text-gray-600">
+                    <span className="flex items-center gap-1 text-[11px]">
+                      <HardDrive className="w-3 h-3 text-gray-400" /> Artifact Storage:
+                    </span>
+                    <span className="font-mono text-[11px] font-medium text-gray-700">
+                      {provider.storage_mb} / {provider.max_storage_mb} MB
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        provider.storage_mb > 400 ? 'bg-amber-500' : 'bg-blue-500'
+                      }`}
+                      style={{ width: `${Math.min(100, (provider.storage_mb / provider.max_storage_mb) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
           {(!ciQuotaData || isLoadingQuota) && (
-            <div className="col-span-3 text-center py-6">
+            <div className="col-span-1 sm:col-span-2 xl:col-span-4 text-center py-6">
               <Loader2 className="w-5 h-5 animate-spin mx-auto text-gray-400" />
             </div>
           )}
         </div>
       </div>
+
 
       {/* Charts row */}
       <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
