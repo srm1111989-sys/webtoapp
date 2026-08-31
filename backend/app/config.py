@@ -102,9 +102,10 @@ class Settings(BaseSettings):
     admin_email: str = "admin@websitetoapp.app"
     admin_password: str = ""
 
-    model_config = {"env_file": ".env", "extra": "ignore"}
+    model_config = {"env_file": [".env", ".env.native"], "extra": "ignore"}
 
 
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
