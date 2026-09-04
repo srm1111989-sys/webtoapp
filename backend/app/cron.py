@@ -291,7 +291,7 @@ async def send_trial_drips():
                 await db.commit()
                 logger.info(f"trial drip {stage} -> {email} (sent={ok})")
                 sent += 1
-                await asyncio.sleep(2)  # Zoho dislikes bursts
+                await asyncio.sleep(3)  # Zoho dislikes bursts
     except Exception as e:
         logger.error(f"send_trial_drips failed: {e}")
 

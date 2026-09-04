@@ -18,7 +18,7 @@ def _log_email(to, subject, status, error=None):
 settings = get_settings()
 
 
-def send_email(to: str, subject: str, html: str) -> bool:
+def send_email(to: str, subject: str, html: str, max_retries: int = 3) -> bool:
     if not settings.smtp_host:
         return False
 
@@ -28,26 +28,35 @@ def send_email(to: str, subject: str, html: str) -> bool:
     msg["To"] = to
     msg.attach(MIMEText(html, "html"))
 
-    try:
-        if settings.smtp_port == 465:
-            context = ssl.create_default_context()
-            with smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, context=context) as server:
-                server.login(settings.smtp_user, settings.smtp_password)
-                server.sendmail(settings.smtp_from_email, to, msg.as_string())
-        else:
-            with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
-                server.ehlo()
-                server.starttls()
-                server.ehlo()
-                server.login(settings.smtp_user, settings.smtp_password)
-                server.sendmail(settings.smtp_from_email, to, msg.as_string())
-        _log_email(to, subject, 'sent')
-        return True
-    except Exception as e:
-        import logging
-        logging.getLogger("webtoapp.email").error(f"Failed to send email to {to}: {e}")
-        _log_email(to, subject, 'failed', e)
-        return False
+    last_error = None
+    for attempt in range(1, max_retries + 1):
+        try:
+            if settings.smtp_port == 465:
+                context = ssl.create_default_context()
+                with smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, context=context, timeout=20) as server:
+                    server.login(settings.smtp_user, settings.smtp_password)
+                    server.sendmail(settings.smtp_from_email, to, msg.as_string())
+            else:
+                with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=20) as server:
+                    server.ehlo()
+                    server.starttls()
+                    server.ehlo()
+                    server.login(settings.smtp_user, settings.smtp_password)
+                    server.sendmail(settings.smtp_from_email, to, msg.as_string())
+            _log_email(to, subject, 'sent')
+            return True
+        except Exception as e:
+            last_error = e
+            import logging
+            logging.getLogger("webtoapp.email").warning(f"Attempt {attempt}/{max_retries} failed sending email to {to}: {e}")
+            if attempt < max_retries:
+                import time
+                time.sleep(1.5 * attempt)
+
+    import logging
+    logging.getLogger("webtoapp.email").error(f"Failed to send email to {to} after {max_retries} attempts: {last_error}")
+    _log_email(to, subject, 'failed', last_error)
+    return False
 
 
 def send_verification_email(to: str, token: str) -> bool:
