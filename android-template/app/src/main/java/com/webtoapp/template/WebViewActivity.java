@@ -818,10 +818,26 @@ public class WebViewActivity extends AppCompatActivity {
                 + "getFCMToken:function(callback){return native.getFCMToken(String(callback||''));},"
                 + "showRewardedAd:function(callback){return native.showRewardedAd(String(callback||''));},"
                 + "isRewardedReady:function(){return native.isRewardedReady();},"
-                + "showInterstitial:function(){return native.showInterstitial();}"
+                + "showInterstitial:function(){return native.showInterstitial();},"
+                + "print:function(){return native.print();}"
                 + "};"
                 + "}catch(e){}})();";
         webView.post(() -> webView.evaluateJavascript(js, null));
+    }
+
+    public void printCurrentPage() {
+        runOnUiThread(() -> {
+            try {
+                android.print.PrintManager printManager = (android.print.PrintManager) getSystemService(android.content.Context.PRINT_SERVICE);
+                if (printManager != null && webView != null) {
+                    String jobName = (config != null ? config.optString("app_name", "Document") : "Document") + " Print";
+                    android.print.PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(jobName);
+                    printManager.print(jobName, printAdapter, new android.print.PrintAttributes.Builder().build());
+                }
+            } catch (Throwable t) {
+                Toast.makeText(this, "Printing is not supported on this device", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // ── Server entitlement (Variant B): a paid upgrade made on the website
