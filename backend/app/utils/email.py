@@ -91,24 +91,45 @@ def send_order_confirmation_email(
     currency: str,
     order_id: str,
 ) -> bool:
-    if amount == 0:
+    is_free = (amount == 0)
+    if is_free:
         amount_display = "Free"
-    elif currency == "INR":
-        amount_display = f"₹{amount / 100:,.0f}"
+        header_title = "App Created Successfully"
+        header_subtitle = "Your app build has been initiated"
+        intro_text = f"Thank you for choosing <strong>{settings.app_name}</strong>! Your app creation is confirmed, and your build has been initiated."
+        support_banner = ""
+        subject = f"App Created & Build Started — {order_number} ({app_name})"
     else:
-        amount_display = f"${amount / 100:,.2f}"
+        if currency == "INR":
+            amount_display = f"₹{amount / 100:,.0f}"
+        else:
+            amount_display = f"${amount / 100:,.2f}"
+        header_title = "Payment Confirmed"
+        header_subtitle = "Your order is being processed"
+        intro_text = f"Thank you for choosing <strong>{settings.app_name}</strong>! Your payment has been successfully received, and your app build has been initiated."
+        support_banner = """
+        <!-- 24/7 Premium Support Banner -->
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; padding: 18px 20px; border-radius: 4px 8px 8px 4px; margin: 24px 0;">
+          <h3 style="margin: 0 0 6px; color: #166534; font-size: 15px; font-weight: 700;">
+            ✨ 24/7 Dedicated Premium Support Included
+          </h3>
+          <p style="margin: 0; font-size: 14px; color: #15803d; line-height: 1.5;">
+            As a paid customer, you receive round-the-clock priority support. Please feel free to reach out to us at any time for questions, technical issues, custom requirements, Play Store listing assistance, or suggestions.
+          </p>
+        </div>"""
+        subject = f"Payment Confirmed & 24/7 Premium Support — {order_number} ({app_name})"
 
     order_link = f"{settings.app_url}/orders/{order_id}"
     html = f"""
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1f2937; line-height: 1.6;">
       <div style="background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); padding: 32px 24px; text-align: center; border-radius: 12px 12px 0 0;">
-        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.025em;">Payment Confirmed</h1>
-        <p style="color: #c7d2fe; margin: 8px 0 0; font-size: 15px;">Your order is being processed</p>
+        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.025em;">{header_title}</h1>
+        <p style="color: #c7d2fe; margin: 8px 0 0; font-size: 15px;">{header_subtitle}</p>
       </div>
       <div style="padding: 32px 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px; background: #ffffff;">
         <p style="font-size: 16px; margin: 0 0 16px;">Hello,</p>
         <p style="font-size: 15px; margin: 0 0 20px;">
-          Thank you for choosing <strong>{settings.app_name}</strong>! Your payment has been successfully received, and your app build has been initiated.
+          {intro_text}
         </p>
 
         <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background: #f8fafc; border-radius: 8px; overflow: hidden;">
@@ -125,21 +146,11 @@ def send_order_confirmation_email(
             <td style="padding: 12px 16px; text-align: right; font-weight: 600; font-size: 14px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">{plan_name}</td>
           </tr>
           <tr>
-            <td style="padding: 14px 16px; color: #0f172a; font-size: 15px; font-weight: 700;">Total Paid</td>
+            <td style="padding: 14px 16px; color: #0f172a; font-size: 15px; font-weight: 700;">{"Plan Type" if is_free else "Total Paid"}</td>
             <td style="padding: 14px 16px; text-align: right; font-size: 17px; font-weight: 700; color: #4f46e5;">{amount_display}</td>
           </tr>
         </table>
-
-        <!-- 24/7 Premium Support Banner -->
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; padding: 18px 20px; border-radius: 4px 8px 8px 4px; margin: 24px 0;">
-          <h3 style="margin: 0 0 6px; color: #166534; font-size: 15px; font-weight: 700;">
-            ✨ 24/7 Dedicated Premium Support Included
-          </h3>
-          <p style="margin: 0; font-size: 14px; color: #15803d; line-height: 1.5;">
-            As a paid customer, you receive round-the-clock priority support. Please feel free to reach out to us at any time for questions, technical issues, custom requirements, Play Store listing assistance, or suggestions.
-          </p>
-        </div>
-
+{support_banner}
         <div style="text-align: center; margin: 28px 0;">
           <a href="{order_link}" style="background: #4f46e5; color: #ffffff; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; display: inline-block; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);">View Order &amp; Downloads</a>
         </div>
@@ -157,7 +168,7 @@ def send_order_confirmation_email(
       </div>
     </div>
     """
-    return send_email(to, f"Payment Confirmed & 24/7 Premium Support — {order_number} ({app_name})", html)
+    return send_email(to, subject, html)
 
 
 ADMIN_NOTIFY_EMAIL = "mokashiswapnil11@gmail.com"
