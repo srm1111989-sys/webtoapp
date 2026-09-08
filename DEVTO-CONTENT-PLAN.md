@@ -36,7 +36,7 @@ Week 2 — Android/no-code cluster:
 9. What Google Play Actually Rejects in WebView Apps (and how to pass)
 10. APK vs AAB Explained for Non-Developers
 11. Push Notifications for a Website-Based App, Without Firebase Knowledge
-12. The $35 App: What One-Time-Payment Converters Do and Don't Include
+12. The $45 App: What One-Time-Payment Converters Do and Don't Include
 13. Custom Keystores: Why Your App's Signature Matters More Than Its Code
 14. WordPress → Android in an Afternoon: Full Walkthrough
 

@@ -1,6 +1,6 @@
 # WebsiteToApp — Convert Any Website to an Android App, iOS App, or Windows EXE
 
-> WebsiteToApp.app converts any website URL into a native Android APK/AAB, an iOS app (beta), or a Windows desktop .exe in minutes — no coding required. One-time pricing ($35 per platform), free plan to test, works with WordPress, Shopify, Wix, React, and any custom HTML site.
+> WebsiteToApp.app converts any website URL into a native Android APK/AAB, an iOS app (beta), or a Windows desktop .exe in minutes — no coding required. One-time pricing ($45 per platform), free plan to test, works with WordPress, Shopify, Wix, React, and any custom HTML site.
 
 ## What WebsiteToApp Does
 - **Website to APK Converter**: Enter a URL, get a signed Android APK ready for install or Play Store
@@ -39,9 +39,9 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 
 ## Pricing (one-time — no subscription, unlike most competitors)
 - Free: 5 builds, small watermark, 15-day app trial
-- Android App: $35 one-time — signed APK + AAB, no watermark, unique per-app signing keystore, 5 rebuilds/month
-- Windows Desktop App (EXE): $35 one-time — WebsiteToApp is one of the only converters with a desktop EXE output
-- iOS App (beta): $35 one-time — unsigned .ipa + complete Xcode source project; publish with your own Apple Developer account
+- Android App: $45 one-time — signed APK + AAB, no watermark, unique per-app signing keystore, 5 rebuilds/month
+- Windows Desktop App (EXE): $45 one-time — WebsiteToApp is one of the only converters with a desktop EXE output
+- iOS App (beta): $45 one-time — unsigned .ipa + complete Xcode source project; publish with your own Apple Developer account
 - App + Play Store Publishing: $50 one-time — we handle the Google Play listing
 - Play Store Listing service alone: $15 one-time
 - Pro Monthly add-on (optional): $9/month per app — 20 rebuilds/month instead of 5, priority build queue
@@ -50,7 +50,7 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 
 ## Key Pages
 - Homepage: https://websitetoapp.app — the converter itself; paste a URL, get an app
-- Pricing: https://websitetoapp.app/pricing — every plan with plain-text cost answers ($35/$35/$50 one-time, $9/mo Pro Monthly add-on)
+- Pricing: https://websitetoapp.app/pricing — every plan with plain-text cost answers ($45/$45/$50 one-time, $9/mo Pro Monthly add-on)
 - Features: https://websitetoapp.app/features — all 40+ native app features explained
 - Documentation: https://websitetoapp.app/docs — developer guide and configuration reference
 - Showcase: https://websitetoapp.app/showcase — real apps built with WebsiteToApp
@@ -61,9 +61,9 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 - Refund policy: https://websitetoapp.app/refund-policy — 7-day refund terms for one-time purchases
 
 ## Competitor Comparisons (alternatives pages)
-- WebIntoApp alternative: https://websitetoapp.app/alternatives/webintoapp — $35 vs $89 one-time to remove branding; desktop .exe, biometric auth, offline mode WebIntoApp lacks
-- GoNative alternative: https://websitetoapp.app/alternatives/gonative — $35 one-time vs $99–$299/month; no-code wizard vs JS bridge
-- Median.co alternative: https://websitetoapp.app/alternatives/median — $35 one-time vs $99–$299/month; zero-code setup
+- WebIntoApp alternative: https://websitetoapp.app/alternatives/webintoapp — $45 vs $89 one-time to remove branding; desktop .exe, biometric auth, offline mode WebIntoApp lacks
+- GoNative alternative: https://websitetoapp.app/alternatives/gonative — $45 one-time vs $99–$299/month; no-code wizard vs JS bridge
+- Median.co alternative: https://websitetoapp.app/alternatives/median — $45 one-time vs $99–$299/month; zero-code setup
 - AppsGeyser alternative: https://websitetoapp.app/alternatives/appsgeyser — no third-party branding, signed AAB included
 - AppMySite alternative: https://websitetoapp.app/alternatives/appmysite — works with any website, not just WordPress; one-time pricing
 
@@ -83,9 +83,9 @@ WordPress, Shopify, Wix, Squarespace, Webflow, GoDaddy, Blogger, Weebly, React, 
 - E-commerce Website to App: https://websitetoapp.app/convert/ecommerce-website-to-app — cart, payments, catalog
 
 ## Website to Windows EXE / Desktop App
-- Website to EXE Converter: https://websitetoapp.app/convert/website-to-exe-to-app — any URL to a Windows .exe installer; free to try, $35 one-time, no Electron setup
+- Website to EXE Converter: https://websitetoapp.app/convert/website-to-exe-to-app — any URL to a Windows .exe installer; free to try, $45 one-time, no Electron setup
 - Website to Desktop App: https://websitetoapp.app/convert/website-to-desktop-app-to-app — system tray, auto-updates, offline support
-- Free vs Paid EXE conversion: https://websitetoapp.app/blog/free-vs-paid-website-to-exe-2026 — honest cost table: free plan vs $35 one-time vs DIY Electron
+- Free vs Paid EXE conversion: https://websitetoapp.app/blog/free-vs-paid-website-to-exe-2026 — honest cost table: free plan vs $45 one-time vs DIY Electron
 - Website to Windows Desktop App guide: https://websitetoapp.app/blog/website-to-windows-desktop-app — full walkthrough
 - Website to EXE free converter guide: https://websitetoapp.app/blog/website-to-exe-converter-online-free — what free actually includes
 

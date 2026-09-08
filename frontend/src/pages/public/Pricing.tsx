@@ -65,7 +65,7 @@ const ANDROID_FALLBACK = [
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: false },
   },
   {
-    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 290500, price_usd: 3500,
+    id: '2', name: 'Paid', slug: 'android-paid', price_inr: 373500, price_usd: 4500,
     billing_type: 'one_time', max_apps: 1, sort_order: 2, is_active: true, platform: 'android',
     description: 'All features, one-time payment',
     features: { twa: true, webview_fallback: true, custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, orientation_lock: true, push_notifications: true, admob: true, biometric_auth: true, deep_linking: true, offline_mode: true, navigation_menu: true, firebase: true, qr_scanner: true, js_bridge: true, screenshot_prevention: true, file_upload: true, location_services: true, camera_access: true, onboarding_screen: true, app_shortcut: true, secondary_navigation: true, social_login: true, in_app_update: true, background_location: true, facebook_app_events: true, in_app_purchases: true, in_app_review: true, background_service: true, native_contacts: true, appsflyer: true, custom_media_player: true, offer_card: true, intercom: true, dynamic_app_icon: true, bluetooth_connectivity: true, download_file_manager: true, floating_action_menu: true, revenue_cat: true, native_datastore: true, passcode_lock: true, app_auto_launch: true, advanced_bottom_navigation: true, firebase_notification: true, tap_to_pay: true, aab_output: true, pwa: true, priority_support: true },
@@ -92,7 +92,7 @@ const DESKTOP_FALLBACK = [
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: true, trial_days: true, system_tray: true, custom_window_size: true, auto_updater: true, native_notifications: true, kiosk_mode: true },
   },
   {
-    id: '5', name: 'Paid', slug: 'desktop-paid', price_inr: 290500, price_usd: 3500,
+    id: '5', name: 'Paid', slug: 'desktop-paid', price_inr: 373500, price_usd: 4500,
     billing_type: 'one_time', max_apps: 1, sort_order: 5, is_active: true, platform: 'desktop',
     description: 'Full desktop app, one-time',
     features: { custom_icon: true, custom_splash: true, custom_colors: true, fullscreen: true, watermark: false, trial_days: false, system_tray: true, custom_window_size: true, auto_updater: true, native_notifications: true, kiosk_mode: true, custom_title_bar: true, multi_window: true, tray_menu: true, startup_launch: true },
@@ -123,12 +123,12 @@ const PRICING_FAQS = [
   {
     question: 'How much does it cost to convert a website to an app?',
     answer:
-      'With WebsiteToApp, converting a website to an Android app costs $35 one-time (no subscription). A Windows desktop app (.exe) is also $35 one-time, and an iOS app (beta) is $35 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the Play Store listing service is $50 one-time, or the App + Play Store bundle is $75 one-time.',
+      'With WebsiteToApp, converting a website to an Android app costs $45 one-time (no subscription). A Windows desktop app (.exe) is also $45 one-time, and an iOS app (beta) is $45 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the Play Store listing service is $50 one-time, or the App + Play Store bundle is $75 one-time.',
   },
   {
     question: 'Is there a free plan, and does it have a watermark?',
     answer:
-      'Yes. The free plan includes 5 free builds total across your websites with all app features enabled for testing. Free builds show a WebsiteToApp watermark and run as a 15-day trial (an upgrade screen appears after). The $35 one-time paid plan removes the watermark and the trial limit permanently.',
+      'Yes. The free plan includes 5 free builds total across your websites with all app features enabled for testing. Free builds show a WebsiteToApp watermark and run as a 15-day trial (an upgrade screen appears after). The $45 one-time paid plan removes the watermark and the trial limit permanently.',
   },
   {
     question: 'How many rebuilds do I get when my website changes?',
@@ -138,7 +138,7 @@ const PRICING_FAQS = [
   {
     question: 'Is the pricing monthly or one-time?',
     answer:
-      'App builds are one-time payments: $35 for Android, $35 for Windows desktop (.exe), $35 for iOS (beta), $50 for the App + Play Store bundle. There are no recurring fees to keep your app working. The only monthly product is the optional $9/month Pro Monthly rebuild add-on.',
+      'App builds are one-time payments: $45 for Android, $45 for Windows desktop (.exe), $45 for iOS (beta), $50 for the App + Play Store bundle. There are no recurring fees to keep your app working. The only monthly product is the optional $9/month Pro Monthly rebuild add-on.',
   },
   {
     question: 'Can I get a refund?',
@@ -202,7 +202,7 @@ export default function Pricing() {
           {/* Answer-first opening (t147 GEO): plain-text cost answer before anything else */}
           <p className="text-white/95 text-base sm:text-lg max-w-3xl mx-auto mb-3 text-left sm:text-center">
             How much does it cost to convert a website to an app? With WebsiteToApp it's{' '}
-            <strong>$35 one-time</strong> for an Android app, <strong>$35 one-time</strong> for a Windows
+            <strong>$45 one-time</strong> for an Android app, <strong>$45 one-time</strong> for a Windows
             desktop app (.exe), and <strong>$50 one-time</strong> for the App + Play Store publishing
             bundle — no subscriptions. A free plan (5 builds, watermarked, 15-day trial) lets you test
             everything first.
@@ -559,7 +559,7 @@ export default function Pricing() {
               <span className="text-3xl font-bold">
                 {iosBetaPlan
                   ? formatPlanPrice(iosBetaPlan.price_inr, iosBetaPlan.price_usd)
-                  : formatPlanPrice(290500, 3500)}
+                  : formatPlanPrice(373500, 4500)}
               </span>
               <span className="text-gray-500 text-sm ml-1">one-time</span>
             </div>
@@ -615,8 +615,8 @@ export default function Pricing() {
             </thead>
             <tbody>
               {[
-                { feature: 'Android App Price', a: '$99–$299/mo', b: 'Free (branded) or $89+ once', c: '$39–$99/mo', us: '$35 one-time', highlight: true },
-                { feature: 'Desktop App Price', a: 'Not available', b: 'Not available', c: 'Not available', us: '$35 one-time', highlight: true },
+                { feature: 'Android App Price', a: '$99–$299/mo', b: 'Free (branded) or $89+ once', c: '$39–$99/mo', us: '$45 one-time', highlight: true },
+                { feature: 'Desktop App Price', a: 'Not available', b: 'Not available', c: 'Not available', us: '$45 one-time', highlight: true },
                 { feature: '15-Day Free Trial', a: '✗', b: '✗', c: 'Limited', us: '✓ 15 Days', highlight: false },
                 { feature: 'Pricing Model', a: 'Monthly/Yearly', b: 'Free (branded) or one-time', c: 'Monthly sub', us: 'One-time only', highlight: false },
                 { feature: 'Push Notifications', a: 'Included', b: 'Paid tier only', c: 'Add-on ($)', us: '✓ Included', highlight: false },
@@ -627,7 +627,7 @@ export default function Pricing() {
                 { feature: 'Firebase Integration', a: 'Extra', b: '✗', c: 'Extra', us: '✓ Included', highlight: false },
                 { feature: 'Total Features', a: '~20', b: '~15', c: '~18', us: '50+', highlight: false },
                 { feature: 'Builds Per Month', a: '5–unlimited', b: '3–10', c: '5–20', us: '2 (free) / 5/mo', highlight: false },
-                { feature: 'Annual Cost (entry)', a: '$1,188+', b: '$89 to unbrand', c: '$468+', us: '$35 one-time', highlight: true },
+                { feature: 'Annual Cost (entry)', a: '$1,188+', b: '$89 to unbrand', c: '$468+', us: '$45 one-time', highlight: true },
                 { feature: 'No-code Setup', a: 'Dev skills needed', b: '✓', c: '✓', us: '✓ Wizard', highlight: false },
                 { feature: 'Support', a: 'Email', b: 'Email', c: 'Email', us: '✓ WhatsApp + Email', highlight: false },
               ].map((row, idx) => (

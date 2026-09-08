@@ -34,7 +34,7 @@ You get back a signed Android APK and AAB ready for Google Play, a Windows .exe
 installer, or an iOS build with the complete Xcode source project (beta). Each app
 is signed with its own unique keystore, which stays yours.
 
-Pricing is one-time from $35 per platform — no monthly platform fee and no
+Pricing is one-time from $45 per platform — no monthly platform fee and no
 revenue share. A free plan lets you build and test a watermarked app first.
 ```
 
@@ -62,7 +62,7 @@ WebViewGold
 
 ## Pricing model
 ```
-Freemium — pay once, from $35 (one-time). Free plan available (watermarked build).
+Freemium — pay once, from $45 (one-time). Free plan available (watermarked build).
 ```
 
 ## Platforms

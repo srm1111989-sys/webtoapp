@@ -81,8 +81,8 @@ PLANS = [
         "name": "Android Paid",
         "slug": "android-paid",
         "description": "All features, one-time payment",
-        "price_inr": 207500,   # ₹2075 (~$25 at ₹83/USD)
-        "price_usd": 2500,     # $25 in cents
+        "price_inr": 373500,   # ₹3735 (~$45 at ₹83/USD)
+        "price_usd": 4500,     # $45 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "android",
@@ -184,8 +184,8 @@ PLANS = [
         "name": "Desktop Paid",
         "slug": "desktop-paid",
         "description": "Full desktop app, one-time",
-        "price_inr": 207500,   # ₹2075 (~$25 at ₹83/USD)
-        "price_usd": 2500,     # $25 in cents
+        "price_inr": 373500,   # ₹3735 (~$45 at ₹83/USD)
+        "price_usd": 4500,     # $45 in cents
         "billing_type": "one_time",
         "max_apps": 1,
         "platform": "desktop",

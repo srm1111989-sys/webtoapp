@@ -43,13 +43,13 @@ const platforms = [
   { slug: 'nextjs', name: 'Next.js', desc: 'Convert Next.js app to Android. SSR and static pages work perfectly in mobile.' },
   { slug: 'angular', name: 'Angular', desc: 'Convert Angular web app to Android APK. Full SPA support.' },
   { slug: 'vue', name: 'Vue.js', desc: 'Convert Vue.js app to Android. Single-page app converts to native mobile.' },
-  { slug: 'website-to-exe', name: 'Website to EXE', title: 'Free Website to EXE Converter Online - Windows Desktop Apps | WebToApp', desc: 'Convert any website to a downloadable Windows .exe desktop app. No coding, no Electron setup - build your EXE in minutes.', answerFirst: 'Yes — you can convert a website into a Windows .exe file. Enter your website URL on WebsiteToApp, select Windows Desktop as the platform, customize your app name and icon, and download the .exe installer — no coding, no Node.js, and no Electron setup. It is free to try (watermarked, 15-day trial), and the full unbranded .exe is $35 one-time; the generated file is typically 50–80 MB and works on Windows 10 and 11.' },
+  { slug: 'website-to-exe', name: 'Website to EXE', title: 'Free Website to EXE Converter Online - Windows Desktop Apps | WebToApp', desc: 'Convert any website to a downloadable Windows .exe desktop app. No coding, no Electron setup - build your EXE in minutes.', answerFirst: 'Yes — you can convert a website into a Windows .exe file. Enter your website URL on WebsiteToApp, select Windows Desktop as the platform, customize your app name and icon, and download the .exe installer — no coding, no Node.js, and no Electron setup. It is free to try (watermarked, 15-day trial), and the full unbranded .exe is $45 one-time; the generated file is typically 50–80 MB and works on Windows 10 and 11.' },
   { slug: 'notion', name: 'Notion', desc: 'Convert Notion page to Android app. Turn your Notion workspace into a mobile app.' },
   { slug: 'google-sites', name: 'Google Sites', desc: 'Convert Google Sites to Android app. Simple conversion with no coding.' },
   { slug: 'carrd', name: 'Carrd', desc: 'Convert Carrd site to Android app. Turn your one-page site into a mobile app.' },
   { slug: 'framer', name: 'Framer', desc: 'Convert Framer website to Android app. Your Framer design as a native app.' },
   { slug: 'woocommerce', name: 'WooCommerce', desc: 'Convert WooCommerce store to Android app. Full e-commerce support.' },
-  { slug: 'website-to-desktop-app', name: 'Desktop App', desc: 'Convert any website to Windows desktop app (EXE). Run websites as native desktop applications.', answerFirst: 'Yes — you can convert any website into a Windows desktop app. Paste your URL into WebsiteToApp, choose Windows Desktop as the platform, customize the name, icon, and window settings, and download a .exe installer in minutes. It is free to try (watermarked, 15-day trial) and $35 one-time for the full unbranded build — no coding and no Electron setup required.' },
+  { slug: 'website-to-desktop-app', name: 'Desktop App', desc: 'Convert any website to Windows desktop app (EXE). Run websites as native desktop applications.', answerFirst: 'Yes — you can convert any website into a Windows desktop app. Paste your URL into WebsiteToApp, choose Windows Desktop as the platform, customize the name, icon, and window settings, and download a .exe installer in minutes. It is free to try (watermarked, 15-day trial) and $45 one-time for the full unbranded build — no coding and no Electron setup required.' },
 ];
 
 // Replace the homepage canonical baked into the built index.html template with
@@ -397,7 +397,7 @@ const deepContent = {
       <tr style="background:#f3f4f6"><th style="border:1px solid #ddd;padding:8px;text-align:left">Approach</th><th style="border:1px solid #ddd;padding:8px;text-align:left">Time</th><th style="border:1px solid #ddd;padding:8px;text-align:left">Cost</th><th style="border:1px solid #ddd;padding:8px;text-align:left">Maintenance</th></tr>
       <tr><td style="border:1px solid #ddd;padding:8px">Custom React Native</td><td style="border:1px solid #ddd;padding:8px">3–6 months</td><td style="border:1px solid #ddd;padding:8px">$15K–$60K</td><td style="border:1px solid #ddd;padding:8px">Ongoing dev team</td></tr>
       <tr><td style="border:1px solid #ddd;padding:8px">Native Java/Kotlin</td><td style="border:1px solid #ddd;padding:8px">4–8 months</td><td style="border:1px solid #ddd;padding:8px">$25K–$100K</td><td style="border:1px solid #ddd;padding:8px">Ongoing dev team</td></tr>
-      <tr><td style="border:1px solid #ddd;padding:8px"><strong>WebToApp</strong></td><td style="border:1px solid #ddd;padding:8px"><strong>10 minutes</strong></td><td style="border:1px solid #ddd;padding:8px"><strong>Free–$35 one-time</strong></td><td style="border:1px solid #ddd;padding:8px"><strong>None — your WP site IS the app</strong></td></tr>
+      <tr><td style="border:1px solid #ddd;padding:8px"><strong>WebToApp</strong></td><td style="border:1px solid #ddd;padding:8px"><strong>10 minutes</strong></td><td style="border:1px solid #ddd;padding:8px"><strong>Free–$45 one-time</strong></td><td style="border:1px solid #ddd;padding:8px"><strong>None — your WP site IS the app</strong></td></tr>
     </table>
     <h2>WordPress-Specific FAQ</h2>
     <h3>Will the app keep working when I update WordPress core or plugins?</h3>
@@ -451,7 +451,7 @@ const deepContent = {
     <h2>Pricing &amp; Timeline for a Shopify Android App</h2>
     <p>The Shopify-to-Android conversion path is one of the cheapest and fastest of any major commerce platform. Here is what to expect end to end:</p>
     <ul>
-      <li><strong>WebToApp build cost:</strong> $0 (free plan) or $35 one-time for premium features (push notifications, AdMob, splash, offline cache).</li>
+      <li><strong>WebToApp build cost:</strong> $0 (free plan) or $45 one-time for premium features (push notifications, AdMob, splash, offline cache).</li>
       <li><strong>Google Play developer account:</strong> $25 one-time fee — this is paid to Google directly, not to WebToApp.</li>
       <li><strong>Build time:</strong> 6–9 minutes from clicking 'Build' to receiving the AAB email.</li>
       <li><strong>Google Play review:</strong> 24–72 hours typically; can be faster for established developer accounts.</li>
@@ -499,7 +499,7 @@ const deepContent = {
     <p>Converting a Wix site to a Google Play Android app is one of the cheapest paths to a branded mobile presence. Here is the full breakdown:</p>
     <ul>
       <li><strong>Wix Premium plan</strong> — already required for any custom-domain Wix site, $11–$36/month depending on your existing Wix tier. Nothing extra to pay.</li>
-      <li><strong>WebToApp build cost:</strong> $0 (free plan) or $35 one-time for premium features (push notifications, AdMob, splash screen, offline cache).</li>
+      <li><strong>WebToApp build cost:</strong> $0 (free plan) or $45 one-time for premium features (push notifications, AdMob, splash screen, offline cache).</li>
       <li><strong>Google Play developer account:</strong> $25 one-time fee paid directly to Google.</li>
       <li><strong>Build time:</strong> 6–9 minutes from 'Build' click to AAB delivery email.</li>
       <li><strong>Google Play review:</strong> typically 24–72 hours.</li>
@@ -558,7 +558,7 @@ for (const p of platforms) {
           { '@type': 'Question', name: `How long does it take to convert ${p.name} to an app?`, acceptedAnswer: { '@type': 'Answer', text: `The conversion takes approximately 10-15 minutes from start to finish. You enter your ${p.name} URL, customize your app settings, and WebToApp builds the app automatically.` } },
           { '@type': 'Question', name: `Do I need coding skills to convert ${p.name} to an app?`, acceptedAnswer: { '@type': 'Answer', text: `No coding required. WebToApp handles all the technical work. You only need your ${p.name} website URL and a few minutes to set up your app name, icon, and features.` } },
           { '@type': 'Question', name: `Will my ${p.name} website work properly in the app?`, acceptedAnswer: { '@type': 'Answer', text: `Yes. All ${p.name} features work in the app — your existing theme, plugins, forms, login, and checkout all function as expected. WebToApp wraps your site in a native shell without modifying any code.` } },
-          { '@type': 'Question', name: 'How much does it cost?', acceptedAnswer: { '@type': 'Answer', text: 'WebToApp offers a free plan for basic conversion (watermarked, 15-day trial). Premium plans start at $35 one-time payment and include push notifications, offline mode, AdMob monetization, and Google Play AAB file.' } },
+          { '@type': 'Question', name: 'How much does it cost?', acceptedAnswer: { '@type': 'Answer', text: 'WebToApp offers a free plan for basic conversion (watermarked, 15-day trial). Premium plans start at $45 one-time payment and include push notifications, offline mode, AdMob monetization, and Google Play AAB file.' } },
         ],
       },
     ],
@@ -624,7 +624,7 @@ for (const p of platforms) {
       <p>Yes. WebToApp generates an AAB (Android App Bundle) file that meets Google Play Store requirements. You can publish directly to Google Play using your developer account.</p>
 
       <h3>How much does it cost?</h3>
-      <p>WebToApp offers a free plan for basic conversion. Premium plans start at $35 one-time payment and include push notifications, offline mode, AdMob monetization, and Google Play AAB file.</p>
+      <p>WebToApp offers a free plan for basic conversion. Premium plans start at $45 one-time payment and include push notifications, offline mode, AdMob monetization, and Google Play AAB file.</p>
 
       <p><a href="https://websitetoapp.app/register">Start converting your ${p.name} site for free →</a></p>
       ${deepContent[p.slug] || ''}
@@ -646,12 +646,12 @@ const pricingFaqs = [
   {
     question: 'How much does it cost to convert a website to an app?',
     answer:
-      'With WebsiteToApp, converting a website to an Android app costs $35 one-time (no subscription). A Windows desktop app (.exe) is also $35 one-time, and an iOS app (beta) is $35 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the App + Play Store bundle is $50 one-time, or the Play Store listing service alone is $15 one-time.',
+      'With WebsiteToApp, converting a website to an Android app costs $45 one-time (no subscription). A Windows desktop app (.exe) is also $45 one-time, and an iOS app (beta) is $45 one-time. There is a free plan with 5 builds (watermarked, 15-day trial) so you can test everything before paying. If you also want us to publish your app to Google Play, the App + Play Store bundle is $50 one-time, or the Play Store listing service alone is $15 one-time.',
   },
   {
     question: 'Is there a free plan, and does it have a watermark?',
     answer:
-      'Yes. The free plan includes 5 free builds total across your websites with all app features enabled for testing. Free builds show a WebsiteToApp watermark and run as a 15-day trial (an upgrade screen appears after). The $35 one-time paid plan removes the watermark and the trial limit permanently.',
+      'Yes. The free plan includes 5 free builds total across your websites with all app features enabled for testing. Free builds show a WebsiteToApp watermark and run as a 15-day trial (an upgrade screen appears after). The $45 one-time paid plan removes the watermark and the trial limit permanently.',
   },
   {
     question: 'How many rebuilds do I get when my website changes?',
@@ -661,7 +661,7 @@ const pricingFaqs = [
   {
     question: 'Is the pricing monthly or one-time?',
     answer:
-      'App builds are one-time payments: $35 for Android, $35 for Windows desktop (.exe), $35 for iOS (beta), $50 for the App + Play Store bundle. There are no recurring fees to keep your app working. The only monthly product is the optional $9/month Pro Monthly rebuild add-on.',
+      'App builds are one-time payments: $45 for Android, $45 for Windows desktop (.exe), $45 for iOS (beta), $50 for the App + Play Store bundle. There are no recurring fees to keep your app working. The only monthly product is the optional $9/month Pro Monthly rebuild add-on.',
   },
   {
     question: 'Can I get a refund?',
@@ -683,17 +683,17 @@ const pricingSeoBlock = `
     <!--seo-prerender-->
     <div id="seo-prerender" class="seo-static-content">
       <h1>WebsiteToApp Pricing — Simple One-Time Plans</h1>
-      <p><strong>How much does it cost to convert a website to an app? With WebsiteToApp it's $35 one-time for an Android app, $35 one-time for a Windows desktop app (.exe), and $50 one-time for the App + Play Store publishing bundle — no subscriptions. A free plan (5 builds, watermarked, 15-day trial) lets you test everything first.</strong></p>
+      <p><strong>How much does it cost to convert a website to an app? With WebsiteToApp it's $45 one-time for an Android app, $45 one-time for a Windows desktop app (.exe), and $50 one-time for the App + Play Store publishing bundle — no subscriptions. A free plan (5 builds, watermarked, 15-day trial) lets you test everything first.</strong></p>
       <h2>All Plans</h2>
       <table>
         <thead><tr><th>Plan</th><th>Price</th><th>What you get</th></tr></thead>
         <tbody>
           <tr><td>Free</td><td>$0</td><td>5 free builds total across your websites, all features for testing, WebsiteToApp watermark, 15-day trial</td></tr>
-          <tr><td>Android Premium</td><td>$35 one-time</td><td>Signed APK + AAB, no watermark, no trial limit, keystore download, all 50+ features, 5 rebuilds/month per website</td></tr>
-          <tr><td>Windows Desktop (.exe) Premium</td><td>$35 one-time</td><td>Unbranded Windows .exe installer, system tray, auto-updater, kiosk mode, custom window, no trial limit</td></tr>
+          <tr><td>Android Premium</td><td>$45 one-time</td><td>Signed APK + AAB, no watermark, no trial limit, keystore download, all 50+ features, 5 rebuilds/month per website</td></tr>
+          <tr><td>Windows Desktop (.exe) Premium</td><td>$45 one-time</td><td>Unbranded Windows .exe installer, system tray, auto-updater, kiosk mode, custom window, no trial limit</td></tr>
           <tr><td>App + Play Store bundle</td><td>$50 one-time</td><td>App build plus we create and submit your Google Play listing</td></tr>
           <tr><td>Play Store Listing only</td><td>$15 one-time</td><td>We publish your existing app build to Google Play on your behalf (requires Android Premium)</td></tr>
-          <tr><td>iOS App (beta)</td><td>$35 one-time</td><td>Unsigned .ipa + complete Xcode source project; you publish with your own Apple Developer account</td></tr>
+          <tr><td>iOS App (beta)</td><td>$45 one-time</td><td>Unsigned .ipa + complete Xcode source project; you publish with your own Apple Developer account</td></tr>
           <tr><td>Pro Monthly (optional add-on)</td><td>$9/month per app</td><td>20 rebuilds per month (instead of 5) and priority build queue; cancel anytime</td></tr>
         </tbody>
       </table>
@@ -761,7 +761,7 @@ for (const p of staticPages) {
         <li>We build with regular progress updates and working builds to review.</li>
         <li>On completion you own everything: the app, the source code, and store listings.</li>
       </ol>
-      <p>Typical small projects ship in 1–3 weeks; larger products in 4–8 weeks. If you only need your existing website as an app, the self-serve converter does that from $35 one-time at websitetoapp.app/pricing.</p>
+      <p>Typical small projects ship in 1–3 weeks; larger products in 4–8 weeks. If you only need your existing website as an app, the self-serve converter does that from $45 one-time at websitetoapp.app/pricing.</p>
       <p>Contact: support@websitetoapp.app</p>
     </div>
     <!--/seo-prerender-->`;
@@ -777,7 +777,7 @@ for (const p of staticPages) {
     <!--seo-prerender-->
     <div id="seo-prerender" class="seo-static-content" style="max-width:800px;margin:0 auto;padding:20px">
       <h1>WebsiteToApp Features — All Included in Every Paid Plan</h1>
-      <p>Every feature below is included in the one-time paid plan. There are no feature tiers to compare and nothing is charged as an add-on — the $35 Android plan and the desktop plan both unlock the full set.</p>
+      <p>Every feature below is included in the one-time paid plan. There are no feature tiers to compare and nothing is charged as an add-on — the $45 Android plan and the desktop plan both unlock the full set.</p>
       <h2>Platforms</h2>
       <p>Android app (signed APK and AAB, ready for the Play Store), Windows desktop app, and an iOS build in beta.</p>
       <h2>Engagement</h2>
@@ -902,7 +902,7 @@ for (const c of competitors) {
         '@type': 'FAQPage',
         mainEntity: [
           { '@type': 'Question', name: `What is the best ${c.name} alternative?`, acceptedAnswer: { '@type': 'Answer', text: c.verdict } },
-          { '@type': 'Question', name: `How much does ${c.name} cost compared to WebsiteToApp?`, acceptedAnswer: { '@type': 'Answer', text: `${c.name}: ${c.pricing.detail} WebsiteToApp is a one-time payment from $35 with all 40+ features included and no subscription.` } },
+          { '@type': 'Question', name: `How much does ${c.name} cost compared to WebsiteToApp?`, acceptedAnswer: { '@type': 'Answer', text: `${c.name}: ${c.pricing.detail} WebsiteToApp is a one-time payment from $45 with all 40+ features included and no subscription.` } },
           { '@type': 'Question', name: `Why switch from ${c.name} to WebsiteToApp?`, acceptedAnswer: { '@type': 'Answer', text: c.switchReasons.join(' ') } },
         ],
       },
@@ -918,7 +918,7 @@ for (const c of competitors) {
       <p><strong>${esc(c.directAnswer)}</strong></p>
       <h2>${esc(c.name)} Pricing vs WebsiteToApp</h2>
       <p>${esc(c.name)} pricing: ${esc(c.pricing.label)}. ${esc(c.pricing.detail)}</p>
-      <p>WebsiteToApp: $35 one-time for a full unbranded Android or Windows desktop app — all features included, no subscription, free plan to test first.</p>
+      <p>WebsiteToApp: $45 one-time for a full unbranded Android or Windows desktop app — all features included, no subscription, free plan to test first.</p>
       <h2>WebsiteToApp vs ${esc(c.name)}: Feature Comparison</h2>
       <table>
         <thead><tr><th>Feature</th><th>${esc(c.name)}</th><th>WebsiteToApp</th></tr></thead>
@@ -945,14 +945,14 @@ for (const c of competitors) {
       <h3>What is the best ${esc(c.name)} alternative?</h3>
       <p>${esc(c.verdict)}</p>
       <h3>How much does ${esc(c.name)} cost compared to WebsiteToApp?</h3>
-      <p>${esc(c.name)}: ${esc(c.pricing.detail)} WebsiteToApp is a one-time payment from $35 with all 40+ features included and no subscription.</p>
+      <p>${esc(c.name)}: ${esc(c.pricing.detail)} WebsiteToApp is a one-time payment from $45 with all 40+ features included and no subscription.</p>
       <h3>Why switch from ${esc(c.name)} to WebsiteToApp?</h3>
       <p>${esc(c.switchReasons.join(' '))}</p>
       <h2>More Comparisons</h2>
       <ul>
         ${others.map((o) => `<li><a href="https://websitetoapp.app/alternatives/${o.slug}">WebsiteToApp vs ${esc(o.name)}</a> — ${esc(o.pricing.label)}</li>`).join('\n        ')}
       </ul>
-      <p><a href="https://websitetoapp.app/register">Switch to WebsiteToApp — $35 one-time, free plan to start →</a> · <a href="https://websitetoapp.app/pricing">View pricing</a></p>
+      <p><a href="https://websitetoapp.app/register">Switch to WebsiteToApp — $45 one-time, free plan to start →</a> · <a href="https://websitetoapp.app/pricing">View pricing</a></p>
     </div>
     <style>#seo-prerender.seo-static-content{font-family:sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333}#seo-prerender h1{font-size:2em;margin-bottom:16px}#seo-prerender h2{font-size:1.4em;margin-top:24px;margin-bottom:12px}#seo-prerender h3{font-size:1.15em;margin-top:18px;margin-bottom:8px}#seo-prerender ul{padding-left:20px;margin-bottom:16px}#seo-prerender li{margin-bottom:8px;line-height:1.6}#seo-prerender p{line-height:1.7;margin-bottom:12px}#seo-prerender a{color:#1366d6}#seo-prerender table{width:100%;margin:12px 0;border-collapse:collapse}#seo-prerender th,#seo-prerender td{border:1px solid #ddd;padding:8px;text-align:left}</style>
     <!--/seo-prerender-->`;
@@ -986,7 +986,7 @@ for (const c of competitors) {
         <li><strong>Native behaviour</strong> — hardware back button, pull-to-refresh, deep linking, biometric login and file uploads.</li>
       </ul>
       <h2>Pricing</h2>
-      <p>The free plan gives you 5 builds in total across your websites with every feature enabled for testing; free builds carry a WebsiteToApp watermark and run as a 15-day trial. The Android premium plan is <strong>$35 one-time</strong> per website — signed APK and AAB, no watermark, no trial limit, keystore download, all 50+ features and 5 rebuilds per month. An optional Pro Monthly add-on at $9 per month raises that to 20 rebuilds per month with a priority build queue. There is no subscription requirement and a 7-day money-back guarantee. Payments are handled by Razorpay over 256-bit SSL, with UPI, card and NetBanking supported.</p>
+      <p>The free plan gives you 5 builds in total across your websites with every feature enabled for testing; free builds carry a WebsiteToApp watermark and run as a 15-day trial. The Android premium plan is <strong>$45 one-time</strong> per website — signed APK and AAB, no watermark, no trial limit, keystore download, all 50+ features and 5 rebuilds per month. An optional Pro Monthly add-on at $9 per month raises that to 20 rebuilds per month with a priority build queue. There is no subscription requirement and a 7-day money-back guarantee. Payments are handled by Razorpay over 256-bit SSL, with UPI, card and NetBanking supported.</p>
       <h2>Works With Any Website</h2>
       <p>WebsiteToApp wraps your live site, so whatever runs in a mobile browser runs in the app: WordPress and WooCommerce, Shopify, Wix, Squarespace, React and Next.js, Webflow, Laravel, or a hand-built site. Because the app loads your live website, content changes appear immediately without rebuilding — a rebuild is only needed for app-level changes such as the icon, name or feature set.</p>
       <h2>Publishing to Google Play</h2>

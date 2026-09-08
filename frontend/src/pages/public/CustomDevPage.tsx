@@ -39,7 +39,7 @@ const AI_CAPABILITIES = [
 const FAQS = [
   { q: 'Can you migrate or host our apps away from Replit or Google AI Studio?', a: 'Yes. We specialize in taking prototypes and MVPs built on platforms like Replit, Google AI Studio, or V0, and deploying them to reliable, dedicated production infrastructure (Hetzner, AWS, GCP, or DigitalOcean) with automated CI/CD, SSL, database backups, and persistent domain routing.' },
   { q: 'What kind of AI integrations and business agents can you build?', a: 'We build custom AI customer support agents, automated sales and lead qualification bots, document intelligence (RAG over your PDFs/spreadsheets), automated content pipelines, voice AI workflows, and bespoke LLM APIs integrated into your web or mobile apps.' },
-  { q: 'How is custom development different from the website-to-app converter?', a: 'The converter wraps your existing website into an app in minutes from $35 one-time. Custom development is for building apps, backends, AI agents, and bespoke software from scratch with full architecture design and dedicated engineering.' },
+  { q: 'How is custom development different from the website-to-app converter?', a: 'The converter wraps your existing website into an app in minutes from $45 one-time. Custom development is for building apps, backends, AI agents, and bespoke software from scratch with full architecture design and dedicated engineering.' },
   { q: 'How much does custom app & AI development cost?', a: 'Cost is based on project scope and deliverables. Small single-purpose integrations or MVPs start in the low hundreds of dollars; larger multi-platform systems with AI agents and custom backends are quoted transparently with a fixed milestone plan.' },
   { q: 'Do I own the full source code and IP?', a: 'Yes, 100%. Upon completion and final payment, all source code, architecture configurations, API integrations, and database schemas belong entirely to you with zero vendor lock-in.' },
 ]
@@ -244,7 +244,7 @@ export default function CustomDevPage() {
             ))}
           </div>
           <p className="text-center text-gray-600 mt-8 text-sm">
-            Just need your existing website as an app? The <Link to="/pricing" className="text-primary-600 hover:underline">website-to-app converter</Link> does that from $35, one-time.
+            Just need your existing website as an app? The <Link to="/pricing" className="text-primary-600 hover:underline">website-to-app converter</Link> does that from $45, one-time.
           </p>
         </div>
       </section>

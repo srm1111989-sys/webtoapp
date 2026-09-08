@@ -387,7 +387,7 @@ Use Claude API to generate unique content for each platform.
 
 **Title:** WordPress to Android App 2026 - Convert WordPress Site to App
 
-**Meta Description:** Convert your WordPress website to Android app in 10 minutes. No coding required. WooCommerce support, push notifications, Google Play publishing. $35 one-time.
+**Meta Description:** Convert your WordPress website to Android app in 10 minutes. No coding required. WooCommerce support, push notifications, Google Play publishing. $45 one-time.
 
 **H1:** WordPress to Android App Converter 2026
 

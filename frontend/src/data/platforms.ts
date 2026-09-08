@@ -262,7 +262,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does it cost?',
-        answer: 'Starting at $35 one-time payment for a Squarespace app with full features, or try the free plan to test basic functionality first.'
+        answer: 'Starting at $45 one-time payment for a Squarespace app with full features, or try the free plan to test basic functionality first.'
       }
     ]
   },
@@ -386,7 +386,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does it cost to convert Blogger to an app?',
-        answer: 'You can start free with basic features, or get the full package for a $35 one-time payment including push notifications, offline mode, and AAB file for Google Play.'
+        answer: 'You can start free with basic features, or get the full package for a $45 one-time payment including push notifications, offline mode, and AAB file for Google Play.'
       }
     ]
   },
@@ -529,7 +529,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does it cost?',
-        answer: 'Start free to test, or get the full version for $35 one-time. No monthly subscriptions required, unlike other app builders.'
+        answer: 'Start free to test, or get the full version for $45 one-time. No monthly subscriptions required, unlike other app builders.'
       }
     ]
   },
@@ -627,7 +627,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'Is it affordable for a church budget?',
-        answer: 'Very affordable! Starting at $35 one-time payment with no monthly fees. Much cheaper than custom church app builders that charge $50-200/month.'
+        answer: 'Very affordable! Starting at $45 one-time payment with no monthly fees. Much cheaper than custom church app builders that charge $50-200/month.'
       }
     ]
   },
@@ -964,7 +964,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does it cost?',
-        answer: 'Start free to test your converted app, or get the full version for $35 one-time payment including AAB file for Google Play, push notifications, and AdMob support.'
+        answer: 'Start free to test your converted app, or get the full version for $45 one-time payment including AAB file for Google Play, push notifications, and AdMob support.'
       }
     ]
   },
@@ -1192,7 +1192,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How is this different from Glide\'s own app store publishing?',
-        answer: 'Glide requires a Business plan ($60+/month) for app store publishing. With WebsiteToApp, you can convert any Glide app to Android for a one-time $35 fee.'
+        answer: 'Glide requires a Business plan ($60+/month) for app store publishing. With WebsiteToApp, you can convert any Glide app to Android for a one-time $45 fee.'
       }
     ]
   },
@@ -1357,7 +1357,7 @@ export const platforms: Platform[] = [
       { question: 'How do I convert my Shopify store to an app?', answer: 'Enter your Shopify store URL (yourstore.myshopify.com or custom domain) in WebsiteToApp. Customize the app, build, and get your APK/AAB for Google Play. Takes 10 minutes.' },
       { question: 'Will Shopify Payments work?', answer: 'Yes! Shopify Payments, Shop Pay, PayPal, Apple Pay, Google Pay, and all payment methods work in the app.' },
       { question: 'Can I send abandoned cart notifications?', answer: 'Yes! Push notifications let you remind customers about abandoned carts, announce flash sales, and promote new products.' },
-      { question: 'How much does a Shopify app cost?', answer: 'WebsiteToApp costs $35 one-time (not monthly). Compare that to custom Shopify mobile apps that cost $5,000-$50,000.' }
+      { question: 'How much does a Shopify app cost?', answer: 'WebsiteToApp costs $45 one-time (not monthly). Compare that to custom Shopify mobile apps that cost $5,000-$50,000.' }
     ]
   },
   {
@@ -1386,7 +1386,7 @@ export const platforms: Platform[] = [
     benefits: ['Mobile app for your Magento store', 'Push notifications drive repeat purchases', 'Better mobile UX than Magento responsive', 'No PWA Studio setup required', 'Fraction of the cost of Magento mobile apps', 'Ship to Google Play in minutes'],
     faqs: [
       { question: 'Can I convert Magento to an Android app?', answer: 'Yes! Enter your Magento store URL and convert to Android in minutes. All products, categories, checkout, and customer features work.' },
-      { question: 'Is this cheaper than Magento PWA Studio?', answer: 'Much cheaper. PWA Studio requires significant development effort. WebsiteToApp converts your existing Magento site for a one-time $35 fee.' }
+      { question: 'Is this cheaper than Magento PWA Studio?', answer: 'Much cheaper. PWA Studio requires significant development effort. WebsiteToApp converts your existing Magento site for a one-time $45 fee.' }
     ]
   },
   {
@@ -1441,7 +1441,7 @@ export const platforms: Platform[] = [
     targetKeyword: 'convert website to desktop app',
     monthlySearches: 1900,
     answerFirst:
-      'Yes — you can convert any website into a Windows desktop app. Paste your URL into WebsiteToApp, choose Windows Desktop as the platform, customize the name, icon, and window settings, and download a .exe installer in minutes. It is free to try (watermarked, 15-day trial) and $35 one-time for the full unbranded build — no coding and no Electron setup required.',
+      'Yes — you can convert any website into a Windows desktop app. Paste your URL into WebsiteToApp, choose Windows Desktop as the platform, customize the name, icon, and window settings, and download a .exe installer in minutes. It is free to try (watermarked, 15-day trial) and $45 one-time for the full unbranded build — no coding and no Electron setup required.',
     features: [
       'Windows .exe installer generation',
       'System tray integration',
@@ -1491,7 +1491,7 @@ export const platforms: Platform[] = [
     targetKeyword: 'convert website to windows app',
     monthlySearches: 1300,
     answerFirst:
-      'Yes — you can turn any website into a Windows app. Enter your URL on WebsiteToApp, pick Windows Desktop as the platform, and download a .exe installer that works on Windows 10 and 11 — the whole process takes under 5 minutes. Free to try (watermarked, 15-day trial); the full unbranded build is $35 one-time with no subscription.',
+      'Yes — you can turn any website into a Windows app. Enter your URL on WebsiteToApp, pick Windows Desktop as the platform, and download a .exe installer that works on Windows 10 and 11 — the whole process takes under 5 minutes. Free to try (watermarked, 15-day trial); the full unbranded build is $45 one-time with no subscription.',
     features: [
       'Native Windows .exe application',
       'Taskbar and Start menu integration',
@@ -1541,7 +1541,7 @@ export const platforms: Platform[] = [
     targetKeyword: 'website to exe converter',
     monthlySearches: 2400,
     answerFirst:
-      'Yes — you can convert a website into a Windows .exe file. Enter your website URL on WebsiteToApp, select Windows Desktop as the platform, customize your app name and icon, and download the .exe installer — no coding, no Node.js, and no Electron setup. It is free to try (watermarked, 15-day trial), and the full unbranded .exe is $35 one-time; the generated file is typically 50–80 MB and works on Windows 10 and 11.',
+      'Yes — you can convert a website into a Windows .exe file. Enter your website URL on WebsiteToApp, select Windows Desktop as the platform, customize your app name and icon, and download the .exe installer — no coding, no Node.js, and no Electron setup. It is free to try (watermarked, 15-day trial), and the full unbranded .exe is $45 one-time; the generated file is typically 50–80 MB and works on Windows 10 and 11.',
     features: [
       'One-click .exe generation',
       'Custom icon and splash screen',
@@ -1620,7 +1620,7 @@ export const platforms: Platform[] = [
       },
       {
         question: 'How much does it cost to build a small business app?',
-        answer: 'WebsiteToApp starts free for basic features. The full version costs $35 one-time — no monthly fees. Compare that to custom app development ($10,000-$50,000) or monthly app builders ($50-$300/month). It is the most affordable way for small businesses to get a mobile app.'
+        answer: 'WebsiteToApp starts free for basic features. The full version costs $45 one-time — no monthly fees. Compare that to custom app development ($10,000-$50,000) or monthly app builders ($50-$300/month). It is the most affordable way for small businesses to get a mobile app.'
       },
       {
         question: 'Can I send push notifications to my customers?',

@@ -213,14 +213,14 @@ for the 500+ imp of `…free` queries sitting at pos 25.
       duplicate (same reasoning precedent as the 07-20 exe-to-app-converter
       decision). Verified current pricing directly from `Pricing.tsx` instead
       of trusting older blog copy — found and avoided a real staleness trap:
-      `Pricing.tsx` now shows Android/Desktop premium at **$35 one-time**
+      `Pricing.tsx` now shows Android/Desktop premium at **$45 one-time**
       (raised from $25 via commits `1d1ad16`/`a8f9bec`, "t80: raise Android
-      pricing to $35"), but the still-live `webintoapp-alternative-websitetoapp`
+      pricing to $45"), but the still-live `webintoapp-alternative-websitetoapp`
       post and a few others still quote the old **$25** figure — that's a
       pre-existing staleness bug in already-shipped webintoapp content, which
       is explicitly out of scope today (webintoapp work is DONE/frozen per
       today's brief), so left as-is and flagged here for a future pass. The
-      new post uses only verified-current numbers ($35 Android/Desktop, $25
+      new post uses only verified-current numbers ($45 Android/Desktop, $25
       iOS beta unsigned+Xcode, $15 Play Store Listing add-on, $50 bundle, $9/mo
       optional Pro Monthly) and is honest about the free plan's real
       limitations (watermark, 15-day trial window, 5-build lifetime cap
@@ -630,7 +630,7 @@ for the 500+ imp of `…free` queries sitting at pos 25.
   converter converter online`) remain covered by existing DONE tasks per
   yesterday's reprioritization — no duplicate pages created.
   Separately, per today's explicit factual-accuracy task: verified the
-  CURRENT real price directly from `Pricing.tsx` (`price_usd: 3500` = **$35
+  CURRENT real price directly from `Pricing.tsx` (`price_usd: 3500` = **$45
   one-time** for Android/Desktop premium — confirmed this is already the
   live/correct figure per the `t80`/`t97` commit history, NOT $25 as the task
   brief assumed). Audited all `webintoapp`-adjacent comparison content
@@ -638,10 +638,10 @@ for the 500+ imp of `…free` queries sitting at pos 25.
   entry, `best-website-to-app-converters-2026`, `website-to-apk-free`,
   `website-to-app-converter-complete-guide-2026`,
   `convert-wordpress-website-to-android-app`, `median-co-alternative`) and
-  found the site-wide `$35` raise had missed several WebsiteToApp
+  found the site-wide `$45` raise had missed several WebsiteToApp
   self-price mentions still quoting the pre-raise **$25** (or an even older
-  **$10**) figure, inconsistent with the correct $35 already shown elsewhere
-  in the same posts — fixed ~13 stale mentions across 7 files/posts to $35.
+  **$10**) figure, inconsistent with the correct $45 already shown elsewhere
+  in the same posts — fixed ~13 stale mentions across 7 files/posts to $45.
   Did NOT touch any `webintoapp` title/meta for CTR purposes (only the
   `description` field's stale dollar figure on
   `website-to-app-converter-complete-guide-2026` was corrected, which is a

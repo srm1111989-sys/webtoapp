@@ -9,14 +9,14 @@ WebToApp (websitetoapp.app) converts any website URL into a native Android app (
 | Plan | Price | Builds |
 |------|-------|--------|
 | Free (Android or Desktop) | $0 | 5 free builds total across all your websites (lifetime), ALL app features included, watermark banner + 15-day trial. After the trial the installed app pauses until you upgrade — upgrading unlocks it instantly, no reinstall |
-| Premium Android App | $35 one-time | Modify + rebuild up to 5× per month |
-| Premium Desktop App | $35 one-time | Modify + rebuild up to 5× per month |
+| Premium Android App | $45 one-time | Modify + rebuild up to 5× per month |
+| Premium Desktop App | $45 one-time | Modify + rebuild up to 5× per month |
 | Play Store Publishing Service | $50 one-time | Complete end-to-end publishing to Google Play Store by our team |
 | Android App + Play Store Bundle | $75 one-time | Premium Android + Play Store Publishing Service bundle |
 | Pro Monthly (add-on) | $9/month per app | For paid apps: 20 rebuilds/month (instead of 5) + priority build queue; cancel anytime; subscribe from the app's order page in the dashboard |
 
 * All paid plans are **one-time payments** — no subscriptions, no renewals, no hidden charges.
-* Indian users pay in INR (₹2905 for $35 equivalent plans; ₹4150 for $50 Play Store Publishing; Pro Monthly is ₹747/month).
+* Indian users pay in INR (₹3735 for $45 equivalent plans; ₹4150 for $50 Play Store Publishing; Pro Monthly is ₹747/month).
 * Promo/discount codes can be applied at checkout.
 * **APK and AAB files are included on ALL plans, including Free.** The AAB (Android App Bundle) is the format Google Play requires. Download buttons for APK, AAB and the signing keystore appear on the Orders page once a build completes, and the links are also in the build-complete email.
 
@@ -269,7 +269,7 @@ WebToApp includes a **live phone-frame preview** — no install needed:
 
 ## iOS support
 
-iOS is available in **beta** at **$35 one-time** (same price as Android). You receive an unsigned .ipa plus the complete Xcode source project; you sign and publish it with your own Apple Developer account ($99/year) — we do not provide App Store publishing support. Note Apple's App Store review (guideline 4.2) can reject simple website-wrapper apps, so plan your listing accordingly. Your website can also be installed as a PWA on iPhone (Share → Add to Home Screen); Android + Desktop apps are fully supported.
+iOS is available in **beta** at **$45 one-time** (same price as Android). You receive an unsigned .ipa plus the complete Xcode source project; you sign and publish it with your own Apple Developer account ($99/year) — we do not provide App Store publishing support. Note Apple's App Store review (guideline 4.2) can reject simple website-wrapper apps, so plan your listing accordingly. Your website can also be installed as a PWA on iPhone (Share → Add to Home Screen); Android + Desktop apps are fully supported.
 
 ## TV devices (Fire TV Stick, Android TV, Google TV)
 

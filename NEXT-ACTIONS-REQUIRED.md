@@ -139,7 +139,7 @@ npm run build
 
 Just published a comprehensive 3,500-word guide covering:
 ✅ Step-by-step tutorial
-✅ Cost comparison ($35 vs $50,000)
+✅ Cost comparison ($45 vs $50,000)
 ✅ Best converters comparison
 ✅ APK vs AAB explained
 ✅ Real success stories

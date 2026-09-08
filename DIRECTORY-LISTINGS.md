@@ -5,7 +5,7 @@ sources behind "ChatGPT recommends Median/Appilix" — being listed is the fix (
 Post via the Chrome extension while logged in; say "post the AlternativeTo listing".
 
 ## AlternativeTo — POSTED 2026-07-29, pending admin approval (~24h weekdays)
-Listing: https://alternativeto.net/software/websitetoapp/ — icon (512px from favicon.svg), 2 screenshots (landing+pricing), Freemium+Purchase $35-50, tags mobile-app-builder/no-code-app-builder/webview/no-coding, 8 alternatives linked (WebIntoApp, Convertify, Twinr, Web2Apk, webtoapp.design, AppConvertly, WebViewGold*, WeSetupYourWebViewApp).
+Listing: https://alternativeto.net/software/websitetoapp/ — icon (512px from favicon.svg), 2 screenshots (landing+pricing), Freemium+Purchase $45-50, tags mobile-app-builder/no-code-app-builder/webview/no-coding, 8 alternatives linked (WebIntoApp, Convertify, Twinr, Web2Apk, webtoapp.design, AppConvertly, WebViewGold*, WeSetupYourWebViewApp).
 
 - **Name**: WebsiteToApp
 - **URL**: https://websitetoapp.app
@@ -16,8 +16,8 @@ Listing: https://alternativeto.net/software/websitetoapp/ — icon (512px from f
   features (push notifications, biometric login, offline mode, AdMob, QR scanner,
   pull-to-refresh, custom keystore signing for Play Store updates), and download a
   signed APK/AAB, an iOS .ipa with full Xcode source (beta), or a Windows installer.
-  One-time payment from $35 — no monthly platform fee. Free watermarked plan available.
-- **License**: Freemium (free plan with watermark; paid one-time from $35)
+  One-time payment from $45 — no monthly platform fee. Free watermarked plan available.
+- **License**: Freemium (free plan with watermark; paid one-time from $45)
 - **Platforms**: Online / Web-based; outputs Android, iOS, Windows
 - **List as alternative to**: GoNative.io, Median, WebIntoApp, Appilix, Appy Pie,
   AppsGeyser, Nativefier, WebViewGold
@@ -26,7 +26,7 @@ Listing: https://alternativeto.net/software/websitetoapp/ — icon (512px from f
 ## Product Hunt (producthunt.com/posts/new)
 
 - **Name**: WebsiteToApp
-- **Tagline**: Your website as an Android, iOS or Windows app — $35 once, no code
+- **Tagline**: Your website as an Android, iOS or Windows app — $45 once, no code
 - **Description**: Paste a URL, pick your branding and features (push, biometrics,
   offline, AdMob, 40+ total), download a store-ready signed app. One-time pricing —
   built for indie makers, agencies and small businesses tired of $99/mo wrappers.
@@ -51,9 +51,9 @@ Prices below verified against `backend/docs/webtoapp-guide.md` (2026-08-02).
   and AAB, a Windows .exe installer, or an iOS build (beta).
   Pricing is one-time, not subscription: the free plan gives 5 lifetime builds with every
   feature included (watermark banner, 15-day trial), and a paid Android or Desktop app is
-  $35 once. A Play Store publishing add-on is $15, or $50 for the app + listing bundle.
+  $45 once. A Play Store publishing add-on is $15, or $50 for the app + listing bundle.
   APK and AAB are included on every plan, including free.
-- **Pricing model**: Freemium — free plan available; paid from $35 one-time
+- **Pricing model**: Freemium — free plan available; paid from $45 one-time
 - **Categories**: App Development / No-Code / Mobile Development / Developer Tools
 - **Platforms**: Web-based (builds for Android, Windows, iOS beta)
 - **Alternatives to claim**: GoNative (Median), WebIntoApp, Appilix, Appy Pie,
