@@ -336,5 +336,104 @@ export const competitors: Competitor[] = [
     seoDescription:
       'webtoapp.design charges €19–€49/month recurring. WebsiteToApp is $45 one-time with 40+ features, push notifications, and Windows desktop support. See comparison & switch today.',
   },
+  {
+    slug: 'mobiloud',
+    name: 'MobiLoud',
+    tagline: 'MobiLoud Alternative',
+    url: 'https://mobiloud.com',
+    pricing: {
+      label: '$200–$500/month ($2,400–$6,000/year)',
+      detail:
+        'MobiLoud charges enterprise subscription pricing starting at $200/month up to $500/month, plus setup fees. Over one year, you pay $2,400 to $6,000+ to keep your app live.',
+      annualCost: '$2,400–$6,000+/year',
+    },
+    pros: [
+      'Hands-on agency setup for high-revenue Shopify brands',
+      'Custom native navigation headers and tab bars',
+      'Push notification automation and segmentation',
+      'Full website synchronization',
+    ],
+    cons: [
+      'Extremely expensive ($2,400–$6,000+ every single year)',
+      'Not accessible for small businesses, creators, or startups',
+      'Stop paying = app stops working completely',
+      'No Windows desktop app (.exe) support',
+      'Longer onboarding process (weeks instead of minutes)',
+    ],
+    features: [
+      { name: 'Android APK & AAB', them: '✓', us: '✓', usBetter: false },
+      { name: 'Windows Desktop App', them: '✗ Not available', us: '✓ Included', usBetter: true },
+      { name: 'Push Notifications', them: '✓ Included', us: '✓ Included', usBetter: false },
+      { name: 'AdMob Monetization', them: 'Add-on', us: '✓ Included', usBetter: true },
+      { name: 'Biometric Login', them: 'Custom quote', us: '✓ Included', usBetter: true },
+      { name: 'Turnaround Time', them: '2–4 weeks', us: '10 minutes', usBetter: true },
+      { name: 'Pricing model', them: '$200–$500/month', us: '$45 one-time', usBetter: true },
+      { name: '1-year total cost', them: '$2,400–$6,000', us: '$45', usBetter: true },
+      { name: 'Total features', them: '~25', us: '40+', usBetter: true },
+    ],
+    verdict:
+      'MobiLoud is tailored for large enterprise publishers and high-volume Shopify stores willing to pay thousands of dollars annually. For small-to-medium businesses, WebsiteToApp provides identical mobile performance, push notifications, and Play Store readiness for a flat one-time $45 fee — saving over $2,350 in year one alone.',
+    switchReasons: [
+      '$45 one-time payment vs $2,400–$6,000/year subscription lock-in',
+      'Launch in 10 minutes instead of waiting weeks for custom agency onboarding',
+      'Windows desktop .exe installer included alongside mobile builds',
+      'All 40+ native features unlocked out of the box with zero recurring invoices',
+      'Permanent app ownership — your app never stops working',
+    ],
+    directAnswer:
+      'The #1 rated MobiLoud alternative for 2026 is WebsiteToApp.app: it converts your Shopify, WordPress, or custom website into an Android app, iOS app, and Windows desktop .exe for a flat $45 one-time payment instead of MobiLoud\'s $200–$500/month recurring subscription. You get signed store-ready builds, push notifications, and biometric login in 10 minutes with zero coding.',
+    seoTitle: 'MobiLoud Alternative: $45 One-Time vs $200/mo Subscription (2026)',
+    seoDescription:
+      'MobiLoud charges $200–$500/month ($2,400+/year). WebsiteToApp delivers the same mobile app conversion with push notifications for $45 one-time. See the comparison.',
+  },
+  {
+    slug: 'webviewgold',
+    name: 'WebViewGold',
+    tagline: 'WebViewGold Alternative',
+    url: 'https://webviewgold.com',
+    pricing: {
+      label: '$79+ one-time per platform (source code)',
+      detail:
+        'WebViewGold sells source code templates on CodeCanyon for $79 per platform ($158 for Android + iOS). You must install Android Studio, Xcode, configure Gradle, and own a Mac to build iOS.',
+      annualCost: '$79–$158 (requires developer tools & Mac)',
+    },
+    pros: [
+      'One-time purchase license',
+      'Full access to underlying Java/Kotlin and Swift source code',
+      'Decent push notification and AdMob plugin modules',
+    ],
+    cons: [
+      'Requires technical knowledge: Android Studio, Gradle, SDK setup, and Xcode',
+      'Requires an expensive Mac computer to compile iOS apps',
+      'Frequent compilation errors on newer Android/iOS SDK updates',
+      'Manual signing and keystore management required',
+      'No Windows desktop app (.exe) conversion',
+    ],
+    features: [
+      { name: 'Android App Build', them: 'Manual compile in Studio', us: '✓ Cloud 1-click build', usBetter: true },
+      { name: 'Windows Desktop App', them: '✗ Not available', us: '✓ Included', usBetter: true },
+      { name: 'No Developer Tools Needed', them: '✗ Android Studio required', us: '✓ 100% Browser Wizard', usBetter: true },
+      { name: 'Push Notifications', them: 'Manual config', us: '✓ Built-in', usBetter: true },
+      { name: 'AdMob Integration', them: 'Code editing', us: '✓ Toggle & paste IDs', usBetter: true },
+      { name: 'Build Time', them: 'Hours (setup & compile)', us: '10 minutes', usBetter: true },
+      { name: 'Price', them: '$79+ (per platform)', us: '$45 one-time', usBetter: true },
+      { name: 'Total features', them: '~20', us: '40+', usBetter: true },
+    ],
+    verdict:
+      'WebViewGold is designed for developers who want raw source code and are comfortable resolving Gradle errors in Android Studio. WebsiteToApp.app is 100% no-code: cloud servers compile your signed APK, AAB, and Windows .exe in minutes without requiring you to install gigabytes of developer software or own a Mac.',
+    switchReasons: [
+      '100% cloud build — no Android Studio, Xcode, CocoaPods, or Mac required',
+      '$45 one-time vs $79+ per platform for raw source code files',
+      'Windows desktop app (.exe) included — WebViewGold only offers mobile templates',
+      'Automatic cloud compilation with pre-validated Google Play SDK compliance',
+      'Intuitive web dashboard for managing push notifications and app settings',
+    ],
+    directAnswer:
+      'The #1 rated WebViewGold alternative in 2026 is WebsiteToApp.app: unlike WebViewGold which requires installing Android Studio, configuring Gradle, and owning a Mac for iOS, WebsiteToApp provides an automated 100% cloud build wizard. For $45 one-time, you get a fully signed Android APK/AAB and Windows .exe in under 10 minutes without touching a line of code.',
+    seoTitle: 'WebViewGold Alternative: 100% No-Code Cloud Build vs Android Studio (2026)',
+    seoDescription:
+      'Avoid Android Studio setup and Xcode errors. WebsiteToApp builds signed APK/AAB and Windows desktop apps in the cloud for $45 one-time. See feature comparison.',
+  },
 ]
+
 
