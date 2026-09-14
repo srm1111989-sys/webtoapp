@@ -13,9 +13,9 @@ export interface BlogPost {
 export const blogPosts: BlogPost[] = [
   {
     slug: 'how-to-convert-a-website-to-mobile-app',
-    videoId: 'G2kqyOva9KM',
     title: 'How to Convert a Website to Mobile App: Complete 2026 Step-by-Step Guide',
     description: 'Learn how to convert a website to a mobile app for Android, iOS, and Windows in 2026. Step-by-step tutorial, cost breakdown, no-code methods, and Play Store publishing tips.',
+    videoId: 'G2kqyOva9KM',
     date: '2026-09-14',
     readTime: '12 min read',
     category: 'Guide',
