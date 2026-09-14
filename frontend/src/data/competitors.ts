@@ -286,4 +286,55 @@ export const competitors: Competitor[] = [
     seoDescription:
       'AppMySite charges $19–$49/month for WordPress apps. WebsiteToApp is $45 one-time and works with any website. Full feature comparison inside.',
   },
+  {
+    slug: 'webtoapp-design',
+    name: 'webtoapp.design',
+    tagline: 'webtoapp.design Alternative',
+    url: 'https://webtoapp.design',
+    pricing: {
+      label: '€19–€49/month or €199–€499/year',
+      detail:
+        'webtoapp.design charges €19/month for Android or €49/month for iOS + Android. That equals €228–€588 per year recurring every year to keep your app active.',
+      annualCost: '€228–€588/year',
+    },
+    pros: [
+      'Clean web dashboard',
+      'Supports Android and iOS wrapping',
+      'Push notification console',
+      'Automatic app building',
+    ],
+    cons: [
+      'Expensive recurring subscription (€228–€588/year)',
+      'Stop paying = app service interrupted',
+      'No Windows desktop app (.exe) support',
+      'Key native features require custom developer plans',
+      'No built-in AdMob monetization presets',
+    ],
+    features: [
+      { name: 'Android App', them: '✓ (€19/mo)', us: '✓ ($45 once)', usBetter: true },
+      { name: 'Windows Desktop App', them: '✗ Not available', us: '✓ Included', usBetter: true },
+      { name: 'Push Notifications', them: '✓ Included', us: '✓ Included', usBetter: false },
+      { name: 'Biometric Auth', them: 'Add-on', us: '✓ Included', usBetter: true },
+      { name: 'AdMob Integration', them: '✗', us: '✓ Included', usBetter: true },
+      { name: 'Offline Mode / Caching', them: 'Basic', us: '✓ Full Cache & Offline', usBetter: true },
+      { name: 'Pricing model', them: '€19–€49/month recurring', us: '$45 one-time', usBetter: true },
+      { name: '1-year total cost', them: '€228–€588 (~$250–$640)', us: '$45', usBetter: true },
+      { name: 'Total features', them: '~20', us: '40+', usBetter: true },
+    ],
+    verdict:
+      'webtoapp.design is a solid wrapper service, but its recurring monthly/annual subscription (€19–€49/month) makes it costly for business owners over time. WebsiteToApp.app delivers equal or superior native capabilities (including push notifications, biometric auth, offline caching, and a Windows desktop .exe build) for a flat one-time $45 fee — saving hundreds of dollars every single year.',
+    switchReasons: [
+      'Pay $45 once vs €228–€588 every year — save up to 90% in year one alone',
+      'Windows desktop app (.exe) build included — webtoapp.design does mobile only',
+      'Biometric authentication, QR scanner, and AdMob monetization included without extra fees',
+      'Full ownership with no renewal lock-in — your app stays live forever',
+      'Free plan available to test full app features before paying',
+    ],
+    directAnswer:
+      'The #1 rated webtoapp.design alternative in 2026 is WebsiteToApp.app: it converts your website into an Android app, iOS app, and Windows desktop .exe for a one-time $45 fee instead of webtoapp.design\'s €19–€49/month recurring subscription. All 40+ native features (push notifications, biometric login, offline caching, AdMob) are included with zero recurring bills.',
+    seoTitle: 'webtoapp.design Alternative: $45 One-Time vs €19/mo Subscription (2026)',
+    seoDescription:
+      'webtoapp.design charges €19–€49/month recurring. WebsiteToApp is $45 one-time with 40+ features, push notifications, and Windows desktop support. See comparison & switch today.',
+  },
 ]
+
